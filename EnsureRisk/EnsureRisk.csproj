@@ -1,0 +1,764 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{99934FA7-B662-4138-9A78-3930888DF3E0}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>EnsureRisk</RootNamespace>
+    <AssemblyName>EnsureRisk</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Output\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Output\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ER.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Arrowheads, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\EnsureBusinesss\Referencias\Arrowheads.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesign, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Referencias\MaterialDesign.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Referencias\MaterialDesignColors.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=2.5.1.1345, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Referencias\MaterialDesignThemes.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\Microsoft.Office.Interop.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="ReachFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Printing" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Referencias\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Referencias\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="AllValidations.cs" />
+    <Compile Include="Classess\GridPaint.cs" />
+    <Compile Include="Classess\GridToolBar.cs" />
+    <Compile Include="Classess\HeaderExcelContent.cs" />
+    <Compile Include="Classess\LButton.cs" />
+    <Compile Include="Classess\LComboBox.cs" />
+    <Compile Include="Classess\LGrid.cs" />
+    <Compile Include="Classess\LSlider.cs" />
+    <Compile Include="Classess\LTextBlock.cs" />
+    <Compile Include="Classess\LTextBox.cs" />
+    <Compile Include="Classess\MyGrid.cs" />
+    <Compile Include="Classess\MyLayoutDocument.cs" />
+    <Compile Include="Classess\MyRadioButton.cs" />
+    <Compile Include="Classess\ScrollViewerDiagram.cs" />
+    <Compile Include="CursorHelper.cs" />
+    <Compile Include="CustomCommands.cs" />
+    <Compile Include="DecimalUIConverter.cs" />
+    <Compile Include="Export\ExportRiskTree.cs" />
+    <Compile Include="Export\Trader\DataSetTrader.cs" />
+    <Compile Include="Export\Trader\RiskTreeDataSetTrader.cs" />
+    <Compile Include="Pages\SetConnectionPage.xaml.cs">
+      <DependentUpon>SetConnectionPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ThemePage.xaml.cs">
+      <DependentUpon>ThemePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\StringResources.NL-NL.Designer.cs">
+      <DependentUpon>StringResources.NL-NL.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\StringResources.ES-ES.Designer.cs">
+      <DependentUpon>StringResources.ES-ES.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\StringResources.EN-US.Designer.cs">
+      <DependentUpon>StringResources.EN-US.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\StringResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StringResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SampleDataModel.cs" />
+    <Compile Include="TreeHelpers.cs" />
+    <Compile Include="TreeNodeModel.cs" />
+    <Compile Include="Web References\GroupService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\ServiceAuthentication\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\ServiceClasifications\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\ServiceProject\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\ServiceRiskController\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\ServiceRoleController\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\ServiceTopRiskController\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\ServiceUserController\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\ServiceWBS\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\LoginWindow.xaml.cs">
+      <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Excel\MyExcelButton.cs" />
+    <Compile Include="Windows\Excel\MyRadio.cs" />
+    <Compile Include="Windows\Settings\SetConnectionWindow.xaml.cs">
+      <DependentUpon>SetConnectionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Settings\VerticalMenu.xaml.cs">
+      <DependentUpon>VerticalMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Window1.xaml.cs">
+      <DependentUpon>Window1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Messages\WindowAlert.xaml.cs">
+      <DependentUpon>WindowAlert.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\CMs\WindowCMGroup.xaml.cs">
+      <DependentUpon>WindowCMGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\CMs\WindowCM.xaml.cs">
+      <DependentUpon>WindowCM.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Risks\WindowDefaultRiskList.xaml.cs">
+      <DependentUpon>WindowDefaultRiskList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Excel\WindowExcelClasification.xaml.cs">
+      <DependentUpon>WindowExcelClasification.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Group\WindowGroupe.xaml.cs">
+      <DependentUpon>WindowGroupe.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Excel\WindowHeaderClasification.xaml.cs">
+      <DependentUpon>WindowHeaderClasification.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Messages\WindowMessageInformation.xaml.cs">
+      <DependentUpon>WindowMessageInformation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Messages\WindowMessageOK.xaml.cs">
+      <DependentUpon>WindowMessageOK.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Messages\WindowMessageYesNo.xaml.cs">
+      <DependentUpon>WindowMessageYesNo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Excel\WindowMultiRadio.xaml.cs">
+      <DependentUpon>WindowMultiRadio.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Settings\WindowOpening.xaml.cs">
+      <DependentUpon>WindowOpening.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Settings\WindowOption.xaml.cs">
+      <DependentUpon>WindowOption.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Project\WindowProject.xaml.cs">
+      <DependentUpon>WindowProject.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Project\WindowProjectList.xaml.cs">
+      <DependentUpon>WindowProjectList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Group\WindowRenameGroup.xaml.cs">
+      <DependentUpon>WindowRenameGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Risks\WindowRisk.xaml.cs">
+      <DependentUpon>WindowRisk.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Roles\WindowRole.xaml.cs">
+      <DependentUpon>WindowRole.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Roles\WindowRoleList.xaml.cs">
+      <DependentUpon>WindowRoleList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\WindowSaveAs.xaml.cs">
+      <DependentUpon>WindowSaveAs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\WindowSelection.xaml.cs">
+      <DependentUpon>WindowSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Damages\WindowSelectTopRisk.xaml.cs">
+      <DependentUpon>WindowSelectTopRisk.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\WindowText.xaml.cs">
+      <DependentUpon>WindowText.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Damages\WindowTopRisk.xaml.cs">
+      <DependentUpon>WindowTopRisk.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Damages\WindowTopRiskList.xaml.cs">
+      <DependentUpon>WindowTopRiskList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\WindowTreeRisk.xaml.cs">
+      <DependentUpon>WindowTreeRisk.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\User\WindowUser.xaml.cs">
+      <DependentUpon>WindowUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\User\WindowUserList.xaml.cs">
+      <DependentUpon>WindowUserList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Wbs\WindowWBS.xaml.cs">
+      <DependentUpon>WindowWBS.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Wbs\WindowWBSChild.xaml.cs">
+      <DependentUpon>WindowWBSChild.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Wbs\WindowWBSList.xaml.cs">
+      <DependentUpon>WindowWBSList.xaml</DependentUpon>
+    </Compile>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Pages\SetConnectionPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ThemePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\LoginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Settings\SetConnectionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Settings\VerticalMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Window1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Messages\WindowAlert.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\CMs\WindowCMGroup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\CMs\WindowCM.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Risks\WindowDefaultRiskList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Excel\WindowExcelClasification.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Group\WindowGroupe.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Excel\WindowHeaderClasification.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Messages\WindowMessageInformation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Messages\WindowMessageOK.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Messages\WindowMessageYesNo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Excel\WindowMultiRadio.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Settings\WindowOpening.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Settings\WindowOption.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Project\WindowProject.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Project\WindowProjectList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Group\WindowRenameGroup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Risks\WindowRisk.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Roles\WindowRole.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Roles\WindowRoleList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\WindowSaveAs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\WindowSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Damages\WindowSelectTopRisk.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\WindowText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Damages\WindowTopRisk.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Damages\WindowTopRiskList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\WindowTreeRisk.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\User\WindowUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\User\WindowUserList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Wbs\WindowWBS.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Wbs\WindowWBSChild.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Wbs\WindowWBSList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\StringResources.NL-NL.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringResources.NL-NL.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\StringResources.ES-ES.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringResources.ES-ES.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\StringResources.EN-US.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringResources.EN-US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\StringResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Scripts\jquery-2.1.1.min.map" />
+    <None Include="Web References\GroupService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\GroupService\WebServiceGroupe.wsdl" />
+    <None Include="Web References\ServiceAuthentication\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\ServiceAuthentication\WebServiceAuthentication.wsdl" />
+    <None Include="Web References\ServiceClasifications\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\ServiceClasifications\WebServiceClasificator.wsdl" />
+    <None Include="Web References\ServiceProject\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\ServiceProject\WebServiceProject.wsdl" />
+    <None Include="Web References\ServiceRiskController\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\ServiceRiskController\WebServiceRisk.wsdl" />
+    <None Include="Web References\ServiceRoleController\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\ServiceRoleController\WebServiceRole.wsdl" />
+    <None Include="Web References\ServiceTopRiskController\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\ServiceTopRiskController\WebServiceTopRisk.wsdl" />
+    <None Include="Web References\ServiceUserController\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\ServiceUserController\WebServiceUser.wsdl" />
+    <None Include="Web References\ServiceWBS\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\ServiceWBS\WebServiceWBS.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataMapping\DataMapping.csproj">
+      <Project>{0c2d5aa8-ad08-4adf-8edc-45547ef912b0}</Project>
+      <Name>DataMapping</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EnsureBusinesss\EnsureBusinesss.csproj">
+      <Project>{dec79fd2-e1e8-4e4d-90ed-d44910f4a79b}</Project>
+      <Name>EnsureBusinesss</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://localhost/EnsureRiskWS/WebServiceAuthentication.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\ServiceAuthentication\</RelPath>
+      <UpdateFromURL>http://localhost/EnsureRiskWS/WebServiceAuthentication.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>EnsureRisk_ServiceAuthentication_WebServiceAuthentication</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost/EnsureRiskWS/WebServiceClasificator.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\ServiceClasifications\</RelPath>
+      <UpdateFromURL>http://localhost/EnsureRiskWS/WebServiceClasificator.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>EnsureRisk_ServiceClasifications_WebServiceClasificator</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost/EnsureRiskWS/WebServiceGroupe.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\GroupService\</RelPath>
+      <UpdateFromURL>http://localhost/EnsureRiskWS/WebServiceGroupe.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>EnsureRisk_GroupService_WebServiceGroupe</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost/EnsureRiskWS/WebServiceProject.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\ServiceProject\</RelPath>
+      <UpdateFromURL>http://localhost/EnsureRiskWS/WebServiceProject.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>EnsureRisk_ServiceProject_WebServiceProject</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost/EnsureRiskWS/WebServiceRisk.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\ServiceRiskController\</RelPath>
+      <UpdateFromURL>http://localhost/EnsureRiskWS/WebServiceRisk.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>EnsureRisk_ServiceRiskController_WebServiceRisk</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost/EnsureRiskWS/WebServiceRole.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\ServiceRoleController\</RelPath>
+      <UpdateFromURL>http://localhost/EnsureRiskWS/WebServiceRole.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>EnsureRisk_ServiceRoleController_WebServiceRole</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost/EnsureRiskWS/WebServiceTopRisk.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\ServiceTopRiskController\</RelPath>
+      <UpdateFromURL>http://localhost/EnsureRiskWS/WebServiceTopRisk.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>EnsureRisk_ServiceTopRiskController_WebServiceTopRisk</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost/EnsureRiskWS/WebServiceUser.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\ServiceUserController\</RelPath>
+      <UpdateFromURL>http://localhost/EnsureRiskWS/WebServiceUser.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>EnsureRisk_ServiceUserController_WebServiceUser</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost/EnsureRiskWS/WebServiceWBS.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\ServiceWBS\</RelPath>
+      <UpdateFromURL>http://localhost/EnsureRiskWS/WebServiceWBS.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>EnsureRisk_ServiceWBS_WebServiceWBS</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web References\ServiceClasifications\WebServiceClasificator.disco" />
+    <None Include="Web References\ServiceProject\WebServiceProject.disco" />
+    <None Include="Web References\ServiceWBS\WebServiceWBS.disco" />
+    <None Include="Web References\ServiceUserController\WebServiceUser.disco" />
+    <None Include="Web References\ServiceTopRiskController\WebServiceTopRisk.disco" />
+    <None Include="Web References\ServiceRoleController\WebServiceRole.disco" />
+    <None Include="Web References\ServiceRiskController\WebServiceRisk.disco" />
+    <None Include="Web References\ServiceAuthentication\WebServiceAuthentication.disco" />
+    <None Include="Web References\GroupService\WebServiceGroupe.disco" />
+    <Resource Include="Images\Contraido.png" />
+    <Resource Include="Images\Expandido.png" />
+    <Resource Include="Images\Netherlands.png" />
+    <Resource Include="Images\Espannol.png" />
+    <Resource Include="Images\English.png" />
+    <Resource Include="Opening\087.png" />
+    <Resource Include="Opening\088.png" />
+    <Resource Include="Opening\089.png" />
+    <Resource Include="Opening\090.png" />
+    <Resource Include="Opening\091.png" />
+    <Resource Include="Opening\092.png" />
+    <Resource Include="Opening\093.png" />
+    <Resource Include="Opening\094.png" />
+    <Resource Include="Opening\095.png" />
+    <Resource Include="Opening\096.png" />
+    <Resource Include="Opening\097.png" />
+    <Resource Include="Opening\098.png" />
+    <Resource Include="Opening\099.png" />
+    <Resource Include="ER.ico" />
+    <EmbeddedResource Include="Color.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectionServer.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Include="HandGrabbing.cur" />
+    <None Include="HandOpen.cur" />
+    <Resource Include="Delete.ico" />
+    <Resource Include="DiagCross.cur" />
+    <Resource Include="Images\clear.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\b3.png" />
+    <Resource Include="Images\DelMine.png" />
+    <Content Include="Referencias\MaterialDesign.dll" />
+    <Content Include="Referencias\MaterialDesignColors.dll" />
+    <Content Include="Referencias\MaterialDesignThemes.Wpf.dll" />
+    <Content Include="Referencias\Xceed.Wpf.AvalonDock.dll" />
+    <Content Include="Referencias\Xceed.Wpf.Toolkit.dll" />
+    <Content Include="Scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\nugetexample.js" />
+    <Resource Include="Opening\100.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

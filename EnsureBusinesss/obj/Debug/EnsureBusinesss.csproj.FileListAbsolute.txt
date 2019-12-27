@@ -1,0 +1,166 @@
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\EnsureBusinesss.dll.config
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\EnsureBusinesss.dll
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\EnsureBusinesss.pdb
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\Output\EnsureBusinesss.dll.config
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\Output\EnsureBusinesss.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\Output\EnsureBusinesss.pdb
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+D:\Roberto\02-Project\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+D:\Roberto\02-Project\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+D:\Roberto\02-Project\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+D:\Roberto\02-Project\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+D:\Roberto\02-Project\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CoreCompileInputs.cache
+D:\Roberto\02-Project\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+D:\Roberto\02-Project\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+D:\Roberto\02-Project\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+D:\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+D:\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+D:\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+D:\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+D:\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+D:\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+D:\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+D:\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CoreCompileInputs.cache
+D:\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+D:\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+D:\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+D:\Roberto\02-Project\MyCode\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+D:\Roberto\02-Project\MyCode\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+D:\Roberto\02-Project\MyCode\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+D:\Roberto\02-Project\MyCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+D:\Roberto\02-Project\MyCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+D:\Roberto\02-Project\MyCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+D:\Roberto\02-Project\MyCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+D:\Roberto\02-Project\MyCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CoreCompileInputs.cache
+D:\Roberto\02-Project\MyCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+D:\Roberto\02-Project\MyCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+D:\Roberto\02-Project\MyCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+D:\Work\EnsureRiskProject\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+D:\Work\EnsureRiskProject\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+D:\Work\EnsureRiskProject\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+D:\Work\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+D:\Work\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+D:\Work\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+D:\Work\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+D:\Work\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CoreCompileInputs.cache
+D:\Work\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+D:\Work\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+D:\Work\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+D:\CodeYrodan\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+D:\CodeYrodan\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+D:\CodeYrodan\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+D:\CodeYrodan\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+D:\CodeYrodan\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+D:\CodeYrodan\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+D:\CodeYrodan\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+D:\CodeYrodan\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CoreCompileInputs.cache
+D:\CodeYrodan\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+D:\CodeYrodan\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+D:\CodeYrodan\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+F:\EnsureRiskProject\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+F:\EnsureRiskProject\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+F:\EnsureRiskProject\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+F:\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+F:\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+F:\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+F:\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+F:\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CoreCompileInputs.cache
+F:\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+F:\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+F:\EnsureRiskProject\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+D:\CodeGusta\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+D:\CodeGusta\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+D:\CodeGusta\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+D:\CodeGusta\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+D:\CodeGusta\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+D:\CodeGusta\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+D:\CodeGusta\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+D:\CodeGusta\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CoreCompileInputs.cache
+D:\CodeGusta\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+D:\CodeGusta\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+D:\CodeGusta\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+D:\Code\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+D:\Code\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+D:\Code\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+D:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+D:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+D:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+D:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+D:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CoreCompileInputs.cache
+D:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+D:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+D:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CoreCompileInputs.cache
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+E:\Code\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+E:\Code\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+E:\Code\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+E:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+E:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+E:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+E:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+E:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CoreCompileInputs.cache
+E:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+E:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+E:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+E:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.g.cs
+E:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.cache
+E:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.lref
+E:\Code\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.baml
+D:\ERCode\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+D:\ERCode\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+D:\ERCode\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+D:\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+D:\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.g.cs
+D:\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.cache
+D:\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.lref
+D:\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.baml
+D:\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+D:\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+D:\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+D:\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+D:\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+D:\ERCode\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.g.cs
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.cache
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.lref
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.lref
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+C:\Users\ghtamayo\Documents\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+C:\Users\ghtamayo\Documents\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.g.cs
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.cache
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.lref
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.baml
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb

@@ -1,0 +1,24 @@
+﻿<Window 
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        x:Class="EnsureRisk.Windows.WindowDefaultRiskList"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EnsureRisk.Windows"
+        mc:Ignorable="d"
+        Title="Default Risk List" Height="450" Width="800" Loaded="Window_Loaded">
+    <Grid>
+        <DataGrid x:Name="dgRisk" Margin="34,10,20,21" AutoGenerateColumns="False" IsReadOnly="False" SelectedCellsChanged="dgRisk_SelectedCellsChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="Risk" Header="Risk" Binding="{Binding RiskName}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</Window>

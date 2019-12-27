@@ -1,0 +1,31 @@
+E:\Code\VisualDragDrop\ERDA\bin\Debug\ERDA.dll.config
+E:\Code\VisualDragDrop\ERDA\bin\Debug\ERDA.dll
+E:\Code\VisualDragDrop\ERDA\bin\Debug\ERDA.pdb
+E:\Code\VisualDragDrop\ERDA\obj\Debug\ERDA.csproj.CoreCompileInputs.cache
+E:\Code\VisualDragDrop\ERDA\obj\Debug\ERDA.dll
+E:\Code\VisualDragDrop\ERDA\obj\Debug\ERDA.pdb
+E:\Code\VisualDragDrop\ERDA\obj\Debug\ERDA.csprojAssemblyReference.cache
+D:\ERCode\VisualDragDrop\ERDA\bin\Debug\ERDA.dll.config
+D:\ERCode\VisualDragDrop\ERDA\bin\Debug\ERDA.dll
+D:\ERCode\VisualDragDrop\ERDA\bin\Debug\ERDA.pdb
+D:\ERCode\VisualDragDrop\ERDA\obj\Debug\ERDA.dll
+D:\ERCode\VisualDragDrop\ERDA\obj\Debug\ERDA.pdb
+D:\ERCode\VisualDragDrop\ERDA\obj\Debug\ERDA.csprojAssemblyReference.cache
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\ERDA\bin\Debug\ERDA.dll.config
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\ERDA\bin\Debug\ERDA.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\ERDA\bin\Debug\ERDA.pdb
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\ERDA\obj\Debug\ERDA.csprojAssemblyReference.cache
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\ERDA\obj\Debug\ERDA.csproj.CoreCompileInputs.cache
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\ERDA\obj\Debug\ERDA.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\ERDA\obj\Debug\ERDA.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Debug\ERDA.dll.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Debug\ERDA.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Debug\ERDA.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Debug\ERDA.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Debug\ERDA.pdb
+C:\Users\ghtamayo\Documents\VisualDragDrop\ERDA\bin\Debug\ERDA.dll.config
+C:\Users\ghtamayo\Documents\VisualDragDrop\ERDA\bin\Debug\ERDA.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\ERDA\bin\Debug\ERDA.pdb
+C:\Users\ghtamayo\Documents\VisualDragDrop\ERDA\obj\Debug\ERDA.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\ERDA\obj\Debug\ERDA.pdb
+C:\Users\ghtamayo\Documents\VisualDragDrop\ERDA\obj\Debug\ERDA.csprojAssemblyReference.cache

@@ -1,0 +1,34 @@
+﻿<Window Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        x:Class="EnsureRisk.Windows.WindowMultiRadio"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EnsureRisk.Windows"
+        mc:Ignorable="d"
+        Title="Select..." Height="238.8" Width="518.4" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" ResizeMode="NoResize">
+    <Grid>
+        <Button x:Name="BtnOK" Content="OK" Margin="0,0,102,9.6" Click="BtnOK_Click" IsDefault="True" TabIndex="1" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom"/>
+        <Button x:Name="BtnCancel" Content="Cancel" Margin="0,0,10,9.6" Click="BtnCancel_Click" IsCancel="True" TabIndex="2" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom"/>
+        <Grid Name="gridRadioButton">
+            <local:MyRadio Content="IDRisk" HorizontalAlignment="Left" Margin="24,21,0,0" VerticalAlignment="Top" MyValue="1" Checked="MyRadio_Checked"/>
+            <local:MyRadio Content="Risk ShortName" HorizontalAlignment="Left" Margin="24,59,0,0" VerticalAlignment="Top" MyValue="2" Checked="MyRadio_Checked"/>
+            <local:MyRadio Content="Risk Comments" HorizontalAlignment="Left" Margin="24,95,0,0" VerticalAlignment="Top" MyValue="3" Checked="MyRadio_Checked"/>
+            <local:MyRadio Content="Risk ENABLED" HorizontalAlignment="Left" Margin="24,130,0,0" VerticalAlignment="Top" MyValue="4" Checked="MyRadio_Checked"/>
+            <local:MyRadio Content="ID R. Father" HorizontalAlignment="Left" Margin="24,167,0,0" VerticalAlignment="Top" MyValue="5" Checked="MyRadio_Checked"/>
+            <local:MyRadio Content="ID CM" HorizontalAlignment="Left" Margin="172,21,0,0" VerticalAlignment="Top" MyValue="7" Checked="MyRadio_Checked"/>
+            <local:MyRadio Content="CM Short Name" HorizontalAlignment="Left" Margin="172,59,0,0" VerticalAlignment="Top" MyValue="8" Checked="MyRadio_Checked"/>
+            <local:MyRadio Content="CM Detail" HorizontalAlignment="Left" Margin="172,95,0,0" VerticalAlignment="Top" MyValue="9" Checked="MyRadio_Checked"/>
+            <local:MyRadio Content="RISK DAMAGE" HorizontalAlignment="Left" Margin="172,130,0,0" VerticalAlignment="Top" MyValue="10" Checked="MyRadio_Checked"/>
+            <local:MyRadio Content="RISK PROB." HorizontalAlignment="Left" Margin="322,22,0,0" VerticalAlignment="Top" MyValue="11" Checked="MyRadio_Checked"/>
+            <local:MyRadio Content="R. REDUCTION [for CM]" HorizontalAlignment="Left" Margin="322,56,0,0" VerticalAlignment="Top" MyValue="12" Checked="MyRadio_Checked"/>
+            <local:MyRadio Content="CM DAMAGE" HorizontalAlignment="Left" Margin="322,94,0,0" VerticalAlignment="Top" MyValue="13" Checked="MyRadio_Checked"/>
+            <local:MyRadio Content="CM ENABLED" HorizontalAlignment="Left" Margin="322,130,0,0" VerticalAlignment="Top" MyValue="14" Checked="MyRadio_Checked"/>
+        </Grid>        
+    </Grid>
+</Window>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="GetAllProjects">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetAllProjectsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllProjectsResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveProject">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ds">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveProjectResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SaveProjectResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetAllProjectsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllProjects" />
+  </wsdl:message>
+  <wsdl:message name="GetAllProjectsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllProjectsResponse" />
+  </wsdl:message>
+  <wsdl:message name="SaveProjectSoapIn">
+    <wsdl:part name="parameters" element="tns:SaveProject" />
+  </wsdl:message>
+  <wsdl:message name="SaveProjectSoapOut">
+    <wsdl:part name="parameters" element="tns:SaveProjectResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WebServiceProjectSoap">
+    <wsdl:operation name="GetAllProjects">
+      <wsdl:input message="tns:GetAllProjectsSoapIn" />
+      <wsdl:output message="tns:GetAllProjectsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveProject">
+      <wsdl:input message="tns:SaveProjectSoapIn" />
+      <wsdl:output message="tns:SaveProjectSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebServiceProjectSoap" type="tns:WebServiceProjectSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetAllProjects">
+      <soap:operation soapAction="http://tempuri.org/GetAllProjects" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveProject">
+      <soap:operation soapAction="http://tempuri.org/SaveProject" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebServiceProjectSoap12" type="tns:WebServiceProjectSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetAllProjects">
+      <soap12:operation soapAction="http://tempuri.org/GetAllProjects" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveProject">
+      <soap12:operation soapAction="http://tempuri.org/SaveProject" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebServiceProject">
+    <wsdl:port name="WebServiceProjectSoap" binding="tns:WebServiceProjectSoap">
+      <soap:address location="http://localhost/EnsureRiskWS/WebServiceProject.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebServiceProjectSoap12" binding="tns:WebServiceProjectSoap12">
+      <soap12:address location="http://localhost/EnsureRiskWS/WebServiceProject.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

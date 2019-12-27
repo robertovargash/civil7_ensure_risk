@@ -1,0 +1,6 @@
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Release\ERDA.dll.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Release\ERDA.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Release\ERDA.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Release\ERDA.csprojAssemblyReference.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Release\ERDA.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Release\ERDA.pdb

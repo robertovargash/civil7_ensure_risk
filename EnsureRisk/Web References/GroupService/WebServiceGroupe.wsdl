@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="GetAllGroupes">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetAllGroupesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllGroupesResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveGroupe">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ds">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveGroupeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SaveGroupeResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetAllGroupesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllGroupes" />
+  </wsdl:message>
+  <wsdl:message name="GetAllGroupesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllGroupesResponse" />
+  </wsdl:message>
+  <wsdl:message name="SaveGroupeSoapIn">
+    <wsdl:part name="parameters" element="tns:SaveGroupe" />
+  </wsdl:message>
+  <wsdl:message name="SaveGroupeSoapOut">
+    <wsdl:part name="parameters" element="tns:SaveGroupeResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WebServiceGroupeSoap">
+    <wsdl:operation name="GetAllGroupes">
+      <wsdl:input message="tns:GetAllGroupesSoapIn" />
+      <wsdl:output message="tns:GetAllGroupesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveGroupe">
+      <wsdl:input message="tns:SaveGroupeSoapIn" />
+      <wsdl:output message="tns:SaveGroupeSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebServiceGroupeSoap" type="tns:WebServiceGroupeSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetAllGroupes">
+      <soap:operation soapAction="http://tempuri.org/GetAllGroupes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveGroupe">
+      <soap:operation soapAction="http://tempuri.org/SaveGroupe" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebServiceGroupeSoap12" type="tns:WebServiceGroupeSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetAllGroupes">
+      <soap12:operation soapAction="http://tempuri.org/GetAllGroupes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveGroupe">
+      <soap12:operation soapAction="http://tempuri.org/SaveGroupe" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebServiceGroupe">
+    <wsdl:port name="WebServiceGroupeSoap" binding="tns:WebServiceGroupeSoap">
+      <soap:address location="http://localhost/EnsureRiskWS/WebServiceGroupe.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebServiceGroupeSoap12" binding="tns:WebServiceGroupeSoap12">
+      <soap12:address location="http://localhost/EnsureRiskWS/WebServiceGroupe.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,115 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Data;
+using DataMapping.Data;
+using EnsureBusinesss;
+using EnsureRisk.Resources;
+
+namespace EnsureRisk.Windows
+{
+    /// <summary>
+    /// Interaction logic for WindowSelectTopRisk.xaml
+    /// </summary>
+    public partial class WindowSelectTopRisk : Window
+    {
+        public DataRow Drow { get; set; }
+        public DataTable TopRiskTable { get; set; }
+        public WindowSelectTopRisk()
+        {
+            InitializeComponent();
+            ChangeLanguage();
+        }
+
+        public void ChangeLanguage()
+        {
+            MaterialDesignThemes.Wpf.HintAssist.SetHint(TextTopRisk, StringResources.TopRiskText);
+            MaterialDesignThemes.Wpf.HintAssist.SetHint(TextUnit, StringResources.UnitText);
+            BtnCancel.Content = StringResources.CancelButton;
+            Title = StringResources.SelectTopRiskTitle;
+        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnSelect_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
+                DataTable topCodif = ws.GetAllTopRisk().Tables[DT_Damage.TopRisk_TABLA].Copy();
+                WindowSelection frmSelection = new WindowSelection
+                {
+                    //dt = topCodif,
+                    dt = General.DeleteExists(topCodif, TopRiskTable, DT_Damage.ID_COLUMNA),
+                    dcolumToShow = new string[] { DT_Damage.TOP_RISK_COLUMN },
+                    dcolumToShowAlias = new string[] { "Damage" },
+                    Title = "Damages"
+                };
+                if (frmSelection.dt.Rows.Count == 1)
+                {
+                    Drow[DT_RiskTree_Damages.ID_DAMAGE] = frmSelection.dt.Rows[0][DT_Damage.ID_COLUMNA];
+                    Drow[DT_RiskTree_Damages.COLOR] = frmSelection.dt.Rows[0][DT_Damage.COLORID_COLUMNA];
+                    TextTopRisk.Text = frmSelection.dt.Rows[0][DT_RiskTree_Damages.DAMAGE].ToString();
+                }
+                else
+                {
+                    frmSelection.ShowDialog();
+                    if (frmSelection.DialogResult == true)
+                    {
+                        if (frmSelection.RowsSelected.Count() > 0)
+                        {
+                            Drow[DT_RiskTree_Damages.ID_DAMAGE] = frmSelection.RowsSelected[0][DT_Damage.ID_COLUMNA];
+                            Drow[DT_RiskTree_Damages.COLOR] = frmSelection.RowsSelected[0][DT_Damage.COLORID_COLUMNA];
+                            TextTopRisk.Text = frmSelection.RowsSelected[0][DT_RiskTree_Damages.DAMAGE].ToString();
+                        }                        
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                new WindowMessageOK(ex.Message).ShowDialog();
+            }
+
+        }
+
+        private void BtnOK_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (TextTopRisk.Text != "")
+                {
+                    Drow[DT_RiskTree_Damages.DAMAGE] = TextTopRisk.Text;
+                    Drow[DT_RiskTree_Damages.UM] = TextUnit.Text;
+                    this.DialogResult = true;
+                }
+                else
+                {
+                    new WindowMessageOK("Please, select a Top Risk!!!").ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                new WindowMessageOK(ex.Message).ShowDialog();
+            }
+
+        }
+
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false; Close();
+        }
+    }
+}

@@ -1,0 +1,381 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddButton" xml:space="preserve">
+    <value>Toevoegen</value>
+  </data>
+  <data name="AddCMMenu" xml:space="preserve">
+    <value>Tegenmaatregel toevoegen</value>
+  </data>
+  <data name="AddRiskMenu" xml:space="preserve">
+    <value>Voeg risico toe</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Annuleer</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>Dichtbij</value>
+  </data>
+  <data name="CollapsedCheck" xml:space="preserve">
+    <value>Verborgen?</value>
+  </data>
+  <data name="ColorContentLabel" xml:space="preserve">
+    <value>Kleur inhoud</value>
+  </data>
+  <data name="ColorThemeLabel" xml:space="preserve">
+    <value>Kleurenthema</value>
+  </data>
+  <data name="ColorToolTip" xml:space="preserve">
+    <value>Selecteer kleur</value>
+  </data>
+  <data name="ConfirmPasswordText" xml:space="preserve">
+    <value>Bevestig wachtwoord</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Verwijder</value>
+  </data>
+  <data name="DeleteCMMenu" xml:space="preserve">
+    <value>Tegenmaatregel verwijderen</value>
+  </data>
+  <data name="DeleteRiskMenu" xml:space="preserve">
+    <value>Risico's verwijderen</value>
+  </data>
+  <data name="DELETE_MESSAGE" xml:space="preserve">
+    <value>Are you sure you want to delete </value>
+  </data>
+  <data name="DesignAreaToolTip" xml:space="preserve">
+    <value>Ontwerp gebied resolutie</value>
+  </data>
+  <data name="DiagonalCheck" xml:space="preserve">
+    <value>Diagonaal</value>
+  </data>
+  <data name="DiagramNameLabel" xml:space="preserve">
+    <value>Diagramnaam</value>
+  </data>
+  <data name="DiagramValuesGroupB" xml:space="preserve">
+    <value>Diagramwaarden</value>
+  </data>
+  <data name="EditButton" xml:space="preserve">
+    <value>Bewerk</value>
+  </data>
+  <data name="EditCMMenu" xml:space="preserve">
+    <value>Bewerk de tegenmaatregel</value>
+  </data>
+  <data name="EditRiskMenu" xml:space="preserve">
+    <value>Bewerk risico</value>
+  </data>
+  <data name="ExitMenu" xml:space="preserve">
+    <value>Uitgang</value>
+  </data>
+  <data name="ExpectedLKLabel" xml:space="preserve">
+    <value>Verwacht waarschijnlijkheid</value>
+  </data>
+  <data name="FatherText" xml:space="preserve">
+    <value>Vader</value>
+  </data>
+  <data name="FIELD_REQUIRED" xml:space="preserve">
+    <value>Veld  vereist</value>
+  </data>
+  <data name="FilterTRGroupB" xml:space="preserve">
+    <value>Filter op TopRisk</value>
+  </data>
+  <data name="FromTopCheck" xml:space="preserve">
+    <value>van boven?</value>
+  </data>
+  <data name="GoBackTooltip" xml:space="preserve">
+    <value>Terug</value>
+  </data>
+  <data name="ListEnviroment" xml:space="preserve">
+    <value>Milieu</value>
+  </data>
+  <data name="ListLanguaje" xml:space="preserve">
+    <value>Taal</value>
+  </data>
+  <data name="ListServerSetting" xml:space="preserve">
+    <value>Server instelling</value>
+  </data>
+  <data name="LoginButton" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="LoginMenu" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="MoveCMMenu" xml:space="preserve">
+    <value>Verplaats tegenmaatregel</value>
+  </data>
+  <data name="MoveRiskMenu" xml:space="preserve">
+    <value>Verplaats Risico</value>
+  </data>
+  <data name="NoButton" xml:space="preserve">
+    <value>Nee</value>
+  </data>
+  <data name="NUMERIC_FIELD" xml:space="preserve">
+    <value>Waarschijnlijkheid is numeriek veld</value>
+  </data>
+  <data name="PasswordText" xml:space="preserve">
+    <value>Wachtwoord</value>
+  </data>
+  <data name="PASSWORD_MATCH" xml:space="preserve">
+    <value>Wachtwoord en Wachtwoord bevestigen velden komen niet overeen</value>
+  </data>
+  <data name="ProbabilityLabel" xml:space="preserve">
+    <value>Waarschijnlijkheid (%)</value>
+  </data>
+  <data name="PROBABILITY_FIELD" xml:space="preserve">
+    <value>De waarde van de waarschijnlijkheid is groter dan 100</value>
+  </data>
+  <data name="ResolutionMenu" xml:space="preserve">
+    <value>Resolutie</value>
+  </data>
+  <data name="RiskDetailText" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="RiskDiagramTitle" xml:space="preserve">
+    <value>Risicodiagram</value>
+  </data>
+  <data name="RiskTitle" xml:space="preserve">
+    <value>Risico</value>
+  </data>
+  <data name="RoleListMenu" xml:space="preserve">
+    <value>Rollijst</value>
+  </data>
+  <data name="RoleNameText" xml:space="preserve">
+    <value>Rol naam</value>
+  </data>
+  <data name="RolesGroupBox" xml:space="preserve">
+    <value>Rollen</value>
+  </data>
+  <data name="ScaleGroupB" xml:space="preserve">
+    <value>Schaal</value>
+  </data>
+  <data name="SelectButton" xml:space="preserve">
+    <value>Kiezen</value>
+  </data>
+  <data name="SelectTopRiskTitle" xml:space="preserve">
+    <value>Selecteer TopRisk</value>
+  </data>
+  <data name="ServerAddressText" xml:space="preserve">
+    <value>Server adres</value>
+  </data>
+  <data name="SetButton" xml:space="preserve">
+    <value>Set</value>
+  </data>
+  <data name="SettingsMenu" xml:space="preserve">
+    <value>Instellingen</value>
+  </data>
+  <data name="ShortNameText" xml:space="preserve">
+    <value>Korte naam</value>
+  </data>
+  <data name="StartTooltip" xml:space="preserve">
+    <value>Begin</value>
+  </data>
+  <data name="TabRoles" xml:space="preserve">
+    <value>Rollen</value>
+  </data>
+  <data name="TabValues" xml:space="preserve">
+    <value>Waarden</value>
+  </data>
+  <data name="TopRiskDefinitionText" xml:space="preserve">
+    <value>TopRisk-definitie</value>
+  </data>
+  <data name="TopRiskList" xml:space="preserve">
+    <value>TopRisk-lijst</value>
+  </data>
+  <data name="TopRiskText" xml:space="preserve">
+    <value>Top Risk</value>
+  </data>
+  <data name="TopRiskTitle" xml:space="preserve">
+    <value>Top Risk</value>
+  </data>
+  <data name="UnitText" xml:space="preserve">
+    <value>Eenheid</value>
+  </data>
+  <data name="UserDataTitle" xml:space="preserve">
+    <value>Gebruikersgegevens</value>
+  </data>
+  <data name="UserDescriptionText" xml:space="preserve">
+    <value>Gebruikersbeschrijving</value>
+  </data>
+  <data name="UserListMenu" xml:space="preserve">
+    <value>Gebruikers lijst</value>
+  </data>
+  <data name="UserText" xml:space="preserve">
+    <value>Gebruiker</value>
+  </data>
+  <data name="WRONG_PASSWORD" xml:space="preserve">
+    <value>Verkeerde gebruiker of wachtwoord !!!</value>
+  </data>
+  <data name="YesButton" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="CONNECTED_STRING" xml:space="preserve">
+    <value>Verbonden gebruiker:</value>
+  </data>
+  <data name="LOGOFF" xml:space="preserve">
+    <value>Uitloggen</value>
+  </data>
+  <data name="EXPORT_IMAGE" xml:space="preserve">
+    <value>Diagram exporteren als afbeelding</value>
+  </data>
+  <data name="PRINT_DIAGRAM" xml:space="preserve">
+    <value>Print Diagram</value>
+  </data>
+  <data name="DisableValue" xml:space="preserve">
+    <value>Disabilitieren</value>
+  </data>
+  <data name="EnableValue" xml:space="preserve">
+    <value>Habilitieren</value>
+  </data>
+  <data name="COPY_MENU" xml:space="preserve">
+    <value>Kopieren</value>
+  </data>
+  <data name="PASTE_MENU" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="ACUM_DAMAGE" xml:space="preserve">
+    <value>Acum. Dam: </value>
+  </data>
+  <data name="ACUM_LIKELIHOOD" xml:space="preserve">
+    <value>Acum. Likelihood: </value>
+  </data>
+  <data name="ACUM_VALUE" xml:space="preserve">
+    <value>Acum. Val: </value>
+  </data>
+  <data name="FISH_MENU_TOOLTIP" xml:space="preserve">
+    <value>View current diagram as Tree</value>
+  </data>
+  <data name="MENU_IMPORT" xml:space="preserve">
+    <value>Import project</value>
+  </data>
+  <data name="MENU_SCOPE" xml:space="preserve">
+    <value>Scope this</value>
+  </data>
+  <data name="PROBABILITY" xml:space="preserve">
+    <value>Prob.: </value>
+  </data>
+  <data name="REBOOT" xml:space="preserve">
+    <value>Restart</value>
+  </data>
+  <data name="VALUE" xml:space="preserve">
+    <value>Value: </value>
+  </data>
+</root>

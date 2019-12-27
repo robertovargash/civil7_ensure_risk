@@ -1,0 +1,26 @@
+﻿<Window Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        x:Class="EnsureRisk.Windows.WindowWBSList"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EnsureRisk.Windows"
+        mc:Ignorable="d"
+        Title="WBS List" Height="450" Width="800" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Button x:Name="BtnAdd" Content="Add" HorizontalAlignment="Left" Height="31" Margin="22,27,0,0" VerticalAlignment="Top" Width="90" Click="BtnAdd_Click" TabIndex="1"/>
+        <Button x:Name="BtnEdit" Content="Edit" HorizontalAlignment="Left" Height="31" Margin="22,81,0,0" VerticalAlignment="Top" Width="90" Click="BtnEdit_Click" TabIndex="2"/>
+        <Button x:Name="BtnDel" Content="Delete" HorizontalAlignment="Left" Height="31" Margin="22,137,0,0" VerticalAlignment="Top" Width="90" Click="BtnDel_Click" TabIndex="3"/>
+        <DataGrid x:Name="dgWBS" Margin="128,10,20,21" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="dgRole_MouseDoubleClick" GridLinesVisibility="All" VerticalGridLinesBrush="#FF1A6C1E" HorizontalGridLinesBrush="#FF1A6C1E">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= Nivel}" Width="100"/>
+                <DataGridTextColumn x:Name="WBS" Header="WBS" Binding="{Binding Path= WBSName}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

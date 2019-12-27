@@ -1,0 +1,25 @@
+﻿<Window Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        x:Class="EnsureRisk.Windows.WindowRoleList"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EnsureRisk.Windows"
+        mc:Ignorable="d"
+        Title="Role List"  Height="450" Width="800" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Button x:Name="BtnAdd" Content="Add" HorizontalAlignment="Left" Height="31" Margin="22,27,0,0" VerticalAlignment="Top" Width="90" Click="BtnAdd_Click" TabIndex="1" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
+        <Button x:Name="BtnEdit" Content="Edit" HorizontalAlignment="Left" Height="31" Margin="22,81,0,0" VerticalAlignment="Top" Width="90" Click="BtnEdit_Click" TabIndex="2" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
+        <Button x:Name="BtnDel" Content="Delete" HorizontalAlignment="Left" Height="31" Margin="22,137,0,0" VerticalAlignment="Top" Width="90" Click="BtnDel_Click" TabIndex="3" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
+        <DataGrid x:Name="dgRole" Margin="128,10,20,21" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="dgRole_MouseDoubleClick">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="Role" Header="Role" Binding="{Binding Role}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

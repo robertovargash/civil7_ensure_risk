@@ -1,0 +1,312 @@
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\ERDA.dll.config
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.dll.config
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.pdb
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.exe
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.exe.config
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.rsp
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.exe
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.exe.config
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.rsp
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CSharp.Core.targets
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.VisualBasic.Core.targets
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.Win32.Primitives.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.AppContext.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Collections.Immutable.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Console.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.FileVersionInfo.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.Process.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.StackTrace.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.Compression.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.DriveInfo.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.Primitives.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.Pipes.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Reflection.Metadata.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.AccessControl.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Claims.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Algorithms.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Encoding.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Primitives.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.X509Certificates.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Principal.Windows.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Text.Encoding.CodePages.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Threading.Thread.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.ValueTuple.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.ReaderWriter.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XmlDocument.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XPath.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XPath.XDocument.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.exe
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.exe.config
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.rsp
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\VBCSCompiler.exe
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\roslyn\VBCSCompiler.exe.config
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\DataMapping.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\ERDA.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\DataMapping.pdb
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\ERDA.pdb
+E:\Code\VisualDragDrop\EnsureRiskWS\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+E:\Code\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.csprojAssemblyReference.cache
+E:\Code\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.csproj.CoreCompileInputs.cache
+E:\Code\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.csproj.CopyComplete
+E:\Code\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.dll
+E:\Code\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.pdb
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\ERDA.dll.config
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.dll.config
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.pdb
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.exe
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.exe.config
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.rsp
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.exe
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.exe.config
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.rsp
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CSharp.Core.targets
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.VisualBasic.Core.targets
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.Win32.Primitives.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.AppContext.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Collections.Immutable.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Console.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.FileVersionInfo.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.Process.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.StackTrace.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.Compression.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.DriveInfo.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.Primitives.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.Pipes.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Reflection.Metadata.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.AccessControl.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Claims.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Algorithms.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Encoding.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Primitives.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.X509Certificates.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Principal.Windows.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Text.Encoding.CodePages.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Threading.Thread.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.ValueTuple.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.ReaderWriter.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XmlDocument.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XPath.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XPath.XDocument.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.exe
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.exe.config
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.rsp
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\VBCSCompiler.exe
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\roslyn\VBCSCompiler.exe.config
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\DataMapping.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\ERDA.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\DataMapping.pdb
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\ERDA.pdb
+D:\ERCode\VisualDragDrop\EnsureRiskWS\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+D:\ERCode\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.csprojAssemblyReference.cache
+D:\ERCode\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.csproj.CopyComplete
+D:\ERCode\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.dll
+D:\ERCode\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.pdb
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\ERDA.dll.config
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.dll.config
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.pdb
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.exe
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.exe.config
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.rsp
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.exe
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.exe.config
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.rsp
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CSharp.Core.targets
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.VisualBasic.Core.targets
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.Win32.Primitives.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.AppContext.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Collections.Immutable.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Console.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.FileVersionInfo.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.Process.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.StackTrace.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.Compression.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.DriveInfo.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.Primitives.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.Pipes.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Reflection.Metadata.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.AccessControl.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Claims.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Algorithms.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Encoding.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Primitives.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.X509Certificates.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Principal.Windows.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Text.Encoding.CodePages.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Threading.Thread.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.ValueTuple.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.ReaderWriter.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XmlDocument.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XPath.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XPath.XDocument.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.exe
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.exe.config
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.rsp
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\VBCSCompiler.exe
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\roslyn\VBCSCompiler.exe.config
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\DataMapping.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\ERDA.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\DataMapping.pdb
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\ERDA.pdb
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.csprojAssemblyReference.cache
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.csproj.CoreCompileInputs.cache
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.csproj.CopyComplete
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\ERDA.dll.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.dll.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.exe
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.exe.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.rsp
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.exe
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.exe.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.rsp
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.Win32.Primitives.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.AppContext.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Console.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.FileVersionInfo.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.Process.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.StackTrace.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.Compression.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.DriveInfo.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.Primitives.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.Pipes.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.AccessControl.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Claims.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Algorithms.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Encoding.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Primitives.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.X509Certificates.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Principal.Windows.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Text.Encoding.CodePages.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Threading.Thread.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.ValueTuple.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.ReaderWriter.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XmlDocument.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XPath.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XPath.XDocument.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.exe
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.exe.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.rsp
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\VBCSCompiler.exe
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\DataMapping.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\ERDA.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\DataMapping.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\ERDA.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.csprojAssemblyReference.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.csproj.CopyComplete
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.pdb
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\ERDA.dll.config
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.dll.config
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\EnsureRiskWS.pdb
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.exe
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.exe.config
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\csc.rsp
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.exe
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.exe.config
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\csi.rsp
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\Microsoft.Win32.Primitives.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.AppContext.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Console.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.FileVersionInfo.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.Process.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Diagnostics.StackTrace.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.Compression.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.DriveInfo.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.FileSystem.Primitives.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.IO.Pipes.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.AccessControl.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Claims.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Algorithms.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Encoding.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.Primitives.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Cryptography.X509Certificates.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Security.Principal.Windows.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Text.Encoding.CodePages.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Threading.Thread.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.ValueTuple.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.ReaderWriter.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XmlDocument.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XPath.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\System.Xml.XPath.XDocument.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.exe
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.exe.config
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\vbc.rsp
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\VBCSCompiler.exe
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\DataMapping.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\ERDA.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\DataMapping.pdb
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\ERDA.pdb
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.csprojAssemblyReference.cache
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.csproj.CopyComplete
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\EnsureRiskWS\obj\Debug\EnsureRiskWS.pdb

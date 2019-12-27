@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="GetAllWBS">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetAllWBSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllWBSResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveWBS">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ds">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveWBSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SaveWBSResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetAllWBSSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllWBS" />
+  </wsdl:message>
+  <wsdl:message name="GetAllWBSSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllWBSResponse" />
+  </wsdl:message>
+  <wsdl:message name="SaveWBSSoapIn">
+    <wsdl:part name="parameters" element="tns:SaveWBS" />
+  </wsdl:message>
+  <wsdl:message name="SaveWBSSoapOut">
+    <wsdl:part name="parameters" element="tns:SaveWBSResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WebServiceWBSSoap">
+    <wsdl:operation name="GetAllWBS">
+      <wsdl:input message="tns:GetAllWBSSoapIn" />
+      <wsdl:output message="tns:GetAllWBSSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveWBS">
+      <wsdl:input message="tns:SaveWBSSoapIn" />
+      <wsdl:output message="tns:SaveWBSSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebServiceWBSSoap" type="tns:WebServiceWBSSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetAllWBS">
+      <soap:operation soapAction="http://tempuri.org/GetAllWBS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveWBS">
+      <soap:operation soapAction="http://tempuri.org/SaveWBS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebServiceWBSSoap12" type="tns:WebServiceWBSSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetAllWBS">
+      <soap12:operation soapAction="http://tempuri.org/GetAllWBS" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveWBS">
+      <soap12:operation soapAction="http://tempuri.org/SaveWBS" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebServiceWBS">
+    <wsdl:port name="WebServiceWBSSoap" binding="tns:WebServiceWBSSoap">
+      <soap:address location="http://localhost/EnsureRiskWS/WebServiceWBS.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebServiceWBSSoap12" binding="tns:WebServiceWBSSoap12">
+      <soap12:address location="http://localhost/EnsureRiskWS/WebServiceWBS.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

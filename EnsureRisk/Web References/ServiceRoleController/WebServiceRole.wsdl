@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="GetRolesData">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetRolesDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRolesDataResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRolesOperation">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="param" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfAnyType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="anyType" nillable="true" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetRolesOperationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRolesOperationResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetOperation">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetOperationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetOperationResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveRole">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ds">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveRoleResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SaveRoleResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetRolesDataSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRolesData" />
+  </wsdl:message>
+  <wsdl:message name="GetRolesDataSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRolesDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRolesOperationSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRolesOperation" />
+  </wsdl:message>
+  <wsdl:message name="GetRolesOperationSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRolesOperationResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetOperationSoapIn">
+    <wsdl:part name="parameters" element="tns:GetOperation" />
+  </wsdl:message>
+  <wsdl:message name="GetOperationSoapOut">
+    <wsdl:part name="parameters" element="tns:GetOperationResponse" />
+  </wsdl:message>
+  <wsdl:message name="SaveRoleSoapIn">
+    <wsdl:part name="parameters" element="tns:SaveRole" />
+  </wsdl:message>
+  <wsdl:message name="SaveRoleSoapOut">
+    <wsdl:part name="parameters" element="tns:SaveRoleResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WebServiceRoleSoap">
+    <wsdl:operation name="GetRolesData">
+      <wsdl:input message="tns:GetRolesDataSoapIn" />
+      <wsdl:output message="tns:GetRolesDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRolesOperation">
+      <wsdl:input message="tns:GetRolesOperationSoapIn" />
+      <wsdl:output message="tns:GetRolesOperationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOperation">
+      <wsdl:input message="tns:GetOperationSoapIn" />
+      <wsdl:output message="tns:GetOperationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveRole">
+      <wsdl:input message="tns:SaveRoleSoapIn" />
+      <wsdl:output message="tns:SaveRoleSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebServiceRoleSoap" type="tns:WebServiceRoleSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetRolesData">
+      <soap:operation soapAction="http://tempuri.org/GetRolesData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRolesOperation">
+      <soap:operation soapAction="http://tempuri.org/GetRolesOperation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOperation">
+      <soap:operation soapAction="http://tempuri.org/GetOperation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveRole">
+      <soap:operation soapAction="http://tempuri.org/SaveRole" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebServiceRoleSoap12" type="tns:WebServiceRoleSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetRolesData">
+      <soap12:operation soapAction="http://tempuri.org/GetRolesData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRolesOperation">
+      <soap12:operation soapAction="http://tempuri.org/GetRolesOperation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOperation">
+      <soap12:operation soapAction="http://tempuri.org/GetOperation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveRole">
+      <soap12:operation soapAction="http://tempuri.org/SaveRole" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebServiceRole">
+    <wsdl:port name="WebServiceRoleSoap" binding="tns:WebServiceRoleSoap">
+      <soap:address location="http://localhost/EnsureRiskWS/WebServiceRole.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebServiceRoleSoap12" binding="tns:WebServiceRoleSoap12">
+      <soap12:address location="http://localhost/EnsureRiskWS/WebServiceRole.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

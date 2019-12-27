@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="GetRiskTreeData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="param" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfAnyType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="anyType" nillable="true" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetRiskTreeDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRiskTreeDataResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDefaultRisk">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetDefaultRiskResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDefaultRiskResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveRisk">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ds">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveRiskResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SaveRiskResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRiskTree">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="param" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRiskTreeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRiskTreeResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetElementData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sp" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="tablename" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetElementDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetElementDataResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetRiskTreeDataSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRiskTreeData" />
+  </wsdl:message>
+  <wsdl:message name="GetRiskTreeDataSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRiskTreeDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDefaultRiskSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDefaultRisk" />
+  </wsdl:message>
+  <wsdl:message name="GetDefaultRiskSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDefaultRiskResponse" />
+  </wsdl:message>
+  <wsdl:message name="SaveRiskSoapIn">
+    <wsdl:part name="parameters" element="tns:SaveRisk" />
+  </wsdl:message>
+  <wsdl:message name="SaveRiskSoapOut">
+    <wsdl:part name="parameters" element="tns:SaveRiskResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRiskTreeSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRiskTree" />
+  </wsdl:message>
+  <wsdl:message name="GetRiskTreeSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRiskTreeResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetElementDataSoapIn">
+    <wsdl:part name="parameters" element="tns:GetElementData" />
+  </wsdl:message>
+  <wsdl:message name="GetElementDataSoapOut">
+    <wsdl:part name="parameters" element="tns:GetElementDataResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WebServiceRiskSoap">
+    <wsdl:operation name="GetRiskTreeData">
+      <wsdl:input message="tns:GetRiskTreeDataSoapIn" />
+      <wsdl:output message="tns:GetRiskTreeDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDefaultRisk">
+      <wsdl:input message="tns:GetDefaultRiskSoapIn" />
+      <wsdl:output message="tns:GetDefaultRiskSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveRisk">
+      <wsdl:input message="tns:SaveRiskSoapIn" />
+      <wsdl:output message="tns:SaveRiskSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRiskTree">
+      <wsdl:input message="tns:GetRiskTreeSoapIn" />
+      <wsdl:output message="tns:GetRiskTreeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetElementData">
+      <wsdl:input message="tns:GetElementDataSoapIn" />
+      <wsdl:output message="tns:GetElementDataSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebServiceRiskSoap" type="tns:WebServiceRiskSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetRiskTreeData">
+      <soap:operation soapAction="http://tempuri.org/GetRiskTreeData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDefaultRisk">
+      <soap:operation soapAction="http://tempuri.org/GetDefaultRisk" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveRisk">
+      <soap:operation soapAction="http://tempuri.org/SaveRisk" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRiskTree">
+      <soap:operation soapAction="http://tempuri.org/GetRiskTree" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetElementData">
+      <soap:operation soapAction="http://tempuri.org/GetElementData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebServiceRiskSoap12" type="tns:WebServiceRiskSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetRiskTreeData">
+      <soap12:operation soapAction="http://tempuri.org/GetRiskTreeData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDefaultRisk">
+      <soap12:operation soapAction="http://tempuri.org/GetDefaultRisk" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveRisk">
+      <soap12:operation soapAction="http://tempuri.org/SaveRisk" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRiskTree">
+      <soap12:operation soapAction="http://tempuri.org/GetRiskTree" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetElementData">
+      <soap12:operation soapAction="http://tempuri.org/GetElementData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebServiceRisk">
+    <wsdl:port name="WebServiceRiskSoap" binding="tns:WebServiceRiskSoap">
+      <soap:address location="http://localhost/EnsureRiskWS/WebServiceRisk.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebServiceRiskSoap12" binding="tns:WebServiceRiskSoap12">
+      <soap12:address location="http://localhost/EnsureRiskWS/WebServiceRisk.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

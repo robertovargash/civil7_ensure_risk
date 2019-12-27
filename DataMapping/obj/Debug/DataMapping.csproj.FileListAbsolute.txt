@@ -1,0 +1,72 @@
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\DataMapping.dll
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\DataMapping.pdb
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\Output\DataMapping.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\Output\DataMapping.pdb
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\Debug\DataMapping.dll
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\Debug\DataMapping.pdb
+D:\Roberto\02-Project\ERCode\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csproj.CoreCompileInputs.cache
+D:\Roberto\02-Project\ERCode\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+D:\Roberto\02-Project\ERCode\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb
+D:\VisualDragDrop\Output\Debug\DataMapping.dll
+D:\VisualDragDrop\Output\Debug\DataMapping.pdb
+D:\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csprojAssemblyReference.cache
+D:\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csproj.CoreCompileInputs.cache
+D:\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+D:\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb
+D:\Roberto\02-Project\MyCode\VisualDragDrop\Output\Debug\DataMapping.dll
+D:\Roberto\02-Project\MyCode\VisualDragDrop\Output\Debug\DataMapping.pdb
+D:\Roberto\02-Project\MyCode\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csproj.CoreCompileInputs.cache
+D:\Roberto\02-Project\MyCode\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+D:\Roberto\02-Project\MyCode\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb
+D:\Roberto\02-Project\MyCode\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csprojAssemblyReference.cache
+D:\Work\EnsureRiskProject\VisualDragDrop\Output\Debug\DataMapping.dll
+D:\Work\EnsureRiskProject\VisualDragDrop\Output\Debug\DataMapping.pdb
+D:\Work\EnsureRiskProject\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csproj.CoreCompileInputs.cache
+D:\Work\EnsureRiskProject\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+D:\Work\EnsureRiskProject\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb
+D:\CodeYrodan\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csproj.CoreCompileInputs.cache
+D:\CodeYrodan\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+D:\CodeYrodan\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb
+D:\CodeYrodan\VisualDragDrop\Output\Debug\DataMapping.dll
+D:\CodeYrodan\VisualDragDrop\Output\Debug\DataMapping.pdb
+F:\EnsureRiskProject\VisualDragDrop\Output\Debug\DataMapping.dll
+F:\EnsureRiskProject\VisualDragDrop\Output\Debug\DataMapping.pdb
+F:\EnsureRiskProject\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csproj.CoreCompileInputs.cache
+F:\EnsureRiskProject\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+F:\EnsureRiskProject\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb
+D:\CodeGusta\VisualDragDrop\Output\Debug\DataMapping.dll
+D:\CodeGusta\VisualDragDrop\Output\Debug\DataMapping.pdb
+D:\CodeGusta\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csproj.CoreCompileInputs.cache
+D:\CodeGusta\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+D:\CodeGusta\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb
+D:\CodeGusta\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csprojAssemblyReference.cache
+D:\Code\VisualDragDrop\Output\Debug\DataMapping.dll
+D:\Code\VisualDragDrop\Output\Debug\DataMapping.pdb
+D:\Code\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csproj.CoreCompileInputs.cache
+D:\Code\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+D:\Code\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\Output\Debug\DataMapping.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\Output\Debug\DataMapping.pdb
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csproj.CoreCompileInputs.cache
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb
+D:\Code\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csprojAssemblyReference.cache
+E:\Code\VisualDragDrop\Output\Debug\DataMapping.dll
+E:\Code\VisualDragDrop\Output\Debug\DataMapping.pdb
+E:\Code\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csproj.CoreCompileInputs.cache
+E:\Code\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+E:\Code\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb
+E:\Code\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csprojAssemblyReference.cache
+D:\ERCode\VisualDragDrop\Output\Debug\DataMapping.dll
+D:\ERCode\VisualDragDrop\Output\Debug\DataMapping.pdb
+D:\ERCode\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+D:\ERCode\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\DataMapping.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\DataMapping.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\DataMapping\obj\Debug\DataMapping.csprojAssemblyReference.cache
+C:\Users\ghtamayo\Documents\VisualDragDrop\Output\Debug\DataMapping.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\Output\Debug\DataMapping.pdb
+C:\Users\ghtamayo\Documents\VisualDragDrop\DataMapping\obj\Debug\DataMapping.dll
+C:\Users\ghtamayo\Documents\VisualDragDrop\DataMapping\obj\Debug\DataMapping.pdb

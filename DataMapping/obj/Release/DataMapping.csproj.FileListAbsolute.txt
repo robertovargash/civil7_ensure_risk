@@ -1,0 +1,19 @@
+D:\Roberto\02-Project\ERCode\VisualDragDrop\DataMapping\bin\Release\DataMapping.dll
+D:\Roberto\02-Project\ERCode\VisualDragDrop\DataMapping\bin\Release\DataMapping.pdb
+D:\Roberto\02-Project\ERCode\VisualDragDrop\DataMapping\obj\Release\DataMapping.csproj.CoreCompileInputs.cache
+D:\Roberto\02-Project\ERCode\VisualDragDrop\DataMapping\obj\Release\DataMapping.dll
+D:\Roberto\02-Project\ERCode\VisualDragDrop\DataMapping\obj\Release\DataMapping.pdb
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\DataMapping.dll
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\DataMapping.pdb
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\Release\DataMapping.dll
+D:\Roberto\02-Project\ERCode\VisualDragDrop\Output\Release\DataMapping.pdb
+D:\CodeGusta\VisualDragDrop\Output\Release\DataMapping.dll
+D:\CodeGusta\VisualDragDrop\Output\Release\DataMapping.pdb
+D:\CodeGusta\VisualDragDrop\DataMapping\obj\Release\DataMapping.csproj.CoreCompileInputs.cache
+D:\CodeGusta\VisualDragDrop\DataMapping\obj\Release\DataMapping.dll
+D:\CodeGusta\VisualDragDrop\DataMapping\obj\Release\DataMapping.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Release\DataMapping.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Release\DataMapping.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\DataMapping\obj\Release\DataMapping.csprojAssemblyReference.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\DataMapping\obj\Release\DataMapping.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\DataMapping\obj\Release\DataMapping.pdb

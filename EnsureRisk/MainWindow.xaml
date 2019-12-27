@@ -1,0 +1,452 @@
+﻿<Window
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"        
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EnsureRisk"
+        xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing" 
+        xmlns:resx="clr-namespace:EnsureRisk.Resources"
+        xmlns:Business="clr-namespace:EnsureBusinesss.Business;assembly=EnsureBusinesss"
+        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        x:Class="EnsureRisk.MainWindow"           
+        mc:Ignorable="d"
+        Title="Ensure Risk" Height="715.725" Width="1385" WindowStartupLocation="CenterScreen" WindowState="Maximized" 
+        Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown"  MouseMove="Window_MouseMove">
+    <Window.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+            <ContextMenu x:Key="MenuRisk" Visibility="Hidden" Background="Transparent">
+                <MenuItem Height="35" x:Name="MenuAddRisk">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="AddButton" Click="MenuAddRisk_Click" Content="{md:PackIcon Kind=Plus}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+
+                <MenuItem Height="35" x:Name="MenuEditRisk">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EditButton" Click="MenuEditRisk_Click" Content="{md:PackIcon Kind=Pencil}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+
+                <MenuItem Height="35" x:Name="MenuDeleteRisk">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="DeleteButton" Click="MenuDeleteRisk_Click" Content="{md:PackIcon Kind=Delete}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuMoveRisk">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="MoveButton" Click="MenuMoveRisk_Click" Content="{md:PackIcon Kind=ArrowAll}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuCM">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonCM" Click="MenuCM_Click" Content="{md:PackIcon Kind=Minus}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+
+                <MenuItem Height="35" x:Name="MenuZoom">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtomZoom" Click="ButtomZoom_Click" Content="{md:PackIcon Kind=Loupe}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+
+                <MenuItem Height="35" x:Name="MenuCopy">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonCopy" Click="ButtonCopy_Click" Content="{md:PackIcon Kind=ContentCopy}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuPaste">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonPaste" Click="ButtonPaste_Click" Content="{md:PackIcon Kind=ContentPaste}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuImportProject">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonImportProject" Click="ButtonImportProject_Click" Content="{md:PackIcon Kind=Import}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuEnableRisk">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EnableRiskButton" Click="EnableRiskButton_Click" Content="{md:PackIcon Kind=ToggleSwitch}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+            </ContextMenu>
+            <ContextMenu x:Key="MenuMainRisk" Visibility="Hidden" Background="Transparent">
+                <MenuItem Height="35" x:Name="MenuMainAddRisk">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="AddMainButton" Click="MenuAddRisk_Click" Content="{md:PackIcon Kind=Plus}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>              
+
+                <MenuItem Height="35" x:Name="MenuMainPaste">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonMainPaste" Click="ButtonPaste_Click" Content="{md:PackIcon Kind=ContentPaste}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuMainImportProject">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonMainImportProject" Click="ButtonImportProject_Click" Content="{md:PackIcon Kind=Import}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+            </ContextMenu>
+
+            <ContextMenu x:Key="MenuCM" Visibility="Hidden" Background="Transparent">
+                <MenuItem Height="35" x:Name="MenuEditCM">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EditCMButton" Click="MenuEditCM_Click" Content="{md:PackIcon Kind=Pencil}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuDeleteCM">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="DeleteCMButton" Click="MenuDeleteCM_Click" Content="{md:PackIcon Kind=Delete}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuMoveCM">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="MoveCMButton" Click="MenuMoveCM_Click" Content="{md:PackIcon Kind=ArrowAll}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuEnableCM">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EnableCMButton" Click="MenuEnableCM_Click" Content="{md:PackIcon Kind=ToggleSwitch}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+            </ContextMenu>
+            <ContextMenu x:Key="MenuGroupRisk" Visibility="Hidden" Background="Transparent">
+                <MenuItem Height="35" x:Name="MenuActDesGroupRisk">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ActDesGroupRiskButton" Click="ActDesGroupRiskButton_Click" Content="{md:PackIcon Kind=ToggleSwitch}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuAddCMGroupRisk">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="AddCMGroupRiskButton" Click="AddCMGroupRiskButton_Click" Content="{md:PackIcon Kind=Minus}" Width="32" Height="32" ToolTip="Add Countermeasure"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuGroupingGroupRisk">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="GroupingGroupRiskButton" Click="GroupingGroupRiskButton_Click" Content="{md:PackIcon Kind=Group}" Width="32" Height="32" ToolTip="Group"/>
+                    </MenuItem.Header>
+                </MenuItem>
+            </ContextMenu>
+            <ContextMenu x:Key="MenuGroupCM" Visibility="Hidden" Background="Transparent">
+                <MenuItem Height="35" x:Name="MenuActDesGroupCM">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ActDesGroupCMButton" Click="ActDesGroupCMButton_Click" Content="{md:PackIcon Kind=ToggleSwitch}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuDelCMGroupCM">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="DelCMGroupCMButton" Click="DelCMGroupCMButton_Click" Content="{md:PackIcon Kind=Delete}" Width="32" Height="32" ToolTip="Delete"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuGroupingGroupCM">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="GroupingGroupCMButton" Click="GroupingGroupCMButton_Click" Content="{md:PackIcon Kind=Group}" Width="32" Height="32" ToolTip="Group"/>
+                    </MenuItem.Header>
+                </MenuItem>
+            </ContextMenu>
+            <ContextMenu x:Key="MenuGroupMixed" Visibility="Hidden" Background="Transparent">
+                <MenuItem Height="35" x:Name="MenuActDesGroupMixed">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ActDesGroupMixedButton" Click="ActDesGroupMixedButton_Click" Content="{md:PackIcon Kind=ToggleSwitch}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuGroupingGroupMixed">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="GroupingGroupMixedButton" Click="GroupingGroupMixedButton_Click" Content="{md:PackIcon Kind=Group}" Width="32" Height="32" ToolTip="Group"/>
+                    </MenuItem.Header>
+                </MenuItem>
+            </ContextMenu>
+            <md:PackIcon Kind="ChevronDoubleLeft" x:Key="Left"/>
+            <md:PackIcon Kind="Delete" x:Key="BtnDelete"/>
+            <md:PackIcon Kind="RenameBox" x:Key="ChangeName"/>
+            <Style x:Key="Estilo" />
+            <md:PackIcon Kind="ChevronDoubleRight" x:Key="Right"/>
+            <md:PackIcon Kind="Lan" x:Key="Tree"/>
+            <md:PackIcon Kind="Fish" x:Key="Fish"/>
+            <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Key="DeleteRow" Content="{md:PackIcon Kind=Delete}" ToolTip="Remove this group"/>
+            <Slider x:Key="CommonSlider"/>
+            <ComboBox x:Key="CommonCB"/>
+            <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Key="Delete" Content="{md:PackIcon Kind=Delete}" ToolTip="Remove this group"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="local:CustomCommands.Login" Executed="LoginCommandBinding_Executed" />
+        <CommandBinding Command="local:CustomCommands.Project" Executed="ProjectCommandBinding_Executed" />
+        <CommandBinding Command="local:CustomCommands.User" Executed="UserCommandBinding_Executed" />
+        <CommandBinding Command="local:CustomCommands.Role" Executed="RoleCommandBinding_Executed" />
+        <CommandBinding Command="local:CustomCommands.Damage" Executed="DamageCommandBinding_Executed" />
+        <CommandBinding Command="local:CustomCommands.Default" Executed="DefaultCommandBinding_Executed" />
+        <CommandBinding Command="local:CustomCommands.Settings" Executed="OptionCommandBinding_Executed" />
+        <CommandBinding Command="local:CustomCommands.Risk" Executed="RiskCommandBinding_Executed" />
+        <CommandBinding Command="local:CustomCommands.CounterMeasure" Executed="CounterMeasureCommandBinding_Executed" />
+        <CommandBinding Command="local:CustomCommands.WBS" Executed="WBS_CommandBinding_Executed" />
+        <CommandBinding Command="local:CustomCommands.Properties" Executed="Properties_CommandBinding_Executed" />
+        <CommandBinding Command="local:CustomCommands.Export" Executed="ExportCommandBinding_Executed"/>
+        <CommandBinding Command="SaveAs" Executed="SaveAsCommandBinding_Executed"/>
+        <CommandBinding Command="Save" Executed="SaveCommandBinding_Executed" />
+        <CommandBinding Command="Print" Executed="PrintCommandBinding_Executed" />
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="L" Modifiers="Control" Command="local:CustomCommands.Login"/>
+        <KeyBinding Key="W" Modifiers="Control" Command="local:CustomCommands.WBS"/>
+        <KeyBinding Key="J" Modifiers="Control" Command="local:CustomCommands.Project"/>
+        <KeyBinding Key="U" Modifiers="Control" Command="local:CustomCommands.User"/>
+        <KeyBinding Key="R" Modifiers="Control+Shift" Command="local:CustomCommands.Role"/>
+        <KeyBinding Key="D" Modifiers="Control" Command="local:CustomCommands.Damage"/>
+        <KeyBinding Key="T" Modifiers="Control" Command="local:CustomCommands.Default"/>
+        <KeyBinding Key="O" Modifiers="Control" Command="local:CustomCommands.Settings"/>
+        <KeyBinding Key="R" Modifiers="Control" Command="local:CustomCommands.Risk"/>
+        <KeyBinding Key="M" Modifiers="Control" Command="local:CustomCommands.CounterMeasure"/>
+        <KeyBinding Key="P" Modifiers="Control+Shift" Command="local:CustomCommands.Properties"/>
+        <KeyBinding Key="E" Modifiers="Control" Command="local:CustomCommands.Export"/>
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="SaveAs"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="Save"/>
+        <KeyBinding Key="P" Modifiers="Control" Command="Print"/>
+    </Window.InputBindings>
+    <Grid x:Name="Supergrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="5"/>
+        </Grid.RowDefinitions>
+        <xcad:DockingManager x:Name="_dockingManager" AllowMixedOrientation="True" BorderBrush="Black" BorderThickness="1" Theme="{Binding ElementName=_themeCombo, Path=SelectedItem.Tag}" Grid.Row="1" Margin="0">
+            <xcad:DockingManager.DocumentHeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="FileDocument"  Margin="0,0,4,0"/>
+                        <TextBlock Text="{Binding Title}" Name="headerDrawPanel"/>
+                    </StackPanel>
+                </DataTemplate>
+            </xcad:DockingManager.DocumentHeaderTemplate>
+            <xcad:LayoutRoot x:Name="_layoutRoot">
+                <xcad:LayoutPanel Orientation="Horizontal">
+                    <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200">
+                        <xcad:LayoutAnchorable ContentId="properties" x:Name="LayoutProperties"  Title="Properties"  CanHide="true" CanClose="False" AutoHideWidth="240">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" >
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="110"/>
+                                        <RowDefinition Height="100"/>
+                                        <RowDefinition Height="200"/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Visibility="hidden" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" >
+                                        <!--Button with explicit Content tags-->
+                                        <Button x:Name="buttonCantidad" Visibility="Collapsed" Content="{Binding Path=RiskCount}"></Button>
+                                        <Button x:Name="buttonCantidadCM" Visibility="Collapsed" Content="{Binding Path=CMCount}"></Button>
+                                    </StackPanel>
+                                    <GroupBox Grid.Row="2" Header="Element Selected">
+                                        <StackPanel>
+                                            <TextBlock x:Name="TextLineSelected" Text="{Binding Path=LSelected}" TextAlignment="Justify" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" />
+                                            <Separator/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="Type: " TextAlignment="Justify" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                                <TextBlock x:Name="TextLineType" Text="{Binding Path = TSelected}" TextAlignment="Justify" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </GroupBox>
+                                    <GroupBox x:Name="cbFilterTR" Header="Filter by Top Risk"  VerticalAlignment="Bottom" Grid.Row="1" Visibility="Collapsed">
+
+                                    </GroupBox>
+                                    <GroupBox x:Name="cbDiagramValues" Header="Diagram Values" Height="183"  VerticalAlignment="Bottom" Grid.Row="3">
+                                        <Grid>
+                                            <TextBox x:Name="TextDiagram" Height="30" Margin="3,31,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsEnabled="False" TextAlignment="Right"/>
+                                            <TextBox x:Name="TextProbability" Height="31" Margin="3,98,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsEnabled="False" TextOptions.TextHintingMode="Animated" HorizontalContentAlignment="Stretch" TextAlignment="Right"/>
+                                            <Label x:Name="LabelDiagram" Content="Diagram Name" HorizontalAlignment="Left" Margin="4,5,0,0" VerticalAlignment="Top" />
+                                            <Label x:Name="LabelProbability" Content="Acum. Likelihood:" HorizontalAlignment="Left" Margin="3,71,0,0" VerticalAlignment="Top"/>
+                                        </Grid>
+                                    </GroupBox>
+                                </Grid>
+                            </ScrollViewer>
+                        </xcad:LayoutAnchorable>
+                    </xcad:LayoutAnchorablePane>
+                    <xcad:LayoutDocumentPaneGroup>
+                        <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel"/>
+                    </xcad:LayoutDocumentPaneGroup >
+                    <xcad:LayoutAnchorablePaneGroup DockWidth="250" ScrollViewer.CanContentScroll="True" DockMinWidth="250" FloatingWidth="250">
+                        <xcad:LayoutAnchorablePane ScrollViewer.CanContentScroll="True">
+                            <xcad:LayoutAnchorable x:Name="AnchorDiagramList"  Title="Diagrams" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Diagrams" AutoHideWidth="250" FloatingWidth="250">
+                                <!--<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">-->
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Name="RefreshButton" ToolTip="Refresh Data!" Grid.Column="0" Content="{md:PackIcon Kind=Restart}" Click="RefreshButton_Click" Style="{DynamicResource MaterialDesignToolForegroundButton}"/>
+                                        <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Project Name" Name="cbProjects" DropDownClosed="CbProjects_DropDownClosed" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2"/>                                       
+                                    </Grid>
+                                    <Grid Grid.Row="1">
+                                        <DataGrid x:Name="dgTreeDiagrams" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" SelectionChanged="DgTreeDiagrams_SelectionChanged" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Margin="55,0,0,0" AutoGenerateColumns="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False" IsReadOnly="True" Grid.ColumnSpan="2" MouseDoubleClick="DgTreeDiagrams_MouseDoubleClick" HeadersVisibility="Column">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn x:Name="RiskTree" Header="Risk Diagram" Binding="{Binding RiskTree}" />
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                        <StackPanel HorizontalAlignment="Left"  Margin="1,0,0,0" VerticalAlignment="Top" Width="50">
+                                            <Button ToolTip="Go Back!!"  x:Name="BtnBackward"  HorizontalAlignment="Left"  Click="BtnBackward_Click" Content="{md:PackIcon Kind=StepBackward}" md:ShadowAssist.ShadowDepth="Depth5"/>
+                                            <Button x:Name="AddTree" ToolTip="Add New Diagram" HorizontalAlignment="Left" Click="AddTree_Click" Margin="0,20,0,0" Content="{md:PackIcon Kind=Plus  }" md:ShadowAssist.ShadowDepth="Depth5"/>
+                                            <Button x:Name="EditTree" ToolTip="Load and Edit Diagram" HorizontalAlignment="Left" Click="EditTree_Click" Margin="0,20,0,0" Content="{md:PackIcon Kind=Pencil}" md:ShadowAssist.ShadowDepth="Depth5"/>
+                                            <Button x:Name="RemoveTree" ToolTip="Remove Diagram" HorizontalAlignment="Left" Click="RemoveTree_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=Delete}" md:ShadowAssist.ShadowDepth="Depth5"/>
+                                            <Button x:Name="ImportExcel" ToolTip="Load from Excel" HorizontalAlignment="Left" Click="ImportExcel_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=FileExcel}" md:ShadowAssist.ShadowDepth="Depth5"/>
+                                            <Button x:Name="ExportToExcel" ToolTip="Save to Excel" HorizontalAlignment="Left" Click="ExportToExcel_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=FileExport}" md:ShadowAssist.ShadowDepth="Depth5"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                </Grid>
+                                <!--</ScrollViewer>-->
+                            </xcad:LayoutAnchorable>
+                            <xcad:LayoutAnchorable x:Name="AnchorRiskList" Title="Risks"  CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Risks" AutoHideWidth="300" FloatingWidth="300" >
+                                <Grid x:Name="GridRisksCross">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button Style="{DynamicResource MaterialDesignToolButton}" Name="btnFilterRisk" Click="BtnFilterRisk_Click">
+                                            <md:PackIcon Kind="Magnify" Opacity=".56" />
+                                        </Button>
+                                        <TextBox TextChanged="TxtFilterRisk_TextChanged" Name="txtFilterRisk" Grid.Column="1" Margin="8 0 0 0" md:HintAssist.Hint="Filter Risk" md:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0" MinWidth="200" VerticalAlignment="Center" />
+                                        <Button Style="{DynamicResource MaterialDesignToolButton}" Name="btnClearFilter" Click="btnClearFilter_Click" Grid.Column="2">
+                                            <md:PackIcon Kind="Close" Opacity=".56" />
+                                        </Button>
+                                    </Grid>
+                                    <DataGrid Grid.Row="1" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
+                                              VerticalAlignment="Stretch" AutoGenerateColumns="False" 
+                                              CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False"  Grid.ColumnSpan="2" MouseLeave="DgRisksCross_MouseLeave" 
+                                              SelectedCellsChanged="DgRisksCross_SelectedCellsChanged" LostFocus="DgRisksCross_LostFocus"  CanUserDeleteRows="False" SelectionChanged="dgRisksCross_SelectionChanged" CellEditEnding="dgRisksCross_CellEditEnding" IsTextSearchEnabled="True">
+
+                                    </DataGrid>
+                                </Grid>
+                            </xcad:LayoutAnchorable>
+                            <xcad:LayoutAnchorable x:Name="AnchorCMList"  Title="CounterMeasure"  CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Countermeasure" AutoHideWidth="300" FloatingWidth="300">
+                                <Grid x:Name="GridCrossCM">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button Style="{DynamicResource MaterialDesignToolButton}" Name="btnFilterCM" Click="BtnFilterCM_Click">
+                                            <md:PackIcon Kind="Magnify" Opacity=".56" />
+                                        </Button>
+                                        <TextBox TextChanged="TxtFilterCM_TextChanged" Name="txtFilterCM" Grid.Column="1" Margin="8 0 0 0" md:HintAssist.Hint="Filter CM" md:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0" MinWidth="200" VerticalAlignment="Center" />
+                                        <Button Style="{DynamicResource MaterialDesignToolButton}" Name="btnCloseFilterCM" Click="btnCloseFilterCM_Click" Grid.Column="2">
+                                            <md:PackIcon Kind="Close" Opacity=".56"  />
+                                        </Button>
+                                    </Grid>
+                                    <DataGrid Grid.Row="1" x:Name="dgCrossCM" HorizontalAlignment="Stretch" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
+                                              VerticalAlignment="Stretch" AutoGenerateColumns="False" 
+                                              CanUserSortColumns="True" CanUserReorderColumns="True"  IsReadOnly="False"  Grid.ColumnSpan="2" MouseLeave="DgCrossCM_MouseLeave" SelectedCellsChanged="DgCrossCM_SelectedCellsChanged" LostFocus="DgCrossCM_LostFocus" CanUserDeleteRows="False" SelectionChanged="DgCrossCM_SelectionChanged" CellEditEnding="DgCrossCM_CellEditEnding"/>
+                                </Grid>
+                            </xcad:LayoutAnchorable>
+                            <xcad:LayoutAnchorable x:Name="AnchorGroupRisk"  Title="Groups"  CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Groups" AutoHideWidth="300" FloatingWidth="300">
+                                <Grid Name="GridGroupRisk">
+                                    <TreeView x:Name="TreeViewGroup"/>
+                                </Grid>
+                            </xcad:LayoutAnchorable>
+                            <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" IsVisibleChanged="AnchorWBSList_IsVisibleChanged" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
+                                <Grid>
+                                    <Button x:Name="BtnAddWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Add}" HorizontalAlignment="Left" Margin="15,27,0,0" VerticalAlignment="Top" ToolTip="Add WBS" Click="BtnAddWBS_Click"/>
+                                    <Button x:Name="BtnEditWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Pencil}" HorizontalAlignment="Left" Margin="15,81,0,0" VerticalAlignment="Top" ToolTip="Edit WBS" Click="BtnEditWBS_Click"/>
+                                    <Button x:Name="BtnDelWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Delete}" HorizontalAlignment="Left"  Margin="15,137,0,0" VerticalAlignment="Top" ToolTip="Remove WBS" Click="BtnDelWBS_Click"/>
+                                    <Button x:Name="BtnExcelWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=FileExcel}" HorizontalAlignment="Left"  Margin="15,191,0,0" VerticalAlignment="Top" ToolTip="Import WBS from Excel" Click="BtnExcelWBS_Click"/>
+                                    <Button x:Name="BtnDeselect" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Backspace}" HorizontalAlignment="Left"  Margin="15,245,0,0" VerticalAlignment="Top" ToolTip="DeSelect" Click="BtnDeselect_Click"/>
+
+
+                                    <DataGrid x:Name="dgWBS" Margin="50,10,20,21" AutoGenerateColumns="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" IsReadOnly="True" MouseDoubleClick="dgWBS_MouseDoubleClick"  Background="#FFF7F1F1" SelectedCellsChanged="dgWBS_SelectedCellsChanged">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= FNivel}" Width="100"/>
+                                            <DataGridTextColumn x:Name="WBS" Header="WBS" Binding="{Binding Path= WBSFName}" Width="*"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </xcad:LayoutAnchorable>
+                        </xcad:LayoutAnchorablePane>
+                    </xcad:LayoutAnchorablePaneGroup>
+                </xcad:LayoutPanel>
+            </xcad:LayoutRoot>
+        </xcad:DockingManager>
+        <Grid Grid.Row="0" x:Name="MainMenuGrid" HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="15"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal"  VerticalAlignment="Top" HorizontalAlignment="Right"  Grid.Column="0">
+                <ToolBarTray>
+                    <ToolBar Style="{DynamicResource MaterialDesignToolBar}" ClipToBounds="False">
+                        <Button x:Name="ButtonHand" Click="ButtonHand_Click"  Content="{md:PackIcon Kind=Hand}" RenderTransformOrigin="0.5,0.5" >
+                            <Button.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="-1"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Button.RenderTransform>
+                        </Button>
+                        <Separator/>
+                        <Button x:Name="MenuItemOptionNewRisk" ToolTip="New Risk (Ctrl + R)" Command="local:CustomCommands.Risk" Content="{md:PackIcon Kind=ArrowBottomRight}" />
+                        <Button x:Name="MenuItemOptionNewCM" ToolTip="New CM (Ctrl + M)" Command="local:CustomCommands.CounterMeasure" Content="{md:PackIcon Kind=BlurOff}" />
+                        <Separator />
+                        <Button x:Name="MenuItemSave" ToolTip="Save (Ctrl + S)" Command="Save" Content="{md:PackIcon Kind=ContentSave}"/>
+                        <Button x:Name="MenuItemSaveAs" ToolTip="Save As (Ctrl + Shift + S)" Command="SaveAs" Content="{md:PackIcon Kind=ContentSaveAll}"/>
+                        <Separator/>
+                        <Button x:Name="MenuItemReload" ToolTip="Restart" Click="MenuItemReload_Click" Content="{md:PackIcon Kind=Restart}" />
+                        <Button x:Name="MenuItemFish_Tree" ToolTip="View current diagram as Tree" IsEnabled="False" Click="MenuItemFish_Tree_Click" Content="{md:PackIcon Kind=Lan}" Visibility="Collapsed"/>
+                        <Button x:Name="MenuItemExport" ToolTip="Export to Image" Command="local:CustomCommands.Export" Content="{md:PackIcon Kind=Image}" />
+                        <Button x:Name="MenuItemPrint" ToolTip="Print diagram" Command="Print" Content="{md:PackIcon Kind=Printer}" />
+                        <Separator />
+                    </ToolBar>
+                </ToolBarTray>
+                <Menu>
+                    <MenuItem ToolTip="Start" x:Name="StartMenu" Icon="{md:PackIcon Kind=DotsVertical}">
+                        <MenuItem x:Name="LoginMenuItem" Header="Login" Command="local:CustomCommands.Login" Icon="{md:PackIcon Kind=Lock}" InputGestureText="Ctrl+L"/>
+                        <MenuItem x:Name="MenuItemNewProject" Header="Project List" Command="local:CustomCommands.Project" Icon="{md:PackIcon Kind=FileMultiple}" InputGestureText="Ctrl+J"/>
+                        <MenuItem x:Name="MenuItemUserList" Header="User List" Command="local:CustomCommands.User" Icon="{md:PackIcon Kind=account}" InputGestureText="Ctrl+U"/>
+                        <MenuItem x:Name="MenuItemRoleList" Header="Role List" Command="local:CustomCommands.Role" Icon="{md:PackIcon Kind=AccountKey}" InputGestureText="Ctrl+Shift+R"/>
+                        <MenuItem x:Name="MenuItemTopRisk" Header="Top Risk List" Command="local:CustomCommands.Damage" Icon="{md:PackIcon Kind=AlertOutline}" InputGestureText="Ctrl+D"/>
+                        <MenuItem x:Name="MenuItemDefaultRisk" Header="Default Risk List" Command="local:CustomCommands.Default" Icon="{md:PackIcon Kind=AlertCircleOutline}" InputGestureText="Ctrl+T"/>
+                        <MenuItem x:Name="MenuItemWBS" Header="Work Breakdown Structure" Command="local:CustomCommands.WBS" Icon="{md:PackIcon Kind=FileTree}" InputGestureText="Ctrl+W"/>
+                        <MenuItem Header="View" Icon="{md:PackIcon Kind=Eye}">
+                            <MenuItem Header="View Diagram List" Icon="{md:PackIcon Kind=ArrowTopRight}" Click="MenuItem_Click"/>
+                            <MenuItem Header="View Risk List" Icon="{md:PackIcon Kind=WarningOutline}" Click="MenuItem_Click_1"/>
+                            <MenuItem Header="View Counter M. List" Icon="{md:PackIcon Kind=ViewDashboard}" Click="MenuItem_Click_2"/>
+                            <MenuItem Header="View Group List" Icon="{md:PackIcon Kind=Group}" Click="MenuItem_Click_3"/>
+                            <MenuItem Header="View WBS" Icon="{md:PackIcon Kind=FileTree}" Command="local:CustomCommands.WBS" InputGestureText="Ctrl+W"/>
+                            <MenuItem Header="View Properties" Icon="{md:PackIcon Kind=FileTree}" Command="local:CustomCommands.WBS" InputGestureText="Ctrl+Shift+P"/>
+                        </MenuItem> 
+                        <MenuItem x:Name="MenuItemOption" Header="Settings" Command="local:CustomCommands.Settings" Icon="{md:PackIcon Kind=Settings}" InputGestureText="Ctrl+O"/>
+                        <MenuItem x:Name="MenuItemExit" Header="Exit" Click="MenuItemExit_Click" Icon="{md:PackIcon Kind=Close}" InputGestureText="Alt+F4"/>
+                    </MenuItem>
+                </Menu>
+            </StackPanel>
+        </Grid>
+        <Image x:Name="ImageLanguage" Source="Images/English.png" HorizontalAlignment="Left" Margin="16,6,0,4" Width="25" RenderTransformOrigin="0.5,0.5"/>
+        <ComboBox x:Name="cbLanguage" HorizontalAlignment="left" Margin="58,3,0,0" Width="162" HorizontalContentAlignment="Center" VerticalAlignment="Center" DropDownClosed="CbLanguage_DropDownClosed"/>
+        <Grid Grid.Row="2">
+            <ProgressBar Name="TheProgress" IsIndeterminate="True" Visibility="Hidden"/>
+        </Grid>
+    </Grid>
+</Window>
