@@ -949,6 +949,7 @@ namespace EnsureBusinesss
                     //TODO hmax = 101, altura que el diagrama nunca alcanza
                     //TODO: ROBERTO: QUITE EL DESPLAZAR A LA DERECHA PUES NO FUNCIONA CON L POSICIONAMIENTO
                     //A CONTACTAR CON LUCAS A VER QUE DESEA, O LO UNO O LO OTRO
+                    //Este fragmento es el correcto
                     if (line.Father.Father == null)
                     {
                         if (i > 0 && line.FromTop == true)
@@ -1289,15 +1290,10 @@ namespace EnsureBusinesss
             if (LinesUp.Count > 0)
             {
                 DrawDiagramAsFishBone(LinesUp, new Point(Line.Points[0].X, Line.Points[0].Y));
-                //SkewLines(LinesUp, skewAngle, Line.Points[0].Y);
-                //FixCounterMesure(LinesUp, true);
             }
             if (LinesDown.Count > 0)
             {
                 DrawDiagramAsFishBone(LinesDown, new Point(LinesUp[0].Points[1].X - 30, LinesUp[0].Points[1].Y));
-                //SkewLines(LinesDown, skewAngle, Line.Points[0].Y);
-                //ReflectLines(LinesDown, LinesUp[0].Points[1].Y);
-                //FixCounterMesure(LinesDown, false);
             }
             if (Line.Children.Count > 2)
             {

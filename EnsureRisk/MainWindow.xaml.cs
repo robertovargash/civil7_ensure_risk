@@ -2899,10 +2899,12 @@ namespace EnsureRisk
                 //}
             }
         }
-
         private void ExportToExcel_Click(object sender, RoutedEventArgs e)
         {
-            if (dgTreeDiagrams.SelectedIndex >= 0)
+
+
+            //if (dgTreeDiagrams.SelectedIndex >= 0)
+            if (CurrentLayout != null && CurrentLayout.ID_Diagram >= 0 && !CurrentLayout.IsExportingToExcel)
             {
                 using (System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
                 {
@@ -2910,19 +2912,60 @@ namespace EnsureRisk
                     {
                         string fileName = saveFileDialog.FileName;
 
+                        
+                        //TheProgress.IsIndeterminate = false;
+                        //TheProgress.Minimum = 0;
+                        //TheProgress.Maximum = 100;
+                        //TheProgress.Visibility = Visibility.Visible;
+
+                        CurrentLayout.TheProgressBar.IsIndeterminate = false;
+                        CurrentLayout.TheProgressBar.Minimum = 0;
+                        CurrentLayout.TheProgressBar.Maximum = 100;
+                        CurrentLayout.TheProgressBar.Visibility = Visibility.Visible;
+
+                        BackgroundWorker exportToExcelWorker = new BackgroundWorker();
+                        exportToExcelWorker.WorkerReportsProgress = true;
+                        exportToExcelWorker.DoWork += exportToExcelWorker_DoWork;
+                        exportToExcelWorker.ProgressChanged += exportToExcelWorker_ProgressChanged;
+                        exportToExcelWorker.RunWorkerCompleted += exportToExcelWorker_RunWorkerCompleted;
+
                         int riskTreeID = (Int32)DVRisk_Tree[dgTreeDiagrams.SelectedIndex].Row[DT_RiskTree.ID_RISK_TREE];
-                        using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(DsMain, riskTreeID))
+                        //using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(DsMain, riskTreeID))
+                        using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(DsMain, CurrentLayout.ID_Diagram))
                         {
                             using (ExportRiskTree exportRiskTree = new ExportRiskTree(riskTreeDataSetTrader, fileName))
                             {
-                                exportRiskTree.Export();
+                                exportToExcelWorker.RunWorkerAsync(exportRiskTree);
+                                //ExportToExcel.IsEnabled = false;
+                                CurrentLayout.IsExportingToExcel = true;
                             }
                         }
                     }
                 }
             }
         }
+        void exportToExcelWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            ExportRiskTree exportRiskTree = (ExportRiskTree)e.Argument;
 
+            exportRiskTree.Export(sender as BackgroundWorker);
+        }
+        private static Action EmptyDelegate = delegate () { };
+        void exportToExcelWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            //TheProgress.Value = e.ProgressPercentage;
+            CurrentLayout.TheProgressBar.Value = e.ProgressPercentage;
+        }
+        void exportToExcelWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            CurrentLayout.TheProgressBar.Value = 100;
+            MessageBox.Show("RiskTree saved as excel file");
+            //TheProgress.Visibility = Visibility.Hidden;
+            CurrentLayout.TheProgressBar.Visibility = Visibility.Hidden;
+
+            //ExportToExcel.IsEnabled = true;
+            CurrentLayout.IsExportingToExcel = false;
+        }
         #endregion
 
         #region MenuRiskClick
@@ -3078,7 +3121,7 @@ namespace EnsureRisk
             if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + CurrentLayout.Line_Selected.ShortName + "] and all its children?").ShowDialog() == true)
             {
                 TreeOperation.DeleteLine(CurrentLayout.Line_Selected, CurrentLayout.LinesList, CurrentLayout.Ds);
-                
+
                 CurrentLayout.DropLines();
                 CurrentLayout.DropRectangles();
                 CurrentLayout.LoadLines();
@@ -4119,7 +4162,7 @@ namespace EnsureRisk
                             item.Group.IdGroup = wg.IdGroup;
                             item.Group.GroupName = wg.GroupName;
                         }
-                    }   
+                    }
                 }
             }
             catch (Exception ex)
@@ -6171,7 +6214,7 @@ namespace EnsureRisk
                         item.Group.IdGroup = null;
                         item.Group.GroupName = "None";
                     }
-                    CurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(((MyGroupButton)sender).IdGroup).Delete();                    
+                    CurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(((MyGroupButton)sender).IdGroup).Delete();
                 }
             }
             catch (Exception ex)
@@ -6734,7 +6777,7 @@ namespace EnsureRisk
             {
 
             }
-        }       
+        }
 
         private void btnClearFilter_Click(object sender, RoutedEventArgs e)
         {

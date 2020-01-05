@@ -196,6 +196,22 @@ namespace EnsureRisk.Export.Trader
             return dataTable;
         }
 
+        public int RowsCount()
+        {
+            int riskCount = _riskTreeDataSet.Tables[RISK_TABLENAME].Rows.Count;
+
+            var query = from counterMDataRow in _riskTreeDataSet.Tables[COUNTERM_TABLENAME].AsEnumerable()
+                        group counterMDataRow by counterMDataRow.Field<int>(IDRISK_COLUMNNAME) into counterMGroup
+                        select new
+                        {
+                            idRisk = counterMGroup.Key,
+                            CounterMCount = counterMGroup.Count() - 1
+                        };
+            int counterMCount = query.Sum(counterMGroup => counterMGroup.CounterMCount);
+
+            return riskCount + counterMCount;
+        }
+
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 

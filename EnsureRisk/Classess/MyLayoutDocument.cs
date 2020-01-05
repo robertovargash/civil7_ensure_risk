@@ -40,7 +40,7 @@ namespace EnsureRisk.Classess
         public bool SelectingToGroup { get; set; }
         public bool Creando { get; set; }
         public bool Copiando { get; set; }
-
+        public bool IsExportingToExcel { get; set; }
         #endregion        
 
         #region Menus
