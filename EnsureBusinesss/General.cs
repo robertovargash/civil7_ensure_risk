@@ -47,9 +47,9 @@ namespace EnsureBusinesss
 
             //Buscar todos los posibles valores de la columna pivote
             IEnumerable<string> PivotValues = from aDataRow in dtSource.AsEnumerable()
-                                                group aDataRow by (aDataRow.Field<string>(Pivot)) into aPivotValues
-                                                let aValorPivote = aPivotValues.Key
-                                                select aValorPivote;
+                                              group aDataRow by (aDataRow.Field<string>(Pivot)) into aPivotValues
+                                              let aValorPivote = aPivotValues.Key
+                                              select aValorPivote;
             //Definir tabla resultante
             DataTable dtResults = dtSource.Copy();
 
@@ -96,7 +96,7 @@ namespace EnsureBusinesss
                 {
                     string colName = colValue.Trim() + "_" + pivotValue.Trim();
                     //colName = UsaNombreColumnaCompuesto ? colValor.Trim() + "_" + valorPivote.Trim() : valorPivote.Trim();
-                    colName =  pivotValue.Trim();
+                    colName = pivotValue.Trim();
                     DataColumn newColumn = new DataColumn(colName, dtSource.Columns[colValue].DataType);
                     switch (dtSource.Columns[colValue].DataType.ToString().ToUpper())
                     {
@@ -160,7 +160,7 @@ namespace EnsureBusinesss
                 }
             }
             return dtResults;
-        }        
+        }
 
         #region CambiarConfiguration
 
@@ -274,7 +274,7 @@ namespace EnsureBusinesss
                 }
                 else
                     return 0;
-                
+
             }
             catch (Exception ex)
             {
@@ -367,7 +367,7 @@ namespace EnsureBusinesss
                 }
                 else
                 {
-                    hasChildren = true;                   
+                    hasChildren = true;
                     if (item.IsLeaf())
                     {
                         if (!(item.IsActivated))
@@ -389,7 +389,7 @@ namespace EnsureBusinesss
             if (hasChildren)
             {
                 //Here the formula, the probability of the father mult. by the probabilities of their children according with the In_Exclusion_Formula
-                ValueToReturn = (LineFather.IsActivated ? LineFather.Probability : 1 ) * EL_Inclusion_Exclusion(Probability_List);
+                ValueToReturn = (LineFather.IsActivated ? LineFather.Probability : 1) * EL_Inclusion_Exclusion(Probability_List);
                 foreach (var item in CM_Probabilities)
                 {
                     ValueToReturn = ValueToReturn * (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure
@@ -478,7 +478,7 @@ namespace EnsureBusinesss
         /// <summary>
         /// Update the Thickness of the line acording the damages
         /// </summary>
-        public static void UpdateThickness(int IdTopRisk, DataTable dtEncoder,  List<RiskPolyLine> linesList, DataTable Risk_TopRisk, DataTable CM, DataTable CM_TopRisk)
+        public static void UpdateThickness(int IdTopRisk, DataTable dtEncoder, List<RiskPolyLine> linesList, DataTable Risk_TopRisk, DataTable CM, DataTable CM_TopRisk)
         {
             try
             {
@@ -488,13 +488,13 @@ namespace EnsureBusinesss
                     if (!(item.IsCM))
                     {
                         item.Value = CalculateTopRiskTreeValue(dtEncoder.Rows.Find(item.ID), dtEncoder, IdTopRisk, Risk_TopRisk, CM, CM_TopRisk);
-                    }                    
+                    }
                 }
                 decimal min = 0;
                 decimal max = 0;
 
-                min = linesList.Min(l => l.Value);
-                max = linesList.Max(l => l.Value);
+                min = linesList.Where(p => !p.IsRoot).Min(l => l.Value);
+                max = linesList.Where(p => !p.IsRoot).Max(l => l.Value);
                 foreach (var item in linesList)
                 {
                     if (!(item.IsCM))

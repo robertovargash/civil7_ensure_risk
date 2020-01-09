@@ -16,6 +16,10 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using EnsureRisk.Windows;
+using System.ComponentModel;
+using EnsureRisk.Export.Trader;
+using EnsureRisk.Export;
+using System.Globalization;
 
 namespace EnsureRisk.Classess
 {
@@ -41,6 +45,7 @@ namespace EnsureRisk.Classess
         public bool Creando { get; set; }
         public bool Copiando { get; set; }
         public bool IsExportingToExcel { get; set; }
+        BackgroundWorker exportToExcelWorker = new BackgroundWorker();
         #endregion        
 
         #region Menus
@@ -244,6 +249,12 @@ namespace EnsureRisk.Classess
                 };
                 BindingOperations.SetBinding(TheZoomComboBox, LComboBox.TextProperty, myBinding);
                 EnterWorking();
+
+                exportToExcelWorker.WorkerReportsProgress = true;
+                exportToExcelWorker.WorkerSupportsCancellation = true;
+                exportToExcelWorker.DoWork += exportToExcelWorker_DoWork;
+                exportToExcelWorker.ProgressChanged += exportToExcelWorker_ProgressChanged;
+                exportToExcelWorker.RunWorkerCompleted += exportToExcelWorker_RunWorkerCompleted;
             }
             catch (Exception ex)
             {
@@ -356,6 +367,10 @@ namespace EnsureRisk.Classess
         {
             try
             {
+                if (exportToExcelWorker.IsBusy && exportToExcelWorker.WorkerSupportsCancellation)
+                {
+                    exportToExcelWorker.CancelAsync();
+                }
                 if (Ds.HasChanges())
                 {
                     if (new WindowMessageYesNo("Do you want to save the changes on [" + this.Title + "]").ShowDialog() == true)
@@ -372,7 +387,7 @@ namespace EnsureRisk.Classess
                     //((MainWindow)MyWindow).SaveData(false);
                 }
                 ((MainWindow)MyWindow).OpenedDocuments.Remove(this);
-                ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear(); 
+                ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear();
                 ((MainWindow)MyWindow).DV_Cross_CM.Table.Clear();
             }
             catch (Exception ex)
@@ -518,11 +533,11 @@ namespace EnsureRisk.Classess
                     {
                         item[DT_Risk_Damages.RISK_NAMESHORT] = polyLineName;
                     }
-                    
+
                 }
                 Line_Selected.ShortName = polyLineName;
                 ClearFilters();
-                DrawEntireDiagram();       
+                DrawEntireDiagram();
                 UpdateGridRiskAndGridCM();
             }
             catch (Exception ex)
@@ -1360,7 +1375,7 @@ namespace EnsureRisk.Classess
                     {
                         MoviendoRisk = false;
                         MoviendoCM = false;
-                        TreeOperation.DetectarMiPosicionActual(Line_Selected, e.GetPosition(GridPaintLines), Ds);                       
+                        TreeOperation.DetectarMiPosicionActual(Line_Selected, e.GetPosition(GridPaintLines), Ds);
                         DrawFishBone();
                         ((MainWindow)MyWindow).NormalArrowCursor();
                     }
@@ -2720,7 +2735,7 @@ namespace EnsureRisk.Classess
                 {
                     ((MainWindow)MyWindow).CurrentLayout = this;
                     //Ds = ((MainWindow)MyWindow).DsMain;
-                    DrawFishBone();
+                    //DrawFishBone();
                 }
 
                 foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
@@ -3087,6 +3102,47 @@ namespace EnsureRisk.Classess
         }
 
 
+        #endregion
+
+        #region Export to Excel
+
+        public void ExportToExcel(string fileName)
+        {
+            this.TheProgressBar.IsIndeterminate = false;
+            this.TheProgressBar.Minimum = 0;
+            this.TheProgressBar.Maximum = 100;
+            this.TheProgressBar.Visibility = Visibility.Visible;
+
+            using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(this.Ds, this.ID_Diagram))
+            {
+                using (ExportRiskTree exportRiskTree = new ExportRiskTree(riskTreeDataSetTrader, fileName))
+                {
+                    exportToExcelWorker.RunWorkerAsync(exportRiskTree);
+                    this.IsExportingToExcel = true;
+                }
+            }
+        }
+        void exportToExcelWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            ExportRiskTree exportRiskTree = (ExportRiskTree)e.Argument;
+
+            exportRiskTree.Export(sender as BackgroundWorker, e);
+        }
+        void exportToExcelWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            this.TheProgressBar.Value = e.ProgressPercentage;
+        }
+        void exportToExcelWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.TheProgressBar.Value = 100;
+            IFormatProvider formatProvider = CultureInfo.CurrentUICulture;
+            MessageBox.Show(String.Format(formatProvider, "Diagram {0} was saved as excel file!", this.Title));
+            this.TheProgressBar.Visibility = Visibility.Hidden;
+            this.TheProgressBar.Value = 0;
+            this.TheProgressBar.IsIndeterminate = true;
+
+            this.IsExportingToExcel = false;
+        }
         #endregion
     }
 }

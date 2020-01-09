@@ -2901,45 +2901,23 @@ namespace EnsureRisk
         }
         private void ExportToExcel_Click(object sender, RoutedEventArgs e)
         {
-
-
-            //if (dgTreeDiagrams.SelectedIndex >= 0)
             if (CurrentLayout != null && CurrentLayout.ID_Diagram >= 0 && !CurrentLayout.IsExportingToExcel)
             {
                 using (System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
                 {
+                    saveFileDialog.OverwritePrompt = false;
                     if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
                         string fileName = saveFileDialog.FileName;
-
-                        
-                        //TheProgress.IsIndeterminate = false;
-                        //TheProgress.Minimum = 0;
-                        //TheProgress.Maximum = 100;
-                        //TheProgress.Visibility = Visibility.Visible;
-
-                        CurrentLayout.TheProgressBar.IsIndeterminate = false;
-                        CurrentLayout.TheProgressBar.Minimum = 0;
-                        CurrentLayout.TheProgressBar.Maximum = 100;
-                        CurrentLayout.TheProgressBar.Visibility = Visibility.Visible;
-
-                        BackgroundWorker exportToExcelWorker = new BackgroundWorker();
-                        exportToExcelWorker.WorkerReportsProgress = true;
-                        exportToExcelWorker.DoWork += exportToExcelWorker_DoWork;
-                        exportToExcelWorker.ProgressChanged += exportToExcelWorker_ProgressChanged;
-                        exportToExcelWorker.RunWorkerCompleted += exportToExcelWorker_RunWorkerCompleted;
-
-                        int riskTreeID = (Int32)DVRisk_Tree[dgTreeDiagrams.SelectedIndex].Row[DT_RiskTree.ID_RISK_TREE];
-                        //using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(DsMain, riskTreeID))
-                        using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(DsMain, CurrentLayout.ID_Diagram))
+                        if (File.Exists(fileName))
                         {
-                            using (ExportRiskTree exportRiskTree = new ExportRiskTree(riskTreeDataSetTrader, fileName))
-                            {
-                                exportToExcelWorker.RunWorkerAsync(exportRiskTree);
-                                //ExportToExcel.IsEnabled = false;
-                                CurrentLayout.IsExportingToExcel = true;
-                            }
+                            string targetFileName = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
+
+                            File.Copy(fileName, targetFileName + ".bak", true);
+                            File.Delete(fileName);
                         }
+
+                        CurrentLayout.ExportToExcel(fileName);
                     }
                 }
             }
@@ -2948,22 +2926,20 @@ namespace EnsureRisk
         {
             ExportRiskTree exportRiskTree = (ExportRiskTree)e.Argument;
 
-            exportRiskTree.Export(sender as BackgroundWorker);
+            exportRiskTree.Export(sender as BackgroundWorker, e);
         }
-        private static Action EmptyDelegate = delegate () { };
         void exportToExcelWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            //TheProgress.Value = e.ProgressPercentage;
             CurrentLayout.TheProgressBar.Value = e.ProgressPercentage;
         }
         void exportToExcelWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             CurrentLayout.TheProgressBar.Value = 100;
-            MessageBox.Show("RiskTree saved as excel file");
-            //TheProgress.Visibility = Visibility.Hidden;
+            IFormatProvider formatProvider = CultureInfo.CurrentUICulture;
+            MessageBox.Show(String.Format(formatProvider, "RiskTree {0} was saved as excel file!", CurrentLayout.Title));
             CurrentLayout.TheProgressBar.Visibility = Visibility.Hidden;
+            CurrentLayout.TheProgressBar.Value = 0;
 
-            //ExportToExcel.IsEnabled = true;
             CurrentLayout.IsExportingToExcel = false;
         }
         #endregion

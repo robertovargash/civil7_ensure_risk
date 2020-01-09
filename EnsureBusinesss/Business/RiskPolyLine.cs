@@ -213,7 +213,7 @@ namespace EnsureBusinesss.Business
 
             decimal value = max - min;
 
-            decimal skoda = value / 6;
+            decimal skoda = value / 3;
 
             if (cost <= skoda)
             {
@@ -304,7 +304,9 @@ namespace EnsureBusinesss.Business
                 }
                 else
                 {
-                    ytremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderByDescending(x => x.Points[0].Y).First().Points[0].Y;
+                    // TODO: revisar yxtremee esta fundio para la mitad de abajo
+                    ytremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderBy(x => x.Points[0].Y).First().Points[0].Y;
+                    //ytremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderByDescending(x => x.Points[0].Y).First().Points[0].Y;
                 }
             }
 
