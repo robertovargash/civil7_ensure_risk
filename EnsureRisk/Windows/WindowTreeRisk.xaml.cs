@@ -24,7 +24,7 @@ namespace EnsureRisk.Windows
     public partial class WindowTreeRisk : Window
     {
         public string Operation { get; set; }
-        public int IdProject { get; set; }
+        public int IdWBS { get; set; }
         public DataTable TopRiskTable { get; set; }
         public DataTable CM_TopRisk { get; set; }
         public DataTable Risk_TopRisk { get; set; }
@@ -53,7 +53,7 @@ namespace EnsureRisk.Windows
                 //}
                 if (Operation == General.UPDATE)
                 {
-                    TextName.Text = DRow[DT_RiskTree.RISK_TREE].ToString();
+                    TextName.Text = DRow[DT_RiskTree.DIAGRAM_NAME].ToString();
                     //ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk();
                     //TopRiskTable = ws.GetRiskTree(new object[] { (Int32)DRow[DT_RiskTree.ID_RISK_TREE] }).Tables[DT_RiskTree_Damages.TABLENAME].Copy();
 
@@ -93,7 +93,7 @@ namespace EnsureRisk.Windows
                 if (frm.ShowDialog() == true)
                 {
                     frm.Drow[DT_RiskTree_Damages.ID_RISKTREE] = DRow[DT_RiskTree.ID_RISK_TREE];
-                    frm.Drow[DT_RiskTree_Damages.RISK_TREE] = DRow[DT_RiskTree.RISK_TREE];
+                    frm.Drow[DT_RiskTree_Damages.RISK_TREE] = DRow[DT_RiskTree.DIAGRAM_NAME];
                     TopRiskTable.Rows.Add(frm.Drow);
                 }
             }
@@ -146,8 +146,8 @@ namespace EnsureRisk.Windows
             {
                 if (TextName.Text!="")
                 {
-                    DRow[DT_RiskTree.RISK_TREE] = TextName.Text;
-                    DRow[DT_RiskTree.ID_PROJECT] = IdProject;
+                    DRow[DT_RiskTree.DIAGRAM_NAME] = TextName.Text;
+                    DRow[DT_RiskTree.ID_WBS] = IdWBS;
                     this.DialogResult = true;
                 }
                 else

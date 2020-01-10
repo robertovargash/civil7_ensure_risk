@@ -64,14 +64,14 @@ namespace DataMapping.Data
         public void CrearRelaciones()
         {
 
-            DataRelation dr1 = this.Relations.Add(PROJECT_DIAGRAM_RELATION, this.Tables[DT_Project.TABLE_NAME].Columns[DT_Project.ID_PROJECT],
-                                       this.Tables[DT_RiskTree.TABLE_NAME].Columns[DT_RiskTree.ID_PROJECT]);
+            //DataRelation dr1 = this.Relations.Add(PROJECT_DIAGRAM_RELATION, this.Tables[DT_Project.TABLE_NAME].Columns[DT_Project.ID_PROJECT],
+            //                           this.Tables[DT_RiskTree.TABLE_NAME].Columns[DT_RiskTree.ID_WBS]);
 
-            dr1 = this.Relations[PROJECT_DIAGRAM_RELATION];
-            dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
-            dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
+            //dr1 = this.Relations[PROJECT_DIAGRAM_RELATION];
+            //dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
+            //dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
 
-            dr1 = this.Relations.Add(WBS_FATHER_RELATION, this.Tables[DT_WBS.TABLE_NAME].Columns[DT_WBS.ID_WBS],
+            DataRelation dr1 = this.Relations.Add(WBS_FATHER_RELATION, this.Tables[DT_WBS.TABLE_NAME].Columns[DT_WBS.ID_WBS],
                                        this.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Columns[DT_WBS_STRUCTURE.ID_FATHER]);
 
             dr1 = this.Relations[WBS_FATHER_RELATION];

@@ -288,7 +288,7 @@ namespace EnsureRisk.Windows
         {
             try
             {
-               
+
                 ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS();
                 DataTable roleCodif = ws.GetAllWBS().Tables[DT_WBS.TABLE_NAME].Copy();
                 WindowSelection frmSelection = new WindowSelection();

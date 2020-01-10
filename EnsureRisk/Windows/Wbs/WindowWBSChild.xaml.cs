@@ -13,6 +13,7 @@ namespace EnsureRisk.Windows
     {
         public DataRow DrWBS { get; set; }
         public DataRow DrWBS_Structure { get; set; }
+        public int IdProject { get; set; }
         public WindowWBSChild()
         {
             InitializeComponent();
@@ -32,6 +33,7 @@ namespace EnsureRisk.Windows
                 DrWBS_Structure[DT_WBS_STRUCTURE.CNIVEL] = TextLevel.Text;
                 DrWBS[DT_WBS.WBS_NAME] = TextName.Text;
                 DrWBS[DT_WBS.NIVEL] = TextLevel.Text;
+                DrWBS[DT_WBS.IDPROJECT] = IdProject;
                 DialogResult = true;
             }
             catch (Exception ex)

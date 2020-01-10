@@ -83,7 +83,7 @@ namespace EnsureRisk.Windows
 
                         rowTop[DT_Risk_Damages.STATUS] = "Activated";
                         rowTop[DT_Risk_Damages.ID_FATHER] = RiskRow[DT_Risk.IDRISK_FATHER];
-                        rowTop[DT_Risk_Damages.RISK_TREE] = Ds.Tables[DT_RiskTree.TABLE_NAME].Rows.Find(RiskTreeID)[DT_RiskTree.RISK_TREE].ToString();
+                        rowTop[DT_Risk_Damages.RISK_TREE] = Ds.Tables[DT_RiskTree.TABLE_NAME].Rows.Find(RiskTreeID)[DT_RiskTree.DIAGRAM_NAME].ToString();
                         rowTop[DT_Risk_Damages.IS_ROOT] = false;
                         TopRiskTable.Rows.Add(rowTop);
                     }
@@ -138,7 +138,7 @@ namespace EnsureRisk.Windows
                             rowTop[DT_Risk_Damages.FATHER] = RowFather[DT_Risk.NAMESHORT_COLUMNA].ToString();
                             rowTop[DT_Risk_Damages.STATUS] = (Boolean)RiskRow[DT_Risk.ENABLED_COLUMN] ? "Activated" : "No Activated";
                             rowTop[DT_Risk_Damages.ID_FATHER] = RiskRow[DT_Risk.IDRISK_FATHER];
-                            rowTop[DT_Risk_Damages.RISK_TREE] = Ds.Tables[DT_RiskTree.TABLE_NAME].Rows.Find(RiskTreeID)[DT_RiskTree.RISK_TREE].ToString();
+                            rowTop[DT_Risk_Damages.RISK_TREE] = Ds.Tables[DT_RiskTree.TABLE_NAME].Rows.Find(RiskTreeID)[DT_RiskTree.DIAGRAM_NAME].ToString();
                             rowTop[DT_Risk_Damages.IS_ROOT] = false;
                             TopRiskTable.Rows.Add(rowTop);
                         }
@@ -283,7 +283,7 @@ namespace EnsureRisk.Windows
         private void BtnAddWBS_Click(object sender, RoutedEventArgs e)
         {
             try
-            {                
+            {
                 ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS();
                 DataTable roleCodif = ws.GetAllWBS().Tables[DT_WBS.TABLE_NAME].Copy();
                 WindowSelection frmSelection = new WindowSelection();
@@ -310,7 +310,7 @@ namespace EnsureRisk.Windows
                         drRiskWBS[DT_RISK_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
                         drRiskWBS[DT_RISK_WBS.NIVEL] = item[DT_WBS.NIVEL];
                         Risk_WBS_Table.Rows.Add(drRiskWBS);
-                    }                    
+                    }
                 }
             }
             catch (Exception ex)

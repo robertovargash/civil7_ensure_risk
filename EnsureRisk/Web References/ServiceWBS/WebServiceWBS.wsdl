@@ -2,6 +2,32 @@
 <wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="GetAllWBSFiltered">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="param" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfAnyType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="anyType" nillable="true" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetAllWBSFilteredResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllWBSFilteredResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
       <s:element name="GetAllWBS">
         <s:complexType />
       </s:element>
@@ -49,6 +75,12 @@
       </s:element>
     </s:schema>
   </wsdl:types>
+  <wsdl:message name="GetAllWBSFilteredSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllWBSFiltered" />
+  </wsdl:message>
+  <wsdl:message name="GetAllWBSFilteredSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllWBSFilteredResponse" />
+  </wsdl:message>
   <wsdl:message name="GetAllWBSSoapIn">
     <wsdl:part name="parameters" element="tns:GetAllWBS" />
   </wsdl:message>
@@ -62,6 +94,10 @@
     <wsdl:part name="parameters" element="tns:SaveWBSResponse" />
   </wsdl:message>
   <wsdl:portType name="WebServiceWBSSoap">
+    <wsdl:operation name="GetAllWBSFiltered">
+      <wsdl:input message="tns:GetAllWBSFilteredSoapIn" />
+      <wsdl:output message="tns:GetAllWBSFilteredSoapOut" />
+    </wsdl:operation>
     <wsdl:operation name="GetAllWBS">
       <wsdl:input message="tns:GetAllWBSSoapIn" />
       <wsdl:output message="tns:GetAllWBSSoapOut" />
@@ -73,6 +109,15 @@
   </wsdl:portType>
   <wsdl:binding name="WebServiceWBSSoap" type="tns:WebServiceWBSSoap">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetAllWBSFiltered">
+      <soap:operation soapAction="http://tempuri.org/GetAllWBSFiltered" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="GetAllWBS">
       <soap:operation soapAction="http://tempuri.org/GetAllWBS" style="document" />
       <wsdl:input>
@@ -94,6 +139,15 @@
   </wsdl:binding>
   <wsdl:binding name="WebServiceWBSSoap12" type="tns:WebServiceWBSSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetAllWBSFiltered">
+      <soap12:operation soapAction="http://tempuri.org/GetAllWBSFiltered" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="GetAllWBS">
       <soap12:operation soapAction="http://tempuri.org/GetAllWBS" style="document" />
       <wsdl:input>

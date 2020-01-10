@@ -247,7 +247,7 @@
     <value>Resolution</value>
   </data>
   <data name="RiskDetailText" xml:space="preserve">
-    <value>Detail</value>
+    <value>Comment</value>
   </data>
   <data name="RiskDiagramTitle" xml:space="preserve">
     <value>Risk Diagram</value>

@@ -229,6 +229,30 @@
             <xcad:LayoutRoot x:Name="_layoutRoot">
                 <xcad:LayoutPanel Orientation="Horizontal">
                     <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200">
+                        <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" IsVisibleChanged="AnchorWBSList_IsVisibleChanged" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <Button x:Name="BtnAddWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Add}" HorizontalAlignment="Left" Margin="15,27,0,0" VerticalAlignment="Top" ToolTip="Add WBS" Click="BtnAddWBS_Click"/>
+                                    <Button x:Name="BtnEditWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=ContentCopy}" HorizontalAlignment="Left" Margin="15,81,0,0" VerticalAlignment="Top" ToolTip="Collapse All" Click="BtnEditWBS_Click"/>
+                                    <Button x:Name="BtnDelWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Delete}" HorizontalAlignment="Left"  Margin="15,137,0,0" VerticalAlignment="Top" ToolTip="Remove WBS" Click="BtnDelWBS_Click"/>
+                                    <!--<Button x:Name="BtnExcelWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=FileExcel}" HorizontalAlignment="Left"  Margin="15,81,0,0" VerticalAlignment="Top" ToolTip="Import WBS from Excel" Click="BtnExcelWBS_Click"/>-->
+                                    <Button x:Name="BtnDeselect" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Backspace}" HorizontalAlignment="Left"  Margin="15,137,0,0" VerticalAlignment="Top" ToolTip="DeSelect" Click="BtnDeselect_Click"/>
+                                </Grid>
+                                <Grid Grid.Column="1">
+                                    <TreeView Name="TreeViewWBS"/>
+                                </Grid>                                
+                                <!--<DataGrid x:Name="dgWBS" Margin="50,10,20,21" AutoGenerateColumns="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" IsReadOnly="True" MouseDoubleClick="dgWBS_MouseDoubleClick"  Background="#FFF7F1F1" SelectedCellsChanged="dgWBS_SelectedCellsChanged">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= FNivel}" Width="100"/>
+                                        <DataGridTextColumn x:Name="WBS" Header="WBS" Binding="{Binding Path= WBSFName}" Width="*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>-->
+                            </Grid>
+                        </xcad:LayoutAnchorable>
                         <xcad:LayoutAnchorable ContentId="properties" x:Name="LayoutProperties"  Title="Properties"  CanHide="true" CanClose="False" AutoHideWidth="240">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" >
                                 <Grid>
@@ -266,7 +290,7 @@
                                     </GroupBox>
                                 </Grid>
                             </ScrollViewer>
-                        </xcad:LayoutAnchorable>
+                        </xcad:LayoutAnchorable>                        
                     </xcad:LayoutAnchorablePane>
                     <xcad:LayoutDocumentPaneGroup>
                         <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel"/>
@@ -300,7 +324,6 @@
                                             <Button x:Name="EditTree" ToolTip="Load and Edit Diagram" HorizontalAlignment="Left" Click="EditTree_Click" Margin="0,20,0,0" Content="{md:PackIcon Kind=Pencil}" md:ShadowAssist.ShadowDepth="Depth5"/>
                                             <Button x:Name="RemoveTree" ToolTip="Remove Diagram" HorizontalAlignment="Left" Click="RemoveTree_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=Delete}" md:ShadowAssist.ShadowDepth="Depth5"/>
                                             <Button x:Name="ImportExcel" ToolTip="Load from Excel" HorizontalAlignment="Left" Click="ImportExcel_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=FileExcel}" md:ShadowAssist.ShadowDepth="Depth5"/>
-                                            <Button x:Name="ExportToExcel" ToolTip="Save to Excel" HorizontalAlignment="Left" Click="ExportToExcel_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=FileExport}" md:ShadowAssist.ShadowDepth="Depth5"/>
                                         </StackPanel>
                                     </Grid>
 
@@ -365,23 +388,6 @@
                                     <TreeView x:Name="TreeViewGroup"/>
                                 </Grid>
                             </xcad:LayoutAnchorable>
-                            <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" IsVisibleChanged="AnchorWBSList_IsVisibleChanged" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
-                                <Grid>
-                                    <Button x:Name="BtnAddWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Add}" HorizontalAlignment="Left" Margin="15,27,0,0" VerticalAlignment="Top" ToolTip="Add WBS" Click="BtnAddWBS_Click"/>
-                                    <Button x:Name="BtnEditWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Pencil}" HorizontalAlignment="Left" Margin="15,81,0,0" VerticalAlignment="Top" ToolTip="Edit WBS" Click="BtnEditWBS_Click"/>
-                                    <Button x:Name="BtnDelWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Delete}" HorizontalAlignment="Left"  Margin="15,137,0,0" VerticalAlignment="Top" ToolTip="Remove WBS" Click="BtnDelWBS_Click"/>
-                                    <Button x:Name="BtnExcelWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=FileExcel}" HorizontalAlignment="Left"  Margin="15,191,0,0" VerticalAlignment="Top" ToolTip="Import WBS from Excel" Click="BtnExcelWBS_Click"/>
-                                    <Button x:Name="BtnDeselect" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Backspace}" HorizontalAlignment="Left"  Margin="15,245,0,0" VerticalAlignment="Top" ToolTip="DeSelect" Click="BtnDeselect_Click"/>
-
-
-                                    <DataGrid x:Name="dgWBS" Margin="50,10,20,21" AutoGenerateColumns="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" IsReadOnly="True" MouseDoubleClick="dgWBS_MouseDoubleClick"  Background="#FFF7F1F1" SelectedCellsChanged="dgWBS_SelectedCellsChanged">
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= FNivel}" Width="100"/>
-                                            <DataGridTextColumn x:Name="WBS" Header="WBS" Binding="{Binding Path= WBSFName}" Width="*"/>
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                </Grid>
-                            </xcad:LayoutAnchorable>
                         </xcad:LayoutAnchorablePane>
                     </xcad:LayoutAnchorablePaneGroup>
                 </xcad:LayoutPanel>
@@ -412,6 +418,7 @@
                         <Separator />
                         <Button x:Name="MenuItemSave" ToolTip="Save (Ctrl + S)" Command="Save" Content="{md:PackIcon Kind=ContentSave}"/>
                         <Button x:Name="MenuItemSaveAs" ToolTip="Save As (Ctrl + Shift + S)" Command="SaveAs" Content="{md:PackIcon Kind=ContentSaveAll}"/>
+                        <Button x:Name="ExportToExcel" ToolTip="Save to Excel" HorizontalAlignment="Left" Click="ExportToExcel_Click" Content="{md:PackIcon Kind=FileExport}"/>
                         <Separator/>
                         <Button x:Name="MenuItemReload" ToolTip="Restart" Click="MenuItemReload_Click" Content="{md:PackIcon Kind=Restart}" />
                         <Button x:Name="MenuItemFish_Tree" ToolTip="View current diagram as Tree" IsEnabled="False" Click="MenuItemFish_Tree_Click" Content="{md:PackIcon Kind=Lan}" Visibility="Collapsed"/>

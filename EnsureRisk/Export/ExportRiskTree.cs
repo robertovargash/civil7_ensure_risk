@@ -1,5 +1,4 @@
 ﻿using DataMapping.Data;
-//using EnsureRisk.Export.Contract;
 using EnsureRisk.Export.Trader;
 using System;
 using System.Collections.Generic;
@@ -7,8 +6,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace EnsureRisk.Export
@@ -27,10 +24,10 @@ namespace EnsureRisk.Export
         private int _columnIndex;
         private int _rowIndex;
         private int _rowsCount;
- 
+
         public ExportRiskTree(RiskTreeDataSetTrader riskTreeDataSetTrader, string fileName)
         {
-            _riskTreeDataSetTrader = riskTreeDataSetTrader;
+            _riskTreeDataSetTrader = riskTreeDataSetTrader ?? throw new ArgumentNullException(nameof(riskTreeDataSetTrader));
             _fileName = fileName;
             _rowsCount = _riskTreeDataSetTrader.RowsCount();
         }
@@ -40,15 +37,32 @@ namespace EnsureRisk.Export
             SetHeader();
             FreezeFirstRow();
             Fill();
-            CloseExcel();
+            try
+            {
+                SaveToExcel();
+            }
+            finally
+            {
+                CloseExcel();
+            }
         }
-        public void Export(BackgroundWorker backgroundWorker)
+        public void Export(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
         {
             InitializeExcel();
             SetHeader();
             FreezeFirstRow();
-            Fill(backgroundWorker);
-            CloseExcel();
+            Fill(backgroundWorker, e);
+            try
+            {
+                if (!e.Cancel)
+                {
+                    SaveToExcel();
+                }
+            }
+            finally
+            {
+                CloseExcel();
+            }
         }
         private void InitializeExcel()
         {
@@ -150,14 +164,18 @@ namespace EnsureRisk.Export
             _rowIndex = BEGIN_AT_ROWINDEX;
             FillWithRisk(_riskTreeDataSetTrader.GetMainRiskChildList());
         }
-        private void Fill(BackgroundWorker backgroundWorker)
+        private void Fill(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
         {
             _rowIndex = BEGIN_AT_ROWINDEX;
-            FillWithRisk(_riskTreeDataSetTrader.GetMainRiskChildList(), backgroundWorker);
+            FillWithRisk(_riskTreeDataSetTrader.GetMainRiskChildList(), backgroundWorker, e);
+        }
+        private void SaveToExcel()
+        {
+            _workbook.SaveAs(_fileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing,
+                    Type.Missing, Type.Missing);
         }
         private void CloseExcel()
         {
-            _workbook.SaveAs(_fileName);
             _workbook.Close();
             _excelApplication.Quit();
 
@@ -197,7 +215,7 @@ namespace EnsureRisk.Export
 
                 IEnumerable<DataRow> counterMeasureChildList = _riskTreeDataSetTrader.GetCounterMeasureChildList((int)riskDataRow[DT_Risk.ID_COLUMNA]);
 
-                if (counterMeasureChildList.Count() == 0)
+                if (!counterMeasureChildList.Any())
                     _rowIndex++;
 
                 foreach (DataRow counterMDataRow in counterMeasureChildList)
@@ -228,18 +246,23 @@ namespace EnsureRisk.Export
 
                 IEnumerable<DataRow> riskChildList = _riskTreeDataSetTrader.GetRiskChildList((int)riskDataRow[DT_Risk.ID_COLUMNA]);
 
-                if (riskChildList.Count() > 0)
+                if (riskChildList.Any())
                 {
                     FillWithRisk(riskChildList);
                 }
             }
         }
-        private void FillWithRisk(IEnumerable<DataRow> mainRiskChildDataRowQuery, BackgroundWorker backgroundWorker)
+        private void FillWithRisk(IEnumerable<DataRow> mainRiskChildDataRowQuery, BackgroundWorker backgroundWorker, DoWorkEventArgs e)
         {
             String columnHeader = String.Empty;
 
             foreach (DataRow riskDataRow in mainRiskChildDataRowQuery)
             {
+                if (backgroundWorker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    break;
+                }
                 _columnIndex = 1;
                 _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.ID_COLUMNA];
                 _columnIndex++;
@@ -266,7 +289,7 @@ namespace EnsureRisk.Export
 
                 IEnumerable<DataRow> counterMeasureChildList = _riskTreeDataSetTrader.GetCounterMeasureChildList((int)riskDataRow[DT_Risk.ID_COLUMNA]);
 
-                if (counterMeasureChildList.Count() == 0)
+                if (!counterMeasureChildList.Any())
                     _rowIndex++;
 
                 foreach (DataRow counterMDataRow in counterMeasureChildList)
@@ -300,9 +323,9 @@ namespace EnsureRisk.Export
 
                 IEnumerable<DataRow> riskChildList = _riskTreeDataSetTrader.GetRiskChildList((int)riskDataRow[DT_Risk.ID_COLUMNA]);
 
-                if (riskChildList.Count() > 0)
+                if (riskChildList.Any())
                 {
-                    FillWithRisk(riskChildList, backgroundWorker);
+                    FillWithRisk(riskChildList, backgroundWorker, e);
                 }
             }
         }
@@ -338,7 +361,7 @@ namespace EnsureRisk.Export
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
             // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
         #endregion
     }

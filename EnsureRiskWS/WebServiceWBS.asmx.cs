@@ -19,6 +19,26 @@ namespace EnsureRiskWS
     {
 
         [WebMethod]
+        public DataSet GetAllWBSFiltered(object[] param)
+        {
+            try
+            {
+                UserDataSet userds = new UserDataSet();
+                DataSet ds = new DataSet();
+                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_WBS.TABLE_NAME);
+                SQL.GetDataset(ref ds, "pa_SelectWBSFiltered", param);
+                ds.Tables[0].TableName = DT_WBS.TABLE_NAME;
+                ds.Tables[1].TableName = DT_WBS_STRUCTURE.TABLE_NAME;
+                userds.Merge(ds);
+                return userds;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [WebMethod]
         public DataSet GetAllWBS()
         {
             try

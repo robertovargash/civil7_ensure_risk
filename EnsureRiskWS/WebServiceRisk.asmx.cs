@@ -18,7 +18,7 @@ namespace EnsureRiskWS
     public class WebServiceRisk : System.Web.Services.WebService
     {
         [WebMethod]
-        public DataSet GetRiskTreeData(object[] param)
+        public DataSet GetRiskTreeString(object[] param)
         {
             try
             {
@@ -157,7 +157,7 @@ namespace EnsureRiskWS
         }
 
         [WebMethod]
-        public DataSet GetRiskTree(object[] param)
+        public DataSet GetRiskTreeID(object[] param)
         {
             try
             {

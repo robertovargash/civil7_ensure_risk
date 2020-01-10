@@ -41,11 +41,11 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                Ds = new UserDataSet();
-                ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS();
-                Ds.Merge(ws.GetAllWBS());
-                Dv = Ds.Tables[DT_WBS.TABLE_NAME].DefaultView;
-                dgWBS.ItemsSource = Dv;
+                //Ds = new UserDataSet();
+                //ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS();
+                //Ds.Merge(ws.GetAllWBS(new object[] { }));
+                //Dv = Ds.Tables[DT_WBS.TABLE_NAME].DefaultView;
+                //dgWBS.ItemsSource = Dv;
             }
             catch (Exception ex)
             {

@@ -31,13 +31,13 @@ namespace EnsureRisk.ServiceRiskController {
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(object[]))]
     public partial class WebServiceRisk : System.Web.Services.Protocols.SoapHttpClientProtocol {
         
-        private System.Threading.SendOrPostCallback GetRiskTreeDataOperationCompleted;
+        private System.Threading.SendOrPostCallback GetRiskTreeStringOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetDefaultRiskOperationCompleted;
         
         private System.Threading.SendOrPostCallback SaveRiskOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetRiskTreeOperationCompleted;
+        private System.Threading.SendOrPostCallback GetRiskTreeIDOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetElementDataOperationCompleted;
         
@@ -80,7 +80,7 @@ namespace EnsureRisk.ServiceRiskController {
         }
         
         /// <remarks/>
-        public event GetRiskTreeDataCompletedEventHandler GetRiskTreeDataCompleted;
+        public event GetRiskTreeStringCompletedEventHandler GetRiskTreeStringCompleted;
         
         /// <remarks/>
         public event GetDefaultRiskCompletedEventHandler GetDefaultRiskCompleted;
@@ -89,37 +89,37 @@ namespace EnsureRisk.ServiceRiskController {
         public event SaveRiskCompletedEventHandler SaveRiskCompleted;
         
         /// <remarks/>
-        public event GetRiskTreeCompletedEventHandler GetRiskTreeCompleted;
+        public event GetRiskTreeIDCompletedEventHandler GetRiskTreeIDCompleted;
         
         /// <remarks/>
         public event GetElementDataCompletedEventHandler GetElementDataCompleted;
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetRiskTreeData", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public System.Data.DataSet GetRiskTreeData(object[] param) {
-            object[] results = this.Invoke("GetRiskTreeData", new object[] {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetRiskTreeString", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public System.Data.DataSet GetRiskTreeString(object[] param) {
+            object[] results = this.Invoke("GetRiskTreeString", new object[] {
                         param});
             return ((System.Data.DataSet)(results[0]));
         }
         
         /// <remarks/>
-        public void GetRiskTreeDataAsync(object[] param) {
-            this.GetRiskTreeDataAsync(param, null);
+        public void GetRiskTreeStringAsync(object[] param) {
+            this.GetRiskTreeStringAsync(param, null);
         }
         
         /// <remarks/>
-        public void GetRiskTreeDataAsync(object[] param, object userState) {
-            if ((this.GetRiskTreeDataOperationCompleted == null)) {
-                this.GetRiskTreeDataOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRiskTreeDataOperationCompleted);
+        public void GetRiskTreeStringAsync(object[] param, object userState) {
+            if ((this.GetRiskTreeStringOperationCompleted == null)) {
+                this.GetRiskTreeStringOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRiskTreeStringOperationCompleted);
             }
-            this.InvokeAsync("GetRiskTreeData", new object[] {
-                        param}, this.GetRiskTreeDataOperationCompleted, userState);
+            this.InvokeAsync("GetRiskTreeString", new object[] {
+                        param}, this.GetRiskTreeStringOperationCompleted, userState);
         }
         
-        private void OnGetRiskTreeDataOperationCompleted(object arg) {
-            if ((this.GetRiskTreeDataCompleted != null)) {
+        private void OnGetRiskTreeStringOperationCompleted(object arg) {
+            if ((this.GetRiskTreeStringCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetRiskTreeDataCompleted(this, new GetRiskTreeDataCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetRiskTreeStringCompleted(this, new GetRiskTreeStringCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -180,31 +180,31 @@ namespace EnsureRisk.ServiceRiskController {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetRiskTree", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public System.Data.DataSet GetRiskTree(object[] param) {
-            object[] results = this.Invoke("GetRiskTree", new object[] {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetRiskTreeID", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public System.Data.DataSet GetRiskTreeID(object[] param) {
+            object[] results = this.Invoke("GetRiskTreeID", new object[] {
                         param});
             return ((System.Data.DataSet)(results[0]));
         }
         
         /// <remarks/>
-        public void GetRiskTreeAsync(object[] param) {
-            this.GetRiskTreeAsync(param, null);
+        public void GetRiskTreeIDAsync(object[] param) {
+            this.GetRiskTreeIDAsync(param, null);
         }
         
         /// <remarks/>
-        public void GetRiskTreeAsync(object[] param, object userState) {
-            if ((this.GetRiskTreeOperationCompleted == null)) {
-                this.GetRiskTreeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRiskTreeOperationCompleted);
+        public void GetRiskTreeIDAsync(object[] param, object userState) {
+            if ((this.GetRiskTreeIDOperationCompleted == null)) {
+                this.GetRiskTreeIDOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRiskTreeIDOperationCompleted);
             }
-            this.InvokeAsync("GetRiskTree", new object[] {
-                        param}, this.GetRiskTreeOperationCompleted, userState);
+            this.InvokeAsync("GetRiskTreeID", new object[] {
+                        param}, this.GetRiskTreeIDOperationCompleted, userState);
         }
         
-        private void OnGetRiskTreeOperationCompleted(object arg) {
-            if ((this.GetRiskTreeCompleted != null)) {
+        private void OnGetRiskTreeIDOperationCompleted(object arg) {
+            if ((this.GetRiskTreeIDCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetRiskTreeCompleted(this, new GetRiskTreeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetRiskTreeIDCompleted(this, new GetRiskTreeIDCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -260,17 +260,17 @@ namespace EnsureRisk.ServiceRiskController {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
-    public delegate void GetRiskTreeDataCompletedEventHandler(object sender, GetRiskTreeDataCompletedEventArgs e);
+    public delegate void GetRiskTreeStringCompletedEventHandler(object sender, GetRiskTreeStringCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetRiskTreeDataCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetRiskTreeStringCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal GetRiskTreeDataCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal GetRiskTreeStringCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -338,17 +338,17 @@ namespace EnsureRisk.ServiceRiskController {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
-    public delegate void GetRiskTreeCompletedEventHandler(object sender, GetRiskTreeCompletedEventArgs e);
+    public delegate void GetRiskTreeIDCompletedEventHandler(object sender, GetRiskTreeIDCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetRiskTreeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetRiskTreeIDCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal GetRiskTreeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal GetRiskTreeIDCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

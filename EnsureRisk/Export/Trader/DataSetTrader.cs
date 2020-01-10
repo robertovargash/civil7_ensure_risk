@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
 namespace EnsureRisk.Export.Trader
 {
     public class DataSetTrader
     {
-        protected DataSet _sourceDataSet; 
-        protected int _id;
-        public DataSetTrader(DataSet dataSet, int id)
+        protected DataSet SourceDataSet { get; set; }
+
+        public DataSetTrader(DataSet dataSet)
         {
-            _sourceDataSet = dataSet;
-            _id = id;
+            SourceDataSet = dataSet;
         }
     }
 }

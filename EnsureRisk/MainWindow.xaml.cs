@@ -26,8 +26,6 @@ using EnsureRisk.Classess;
 using System.Collections.ObjectModel;
 using EnsureRisk.DataBinding;
 using System.Threading.Tasks;
-using EnsureRisk.Export.Trader;
-using EnsureRisk.Export;
 //using System.Windows.Forms;
 
 namespace EnsureRisk
@@ -2920,31 +2918,10 @@ namespace EnsureRisk
                             File.Copy(fileName, targetFileName + ".bak", true);
                             File.Delete(fileName);
                         }
-
                         CurrentLayout.ExportToExcel(fileName);
                     }
                 }
             }
-        }
-        void exportToExcelWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            ExportRiskTree exportRiskTree = (ExportRiskTree)e.Argument;
-
-            exportRiskTree.Export(sender as BackgroundWorker, e);
-        }
-        void exportToExcelWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            CurrentLayout.TheProgressBar.Value = e.ProgressPercentage;
-        }
-        void exportToExcelWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            CurrentLayout.TheProgressBar.Value = 100;
-            IFormatProvider formatProvider = CultureInfo.CurrentUICulture;
-            MessageBox.Show(String.Format(formatProvider, "RiskTree {0} was saved as excel file!", CurrentLayout.Title));
-            CurrentLayout.TheProgressBar.Visibility = Visibility.Hidden;
-            CurrentLayout.TheProgressBar.Value = 0;
-
-            CurrentLayout.IsExportingToExcel = false;
         }
         #endregion
 

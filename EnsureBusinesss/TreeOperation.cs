@@ -953,10 +953,10 @@ namespace EnsureBusinesss
                     if (line.Father.Father == null)
                     {
                         //if (i > 0 && line.FromTop == true)
-                            if (i > 0)
-                            {
-                                MoveRight(Lines, line, hmax);
-                            }
+                        if (i > 0)
+                        {
+                            MoveRight(Lines, line, hmax);
+                        }
                     }
 
                     //Console.WriteLine(line.ShortName + " : " + i);

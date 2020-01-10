@@ -134,7 +134,7 @@ namespace EnsureBusinesss.Business
             StartDrawPoint = StartPoint;
             Points[1] = StartPoint;//punto donde se pone la flecha
             if (IsDiagonal)
-            {               
+            {
                 Points[0] = new Point(Points[1].X - diagonalShiftX, Points[1].Y - diagonalShiftY);
             }
             else
@@ -281,7 +281,7 @@ namespace EnsureBusinesss.Business
             Size++;
             XTreme = Points[0].X;
             YxTreme = Points[0].Y;
-        }       
+        }
         public double XTremee()
         {
             double xtremo = XTreme;

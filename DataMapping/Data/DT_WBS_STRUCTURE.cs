@@ -12,6 +12,7 @@ namespace DataMapping.Data
         public const string FNIVEL = "FatherNivel";
         public const string CHILD = "Child";        
         public const string CNIVEL = "ChildNivel";
+        public const string IDPROJECT = "idProject";
 
         public DT_WBS_STRUCTURE() : base()
         {
@@ -27,7 +28,8 @@ namespace DataMapping.Data
             this.Columns.Add(FATHER, typeof(System.String));
             this.Columns.Add(FNIVEL, typeof(System.String));
             this.Columns.Add(CHILD, typeof(System.String));
-            this.Columns.Add(CNIVEL, typeof(System.String));            
+            this.Columns.Add(CNIVEL, typeof(System.String));
+            this.Columns.Add(IDPROJECT, typeof(System.Int32));
             this.PrimaryKey = PK_COLUMN;
         }
     }

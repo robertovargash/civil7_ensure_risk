@@ -28,7 +28,10 @@ namespace EnsureRisk.ServiceWBS {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="WebServiceWBSSoap", Namespace="http://tempuri.org/")]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(object[]))]
     public partial class WebServiceWBS : System.Web.Services.Protocols.SoapHttpClientProtocol {
+        
+        private System.Threading.SendOrPostCallback GetAllWBSFilteredOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetAllWBSOperationCompleted;
         
@@ -73,10 +76,42 @@ namespace EnsureRisk.ServiceWBS {
         }
         
         /// <remarks/>
+        public event GetAllWBSFilteredCompletedEventHandler GetAllWBSFilteredCompleted;
+        
+        /// <remarks/>
         public event GetAllWBSCompletedEventHandler GetAllWBSCompleted;
         
         /// <remarks/>
         public event SaveWBSCompletedEventHandler SaveWBSCompleted;
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetAllWBSFiltered", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public System.Data.DataSet GetAllWBSFiltered(object[] param) {
+            object[] results = this.Invoke("GetAllWBSFiltered", new object[] {
+                        param});
+            return ((System.Data.DataSet)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetAllWBSFilteredAsync(object[] param) {
+            this.GetAllWBSFilteredAsync(param, null);
+        }
+        
+        /// <remarks/>
+        public void GetAllWBSFilteredAsync(object[] param, object userState) {
+            if ((this.GetAllWBSFilteredOperationCompleted == null)) {
+                this.GetAllWBSFilteredOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAllWBSFilteredOperationCompleted);
+            }
+            this.InvokeAsync("GetAllWBSFiltered", new object[] {
+                        param}, this.GetAllWBSFilteredOperationCompleted, userState);
+        }
+        
+        private void OnGetAllWBSFilteredOperationCompleted(object arg) {
+            if ((this.GetAllWBSFilteredCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetAllWBSFilteredCompleted(this, new GetAllWBSFilteredCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetAllWBS", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -150,6 +185,32 @@ namespace EnsureRisk.ServiceWBS {
                 return true;
             }
             return false;
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void GetAllWBSFilteredCompletedEventHandler(object sender, GetAllWBSFilteredCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetAllWBSFilteredCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetAllWBSFilteredCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public System.Data.DataSet Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((System.Data.DataSet)(this.results[0]));
+            }
         }
     }
     
