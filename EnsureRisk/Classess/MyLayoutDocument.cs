@@ -873,54 +873,9 @@ namespace EnsureRisk.Classess
                                     break;
                                 }
                             }
-                            RiskPolyLine riskLine;
-                            if (haspermission)
-                            {
-                                riskLine = new RiskPolyLine(GridPaintLines, MenuRisk, false)
-                                {
-                                    ShortName = item[DT_Risk.NAMESHORT_COLUMNA].ToString(),
-                                    ID = (Int32)item[DT_Risk.ID_COLUMNA],
-                                    Position = (Int32)item[DT_Risk.POSITION_COLUMN],
-                                    Collapsed = (Boolean)item[DT_Risk.ISCOLLAPSEDINGUI_COLUMNA],
-                                    Probability = (Decimal)item[DT_Risk.PROBABILITY_COLUMN] / 100,
-                                    IsActivated = (Boolean)item[DT_Risk.ENABLED_COLUMN],
-                                    StrokeThickness = 2,
-                                    IsCM = false,
-                                    IdRiskFather = (Int32)item[DT_Risk.IDRISK_FATHER]
-                                };
-                            }
-                            else
-                            {
-                                riskLine = new RiskPolyLine(GridPaintLines, null, false)
-                                {
-                                    ShortName = item[DT_Risk.NAMESHORT_COLUMNA].ToString(),
-                                    ID = (Int32)item[DT_Risk.ID_COLUMNA],
-                                    Position = (Int32)item[DT_Risk.POSITION_COLUMN],
-                                    Collapsed = (Boolean)item[DT_Risk.ISCOLLAPSEDINGUI_COLUMNA],
-                                    Probability = (Decimal)item[DT_Risk.PROBABILITY_COLUMN] / 100,
-                                    IsActivated = (Boolean)item[DT_Risk.ENABLED_COLUMN],
-                                    StrokeThickness = 2,
-                                    IsCM = false,
-                                    IdRiskFather = (Int32)item[DT_Risk.IDRISK_FATHER]
-                                };
-                            }
-
-                            if (item[DT_Risk.ID_GROUPE_COLUMN] != DBNull.Value)
-                            {
-                                riskLine.Group = new LineGroup()
-                                {
-                                    IdGroup = (Int32)item[DT_Risk.ID_GROUPE_COLUMN],
-                                    GroupName = item[DT_Risk.GROUPE_NAME_COLUMN].ToString()
-                                };
-                            }
-                            else
-                            {
-                                riskLine.Group = new LineGroup()
-                                {
-                                    IdGroup = null,
-                                    GroupName = item[DT_Risk.GROUPE_NAME_COLUMN].ToString()
-                                };
-                            }
+                            //RiskPolyLine riskLine = haspermission ? CreateRiskShape(GridPaintLines, MenuRisk, false, item) : CreateRiskShape(GridPaintLines, null, false, item);
+                            RiskPolyLine riskLine = haspermission ? CreateRiskShape(((MainWindow)MyWindow).CurrentLayout.GridPaintLines, MenuRisk, false, item) : CreateRiskShape(((MainWindow)MyWindow).CurrentLayout.GridPaintLines, null, false, item);
+                            SetPolyLineGroup(riskLine, item);
 
                             if ((Boolean)item[DT_Risk.ISCOLLAPSEDINGUI_COLUMNA])
                             {
@@ -987,50 +942,9 @@ namespace EnsureRisk.Classess
                                 break;
                             }
                         }
-                        RiskPolyLine cmline;
-                        if (haspermission)
-                        {
-                            cmline = new RiskPolyLine(GridPaintLines, MenuCM, true)
-                            {
-                                IsCM = true,
-                                Position = (Int32)item[DT_CounterM.POSITION_COLUMN],
-                                ShortName = item[DT_CounterM.NAMESHORT_COLUMNA].ToString(),
-                                IdRiskFather = (Int32)item[DT_CounterM.ID_RISK],
-                                ID = (Int32)item[DT_CounterM.ID_COLUMNA],
-                                Probability = (Decimal)item[DT_CounterM.PROBABILITY_COLUMN] / 100,
-                                IsActivated = (Boolean)item[DT_CounterM.ENABLED_COLUMN]
-                            };
-                        }
-                        else
-                        {
-                            cmline = new RiskPolyLine(GridPaintLines, null, true)
-                            {
-                                IsCM = true,
-                                Position = (Int32)item[DT_CounterM.POSITION_COLUMN],
-                                ShortName = item[DT_CounterM.NAMESHORT_COLUMNA].ToString(),
-                                IdRiskFather = (Int32)item[DT_CounterM.ID_RISK],
-                                ID = (Int32)item[DT_CounterM.ID_COLUMNA],
-                                Probability = (Decimal)item[DT_CounterM.PROBABILITY_COLUMN] / 100,
-                                IsActivated = (Boolean)item[DT_CounterM.ENABLED_COLUMN]
-                            };
-                        }
+                        RiskPolyLine cmline = haspermission ? CreateCounterMeasureShape(((MainWindow)MyWindow).CurrentLayout.GridPaintLines, MenuCM, true, item) : CreateCounterMeasureShape(((MainWindow)MyWindow).CurrentLayout.GridPaintLines, null, true, item);
+                        SetPolyLineGroup(cmline, item);
 
-                        if (item[DT_Risk.ID_GROUPE_COLUMN] != DBNull.Value)
-                        {
-                            cmline.Group = new LineGroup()
-                            {
-                                IdGroup = (Int32)item[DT_Risk.ID_GROUPE_COLUMN],
-                                GroupName = item[DT_Risk.GROUPE_NAME_COLUMN].ToString()
-                            };
-                        }
-                        else
-                        {
-                            cmline.Group = new LineGroup()
-                            {
-                                IdGroup = null,
-                                GroupName = item[DT_Risk.GROUPE_NAME_COLUMN].ToString()
-                            };
-                        }
                         if (((Boolean)item[DT_CounterM.ENABLED_COLUMN]))
                         {
                             ((MenuItem)MenuCM.Items[3]).ToolTip = StringResources.DisableValue;
@@ -1093,6 +1007,53 @@ namespace EnsureRisk.Classess
             {
                 new WindowMessageOK(ex.Message).ShowDialog();
             }
+        }
+        private static void SetPolyLineGroup(RiskPolyLine polyLine, DataRow item)
+        {
+            if (item[DT_Risk.ID_GROUPE_COLUMN] != DBNull.Value)
+            {
+                polyLine.Group = new LineGroup()
+                {
+                    IdGroup = (Int32)item[DT_Risk.ID_GROUPE_COLUMN],
+                    GroupName = item[DT_Risk.GROUPE_NAME_COLUMN].ToString()
+                };
+            }
+            else
+            {
+                polyLine.Group = new LineGroup()
+                {
+                    IdGroup = null,
+                    GroupName = item[DT_Risk.GROUPE_NAME_COLUMN].ToString()
+                };
+            }
+        }
+        private RiskPolyLine CreateCounterMeasureShape(GridPaint gridPaint, ContextMenu contextMenu, bool isCMI, DataRow itemDataRow)
+        {
+            return new RiskPolyLine(gridPaint, contextMenu, isCMI)
+            {
+                IsCM = isCMI,
+                Position = (Int32)itemDataRow[DT_CounterM.POSITION_COLUMN],
+                ShortName = itemDataRow[DT_CounterM.NAMESHORT_COLUMNA].ToString(),
+                IdRiskFather = (Int32)itemDataRow[DT_CounterM.ID_RISK],
+                ID = (Int32)itemDataRow[DT_CounterM.ID_COLUMNA],
+                Probability = (Decimal)itemDataRow[DT_CounterM.PROBABILITY_COLUMN] / 100,
+                IsActivated = (Boolean)itemDataRow[DT_CounterM.ENABLED_COLUMN]
+            };
+        }
+        private RiskPolyLine CreateRiskShape(GridPaint gridPaint, ContextMenu contextMenu, bool isCMI, DataRow itemDataRow)
+        {
+            return new RiskPolyLine(gridPaint, contextMenu, isCMI)
+            {
+                ShortName = itemDataRow[DT_Risk.NAMESHORT_COLUMNA].ToString(),
+                ID = (Int32)itemDataRow[DT_Risk.ID_COLUMNA],
+                Position = (Int32)itemDataRow[DT_Risk.POSITION_COLUMN],
+                Collapsed = (Boolean)itemDataRow[DT_Risk.ISCOLLAPSEDINGUI_COLUMNA],
+                Probability = (Decimal)itemDataRow[DT_Risk.PROBABILITY_COLUMN] / 100,
+                IsActivated = (Boolean)itemDataRow[DT_Risk.ENABLED_COLUMN],
+                StrokeThickness = 2,
+                IsCM = isCMI,
+                IdRiskFather = (Int32)itemDataRow[DT_Risk.IDRISK_FATHER]
+            };
         }
 
         public void DrawEntireDiagram()

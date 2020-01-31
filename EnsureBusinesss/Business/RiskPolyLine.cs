@@ -57,9 +57,10 @@ namespace EnsureBusinesss.Business
         public Grid MyContainer { get; set; }
 
         //public static RoutedEvent DobleClick;
+        public List<RiskPolyLine> Segments { get; set; }
         public RiskPolyLine()
         {
-
+            Segments = new List<RiskPolyLine>();
         }
         public RiskPolyLine(Grid Container, ContextMenu Menu, bool isCMI)
         {
@@ -120,6 +121,7 @@ namespace EnsureBusinesss.Business
                 ArrowEnds = ArrowEnds.None;
                 Stroke = new SolidColorBrush(Colors.Black);
             }
+            Segments = new List<RiskPolyLine>();
         }
 
         public bool IsLeaf()
@@ -288,6 +290,7 @@ namespace EnsureBusinesss.Business
             if (!(Collapsed))
             {
                 xtremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderBy(x => x.Points[0].X).First().Points[0].X;
+
             }
 
             XTreme = xtremo;
@@ -411,5 +414,122 @@ namespace EnsureBusinesss.Business
         //    }
         //    return xtremo;
         //}
+        public void ExtendHorizontal(double FromX)
+        {
+            CreateSegmentAt(new Point(FromX - horizontalShiftX, Points[0].Y));
+        }
+        public void ExtendVertical(double FromY)
+        {
+            CreateSegmentAt(new Point(Points[0].X, FromY - diagonalShiftY));
+        }
+        private void CreateSegmentAt(Point startPoint)
+        {
+            RiskPolyLine segment = new RiskPolyLine()
+            {
+                ShortName = this.ShortName,
+                ID = this.ID,
+                Position = this.Position,
+                Collapsed = this.Collapsed,
+                Probability = this.Probability,
+                IsActivated = this.IsActivated,
+                StrokeThickness = 2,
+                IsCM = false,
+                IdRiskFather = this.IdRiskFather,
+                IsDiagonal = this.IsDiagonal
+            };
+
+            segment.ArrowEnds = ArrowEnds.None;
+            segment.Father = this;
+            Segments.Add(segment);
+
+            segment.Points.Add(startPoint);
+            //segment.Points.Add(Points[0]);
+            segment.Points.Add(Children[Segments.Count-1].Points[1]);
+
+            segment.Stroke = new SolidColorBrush(Colors.Orange);
+
+
+            //TODO: La linea siguiente es solo para saber que los segmentos se diferencian.
+            segment.StrokeThickness = 1 + Segments.Count;
+
+            XTreme = segment.Points[0].X;
+            YxTreme = segment.Points[0].Y;
+            MyContainer.Children.Add(segment);
+            segment.MyContainer = MyContainer;
+        }
+        public void Move(int deltaX, int deltaY)
+        {
+            Points[0] = new Point(Points[0].X + deltaX, Points[0].Y + deltaY);
+            Points[1] = new Point(Points[1].X + deltaX, Points[1].Y + deltaY);
+            StartDrawPoint = Points[1];
+
+            if (Segments.Any())
+            {
+                MoveSegments(deltaX, deltaY);
+            }
+            if (Points.Count == 3)
+            {
+                MoveTail(deltaX, deltaY);
+            }
+        }
+        public void MoveSegments(int deltaX, int deltaY)
+        {
+            foreach (var segment in Segments)
+            {
+                segment.Points[0] = new Point(segment.Points[0].X + deltaX, segment.Points[0].Y + deltaY);
+                segment.Points[1] = new Point(segment.Points[1].X + deltaX, segment.Points[1].Y + deltaY);
+                StartDrawPoint = segment.Points[1];
+            }
+        }
+
+        private void MoveTail(int deltaX, int deltaY)
+        {
+            Points[2] = new Point(Points[2].X + deltaX, Points[2].Y + deltaY);
+        }
+
+        private List<RiskPolyLine> GetSegments()
+        {
+            List<RiskPolyLine> segmentsToReturn = new List<RiskPolyLine>();
+
+            if (Segments != null && Segments.Any())
+            {
+                segmentsToReturn.AddRange(Segments);
+            }
+            foreach (RiskPolyLine child in Children)
+            {
+                segmentsToReturn.AddRange(child.GetSegments());
+            }
+            return segmentsToReturn;
+        }
+
+        public Double SegmentMinX()
+        {
+            double minX = 0;
+            List<RiskPolyLine> segments;
+            if (!(Collapsed))
+            {
+                segments = GetSegments();
+                if (segments.Any())
+                {
+                    minX = segments.Min(s => s.Points[0].X);
+                }
+            }
+            return minX;
+        }
+
+        public void SegmentClear()
+        {
+            if (Segments !=null && Segments.Any())
+            {
+                Segments.Clear();
+                if (Children!=null && Children.Any())
+                {
+                    foreach (RiskPolyLine line in Children)
+                    {
+                        line.SegmentClear();
+                    }
+                }
+            }
+        }
     }
 }
