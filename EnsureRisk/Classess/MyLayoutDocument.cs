@@ -58,7 +58,16 @@ namespace EnsureRisk.Classess
         #endregion
 
         #region Listas
-        public List<RiskPolyLine> LinesList { get; set; }
+        private List<RiskPolyLine> _lineList;
+        public List<RiskPolyLine> LinesList
+        {
+            get => _lineList;
+            set
+            {
+                _lineList = value;
+                thicknessProvider.LinesList = value;
+            }
+        }
         public List<RiskPolyLine> LinesMoving { get; set; }
         public List<MyDamage> Rectangles { get; set; }
         public List<RiskPolyLine> ListCopy { get; set; }
@@ -102,16 +111,38 @@ namespace EnsureRisk.Classess
         //}
 
         public LineGroup GroupSelected { get; set; }
-        public int ID_Diagram { get; set; }
+        private int _ID_Diagram;
+        public int ID_Diagram
+        {
+            get => _ID_Diagram;
+            set
+            {
+                _ID_Diagram = value;
+                thicknessProvider.ID_Diagram = value;
+            }
+        }
         public Popin Popin { get; set; }
         public Point MIdPoint { get; set; }
-        public DataSet Ds { get; set; }
+
+        private DataSet _Ds;
+        public DataSet Ds
+        {
+            get => _Ds;
+            set
+            {
+                _Ds = value;
+                thicknessProvider.Ds = _Ds;
+            }
+        }
         public DataRow DrDiagram { get; set; }
         public Window MyWindow { get; set; }
+        public ThicknessProvider thicknessProvider { get; }
         public MyLayoutDocument() : base()
         {
             try
             {
+                thicknessProvider = new ThicknessProvider();
+
                 this.CanClose = true;
                 this.CanFloat = true;
                 this.CanMove = true;
@@ -255,6 +286,8 @@ namespace EnsureRisk.Classess
                 exportToExcelWorker.DoWork += exportToExcelWorker_DoWork;
                 exportToExcelWorker.ProgressChanged += exportToExcelWorker_ProgressChanged;
                 exportToExcelWorker.RunWorkerCompleted += exportToExcelWorker_RunWorkerCompleted;
+
+                //thicknessProvider = new ThicknessProvider(ID_Diagram, Ds, LinesList);
             }
             catch (Exception ex)
             {
@@ -836,6 +869,14 @@ namespace EnsureRisk.Classess
             {
                 foreach (RiskPolyLine item in LinesList)
                 {
+                    // TODO Yordan, limpiar segmentos
+                    foreach (SegmentPolyLine sg in item.Segments)
+                    {
+                        GridPaintLines.Children.Remove(sg);//removing the line
+                        item.ElStackPannel.Children.Clear();
+                        //GridPaintLines.Children.Remove(sg.ElStackPannel);
+                    }
+
                     //in his cicle we remove any risk of previous risk tree drawing in the main form.
                     GridPaintLines.Children.Remove(item);//removing the line
                     item.ElStackPannel.Children.Clear();
@@ -856,6 +897,7 @@ namespace EnsureRisk.Classess
                 LinesListCMState.Clear();
                 if (CbFilterTopR.SelectedIndex >= 0)
                 {
+                    thicknessProvider.ID_TopRisk = (Int32)CbFilterTopR.SelectedValue;
                     System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_RiskTree_Damages.TABLENAME].Select(DT_RiskTree_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_RiskTree_Damages.COLOR].ToString()));
                     AddMainLine(Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_RISK_TREE + " = " + ID_Diagram + " and " + DT_Risk.IS_ROOT_COLUMNA + " = " + 1).First(), drawingCColor);
 
@@ -982,7 +1024,7 @@ namespace EnsureRisk.Classess
 
                     TreeOperation.Build_Tree(LinesList);
                     TreeOperation.DrawEntireDiagramAsFishBone(MainLine);
-                    TreeOperation.FixMainLine(LinesList, MainLine);
+                    //TreeOperation.FixMainLine(LinesList, MainLine);
                     FixDrawPanel();
                     foreach (var item in LinesList)
                     {
@@ -1052,7 +1094,8 @@ namespace EnsureRisk.Classess
                 IsActivated = (Boolean)itemDataRow[DT_Risk.ENABLED_COLUMN],
                 StrokeThickness = 2,
                 IsCM = isCMI,
-                IdRiskFather = (Int32)itemDataRow[DT_Risk.IDRISK_FATHER]
+                IdRiskFather = (Int32)itemDataRow[DT_Risk.IDRISK_FATHER],
+                thicknessProvider = thicknessProvider
             };
         }
 
@@ -1965,7 +2008,7 @@ namespace EnsureRisk.Classess
         {
             try
             {
-                TheLine.StrokeThickness = 10;
+                //TheLine.StrokeThickness = 10;
                 if (!(MoviendoRisk || MoviendoCM))
                 {
                     if (Creando)
@@ -2668,7 +2711,7 @@ namespace EnsureRisk.Classess
                             MoviendoCM = false;
                             //Cursor = Cursors.Arrow;
                             TreeOperation.DrawEntireDiagramAsFishBone(MainLine);
-                            TreeOperation.FixMainLine(LinesList, MainLine);
+                            //TreeOperation.FixMainLine(LinesList, MainLine);
                             FixDrawPanel();
                             LineThickness();
                         }

@@ -61,6 +61,10 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\EnsureRisk\Referencias\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\LabelPolyLine.cs" />
@@ -73,7 +77,9 @@
     <Compile Include="Business\PictureBoxPolyLine.cs" />
     <Compile Include="Business\Popin.cs" />
     <Compile Include="Business\RiskPolyLine.cs" />
+    <Compile Include="Business\SegmentPolyLine.cs" />
     <Compile Include="PointToMoveRight.cs" />
+    <Compile Include="ThicknessProvider.cs" />
     <Compile Include="TreeOperation.cs" />
     <Compile Include="General.cs" />
   </ItemGroup>

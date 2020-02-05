@@ -1445,6 +1445,7 @@ namespace EnsureRisk
                             LayoutDocumentPanel.Children.Add(myly);
                             OpenedDocuments.Add(myly);
                             CurrentLayout = myly;
+                            
                             CambiosVisuales();
                             //myly.Ds = DsMain;
                             //Thread thread = new Thread(delegate () {  })

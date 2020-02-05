@@ -507,7 +507,11 @@ namespace EnsureBusinesss
         public static void FixMainLine(List<RiskPolyLine> lineas, RiskPolyLine MainLine)
         {
             //this function find the line with the minimal X size and asign this value to Main Line X.           
-            AddTail(lineas);
+            //AddTail(lineas);
+            if (MainLine.Segments.Any())
+            {
+                ReorderMainLineSegments(MainLine);
+            }
 
             if (MainLine.Children.Count > 0)
             {
@@ -517,7 +521,17 @@ namespace EnsureBusinesss
                     //the X of the main line will be the minor X of their entire generation
                     if (MainLine.Segments != null && MainLine.Segments.Any())
                     {
-                        MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), lineas.Find(rl => rl.IsRoot == true).Points[0].Y);
+                        //MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), lineas.Find(rl => rl.IsRoot == true).Points[0].Y);
+                        //MainLine.AddTail();
+                        if (MainLine.Segments.Count > 1)
+                        {
+                            MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), MainLine.Points[0].Y);
+                            MainLine.Segments[MainLine.Segments.Count - 1].Points[1] = new Point(MainLine.Segments[MainLine.Segments.Count - 2].Points[0].X, MainLine.Segments[MainLine.Segments.Count - 2].Points[0].Y);
+                        }
+                        else
+                        {
+                            MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), MainLine.Points[0].Y);
+                        }
                     }
                     else
                     {
@@ -527,58 +541,61 @@ namespace EnsureBusinesss
             }
         }
 
-        private static void AddTail(List<RiskPolyLine> lineas)
+        private static void FixRisk(List<RiskPolyLine> lineas)
         {
-            RiskPolyLine lastChild;
+            //RiskPolyLine lastChild;
             foreach (RiskPolyLine item in lineas)
             {
-                if (!(item.Collapsed))
+                if (!item.IsRoot && !(item.Collapsed) && (item.Children.Count > 0))
                 {
-                    if (item.Children.Count > 0)
-                    {
-                        lastChild = item.Children[item.Children.Count - 1];
-                        if (item.IsDiagonal)
-                        {
-                            if (item.FromTop)
-                            {
-                                //item.Points[0] = new Point(item.Children[item.Children.Count - 1].Points[1].X - (General.basicX * 5), item.Children[item.Children.Count - 1].Points[1].Y - (General.basicY * 5));
-                                if (item.Segments != null && item.Segments.Any())
-                                {
-                                    item.Segments[item.Segments.Count - 1].Points[0] = new Point(lastChild.Points[1].X - General.basicX * 5, 2.5 * (-General.basicX * 5) + lastChild.Points[1].Y);
-                                }
-                                else
-                                {
-                                    item.Points[0] = new Point(lastChild.Points[1].X - General.basicX * 5, 2.5 * (-General.basicX * 5) + lastChild.Points[1].Y);
-                                }
-                            }
-                            else
-                            {
-                                //item.Points[0] = new Point(item.Children[item.Children.Count - 1].Points[1].X - (General.basicX * 5), item.Children[item.Children.Count - 1].Points[1].Y + (General.basicY * 5));
-                                if (item.Segments != null && item.Segments.Any())
-                                {
-                                    item.Segments[item.Segments.Count - 1].Points[0] = new Point(lastChild.Points[1].X - General.basicX * 5, -2.5 * (-General.basicX * 5) + lastChild.Points[1].Y);
-                                }
-                                else
-                                {
-                                    item.Points[0] = new Point(lastChild.Points[1].X - General.basicX * 5, -2.5 * (-General.basicX * 5) + lastChild.Points[1].Y);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //item.Points[0] = new Point(item.Children[item.Children.Count - 1].Points[1].X - 25, item.Children[item.Children.Count - 1].Points[1].Y);
-                            if (item.Segments != null && item.Segments.Any())
-                            {
-                                item.Segments[item.Segments.Count - 1].Points[0] = new Point(lastChild.Points[1].X - 25, lastChild.Points[1].Y);
-                            }
-                            else
-                            {
-                                item.Points[0] = new Point(lastChild.Points[1].X - 25, lastChild.Points[1].Y);
-                            }
-                        }
-                        item.XTreme = item.Points[0].X;
-                        item.YxTreme = item.Points[0].Y;
-                    }
+                    item.AddTail();
+                    //if (item.Children.Count > 0)
+                    //{
+                    //    item.AddTail();
+                    //lastChild = item.Children[item.Children.Count - 1];
+                    //if (item.IsDiagonal)
+                    //{
+                    //    if (item.FromTop)
+                    //    {
+                    //        //item.Points[0] = new Point(item.Children[item.Children.Count - 1].Points[1].X - (General.basicX * 5), item.Children[item.Children.Count - 1].Points[1].Y - (General.basicY * 5));
+                    //        if (item.Segments != null && item.Segments.Any())
+                    //        {
+                    //            item.Segments[item.Segments.Count - 1].Points[0] = new Point(lastChild.Points[1].X - General.basicX * 5, 2.5 * (-General.basicX * 5) + lastChild.Points[1].Y);
+
+                    //        }
+                    //        else
+                    //        {
+                    //            item.Points[0] = new Point(lastChild.Points[1].X - General.basicX * 5, 2.5 * (-General.basicX * 5) + lastChild.Points[1].Y);
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        //item.Points[0] = new Point(item.Children[item.Children.Count - 1].Points[1].X - (General.basicX * 5), item.Children[item.Children.Count - 1].Points[1].Y + (General.basicY * 5));
+                    //        if (item.Segments != null && item.Segments.Any())
+                    //        {
+                    //            item.Segments[item.Segments.Count - 1].Points[0] = new Point(lastChild.Points[1].X - General.basicX * 5, -2.5 * (-General.basicX * 5) + lastChild.Points[1].Y);
+                    //        }
+                    //        else
+                    //        {
+                    //            item.Points[0] = new Point(lastChild.Points[1].X - General.basicX * 5, -2.5 * (-General.basicX * 5) + lastChild.Points[1].Y);
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    //item.Points[0] = new Point(item.Children[item.Children.Count - 1].Points[1].X - 25, item.Children[item.Children.Count - 1].Points[1].Y);
+                    //    if (item.Segments != null && item.Segments.Any())
+                    //    {
+                    //        item.Segments[item.Segments.Count - 1].Points[0] = new Point(lastChild.Points[1].X - 25, lastChild.Points[1].Y);
+                    //    }
+                    //    else
+                    //    {
+                    //        item.Points[0] = new Point(lastChild.Points[1].X - 25, lastChild.Points[1].Y);
+                    //    }
+                    //}
+                    //item.XTreme = item.Points[0].X;
+                    //item.YxTreme = item.Points[0].Y;
+                    //}
                 }
             }
         }
@@ -929,6 +946,22 @@ namespace EnsureBusinesss
                         line.IsDiagonal = !line.Father.IsDiagonal;
                         line.FromTop = line.Father.FromTop;
                     }
+
+                    //if (i == 0 && line.Father.IsRoot)
+                    //{
+                    //    if (line.Father.Segments.Any())
+                    //    {
+                    //        line.Father.ExtendHorizontal(StartPoint.X + RiskPolyLine.horizontalShiftX);
+                    //        line.NewDrawAtPoint(new Point(line.Father.XTreme, line.Father.YxTreme), line.ShortName);
+                    //    }
+                    //    else
+                    //    {
+                    //        // Esto solo ocurre cuando MainLine no tiene segmentos
+                    //        line.NewDrawAtPoint(new Point(StartPoint.X, StartPoint.Y), line.ShortName);
+                    //    }
+                    //}
+                    //else
+                    //{
                     if (i == 0)
                     {
                         line.NewDrawAtPoint(new Point(StartPoint.X, StartPoint.Y), line.ShortName);
@@ -959,7 +992,7 @@ namespace EnsureBusinesss
                             line.NewDrawAtPoint(new Point(line.Father.XTreme, line.Father.YxTreme), line.ShortName);
                         }
                     }
-
+                    //}
                     if (!(line.Collapsed) && line.Children.Count > 0)
                     {
                         DrawDiagramAsFishBone(line.Children, new Point(line.Points[0].X, line.Points[0].Y));
@@ -994,6 +1027,104 @@ namespace EnsureBusinesss
                 throw new Exception("TreeOperation.DrawDiagramAsFishBone(): " + ex.Message);
             }
         }
+
+        ///// <summary>
+        ///// Dibuja los RiskPolyLine dados siempre por encima de MainLine
+        ///// </summary>
+        ///// <param name="Lines"></param>
+        ///// <param name="StartPoint"></param>
+        //private static void DrawDiagramAsFishBoneDown(List<RiskPolyLine> Lines, Point StartPoint)
+        //{
+        //    try
+        //    {
+        //        IEnumerable<RiskPolyLine> orderedLines = Lines.OrderBy(x => x.Position);
+
+        //        for (int i = 0; i < Lines.Count; i++)
+        //        {
+        //            var line = orderedLines.ElementAt(i);
+
+        //            if (line.Father.Father == null)
+        //            {
+        //                line.IsDiagonal = true;
+        //            }
+        //            else
+        //            {
+        //                line.IsDiagonal = !line.Father.IsDiagonal;
+        //                line.FromTop = line.Father.FromTop;
+        //            }
+
+        //            if (i == 0 && line.Father.IsRoot)
+        //            {
+        //                line.Father.ExtendHorizontal(StartPoint.X + RiskPolyLine.horizontalShiftX);
+        //                line.NewDrawAtPoint(new Point(line.Father.XTreme, line.Father.YxTreme), line.ShortName);
+        //            }
+        //            else
+        //            {
+        //                if (i == 0)
+        //                {
+        //                    line.NewDrawAtPoint(new Point(StartPoint.X, StartPoint.Y), line.ShortName);
+        //                }
+        //                else
+        //                {
+        //                    if (line.IsDiagonal)
+        //                    {
+        //                        //Si la linea es diagonal el padre es horizontal por lo tanto el padre se extiende a la izquierda en el eje de las X
+        //                        //line.Father.Points[0] = new Point(orderedLines.ElementAt(i - 1).XTremee() - RiskPolyLine.horizontalShiftX, line.Father.Points[0].Y);
+        //                        //if (line.Father.Father != null)
+        //                        //{
+        //                        //    line.Father.ExtendHorizontal(orderedLines.ElementAt(i - 1).XTremee());
+        //                        //}
+        //                        line.Father.ExtendHorizontal(orderedLines.ElementAt(i - 1).XTremee());
+
+        //                        //Se dibuja el hijo al final del padre
+        //                        //line.NewDrawAtPoint(new Point(line.Father.Points[0].X, line.Father.Points[0].Y), line.ShortName);
+        //                        line.NewDrawAtPoint(new Point(line.Father.XTreme, line.Father.YxTreme), line.ShortName);
+        //                    }
+        //                    else
+        //                    {
+        //                        //Si la linea es horizontal el padre es diagonal por lo tanto el padre se extiende aumentando en el eje de las Y
+        //                        //line.Father.Points[0] = new Point(line.Father.Points[0].X, orderedLines.ElementAt(i - 1).AbsoluteYxTremee() - RiskPolyLine.diagonalShiftY);
+        //                        line.Father.ExtendVertical(orderedLines.ElementAt(i - 1).AbsoluteYxTremee());
+        //                        //Se dibuja el hijo al final del padre
+        //                        //line.NewDrawAtPoint(new Point(line.Father.Points[0].X, line.Father.Points[0].Y), line.ShortName);
+        //                        line.NewDrawAtPoint(new Point(line.Father.XTreme, line.Father.YxTreme), line.ShortName);
+        //                    }
+        //                }
+        //            }
+        //            if (!(line.Collapsed) && line.Children.Count > 0)
+        //            {
+        //                DrawDiagramAsFishBoneDown(line.Children, new Point(line.Points[0].X, line.Points[0].Y));
+        //            }
+
+        //            //TODO hmax = 101, altura que el diagrama nunca alcanza
+        //            //TODO: ROBERTO: QUITE EL DESPLAZAR A LA DERECHA PUES NO FUNCIONA CON L POSICIONAMIENTO
+        //            //A CONTACTAR CON LUCAS A VER QUE DESEA, O LO UNO O LO OTRO
+        //            //Este fragmento es el correcto
+        //            if (line.Father.Father == null)
+        //            {
+        //                //if (i > 0 && line.FromTop == true)
+        //                if (i > 0)
+        //                {
+        //                    MoveRight(Lines, line, hmax);
+        //                }
+        //            }
+
+        //            //Console.WriteLine(line.ShortName + " : " + i);
+        //            //if (line.Father.Father == null && i > 0 && line.FromTop == true)
+        //            //{
+        //            //    line.ShortName += "-referencePoint-";
+        //            //    // hacer validaciones aqui para ver si puede moverse a la derecha
+        //            //    // en caso positivo poner punto inicial y repintar
+        //            //    line.Father.Points[0] = new Point(orderedLines.ElementAt(i - 1).XTremee() + RiskPolyLine.horizontalShiftX, line.Father.Points[0].Y);
+        //            //    line.NewDrawAtPoint(new Point(line.Father.Points[0].X, line.Father.Points[0].Y), line.ShortName);
+        //            //}
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("TreeOperation.DrawDiagramAsFishBone(): " + ex.Message);
+        //    }
+        //}
 
         /// <summary>
         /// Revisa mover una sola, y hacer recursvio el metodo para calcular la posicion
@@ -1148,12 +1279,20 @@ namespace EnsureBusinesss
                 line.Points[1] = new Point(line.Points[1].X, ReflectAxesY + (ReflectAxesY - line.Points[1].Y));
                 if (line.Segments.Any())
                 {
-                    ReflectLines(line.Segments, ReflectAxesY);
+                    ReflectSegmentLines(line.Segments, ReflectAxesY);
                 }
                 if (!(line.Collapsed) && line.Children != null && line.Children.Count > 0)
                 {
                     ReflectLines(line.Children, ReflectAxesY);
                 }
+            }
+        }
+        private static void ReflectSegmentLines(List<SegmentPolyLine> Lines, double ReflectAxesY)
+        {
+            foreach (var line in Lines)
+            {
+                line.Points[0] = new Point(line.Points[0].X, ReflectAxesY + (ReflectAxesY - line.Points[0].Y));
+                line.Points[1] = new Point(line.Points[1].X, ReflectAxesY + (ReflectAxesY - line.Points[1].Y));
             }
         }
 
@@ -1282,7 +1421,7 @@ namespace EnsureBusinesss
                         //Si no es mainline
                         if (i > 0 && line.Father.Segments.Any())
                         {
-                            RiskPolyLine segment = line.Father.Segments[i - 1];
+                            SegmentPolyLine segment = line.Father.Segments[i - 1];
                             segment.Points[0] = new Point(line.Points[1].X, line.Points[1].Y);
                             segment.Points[1] = new Point(Lines[i - 1].Points[1].X, Lines[i - 1].Points[1].Y);
                         }
@@ -1311,7 +1450,7 @@ namespace EnsureBusinesss
                     LinesDown.Add(t);
                     LinesUp.Remove(t);
 
-                    Line.SegmentClear();
+                    Line.AllSegmentClear();
                     DrawDiagramAsFishBone(LinesUp, new Point(LinesUp[0].Points[1].X, LinesUp[0].Points[1].Y));
                     DrawDiagramAsFishBone(LinesDown, new Point(LinesUp[0].Points[1].X - 30, LinesUp[0].Points[1].Y));
 
@@ -1328,7 +1467,7 @@ namespace EnsureBusinesss
                     LinesUp.Add(t);
                     LinesDown.Remove(t);
 
-                    Line.SegmentClear();
+                    Line.AllSegmentClear();
                     DrawDiagramAsFishBone(LinesUp, new Point(LinesUp[0].Points[1].X, LinesUp[0].Points[1].Y));
                     DrawDiagramAsFishBone(LinesDown, new Point(LinesUp[0].Points[1].X - 30, LinesUp[0].Points[1].Y));
 
@@ -1346,7 +1485,7 @@ namespace EnsureBusinesss
         {
             LinesUp.Clear();
             LinesDown.Clear();
-            Line.SegmentClear();
+            Line.AllSegmentClear();
             LineClassify(Line.Children);
             if (LinesUp.Any())
             {
@@ -1365,29 +1504,60 @@ namespace EnsureBusinesss
             {
                 SkewLines(LinesUp, skewAngle, Line.Points[0].Y);
                 FixCounterMesure(LinesUp, true);
+                FixRisk(LinesUp);
             }
             if (LinesDown.Count > 0 && LinesUp.Count > 0)
             {
                 SkewLines(LinesDown, skewAngle, Line.Points[0].Y);
                 ReflectLines(LinesDown, LinesUp[0].Points[1].Y);
                 FixCounterMesure(LinesDown, false);
+                FixRisk(LinesDown);
             }
 
-            if (Line.Segments.Any())
+            //if (Line.Segments.Any())
+            //{
+            //    ReorderVisualSegments(Line);
+            //}
+            //else
+            //{
+            //    Line.Points[0] = new Point(Line.Children.Last().XTremee(), Line.Points[0].Y);
+            //}
+            ReorderMainLineSegments(Line);
+        }
+
+        private static void ReorderMainLineSegments(RiskPolyLine Line)
+        {
+            int i = 0;
+            IEnumerable<RiskPolyLine> orderedLines = Line.Children.OrderByDescending(r => r.Points[1].X);
+
+            Line.SegmentClear();
+
+            IEnumerator<RiskPolyLine> lineEnumerator = orderedLines.GetEnumerator();
+
+            RiskPolyLine rLine;
+            RiskPolyLine lLine;
+            SegmentPolyLine segment;
+            if (lineEnumerator.MoveNext())
             {
-                for (int i = 0; i < Line.Children.Count() - 2; i++)
+                rLine = lineEnumerator.Current;
+                while (lineEnumerator.MoveNext())
                 {
-                    RiskPolyLine line = Line.Children[i];
-                    Line.Segments[line.Position].Points[1] = new Point(line.Points[1].X, line.Points[1].Y);
-                    if (line.Position > 0)
-                    {
-                        Line.Segments[line.Position - 1].Points[0] = new Point(line.Points[1].X, line.Points[1].Y);
-                    }
+                    lLine = lineEnumerator.Current;
+
+                    Line.ExtendHorizontal(rLine.Points[1].X);
+                    segment = Line.Segments[i];
+                    segment.StartDrawPoint = new Point(lLine.Points[1].X + 5, lLine.Points[1].Y);
+                    segment.EndDrawPoint = new Point(rLine.Points[1].X, rLine.Points[1].Y);
+
+                    rLine = lLine;
+                    i++;
                 }
-            }
-            else
-            {
-                Line.Points[0] = new Point(Line.Children.Last().XTremee(), Line.Points[0].Y);
+                //RiskPolyLine lineaMasX = MainLine.Children.Where(rl => rl.Collapsed == false).OrderBy(rl => rl.XTremee()).First();
+                double XMax = Line.XTremee();
+                Line.ExtendHorizontal(XMax);
+                segment = Line.Segments[i];
+                segment.StartDrawPoint = new Point(XMax + 5, Line.Points[1].Y);
+                segment.EndDrawPoint = new Point(rLine.Points[1].X, Line.Points[1].Y);
             }
         }
 

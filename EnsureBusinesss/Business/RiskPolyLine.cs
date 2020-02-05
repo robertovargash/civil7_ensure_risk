@@ -57,10 +57,13 @@ namespace EnsureBusinesss.Business
         public Grid MyContainer { get; set; }
 
         //public static RoutedEvent DobleClick;
-        public List<RiskPolyLine> Segments { get; set; }
+        //public List<RiskPolyLine> Segments { get; set; }
+        public List<SegmentPolyLine> Segments { get; set; }
+        public ThicknessProvider thicknessProvider { get; set; }
         public RiskPolyLine()
         {
-            Segments = new List<RiskPolyLine>();
+            //Segments = new List<RiskPolyLine>();
+            Segments = new List<SegmentPolyLine>();
         }
         public RiskPolyLine(Grid Container, ContextMenu Menu, bool isCMI)
         {
@@ -121,7 +124,8 @@ namespace EnsureBusinesss.Business
                 ArrowEnds = ArrowEnds.None;
                 Stroke = new SolidColorBrush(Colors.Black);
             }
-            Segments = new List<RiskPolyLine>();
+            //Segments = new List<RiskPolyLine>();
+            Segments = new List<SegmentPolyLine>();
         }
 
         public bool IsLeaf()
@@ -256,6 +260,39 @@ namespace EnsureBusinesss.Business
                     }
                 }
             }
+            if (Segments.Any())
+            {
+                IEnumerable<RiskPolyLine> orderedChild = Children.OrderBy(pl => pl.Points[1].X);
+                //int i = 0;
+                int segmentIndex = Segments.Count - 1;
+                SegmentPolyLine segment;
+                SegmentPolyLine lastSegment = Segments[segmentIndex];
+                lastSegment.StrokeThickness = 1;
+
+                foreach (RiskPolyLine rpl in orderedChild)
+                {
+                    segmentIndex--;
+                    if (segmentIndex >= 0)
+                    {
+                        segment = Segments[segmentIndex];
+
+                        if (segment.StrokeThickness < rpl.StrokeThickness)
+                        {
+                            segment.StrokeThickness = rpl.StrokeThickness;
+                        }
+                        if (segment.StrokeThickness < lastSegment.StrokeThickness)
+                        {
+                            segment.StrokeThickness = lastSegment.StrokeThickness;
+                        }
+                        lastSegment = segment;
+                    }
+                }
+            }
+
+            //foreach (SegmentPolyLine segment in Segments)
+            //{
+            //    segment.StrokeThickness = StrokeThickness;
+            //}
         }
         public void DrawEntireLine(string LabelName)
         {
@@ -424,33 +461,13 @@ namespace EnsureBusinesss.Business
         }
         private void CreateSegmentAt(Point startPoint)
         {
-            RiskPolyLine segment = new RiskPolyLine()
+            SegmentPolyLine segment = new SegmentPolyLine(this)
             {
-                ShortName = this.ShortName,
-                ID = this.ID,
-                Position = this.Position,
-                Collapsed = this.Collapsed,
-                Probability = this.Probability,
-                IsActivated = this.IsActivated,
-                StrokeThickness = 2,
-                IsCM = false,
-                IdRiskFather = this.IdRiskFather,
-                IsDiagonal = this.IsDiagonal
+                StartDrawPoint = startPoint
             };
 
-            segment.ArrowEnds = ArrowEnds.None;
-            segment.Father = this;
             Segments.Add(segment);
-
-            segment.Points.Add(startPoint);
-            //segment.Points.Add(Points[0]);
-            segment.Points.Add(Children[Segments.Count-1].Points[1]);
-
-            segment.Stroke = new SolidColorBrush(Colors.Orange);
-
-
-            //TODO: La linea siguiente es solo para saber que los segmentos se diferencian.
-            segment.StrokeThickness = 1 + Segments.Count;
+            segment.EndDrawPoint = Children[Segments.Count - 1].Points[1];
 
             XTreme = segment.Points[0].X;
             YxTreme = segment.Points[0].Y;
@@ -481,15 +498,13 @@ namespace EnsureBusinesss.Business
                 StartDrawPoint = segment.Points[1];
             }
         }
-
         private void MoveTail(int deltaX, int deltaY)
         {
             Points[2] = new Point(Points[2].X + deltaX, Points[2].Y + deltaY);
         }
-
-        private List<RiskPolyLine> GetSegments()
+        private List<SegmentPolyLine> GetChildAndMeSegments()
         {
-            List<RiskPolyLine> segmentsToReturn = new List<RiskPolyLine>();
+            List<SegmentPolyLine> segmentsToReturn = new List<SegmentPolyLine>();
 
             if (Segments != null && Segments.Any())
             {
@@ -497,18 +512,17 @@ namespace EnsureBusinesss.Business
             }
             foreach (RiskPolyLine child in Children)
             {
-                segmentsToReturn.AddRange(child.GetSegments());
+                segmentsToReturn.AddRange(child.GetChildAndMeSegments());
             }
             return segmentsToReturn;
         }
-
         public Double SegmentMinX()
         {
             double minX = 0;
-            List<RiskPolyLine> segments;
+            List<SegmentPolyLine> segments;
             if (!(Collapsed))
             {
-                segments = GetSegments();
+                segments = GetChildAndMeSegments();
                 if (segments.Any())
                 {
                     minX = segments.Min(s => s.Points[0].X);
@@ -516,19 +530,107 @@ namespace EnsureBusinesss.Business
             }
             return minX;
         }
-
-        public void SegmentClear()
+        public void AllSegmentClear()
         {
-            if (Segments !=null && Segments.Any())
+            if (Segments != null && Segments.Any())
             {
                 Segments.Clear();
-                if (Children!=null && Children.Any())
+                if (Children != null && Children.Any())
                 {
                     foreach (RiskPolyLine line in Children)
                     {
-                        line.SegmentClear();
+                        line.AllSegmentClear();
                     }
                 }
+            }
+        }
+        public void SegmentClear()
+        {
+            if (Segments != null && Segments.Any())
+            {
+                Segments.Clear();
+            }
+        }
+        protected override void OnMouseEnter(MouseEventArgs e)
+        {
+            base.OnMouseEnter(e);
+            if (Father != null)
+            {
+                OnMouseEnterStrokeThickness();
+            }
+        }
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            base.OnMouseLeave(e);
+            if (!IsRoot)
+            {
+                //StrokeThickness = Segments == null ? 1 : (Father != null ? Father.StrokeThickness : 1);
+                //OnMouseEnterStrokeThickness();
+                OnMouseLeaveStrokeThickness();
+            }
+        }
+        public virtual void OnMouseEnterStrokeThickness()
+        {
+            if (!IsCM && !IsRoot)
+            {
+                StrokeThickness = 10;
+                foreach (SegmentPolyLine segment in Segments)
+                {
+                    segment.StrokeThickness = StrokeThickness;
+                }
+            }
+        }
+        public virtual void OnMouseLeaveStrokeThickness()
+        {
+            if (!IsCM && !IsRoot)
+            {
+                thicknessProvider.UpdateThickness();
+                //foreach (SegmentPolyLine segment in Segments)
+                //{
+                //    segment.StrokeThickness = StrokeThickness;
+                //}
+            }
+        }
+        private bool IsMainLine()
+        {
+            return Father == null;
+        }
+        public void AddTail()
+        {
+            if (!IsCM && Children.Any())
+            {
+                Point starPointAt = (Segments != null && Segments.Any()) ? Segments.Last().Points[0] : Points[0];
+
+                if (IsDiagonal)
+                {
+                    if (FromTop)
+                    {
+                        CreateSegmentAt(new Point(starPointAt.X - General.basicX * 5, 2.5 * (-General.basicX * 5) + starPointAt.Y));
+                    }
+                    else
+                    {
+                        CreateSegmentAt(new Point(starPointAt.X - General.basicX * 5, -2.5 * (-General.basicX * 5) + starPointAt.Y));
+                    }
+                }
+                else
+                {
+                    CreateSegmentAt(new Point(starPointAt.X - 25, starPointAt.Y));
+                }
+
+                starPointAt = Segments.Last().Points[0];
+
+                XTreme = starPointAt.X;
+                YxTreme = starPointAt.Y;
+
+                AddChildrenTail();
+            }
+        }
+
+        private void AddChildrenTail()
+        {
+            foreach (var item in Children)
+            {
+                item.AddTail();
             }
         }
     }
