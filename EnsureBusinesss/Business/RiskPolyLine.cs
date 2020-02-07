@@ -59,7 +59,7 @@ namespace EnsureBusinesss.Business
         //public static RoutedEvent DobleClick;
         //public List<RiskPolyLine> Segments { get; set; }
         public List<SegmentPolyLine> Segments { get; set; }
-        public ThicknessProvider thicknessProvider { get; set; }
+        //public ThicknessProvider thicknessProvider { get; set; }
         public RiskPolyLine()
         {
             //Segments = new List<RiskPolyLine>();
@@ -191,21 +191,26 @@ namespace EnsureBusinesss.Business
                 {
                     double extra = (LabelName.Length > 26) ? 13 : -5;
                     //-2.5 * (RiskPolyLine.diagonalCMTailX) + line.Points[1].Y
-                    this.ElStackPannel.Margin = new Thickness(StartDrawPoint.X - RiskPolyLine.diagonalShiftLabelX + extra, StartDrawPoint.Y - RiskPolyLine.diagonalShiftLabelY, 0, 0);
+                    //this.ElStackPannel.Margin = new Thickness(StartDrawPoint.X - RiskPolyLine.diagonalShiftLabelX + extra, StartDrawPoint.Y - RiskPolyLine.diagonalShiftLabelY, 0, 0);
+                    this.ElStackPannel.Margin = new Thickness(Points[1].X - RiskPolyLine.diagonalShiftLabelX + extra, Points[1].Y - RiskPolyLine.diagonalShiftLabelY, 0, 0);
                     RotateTransform rotateTransform1 = new RotateTransform(AngleX);
                     this.ElStackPannel.RenderTransform = rotateTransform1;
                 }
                 else
                 {
                     double extra = (LabelName.Length > 26) ? -19 : -19;
-                    this.ElStackPannel.Margin = new Thickness(StartDrawPoint.X - RiskPolyLine.diagonalShiftLabelX + extra, StartDrawPoint.Y + RiskPolyLine.diagonalShiftLabelY - 10, 0, 0);
+                    //this.ElStackPannel.Margin = new Thickness(StartDrawPoint.X - RiskPolyLine.diagonalShiftLabelX + extra, StartDrawPoint.Y + RiskPolyLine.diagonalShiftLabelY - 10, 0, 0);
+                    this.ElStackPannel.Margin = new Thickness(Points[1].X - RiskPolyLine.diagonalShiftLabelX + extra, Points[1].Y + RiskPolyLine.diagonalShiftLabelY - 10, 0, 0);
+
                     RotateTransform rotateTransform1 = new RotateTransform(-AngleX);
                     this.ElStackPannel.RenderTransform = rotateTransform1;
                 }
             }
             else
             {
-                this.ElStackPannel.Margin = new Thickness(StartDrawPoint.X - RiskPolyLine.horizontalShiftLabelX, StartDrawPoint.Y + 1, 0, 0);
+                //this.ElStackPannel.Margin = new Thickness(StartDrawPoint.X - RiskPolyLine.horizontalShiftLabelX, StartDrawPoint.Y + 1, 0, 0);
+                this.ElStackPannel.Margin = new Thickness(Points[1].X - RiskPolyLine.horizontalShiftLabelX, Points[1].Y + 1, 0, 0);
+
             }
 
             if (IsCM)
@@ -260,34 +265,34 @@ namespace EnsureBusinesss.Business
                     }
                 }
             }
-            if (Segments.Any())
-            {
-                IEnumerable<RiskPolyLine> orderedChild = Children.OrderBy(pl => pl.Points[1].X);
-                //int i = 0;
-                int segmentIndex = Segments.Count - 1;
-                SegmentPolyLine segment;
-                SegmentPolyLine lastSegment = Segments[segmentIndex];
-                lastSegment.StrokeThickness = 1;
+            //if (Segments.Any())
+            //{
+            //    IEnumerable<RiskPolyLine> orderedChild = Children.OrderBy(pl => pl.Points[1].X);
+            //    //int i = 0;
+            //    int segmentIndex = Segments.Count - 1;
+            //    SegmentPolyLine segment;
+            //    SegmentPolyLine lastSegment = Segments[segmentIndex];
+            //    lastSegment.StrokeThickness = 1;
 
-                foreach (RiskPolyLine rpl in orderedChild)
-                {
-                    segmentIndex--;
-                    if (segmentIndex >= 0)
-                    {
-                        segment = Segments[segmentIndex];
+            //    foreach (RiskPolyLine rpl in orderedChild)
+            //    {
+            //        segmentIndex--;
+            //        if (segmentIndex >= 0)
+            //        {
+            //            segment = Segments[segmentIndex];
 
-                        if (segment.StrokeThickness < rpl.StrokeThickness)
-                        {
-                            segment.StrokeThickness = rpl.StrokeThickness;
-                        }
-                        if (segment.StrokeThickness < lastSegment.StrokeThickness)
-                        {
-                            segment.StrokeThickness = lastSegment.StrokeThickness;
-                        }
-                        lastSegment = segment;
-                    }
-                }
-            }
+            //            if (segment.StrokeThickness < rpl.StrokeThickness)
+            //            {
+            //                segment.StrokeThickness = rpl.StrokeThickness;
+            //            }
+            //            if (segment.StrokeThickness < lastSegment.StrokeThickness)
+            //            {
+            //                segment.StrokeThickness = lastSegment.StrokeThickness;
+            //            }
+            //            lastSegment = segment;
+            //        }
+            //    }
+            //}
 
             //foreach (SegmentPolyLine segment in Segments)
             //{
@@ -516,6 +521,7 @@ namespace EnsureBusinesss.Business
             }
             return segmentsToReturn;
         }
+
         public Double SegmentMinX()
         {
             double minX = 0;
@@ -551,50 +557,51 @@ namespace EnsureBusinesss.Business
                 Segments.Clear();
             }
         }
-        protected override void OnMouseEnter(MouseEventArgs e)
-        {
-            base.OnMouseEnter(e);
-            if (Father != null)
-            {
-                OnMouseEnterStrokeThickness();
-            }
-        }
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            base.OnMouseLeave(e);
-            if (!IsRoot)
-            {
-                //StrokeThickness = Segments == null ? 1 : (Father != null ? Father.StrokeThickness : 1);
-                //OnMouseEnterStrokeThickness();
-                OnMouseLeaveStrokeThickness();
-            }
-        }
-        public virtual void OnMouseEnterStrokeThickness()
-        {
-            if (!IsCM && !IsRoot)
-            {
-                StrokeThickness = 10;
-                foreach (SegmentPolyLine segment in Segments)
-                {
-                    segment.StrokeThickness = StrokeThickness;
-                }
-            }
-        }
-        public virtual void OnMouseLeaveStrokeThickness()
-        {
-            if (!IsCM && !IsRoot)
-            {
-                thicknessProvider.UpdateThickness();
-                //foreach (SegmentPolyLine segment in Segments)
-                //{
-                //    segment.StrokeThickness = StrokeThickness;
-                //}
-            }
-        }
-        private bool IsMainLine()
-        {
-            return Father == null;
-        }
+        //protected override void OnMouseEnter(MouseEventArgs e)
+        //{
+        //    base.OnMouseEnter(e);
+        //    if (Father != null)
+        //    {
+        //        OnMouseEnterStrokeThickness();
+        //    }
+        //}
+        //protected override void OnMouseLeave(MouseEventArgs e)
+        //{
+        //    base.OnMouseLeave(e);
+        //    if (!IsRoot)
+        //    {
+        //        //StrokeThickness = Segments == null ? 1 : (Father != null ? Father.StrokeThickness : 1);
+        //        //OnMouseEnterStrokeThickness();
+        //        OnMouseLeaveStrokeThickness();
+        //    }
+        //}
+        //public virtual void OnMouseEnterStrokeThickness()
+        //{
+        //    if (!IsCM && !IsRoot)
+        //    {
+        //        StrokeThickness = 10;
+        //        foreach (SegmentPolyLine segment in Segments)
+        //        {
+        //            segment.StrokeThickness = StrokeThickness;
+        //        }
+        //    }
+        //}
+
+        //public virtual void OnMouseLeaveStrokeThickness()
+        //{
+        //    if (!IsCM && !IsRoot)
+        //    {
+        //        thicknessProvider.UpdateThickness();
+        //        //foreach (SegmentPolyLine segment in Segments)
+        //        //{
+        //        //    segment.StrokeThickness = StrokeThickness;
+        //        //}
+        //    }
+        //}
+        //private bool IsMainLine()
+        //{ 
+        //    return Father == null;
+        //}
         public void AddTail()
         {
             if (!IsCM && Children.Any())
@@ -625,12 +632,56 @@ namespace EnsureBusinesss.Business
                 AddChildrenTail();
             }
         }
-
         private void AddChildrenTail()
         {
             foreach (var item in Children)
             {
                 item.AddTail();
+            }
+        }
+        public void UpdateSegmentsStrokeThickness()
+        {
+            if (Segments.Any())
+            {
+                IEnumerable<RiskPolyLine> orderedChild = Children.OrderBy(pl => pl.Points[1].X);
+                //int i = 0;
+                int segmentIndex = Segments.Count - 1;
+                SegmentPolyLine segment;
+                SegmentPolyLine lastSegment = Segments[segmentIndex];
+                lastSegment.StrokeThickness = 1;
+
+                foreach (RiskPolyLine rpl in orderedChild)
+                {
+                    segmentIndex--;
+                    if (segmentIndex >= 0)
+                    {
+                        segment = Segments[segmentIndex];
+                        segment.StrokeThickness = 1;
+                        if (!rpl.IsCM)
+                        {
+                            if (segment.StrokeThickness < rpl.StrokeThickness)
+                            {
+                                segment.StrokeThickness = rpl.StrokeThickness;
+                            }
+                            if (segment.StrokeThickness < lastSegment.StrokeThickness)
+                            {
+                                segment.StrokeThickness = lastSegment.StrokeThickness;
+                            }
+                        }
+                        lastSegment = segment;
+                    }
+                }
+            }
+        }
+
+        public void UpdateSegmentsStroke()
+        {
+            if (Segments!=null )
+            {
+                foreach (var segment in Segments)
+                {
+                    segment.Stroke = Stroke;
+                }
             }
         }
     }

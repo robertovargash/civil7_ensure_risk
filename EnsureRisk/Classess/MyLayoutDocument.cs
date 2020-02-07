@@ -65,7 +65,7 @@ namespace EnsureRisk.Classess
             set
             {
                 _lineList = value;
-                thicknessProvider.LinesList = value;
+                //thicknessProvider.LinesList = value;
             }
         }
         public List<RiskPolyLine> LinesMoving { get; set; }
@@ -118,7 +118,7 @@ namespace EnsureRisk.Classess
             set
             {
                 _ID_Diagram = value;
-                thicknessProvider.ID_Diagram = value;
+                //thicknessProvider.ID_Diagram = value;
             }
         }
         public Popin Popin { get; set; }
@@ -131,17 +131,17 @@ namespace EnsureRisk.Classess
             set
             {
                 _Ds = value;
-                thicknessProvider.Ds = _Ds;
+                //thicknessProvider.Ds = _Ds;
             }
         }
         public DataRow DrDiagram { get; set; }
         public Window MyWindow { get; set; }
-        public ThicknessProvider thicknessProvider { get; }
+        //public ThicknessProvider thicknessProvider { get; }
         public MyLayoutDocument() : base()
         {
             try
             {
-                thicknessProvider = new ThicknessProvider();
+                //thicknessProvider = new ThicknessProvider();
 
                 this.CanClose = true;
                 this.CanFloat = true;
@@ -383,6 +383,7 @@ namespace EnsureRisk.Classess
                                                 item.Stroke = new SolidColorBrush(Color.FromArgb(80, drawColor.R, drawColor.G, drawColor.B));
                                             }
                                         }
+                                        item.UpdateSegmentsStroke();
                                     }
                                 }
                             }
@@ -897,7 +898,7 @@ namespace EnsureRisk.Classess
                 LinesListCMState.Clear();
                 if (CbFilterTopR.SelectedIndex >= 0)
                 {
-                    thicknessProvider.ID_TopRisk = (Int32)CbFilterTopR.SelectedValue;
+                    //thicknessProvider.ID_TopRisk = (Int32)CbFilterTopR.SelectedValue;
                     System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_RiskTree_Damages.TABLENAME].Select(DT_RiskTree_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_RiskTree_Damages.COLOR].ToString()));
                     AddMainLine(Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_RISK_TREE + " = " + ID_Diagram + " and " + DT_Risk.IS_ROOT_COLUMNA + " = " + 1).First(), drawingCColor);
 
@@ -1043,12 +1044,31 @@ namespace EnsureRisk.Classess
                         }
                     }
                 }
+                SetEventsToSegments();
                 Scope();
             }
             catch (Exception ex)
             {
                 new WindowMessageOK(ex.Message).ShowDialog();
             }
+        }
+        private void SetEventsToSegments()
+        {
+            foreach (var item in LinesList)
+            {
+                if (!item.IsRoot)
+                {
+                    foreach (var riskLineSegment in item.Segments)
+                    {
+                        riskLineSegment.MouseLeave += Risk_MouseLeave;
+                        riskLineSegment.MouseEnter += Segment_MouseHover;
+
+                        riskLineSegment.MouseDown += R_MouseDown_Event;//click en el Riesgo
+                                                                       //riskLineSegment.MouseUp += RiskLine_MouseUp;
+                    }
+                }
+            }
+            Console.WriteLine("ok");
         }
         private static void SetPolyLineGroup(RiskPolyLine polyLine, DataRow item)
         {
@@ -1095,7 +1115,7 @@ namespace EnsureRisk.Classess
                 StrokeThickness = 2,
                 IsCM = isCMI,
                 IdRiskFather = (Int32)itemDataRow[DT_Risk.IDRISK_FATHER],
-                thicknessProvider = thicknessProvider
+                //thicknessProvider = thicknessProvider
             };
         }
 
@@ -1638,6 +1658,10 @@ namespace EnsureRisk.Classess
 
         }
 
+        private void S_MouseDown_Event(object sender, MouseButtonEventArgs e)
+        {
+           
+        }
         private void R_MouseDown_Event(object sender, MouseButtonEventArgs e)
         {
             try
@@ -2001,7 +2025,27 @@ namespace EnsureRisk.Classess
             {
                 TheLine = (RiskPolyLine)sender;
             }
+            SetLineThickness(TheLine);
             RiskEnter(TheLine, new Point(e.GetPosition(GridPaintLines).X, e.GetPosition(GridPaintLines).Y));
+        }
+
+        private void Segment_MouseHover(object sender, MouseEventArgs e)
+        {
+            SegmentPolyLine TheLine;
+            TheLine = (SegmentPolyLine)sender;
+            SetLineThickness(TheLine.Father);
+            RiskEnter(TheLine.Father, new Point(e.GetPosition(GridPaintLines).X, e.GetPosition(GridPaintLines).Y));
+        }
+
+        private void SetLineThickness(RiskPolyLine TheLine)
+        {
+            TheLine.StrokeThickness = 10;
+            // se recorre la lista de todos los hermanos, incluyendose el que se genero el evento.
+            foreach (SegmentPolyLine segmentLine in TheLine.Segments)
+            {
+                segmentLine.StrokeThickness = 10;
+            }
+
         }
 
         public void RiskEnter(RiskPolyLine TheLine, Point pointToShowPopup)

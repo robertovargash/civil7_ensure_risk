@@ -1028,104 +1028,6 @@ namespace EnsureBusinesss
             }
         }
 
-        ///// <summary>
-        ///// Dibuja los RiskPolyLine dados siempre por encima de MainLine
-        ///// </summary>
-        ///// <param name="Lines"></param>
-        ///// <param name="StartPoint"></param>
-        //private static void DrawDiagramAsFishBoneDown(List<RiskPolyLine> Lines, Point StartPoint)
-        //{
-        //    try
-        //    {
-        //        IEnumerable<RiskPolyLine> orderedLines = Lines.OrderBy(x => x.Position);
-
-        //        for (int i = 0; i < Lines.Count; i++)
-        //        {
-        //            var line = orderedLines.ElementAt(i);
-
-        //            if (line.Father.Father == null)
-        //            {
-        //                line.IsDiagonal = true;
-        //            }
-        //            else
-        //            {
-        //                line.IsDiagonal = !line.Father.IsDiagonal;
-        //                line.FromTop = line.Father.FromTop;
-        //            }
-
-        //            if (i == 0 && line.Father.IsRoot)
-        //            {
-        //                line.Father.ExtendHorizontal(StartPoint.X + RiskPolyLine.horizontalShiftX);
-        //                line.NewDrawAtPoint(new Point(line.Father.XTreme, line.Father.YxTreme), line.ShortName);
-        //            }
-        //            else
-        //            {
-        //                if (i == 0)
-        //                {
-        //                    line.NewDrawAtPoint(new Point(StartPoint.X, StartPoint.Y), line.ShortName);
-        //                }
-        //                else
-        //                {
-        //                    if (line.IsDiagonal)
-        //                    {
-        //                        //Si la linea es diagonal el padre es horizontal por lo tanto el padre se extiende a la izquierda en el eje de las X
-        //                        //line.Father.Points[0] = new Point(orderedLines.ElementAt(i - 1).XTremee() - RiskPolyLine.horizontalShiftX, line.Father.Points[0].Y);
-        //                        //if (line.Father.Father != null)
-        //                        //{
-        //                        //    line.Father.ExtendHorizontal(orderedLines.ElementAt(i - 1).XTremee());
-        //                        //}
-        //                        line.Father.ExtendHorizontal(orderedLines.ElementAt(i - 1).XTremee());
-
-        //                        //Se dibuja el hijo al final del padre
-        //                        //line.NewDrawAtPoint(new Point(line.Father.Points[0].X, line.Father.Points[0].Y), line.ShortName);
-        //                        line.NewDrawAtPoint(new Point(line.Father.XTreme, line.Father.YxTreme), line.ShortName);
-        //                    }
-        //                    else
-        //                    {
-        //                        //Si la linea es horizontal el padre es diagonal por lo tanto el padre se extiende aumentando en el eje de las Y
-        //                        //line.Father.Points[0] = new Point(line.Father.Points[0].X, orderedLines.ElementAt(i - 1).AbsoluteYxTremee() - RiskPolyLine.diagonalShiftY);
-        //                        line.Father.ExtendVertical(orderedLines.ElementAt(i - 1).AbsoluteYxTremee());
-        //                        //Se dibuja el hijo al final del padre
-        //                        //line.NewDrawAtPoint(new Point(line.Father.Points[0].X, line.Father.Points[0].Y), line.ShortName);
-        //                        line.NewDrawAtPoint(new Point(line.Father.XTreme, line.Father.YxTreme), line.ShortName);
-        //                    }
-        //                }
-        //            }
-        //            if (!(line.Collapsed) && line.Children.Count > 0)
-        //            {
-        //                DrawDiagramAsFishBoneDown(line.Children, new Point(line.Points[0].X, line.Points[0].Y));
-        //            }
-
-        //            //TODO hmax = 101, altura que el diagrama nunca alcanza
-        //            //TODO: ROBERTO: QUITE EL DESPLAZAR A LA DERECHA PUES NO FUNCIONA CON L POSICIONAMIENTO
-        //            //A CONTACTAR CON LUCAS A VER QUE DESEA, O LO UNO O LO OTRO
-        //            //Este fragmento es el correcto
-        //            if (line.Father.Father == null)
-        //            {
-        //                //if (i > 0 && line.FromTop == true)
-        //                if (i > 0)
-        //                {
-        //                    MoveRight(Lines, line, hmax);
-        //                }
-        //            }
-
-        //            //Console.WriteLine(line.ShortName + " : " + i);
-        //            //if (line.Father.Father == null && i > 0 && line.FromTop == true)
-        //            //{
-        //            //    line.ShortName += "-referencePoint-";
-        //            //    // hacer validaciones aqui para ver si puede moverse a la derecha
-        //            //    // en caso positivo poner punto inicial y repintar
-        //            //    line.Father.Points[0] = new Point(orderedLines.ElementAt(i - 1).XTremee() + RiskPolyLine.horizontalShiftX, line.Father.Points[0].Y);
-        //            //    line.NewDrawAtPoint(new Point(line.Father.Points[0].X, line.Father.Points[0].Y), line.ShortName);
-        //            //}
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("TreeOperation.DrawDiagramAsFishBone(): " + ex.Message);
-        //    }
-        //}
-
         /// <summary>
         /// Revisa mover una sola, y hacer recursvio el metodo para calcular la posicion
         /// este metodo mueve un paso en cada iteracion, asi si hay que moverlo 3 lugares
@@ -1546,7 +1448,7 @@ namespace EnsureBusinesss
 
                     Line.ExtendHorizontal(rLine.Points[1].X);
                     segment = Line.Segments[i];
-                    segment.StartDrawPoint = new Point(lLine.Points[1].X + 5, lLine.Points[1].Y);
+                    segment.StartDrawPoint = new Point(lLine.Points[1].X, lLine.Points[1].Y);
                     segment.EndDrawPoint = new Point(rLine.Points[1].X, rLine.Points[1].Y);
 
                     rLine = lLine;

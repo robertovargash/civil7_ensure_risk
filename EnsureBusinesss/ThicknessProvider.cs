@@ -26,7 +26,6 @@ namespace EnsureBusinesss
             LinesList = polyLines;
             ID_TopRisk = id_TopRisk;
         }
-
         public void UpdateThickness()
         {
             DataTable dtRisk = Ds.Tables[DT_Risk.TABLE_NAME].Clone();

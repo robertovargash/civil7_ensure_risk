@@ -488,6 +488,7 @@ namespace EnsureBusinesss
                     if (!(item.IsCM))
                     {
                         item.Value = CalculateTopRiskTreeValue(dtEncoder.Rows.Find(item.ID), dtEncoder, IdTopRisk, Risk_TopRisk, CM, CM_TopRisk);
+                        // TODO todo, aqui podria ponerse el mismo valo para cada segmento hijo, pero antes revisar porque cada segmento tendra su propio valor
                     }
                 }
                 decimal min = 0;
@@ -498,14 +499,43 @@ namespace EnsureBusinesss
                 foreach (var item in linesList)
                 {
                     if (!(item.IsCM))
+                    {
                         item.SetThickness(item.Value, min, max);
+                        //foreach (SegmentPolyLine sgm in item.Segments)
+                        //{
+                        //    sgm.SetThickness(sgm.Value, min, max);
+                        //}
+                    }
                 }
-                linesList.Find(r => r.IsRoot).StrokeThickness = 6;
+                RiskPolyLine rootPolyLine = linesList.Find(r => r.IsRoot);
+                rootPolyLine.StrokeThickness = 6;
+                UpdateSegmentsStrokeThickness(rootPolyLine);
+
+                IEnumerable<RiskPolyLine> rootChildren = linesList.FindAll(p => !p.IsRoot && !p.IsCM && p.Father.IsRoot);
+                IEnumerable<RiskPolyLine> orderedRootChildren = rootChildren.OrderBy(p => p.Points[1].X);
+                foreach (RiskPolyLine polyLine in orderedRootChildren)
+                {
+                    UpdateSegmentsStrokeThickness(polyLine);
+                }
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+
+        private static void UpdateSegmentsStrokeThickness(RiskPolyLine riskPolyLine)
+        {
+            if (riskPolyLine.Children.Any())
+            {
+                IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderBy(pl => pl.Points[1].X);
+                foreach (RiskPolyLine polyLine in orderedChild)
+                {
+                    UpdateSegmentsStrokeThickness(polyLine);
+                    polyLine.UpdateSegmentsStrokeThickness();
+                }
+            }
+            riskPolyLine.UpdateSegmentsStrokeThickness();
         }
 
 

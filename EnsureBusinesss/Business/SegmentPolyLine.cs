@@ -13,9 +13,11 @@ namespace EnsureBusinesss.Business
 {
     public class SegmentPolyLine : ArrowPolyline
     {
-        private RiskPolyLine Father;
+
         private Point _startDrawPoint;
         private Point _endDrawPoint;
+        public RiskPolyLine Father { get; set; }
+        public decimal Value { get; set; }
         public Point StartDrawPoint
         {
             get => _startDrawPoint;
@@ -39,27 +41,80 @@ namespace EnsureBusinesss.Business
         {
             Father = father;
             ArrowEnds = ArrowEnds.None;
-            Stroke = new SolidColorBrush(Colors.Orange);
+            //Stroke = new SolidColorBrush(Colors.Orange);
+            Stroke = father.Stroke;
 
-            StrokeThickness = father.StrokeThickness;
+            //StrokeThickness = father.StrokeThickness;
+            StrokeThickness = 1;
             Points.Add(new Point());
             Points.Add(new Point());
+
+            Value = 0;
         }
-        protected override void OnMouseEnter(MouseEventArgs e)
+
+        public void SetThickness(decimal cost, decimal min, decimal max)
         {
-            base.OnMouseEnter(e);
-            if (Father != null && !Father.IsRoot)
+
+            decimal value = max - min;
+
+            decimal skoda = value / 3;
+
+            if (cost <= skoda)
             {
-                Father.OnMouseEnterStrokeThickness();
+                this.StrokeThickness = 1;
+            }
+            else
+            {
+                if (cost > skoda && cost <= 2 * skoda)
+                {
+                    //this.StrokeThickness = 2;
+                    this.StrokeThickness = 1;
+                }
+                else
+                {
+                    if (cost > 2 * skoda && cost <= 3 * skoda)
+                    {
+                        this.StrokeThickness = 3;
+                    }
+                    else
+                    {
+                        if (cost > 3 * skoda && cost <= 4 * skoda)
+                        {
+                            //this.StrokeThickness = 4;
+                            this.StrokeThickness = 6;
+                        }
+                        else
+                        {
+                            if (cost > 4 * skoda && cost <= 5 * skoda)
+                            {
+                                //this.StrokeThickness = 5;
+                                this.StrokeThickness = 6;
+                            }
+                            else
+                            {
+                                this.StrokeThickness = 6;
+                            }
+                        }
+                    }
+                }
             }
         }
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            base.OnMouseLeave(e);
-            if (Father != null && !Father.IsRoot)
-            {
-                Father.OnMouseLeaveStrokeThickness();
-            }
-        }
+
+        //protected override void OnMouseEnter(MouseEventArgs e)
+        //{
+        //    base.OnMouseEnter(e);
+        //    if (Father != null)
+        //    {
+        //        Father.OnMouseEnterStrokeThickness();
+        //    }
+        //}
+        //protected override void OnMouseLeave(MouseEventArgs e)
+        //{
+        //    base.OnMouseLeave(e);
+        //    if (Father != null)
+        //    {
+        //        Father.OnMouseLeaveStrokeThickness();
+        //    }
+        //}
     }
 }
