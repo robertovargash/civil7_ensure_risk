@@ -1,4 +1,5 @@
 ﻿using DataMapping.Data;
+//using EnsureRisk.Export.Contract;
 using EnsureRisk.Export.Trader;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace EnsureRisk.Export
@@ -113,7 +116,11 @@ namespace EnsureRisk.Export
             _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
             _worksheet.Columns[_columnIndex].AutoFit();
             _columnIndex++;
-
+            _worksheet.Cells[1, _columnIndex] = "WBS Name";
+            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
+            _worksheet.Columns[_columnIndex].ColumnWidth = 20;
+            _worksheet.Columns[_columnIndex].Style.WrapText = true;
+            _columnIndex++;
             SetDynamicHeader(false);
         }
         private void SetCounterMHeader()
@@ -167,7 +174,7 @@ namespace EnsureRisk.Export
         private void Fill(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
         {
             _rowIndex = BEGIN_AT_ROWINDEX;
-            FillWithRisk(_riskTreeDataSetTrader.GetMainRiskChildList(), backgroundWorker, e);
+            FillWithRisk(_riskTreeDataSetTrader.GetMainRiskChildList(), backgroundWorker, e, true);
         }
         private void SaveToExcel()
         {
@@ -190,20 +197,22 @@ namespace EnsureRisk.Export
             foreach (DataRow riskDataRow in mainRiskChildDataRowQuery)
             {
                 _columnIndex = 1;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.ID_COLUMNA];
+                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.ID];
                 _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.NAMESHORT_COLUMNA];
+                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.NAMESHORT];
                 _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.DETAIL_COLUMNA];
+                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.COMMENTS];
                 _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.PROBABILITY_COLUMN];
+                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.PROBABILITY];
                 _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.ENABLED_COLUMN];
+                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.ENABLED];
                 _columnIndex++;
                 _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.IDRISK_FATHER];
                 _columnIndex++;
+                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.WBS_NAME];
+                _columnIndex++;
 
-                IEnumerable<DataRow> riskProperties = _riskTreeDataSetTrader.GetRiskPropertyList((int)riskDataRow[DT_Risk.ID_COLUMNA]);
+                IEnumerable<DataRow> riskProperties = _riskTreeDataSetTrader.GetRiskPropertyList((int)riskDataRow[DT_Risk.ID]);
 
                 foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
                 {
@@ -213,7 +222,7 @@ namespace EnsureRisk.Export
                 }
                 int _counterMcolumnIndexBeginAt = _columnIndex++;
 
-                IEnumerable<DataRow> counterMeasureChildList = _riskTreeDataSetTrader.GetCounterMeasureChildList((int)riskDataRow[DT_Risk.ID_COLUMNA]);
+                IEnumerable<DataRow> counterMeasureChildList = _riskTreeDataSetTrader.GetCounterMeasureChildList((int)riskDataRow[DT_Risk.ID]);
 
                 if (!counterMeasureChildList.Any())
                     _rowIndex++;
@@ -221,18 +230,18 @@ namespace EnsureRisk.Export
                 foreach (DataRow counterMDataRow in counterMeasureChildList)
                 {
                     _columnIndex = _counterMcolumnIndexBeginAt;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.ID_COLUMNA];
+                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.ID];
                     _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.NAMESHORT_COLUMNA];
+                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.NAMESHORT];
                     _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.DETAIL_COLUMNA];
+                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.DETAIL];
                     _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.PROBABILITY_COLUMN];
+                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.PROBABILITY];
                     _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.ENABLED_COLUMN];
+                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.ENABLED];
                     _columnIndex++;
 
-                    IEnumerable<DataRow> counterMProperties = _riskTreeDataSetTrader.GetCounterMPropertyList((int)counterMDataRow[DT_CounterM.ID_COLUMNA]);
+                    IEnumerable<DataRow> counterMProperties = _riskTreeDataSetTrader.GetCounterMPropertyList((int)counterMDataRow[DT_CounterM.ID]);
 
                     foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
                     {
@@ -244,7 +253,7 @@ namespace EnsureRisk.Export
                     _rowIndex++;
                 }
 
-                IEnumerable<DataRow> riskChildList = _riskTreeDataSetTrader.GetRiskChildList((int)riskDataRow[DT_Risk.ID_COLUMNA]);
+                IEnumerable<DataRow> riskChildList = _riskTreeDataSetTrader.GetRiskChildList((int)riskDataRow[DT_Risk.ID]);
 
                 if (riskChildList.Any())
                 {
@@ -252,7 +261,7 @@ namespace EnsureRisk.Export
                 }
             }
         }
-        private void FillWithRisk(IEnumerable<DataRow> mainRiskChildDataRowQuery, BackgroundWorker backgroundWorker, DoWorkEventArgs e)
+        private void FillWithRisk(IEnumerable<DataRow> mainRiskChildDataRowQuery, BackgroundWorker backgroundWorker, DoWorkEventArgs e, bool isMain)
         {
             String columnHeader = String.Empty;
 
@@ -264,20 +273,32 @@ namespace EnsureRisk.Export
                     break;
                 }
                 _columnIndex = 1;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.ID_COLUMNA];
+                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.ID];
                 _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.NAMESHORT_COLUMNA];
+                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.NAMESHORT];
                 _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.DETAIL_COLUMNA];
+                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.COMMENTS];
                 _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.PROBABILITY_COLUMN];
+                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.PROBABILITY];
                 _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.ENABLED_COLUMN];
-                _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.IDRISK_FATHER];
+                _worksheet.Cells[_rowIndex, _columnIndex] = (bool)riskDataRow[DT_Risk.ENABLED] ? "Activated" : "No Activated";
                 _columnIndex++;
 
-                IEnumerable<DataRow> riskProperties = _riskTreeDataSetTrader.GetRiskPropertyList((int)riskDataRow[DT_Risk.ID_COLUMNA]);
+                if (isMain)
+                {
+                    _worksheet.Cells[_rowIndex, _columnIndex] = "";
+                    _columnIndex++;
+                }
+                else
+                {
+                    _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.IDRISK_FATHER];
+                    _columnIndex++;
+                }
+
+                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.WBS_NAME];
+                _columnIndex++;
+
+                IEnumerable<DataRow> riskProperties = _riskTreeDataSetTrader.GetRiskPropertyList((int)riskDataRow[DT_Risk.ID]);
 
                 foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
                 {
@@ -287,7 +308,7 @@ namespace EnsureRisk.Export
                 }
                 int _counterMcolumnIndexBeginAt = _columnIndex++;
 
-                IEnumerable<DataRow> counterMeasureChildList = _riskTreeDataSetTrader.GetCounterMeasureChildList((int)riskDataRow[DT_Risk.ID_COLUMNA]);
+                IEnumerable<DataRow> counterMeasureChildList = _riskTreeDataSetTrader.GetCounterMeasureChildList((int)riskDataRow[DT_Risk.ID]);
 
                 if (!counterMeasureChildList.Any())
                     _rowIndex++;
@@ -295,18 +316,18 @@ namespace EnsureRisk.Export
                 foreach (DataRow counterMDataRow in counterMeasureChildList)
                 {
                     _columnIndex = _counterMcolumnIndexBeginAt;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.ID_COLUMNA];
+                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.ID];
                     _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.NAMESHORT_COLUMNA];
+                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.NAMESHORT];
                     _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.DETAIL_COLUMNA];
+                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.DETAIL];
                     _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.PROBABILITY_COLUMN];
+                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.PROBABILITY];
                     _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.ENABLED_COLUMN];
+                    _worksheet.Cells[_rowIndex, _columnIndex] = (bool)counterMDataRow[DT_CounterM.ENABLED] ? "Activated" : "No Activated";
                     _columnIndex++;
 
-                    IEnumerable<DataRow> counterMProperties = _riskTreeDataSetTrader.GetCounterMPropertyList((int)counterMDataRow[DT_CounterM.ID_COLUMNA]);
+                    IEnumerable<DataRow> counterMProperties = _riskTreeDataSetTrader.GetCounterMPropertyList((int)counterMDataRow[DT_CounterM.ID]);
 
                     foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
                     {
@@ -321,11 +342,11 @@ namespace EnsureRisk.Export
                     _rowIndex++;
                 }
 
-                IEnumerable<DataRow> riskChildList = _riskTreeDataSetTrader.GetRiskChildList((int)riskDataRow[DT_Risk.ID_COLUMNA]);
+                IEnumerable<DataRow> riskChildList = _riskTreeDataSetTrader.GetRiskChildList((int)riskDataRow[DT_Risk.ID]);
 
                 if (riskChildList.Any())
                 {
-                    FillWithRisk(riskChildList, backgroundWorker, e);
+                    FillWithRisk(riskChildList, backgroundWorker, e, false);
                 }
             }
         }

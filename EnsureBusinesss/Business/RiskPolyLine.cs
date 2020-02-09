@@ -45,6 +45,7 @@ namespace EnsureBusinesss.Business
         public bool IsRoot { get; set; }
         public int Size { get; set; }
         public decimal Value { get; set; }
+        public decimal MyOwnValue { get; set; }
         public bool IsCM { get; set; }
         public bool Collapsed { get; set; }
         public decimal Probability { get; set; }
@@ -55,6 +56,7 @@ namespace EnsureBusinesss.Business
         public List<RiskPolyLine> Children { get; set; }
         public PictureBoxPolyLine Expand { get; set; }
         public Grid MyContainer { get; set; }
+        public decimal Class { get; set; }
 
         //public static RoutedEvent DobleClick;
         //public List<RiskPolyLine> Segments { get; set; }
@@ -88,7 +90,6 @@ namespace EnsureBusinesss.Business
             };
             MyName.TextTrimming = TextTrimming.CharacterEllipsis;
             MyName.TextWrapping = TextWrapping.Wrap;
-
             Expand = new PictureBoxPolyLine
             {
                 Risk = this,

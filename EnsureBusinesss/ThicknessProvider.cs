@@ -29,7 +29,7 @@ namespace EnsureBusinesss
         public void UpdateThickness()
         {
             DataTable dtRisk = Ds.Tables[DT_Risk.TABLE_NAME].Clone();
-            foreach (var item in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_RISK_TREE + " = " + ID_Diagram))
+            foreach (var item in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram))
             {
                 dtRisk.ImportRow(item);
             }

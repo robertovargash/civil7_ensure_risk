@@ -64,7 +64,7 @@ namespace EnsureRisk.Windows
             {
                 if (TextName.Text != "")
                 {
-                    if (MyCM.Select(DT_CounterM.ID_RISK_TREE + " = " + RiskTreeID + " and " + DT_CounterM.NAMESHORT_COLUMNA + " = '" + TextName.Text + "'").Any())
+                    if (MyCM.Select(DT_CounterM.ID_RISK_TREE + " = " + RiskTreeID + " and " + DT_CounterM.NAMESHORT + " = '" + TextName.Text + "'").Any())
                     {
                         WindowMessageYesNo yesNo = new WindowMessageYesNo("The name [" + TextName.Text + "] Already exists in this diagram. Do you want to use it again?");
                         yesNo.ShowDialog();

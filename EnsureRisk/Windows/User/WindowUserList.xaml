@@ -16,12 +16,12 @@
         <Button Name="BtnAdd" Content="Add" HorizontalAlignment="Left"  Margin="22,27,0,0" VerticalAlignment="Top" Width="90" Click="BtnAdd_Click" TabIndex="1" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
         <Button Name="BtnEdit" Content="Edit" HorizontalAlignment="Left"  Margin="22,81,0,0" VerticalAlignment="Top" Width="90" Click="BtnEdit_Click" TabIndex="2" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
         <Button Name="BtnDel" Content="Delete" HorizontalAlignment="Left"  Margin="22,137,0,0" VerticalAlignment="Top" Width="90" Click="BtnDel_Click" TabIndex="3" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
-        <DataGrid Name="dgUser" Margin="128,10,20,21" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="dgUser_MouseDoubleClick" GridLinesVisibility="All" VerticalGridLinesBrush="#FFDEDEDE">
+        <DataGrid Name="dgUser" Margin="128,10,20,21" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="DgUser_MouseDoubleClick" GridLinesVisibility="All" VerticalGridLinesBrush="#FFDEDEDE">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="userName" Header="User" Binding="{Binding Path= userName}" Width="*"/>
-                <DataGridTextColumn x:Name="userDescription" Header="Description" Binding="{Binding Path= positionDescription}" Width="*"/>
+                <DataGridTextColumn x:Name="fullName" Header="Full Name" Binding="{Binding Path= fullName}" Width="*"/>
             </DataGrid.Columns>
-            
+
         </DataGrid>
 
     </Grid>

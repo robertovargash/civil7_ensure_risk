@@ -11,6 +11,9 @@ namespace DataMapping.Data
         public const string CM = "CM";
         public const string WBS = "WBS_Name";
         public const string NIVEL = "Nivel";
+        public const string IS_PRIMARY = "isPrimary";
+        public const string PRIMARY = "Primaryy";
+        public const string USERNAME = "userName";
 
         public DT_CM_WBS() : base()
         {
@@ -26,6 +29,9 @@ namespace DataMapping.Data
             Columns.Add(CM, typeof(System.String));
             Columns.Add(WBS, typeof(System.String));
             Columns.Add(NIVEL, typeof(System.String));
+            Columns.Add(IS_PRIMARY, typeof(System.Boolean));
+            Columns.Add(PRIMARY, typeof(System.String));
+            Columns.Add(USERNAME, typeof(System.String));
             PrimaryKey = PK_COLUMN;
         }
     }

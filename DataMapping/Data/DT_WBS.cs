@@ -12,6 +12,8 @@ namespace DataMapping.Data
         public const string NIVEL = "Nivel";
         public const string FNIVEL = "FNivel";
         public const string IDPROJECT = "idProject";
+        //public const string IS_MANAGER = "isManager";
+        public const string USERNAME = "userName";
 
         public DT_WBS() : base()
         {
@@ -29,6 +31,8 @@ namespace DataMapping.Data
             this.Columns.Add(NIVEL, typeof(System.String));
             this.Columns.Add(FNIVEL, typeof(System.String));
             this.Columns.Add(IDPROJECT, typeof(System.Int32));
+            //this.Columns.Add(IS_MANAGER, typeof(System.Boolean));
+            this.Columns.Add(USERNAME, typeof(System.String));
             this.PrimaryKey = PK_COLUMN;
         }
     }

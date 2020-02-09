@@ -47,9 +47,9 @@ namespace EnsureRisk.Windows
                 DataTable topCodif = ws.GetAllGroupes().Tables[DT_Groupe.TABLE_NAME].Copy();
                 WindowSelection frmSelection = new WindowSelection
                 {
-                    dt = topCodif,
-                    dcolumToShow = new string[] { DT_Groupe.GROUPE_NAME },
-                    dcolumToShowAlias = new string[] { DT_Groupe.GROUPE_NAME },
+                    Dt = topCodif,
+                    DcolumToShow = new string[] { DT_Groupe.GROUPE_NAME },
+                    DcolumToShowAlias = new string[] { DT_Groupe.GROUPE_NAME },
                     Title = "Groups"
                 };
                 frmSelection.ShowDialog();

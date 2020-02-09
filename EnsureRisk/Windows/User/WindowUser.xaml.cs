@@ -23,7 +23,8 @@ namespace EnsureRisk.Windows
         public DataRow User { get; set; }
         public string Operation { get; set; }
         public DataTable RoleTable { get; set; }
-        public DataView Dataview { get; set; }
+        //public DataTable WBSTable { get; set; }
+        public DataView DVWBS { get; set; }
 
         private bool changepassword;
         public WindowUser()
@@ -43,20 +44,51 @@ namespace EnsureRisk.Windows
         }
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
-            if (TextPasword.Password == TextConfirm.Password)
+            if (Operation == General.UPDATE)
             {
-                User[DT_User.USERNAME_COLUMNA] = TextUser.Text;
                 if (changepassword)
                 {
-                    User[DT_User.USERPASSWORD_COLUMNA] = General.Encrypt(TextPasword.Password);
-                }                
-                User[DT_User.POSITIONDESCRIPTION_COLUMNA] = TextDescription.Text;
-                DialogResult = true;
+                    if (TextPasword.Password == TextConfirm.Password)
+                    {
+                        User[DT_User.USERNAME] = TextUser.Text;
+                        User[DT_User.USERPASSWORD] = General.Encrypt(TextPasword.Password);
+                        User[DT_User.POSITIONDESCRIPTION] = TextDescription.Text;
+                        User[DT_User.FULL_NAME] = TextFullName.Text;
+                        DialogResult = true;
+                    }
+                    else
+                    {
+                        new WindowMessageOK(StringResources.PASSWORD_MATCH).ShowDialog();
+                    }
+                }
+                else
+                {
+                    User[DT_User.USERNAME] = TextUser.Text;
+                    User[DT_User.USERPASSWORD] = General.Encrypt(TextPasword.Password);
+                    User[DT_User.POSITIONDESCRIPTION] = TextDescription.Text;
+                    User[DT_User.FULL_NAME] = TextFullName.Text;
+                    DialogResult = true;
+                }
             }
             else
             {
-                new WindowMessageOK(StringResources.PASSWORD_MATCH).ShowDialog();
+                if (TextPasword.Password == TextConfirm.Password)
+                {
+                    User[DT_User.USERNAME] = TextUser.Text;
+                    if (changepassword)
+                    {
+                        User[DT_User.USERPASSWORD] = General.Encrypt(TextPasword.Password);
+                    }
+                    User[DT_User.POSITIONDESCRIPTION] = TextDescription.Text;
+                    User[DT_User.FULL_NAME] = TextFullName.Text;
+                    DialogResult = true;
+                }
+                else
+                {
+                    new WindowMessageOK(StringResources.PASSWORD_MATCH).ShowDialog();
+                }
             }
+
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -73,27 +105,29 @@ namespace EnsureRisk.Windows
                 DataTable OpCod = ws.GetRolesData().Tables[DT_Role.ROLE_TABLE].Copy();
                 WindowSelection frm = new WindowSelection
                 {
-                    dt = OpCod,
+                    Dt = OpCod,
                     //dt = General.EliminarExistenColumString(OpCod, RoleTable, RoleDatos.ROLE_COLUM),
-                    dcolumToShow = new string[] { DT_Role.ROLE_TABLE },
-                    dcolumToShowAlias = new string[] { DT_Role.ROLE_COLUM },
+                    DcolumToShow = new string[] { DT_Role.ROLE_TABLE },
+                    DcolumToShowAlias = new string[] { DT_Role.ROLE_COLUM },
                     Title = "Role"
                 };
+                frm.P.FilterString = "Role name";
+                frm.ColumnToFilter = DT_Role.ROLE_COLUM;
                 if (frm.ShowDialog() == true)
                 {
                     foreach (DataRow item in frm.RowsSelected)
                     {
                         DataRow newrow = RoleTable.NewRow();
-                        newrow[DT_User_Role.ROLE_COLUMN] = item[DT_Role.ROLE_COLUM];
+                        newrow[DT_User_Role.ROLE] = item[DT_Role.ROLE_COLUM];
                         newrow[DT_User_Role.IDROL_COLUMN] = item[DT_Role.IDROL_COLUMN];
-                        newrow[DT_User_Role.USER_COLUMN] = TextUser.Text;
+                        newrow[DT_User_Role.USER] = TextUser.Text;
                         RoleTable.Rows.Add(newrow);
                     }
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();;
+                new WindowMessageOK(ex.Message).ShowDialog(); ;
             }
         }
 
@@ -103,7 +137,7 @@ namespace EnsureRisk.Windows
             {
                 if (dgRoles.SelectedIndex > 0)
                 {
-                     if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + RoleTable.Rows[dgRoles.SelectedIndex][DT_User_Role.ROLE_COLUMN] +"]?").ShowDialog() == true)
+                    if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + RoleTable.Rows[dgRoles.SelectedIndex][DT_User_Role.ROLE] + "]?").ShowDialog() == true)
                         RoleTable.Rows[dgRoles.SelectedIndex].Delete();
                 }
             }
@@ -118,6 +152,12 @@ namespace EnsureRisk.Windows
             if (Operation == General.INSERT)
             {
                 dgRoles.ItemsSource = RoleTable.DefaultView;
+                DVWBS = new DataView();
+                //DVWBS.Table = WBSTable;
+
+                //dgWBS.ItemsSource = DVWBS;
+                //dgWBS.ItemsSource = WBSTable.DefaultView;
+                //DVWBS.RowFilter = DT_User_WBS.USER + " = '" + TextUser.Text + "'";
             }
 
             if (Operation == General.UPDATE)
@@ -125,12 +165,20 @@ namespace EnsureRisk.Windows
                 try
                 {
                     ServiceUserController.WebServiceUser ws = new ServiceUserController.WebServiceUser();
-                    RoleTable = ws.GetUserRolesData(new object[] { User[DT_User.USERNAME_COLUMNA].ToString() }).Tables[DT_User_Role.TABLE_NAME].Copy();
+                    DataSet tempDS = ws.GetUserRolesData(new object[] { User[DT_User.USERNAME].ToString() });
+                    RoleTable = tempDS.Tables[DT_User_Role.TABLE_NAME].Copy();
+                    //WBSTable = tempDS.Tables[DT_User_WBS.TABLE_NAME].Copy();
                     dgRoles.ItemsSource = RoleTable.DefaultView;
-                    TextUser.Text = User[DT_User.USERNAME_COLUMNA].ToString();
-                    TextPasword.Password = General.ByteArrayToString((byte[])User[DT_User.USERPASSWORD_COLUMNA]);
-                    TextConfirm.Password = General.ByteArrayToString((byte[])User[DT_User.USERPASSWORD_COLUMNA]);
-                    TextDescription.Text = User[DT_User.POSITIONDESCRIPTION_COLUMNA].ToString();
+
+                    //dgWBS.ItemsSource = WBSTable.DefaultView;
+
+                    //WBSTable.DefaultView.RowFilter = DT_User_WBS.USER + " like '" + TextUser.Text + "'";
+
+                    TextUser.Text = User[DT_User.USERNAME].ToString();
+                    TextPasword.Password = General.ByteArrayToString((byte[])User[DT_User.USERPASSWORD]);
+                    TextConfirm.Password = General.ByteArrayToString((byte[])User[DT_User.USERPASSWORD]);
+                    TextDescription.Text = User[DT_User.POSITIONDESCRIPTION].ToString();
+                    TextFullName.Text = User[DT_User.FULL_NAME].ToString();
                 }
                 catch (Exception ex)
                 {
@@ -142,6 +190,47 @@ namespace EnsureRisk.Windows
         private void TextPasword_LostFocus(object sender, RoutedEventArgs e)
         {
             changepassword = true;
+        }
+
+        private void BtnDelWBS_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnAddWBS_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS();
+                DataTable OpCod = ws.GetAllWBS().Tables[DT_WBS.TABLE_NAME].Copy();
+                WindowSelection frm = new WindowSelection
+                {
+                    Dt = OpCod,
+                    //dt = General.EliminarExistenColumString(OpCod, RoleTable, RoleDatos.ROLE_COLUM),
+                    DcolumToShow = new string[] { "WBS", "Project" },
+                    DcolumToShowAlias = new string[] { "WBS", "Project" },
+                    Title = "WBS"
+                };
+                frm.P.FilterString = "WBS";
+                frm.ColumnToFilter = "WBS";
+                if (frm.ShowDialog() == true)
+                {
+                    foreach (DataRow item in frm.RowsSelected)
+                    {
+                        //DataRow newrow = WBSTable.NewRow();
+                        //newrow[DT_User_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
+                        //newrow[DT_User_WBS.ID_PROJECT] = item[DT_WBS.IDPROJECT];
+                        //newrow[DT_User_WBS.USER] = TextUser.Text;
+                        //newrow[DT_User_WBS.WBS] = item["WBS"];
+                        //WBSTable.Rows.Add(newrow);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                new WindowMessageOK(ex.Message).ShowDialog(); ;
+            }
+
         }
     }
 }

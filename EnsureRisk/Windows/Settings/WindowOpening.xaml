@@ -70,11 +70,11 @@
             </DoubleAnimationUsingKeyFrames>
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="image13">
                 <DiscreteDoubleKeyFrame KeyTime="0:0:0.65" Value="1"/>
-                <DiscreteDoubleKeyFrame KeyTime="0:0:6.4" Value="0"/>
+                <DiscreteDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
             </DoubleAnimationUsingKeyFrames>
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="image14">
                 <DiscreteDoubleKeyFrame KeyTime="0:0:0.65" Value="1"/>
-                <DiscreteDoubleKeyFrame KeyTime="0:0:6.4" Value="0"/>
+                <DiscreteDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>

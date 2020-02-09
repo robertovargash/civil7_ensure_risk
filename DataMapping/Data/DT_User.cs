@@ -8,9 +8,10 @@ namespace DataMapping.Data
 		
         public const string User_TABLA = "Username"; 
 
-        public const string USERNAME_COLUMNA = "userName";
-        public const string USERPASSWORD_COLUMNA = "userPassword";
-        public const string POSITIONDESCRIPTION_COLUMNA = "positionDescription";
+        public const string USERNAME = "userName";
+        public const string USERPASSWORD= "userPassword";
+        public const string POSITIONDESCRIPTION = "positionDescription";
+        public const string FULL_NAME = "fullName";
 
         public DT_User() : base()
         {
@@ -21,10 +22,11 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
             this.TableName = User_TABLA;
-            PK_COLUMN[0] = this.Columns.Add(USERNAME_COLUMNA, typeof(System.String));
+            PK_COLUMN[0] = this.Columns.Add(USERNAME, typeof(System.String));
             //PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
-            this.Columns.Add(USERPASSWORD_COLUMNA, typeof(System.Byte[]));
-            this.Columns.Add(POSITIONDESCRIPTION_COLUMNA, typeof(System.String));
+            this.Columns.Add(USERPASSWORD, typeof(System.Byte[]));
+            this.Columns.Add(POSITIONDESCRIPTION, typeof(System.String));
+            this.Columns.Add(FULL_NAME, typeof(System.String));
             this.PrimaryKey = PK_COLUMN;
         }
         public static DataTable Create()

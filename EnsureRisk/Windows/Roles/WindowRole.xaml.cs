@@ -47,11 +47,14 @@ namespace EnsureRisk.Windows
                 DataTable OpCod = ws.GetOperation().Tables[DT_Operation.OPERATION_TABLE].Copy();
                 WindowSelection frm = new WindowSelection
                 {
-                    dt = General.DeleteExists(OpCod, OperationTable, DT_Operation.ID_COLUM),
-                    dcolumToShow = new string[] { DT_Operation.OPERATION_COLUMN },
-                    dcolumToShowAlias = new string[] { DT_Operation.OPERATION_COLUMN },
+                    Dt = General.DeleteExists(OpCod, OperationTable, DT_Operation.ID_COLUM),
+                    DcolumToShow = new string[] { DT_Operation.OPERATION_COLUMN },
+                    DcolumToShowAlias = new string[] { DT_Operation.OPERATION_COLUMN },
                     Title = "Operation"
+
                 };
+                frm.P.FilterString = "Operation Name";
+                frm.ColumnToFilter = DT_Operation.OPERATION_COLUMN;
                 if (frm.ShowDialog() == true)
                 {
                     foreach (DataRow item in frm.RowsSelected)

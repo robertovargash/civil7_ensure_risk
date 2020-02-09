@@ -54,18 +54,20 @@ namespace EnsureRisk.Windows
                 {
                     User = Ds.Tables[DT_User.User_TABLA].NewRow(),
                     RoleTable = Ds.Tables[DT_User_Role.TABLE_NAME].Clone(),
+                    //WBSTable = Ds.Tables[DT_User_WBS.TABLE_NAME].Copy(),
                     Operation = General.INSERT,
                     Icon = Icon
                 };
                 if (adduser.ShowDialog() == true)
                 {
-                    DataSet temp = new DataSet();
+                    //DataSet temp = new DataSet();
                     Ds.Tables[DT_User.User_TABLA].Rows.Add(adduser.User);
                     Ds.Tables[DT_User_Role.TABLE_NAME].Merge(adduser.RoleTable);
+                    //Ds.Tables[DT_User_WBS.TABLE_NAME].Merge(adduser.WBSTable);
                     if (Ds.HasChanges())
                     {
                         ServiceUserController.WebServiceUser user = new ServiceUserController.WebServiceUser();
-                        temp = Ds.GetChanges();
+                        DataSet temp = Ds.GetChanges();
                         temp = user.SaveUser(temp);
                         Ds.Merge(temp);
                         Ds.AcceptChanges();
@@ -86,24 +88,26 @@ namespace EnsureRisk.Windows
                 if (intcell >= 0)
                 {
                     DataRow dr = Ds.Tables[DT_User.User_TABLA].Rows[dgUser.SelectedIndex];
-                    if (dr[DT_User.USERNAME_COLUMNA].ToString() != "admin")
+                    if (dr[DT_User.USERNAME].ToString() != "admin")
                     {
                         WindowUser adduser = new WindowUser
                         {
                             User = dr,
                             RoleTable = Ds.Tables[DT_User_Role.TABLE_NAME].Copy(),
+                            //WBSTable = Ds.Tables[DT_User_WBS.TABLE_NAME].Copy(),
                             Operation = General.UPDATE,
                             Icon = Icon
                         };
                         adduser.ShowDialog();
                         if (adduser.DialogResult == true)
                         {
-                            DataSet temp = new DataSet();
+                            //DataSet temp = new DataSet();
                             Ds.Tables[DT_User_Role.TABLE_NAME].Merge(adduser.RoleTable);
+                            //Ds.Tables[DT_User_WBS.TABLE_NAME].Merge(adduser.WBSTable);
                             if (Ds.HasChanges())
                             {
                                 ServiceUserController.WebServiceUser user = new ServiceUserController.WebServiceUser();
-                                temp = Ds.GetChanges();
+                                DataSet temp = Ds.GetChanges();
                                 temp = user.SaveUser(temp);
                                 Ds.Merge(temp);
                                 Ds.AcceptChanges();
@@ -113,7 +117,7 @@ namespace EnsureRisk.Windows
                     else
                     {
                         new WindowMessageOK("'admin' user can´t be changed!").ShowDialog();
-                    }                   
+                    }
                 }
             }
             catch (Exception ex)
@@ -129,16 +133,16 @@ namespace EnsureRisk.Windows
                 int intcell = dgUser.SelectedIndex;
                 if (intcell >= 0)
                 {
-                    if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + Ds.Tables[DT_User.User_TABLA].Rows[intcell][DT_User.USERNAME_COLUMNA] + "]?").ShowDialog() == true)
+                    if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + Ds.Tables[DT_User.User_TABLA].Rows[intcell][DT_User.USERNAME] + "]?").ShowDialog() == true)
                     {
-                        if (Ds.Tables[DT_User.User_TABLA].Rows[intcell][DT_User.USERNAME_COLUMNA].ToString() != "admin")
+                        if (Ds.Tables[DT_User.User_TABLA].Rows[intcell][DT_User.USERNAME].ToString() != "admin")
                         {
                             Ds.Tables[DT_User.User_TABLA].Rows[intcell].Delete();
-                            DataSet temp = new DataSet();
+                            //DataSet temp = new DataSet();
                             if (Ds.HasChanges())
                             {
                                 ServiceUserController.WebServiceUser user = new ServiceUserController.WebServiceUser();
-                                temp = Ds.GetChanges();
+                                DataSet temp = Ds.GetChanges();
                                 temp = user.SaveUser(temp);
                                 Ds.Merge(temp);
                                 Ds.AcceptChanges();
@@ -148,7 +152,7 @@ namespace EnsureRisk.Windows
                         {
                             new WindowMessageOK("'admin' user can´t be deleted!").ShowDialog();
                         }
-                    }                        
+                    }
                 }
             }
             catch (Exception ex)
@@ -172,7 +176,7 @@ namespace EnsureRisk.Windows
             }
         }
 
-        private void dgUser_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void DgUser_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             BtnEdit_Click(sender, e);
         }

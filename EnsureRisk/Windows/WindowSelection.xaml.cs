@@ -14,23 +14,53 @@ using System.Windows.Shapes;
 using System.Data;
 using EnsureBusinesss;
 using EnsureRisk.Resources;
+using System.ComponentModel;
 
 namespace EnsureRisk.Windows
 {
+    public class ThisOne : INotifyPropertyChanged
+    {
+        string filterName = "None";
+
+        public string FilterString
+        {
+            get { return filterName; }
+            set
+            {
+                filterName = value;
+                OnPropertyChanged("FilterString");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new
+                PropertyChangedEventArgs(property));
+        }
+    }
     /// <summary>
     /// Interaction logic for WindowSelection.xaml
     /// </summary>
     public partial class WindowSelection : Window
     {
+        public string FilterString { get; set; }
+        public List<DataRow> RowsSelected { get; set; }
+        public DataTable Dt { get; set; }
+        public DataView Dv { get; set; }
+        public string[] DcolumToShowAlias { get; set; }
+        public string[] DcolumToShow { get; set; }
+        public string ColumnToFilter { get; set; }
+        public ThisOne P { get; set; }
+        public bool IsMultiple { get; set; }
 
-        public DataRow[] RowsSelected { get; set; }
-        public DataTable dt { get; set; }
-        public string[] dcolumToShowAlias { get; set; }
-        public string[] dcolumToShow { get; set; }
         public WindowSelection()
         {
             InitializeComponent();
             ChangeLanguage();
+            P = new ThisOne();
+            txtFilterRisk.DataContext = P;
         }
 
         public void ChangeLanguage()
@@ -45,16 +75,18 @@ namespace EnsureRisk.Windows
             {
                 dgSelection.AutoGenerateColumns = false;
                 //dgSelection.columns
-                for (int i = 0; i < dcolumToShow.Count(); i++)
+                for (int i = 0; i < DcolumToShow.Count(); i++)
                 {
                     DataGridTextColumn column = new DataGridTextColumn();
-                    column.Header = dcolumToShowAlias[i];
-                    column.Binding = new Binding(dcolumToShow[i]);
+                    column.Header = DcolumToShowAlias[i];
+                    column.Binding = new Binding(DcolumToShow[i]);
                     column.IsReadOnly = true;
                     //column.
                     dgSelection.Columns.Add(column);
                 }
-                dgSelection.ItemsSource = dt.DefaultView;
+                Dv = new DataView(Dt);
+                dgSelection.ItemsSource = Dv;
+
             }
             catch (Exception ex)
             {
@@ -66,20 +98,11 @@ namespace EnsureRisk.Windows
         {
             if (dgSelection.SelectedItems.Count >= 0)
             {
-                RowsSelected = new DataRow[dgSelection.SelectedItems.Count];
-                int index = 0;
-                for (int i = 0; i < dgSelection.Items.Count; i++)
+                RowsSelected = new List<DataRow>();
+                foreach (DataRowView item in dgSelection.SelectedItems)
                 {
-                    if (dgSelection.SelectedItems.Count > index)
-                    {
-                        if (dgSelection.SelectedItems[index].Equals(dgSelection.Items[i]))
-                        {
-                            RowsSelected[index] = dt.Rows[i];
-                            index++;
-                        }
-                    }
+                    RowsSelected.Add(item.Row);
                 }
-
                 DialogResult = true;
             }
             else
@@ -98,14 +121,32 @@ namespace EnsureRisk.Windows
         {
             if (dgSelection.SelectedItems.Count > 0)
             {
-                RowsSelected = new DataRow[1];
-                RowsSelected[0] = dt.Rows[dgSelection.SelectedIndex];
+                RowsSelected = new List<DataRow>();
+                foreach (DataRowView item in dgSelection.SelectedItems)
+                {
+                    RowsSelected.Add(item.Row);
+                }
                 DialogResult = true;
             }
             else
             {
                 new WindowMessageOK("No selected").ShowDialog(); ;
             }
+        }
+
+        private void btnFilter_Click(object sender, RoutedEventArgs e)
+        {
+            //txtFilterRisk.Clear();
+        }
+
+        private void TxtFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Dv.RowFilter = ColumnToFilter + " like '%" + txtFilterRisk.Text + "%'";
+        }
+
+        private void btnClearFilter_Click(object sender, RoutedEventArgs e)
+        {
+            txtFilterRisk.Clear();
         }
     }
 }

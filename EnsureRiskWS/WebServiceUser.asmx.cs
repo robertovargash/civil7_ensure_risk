@@ -47,6 +47,7 @@ namespace EnsureRiskWS
                 SQLAccessBuilder SQL = new SQLAccessBuilder(DT_User.User_TABLA);
                 SQL.GetDataset(ref ds, "pa_SelectUserWithRole", param);
                 ds.Tables[1].TableName = DT_User_Role.TABLE_NAME;
+                //ds.Tables[2].TableName = DT_User_WBS.TABLE_NAME;
                 userds.Merge(ds);
                 return userds;
             }
@@ -69,14 +70,17 @@ namespace EnsureRiskWS
             {
                 SQLAccessBuilder userDA = new SQLAccessBuilder(trans, ds.Tables[DT_User.User_TABLA].TableName, ds.Tables[DT_User.User_TABLA].PrimaryKey);
                 SQLAccessBuilder userRoleDA = new SQLAccessBuilder(trans, ds.Tables[DT_User_Role.TABLE_NAME].TableName, ds.Tables[DT_User_Role.TABLE_NAME].PrimaryKey);
+                //SQLAccessBuilder userWBSDA = new SQLAccessBuilder(trans, ds.Tables[DT_User_WBS.TABLE_NAME].TableName, ds.Tables[DT_User_WBS.TABLE_NAME].PrimaryKey);
 
                 userDA.Delete(ds);
                 userRoleDA.Delete(ds);
+                //userWBSDA.Delete(ds);
 
                 userDA.Update(ds);
 
                 userDA.Insert(ds);
                 userRoleDA.Insert(ds);
+                //userWBSDA.Insert(ds);
 
                 if (ds.HasErrors)
                 {

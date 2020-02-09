@@ -24,12 +24,13 @@ namespace EnsureRisk.Windows
     public partial class WindowTreeRisk : Window
     {
         public string Operation { get; set; }
-        public int IdWBS { get; set; }
+        public int IDProject { get; set; }
         public DataTable TopRiskTable { get; set; }
         public DataTable CM_TopRisk { get; set; }
         public DataTable Risk_TopRisk { get; set; }
         public DataRow DRow { get; set; }
         public DataView Dv { get; set; }
+        public string SuggestionName { get; set; }
 
         public WindowTreeRisk()
         {
@@ -53,15 +54,19 @@ namespace EnsureRisk.Windows
                 //}
                 if (Operation == General.UPDATE)
                 {
-                    TextName.Text = DRow[DT_RiskTree.DIAGRAM_NAME].ToString();
+                    TextName.Text = DRow[DT_Diagram.DIAGRAM_NAME].ToString();
                     //ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk();
                     //TopRiskTable = ws.GetRiskTree(new object[] { (Int32)DRow[DT_RiskTree.ID_RISK_TREE] }).Tables[DT_RiskTree_Damages.TABLENAME].Copy();
 
                     //BtnAdd.IsEnabled = false;
                     //BtnDel.IsEnabled = false;
                 }
+                else
+                {
+                    TextName.Text = SuggestionName;
+                }
                 Dv = TopRiskTable.DefaultView;
-                Dv.RowFilter = DT_RiskTree_Damages.ID_RISKTREE + " = " + DRow[DT_RiskTree.ID_RISK_TREE];
+                Dv.RowFilter = DT_Diagram_Damages.ID_RISKTREE + " = " + DRow[DT_Diagram.ID_DIAGRAM];
                 dgTopRisk.ItemsSource = Dv;
                 TextName.Focus();
             }
@@ -69,7 +74,7 @@ namespace EnsureRisk.Windows
             {
                 new WindowMessageOK(ex.Message).ShowDialog();
             }
-           
+
         }
 
 
@@ -82,9 +87,9 @@ namespace EnsureRisk.Windows
                     Drow = TopRiskTable.NewRow(),
                     Icon = Icon
                 };
-                if (TopRiskTable.Select(DT_RiskTree_Damages.ID_RISKTREE + " = " + DRow[DT_RiskTree.ID_RISK_TREE]).Any())
+                if (TopRiskTable.Select(DT_Diagram_Damages.ID_RISKTREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]).Any())
                 {
-                    frm.TopRiskTable = TopRiskTable.Select(DT_RiskTree_Damages.ID_RISKTREE + " = " + DRow[DT_RiskTree.ID_RISK_TREE]).CopyToDataTable();
+                    frm.TopRiskTable = TopRiskTable.Select(DT_Diagram_Damages.ID_RISKTREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]).CopyToDataTable();
                 }
                 else
                 {
@@ -92,14 +97,14 @@ namespace EnsureRisk.Windows
                 }
                 if (frm.ShowDialog() == true)
                 {
-                    frm.Drow[DT_RiskTree_Damages.ID_RISKTREE] = DRow[DT_RiskTree.ID_RISK_TREE];
-                    frm.Drow[DT_RiskTree_Damages.RISK_TREE] = DRow[DT_RiskTree.DIAGRAM_NAME];
+                    frm.Drow[DT_Diagram_Damages.ID_RISKTREE] = DRow[DT_Diagram.ID_DIAGRAM];
+                    frm.Drow[DT_Diagram_Damages.RISK_TREE] = DRow[DT_Diagram.DIAGRAM_NAME];
                     TopRiskTable.Rows.Add(frm.Drow);
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();;
+                new WindowMessageOK(ex.Message).ShowDialog(); ;
             }
         }
 
@@ -110,33 +115,33 @@ namespace EnsureRisk.Windows
                 DataRow fila = Dv[dgTopRisk.SelectedIndex].Row;
                 if (dgTopRisk.SelectedIndex >= 0)
                 {
-                    WindowMessageYesNo msg = new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + fila[DT_RiskTree_Damages.DAMAGE] + "]?");
-                    
+                    WindowMessageYesNo msg = new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + fila[DT_Diagram_Damages.DAMAGE] + "]?");
+
                     if (msg.ShowDialog() == true)
                     {
                         if (Operation == General.UPDATE)
                         {
                             foreach (DataRow item in Risk_TopRisk.
-                            Select(DT_Risk_Damages.ID_DAMAGE + " = " + TopRiskTable.Rows[dgTopRisk.SelectedIndex][DT_RiskTree_Damages.ID_DAMAGE] +
-                            " and " + DT_Risk_Damages.ID_RISK_TREE + " = " + DRow[DT_RiskTree.ID_RISK_TREE]))
+                            Select(DT_Risk_Damages.ID_DAMAGE + " = " + TopRiskTable.Rows[dgTopRisk.SelectedIndex][DT_Diagram_Damages.ID_DAMAGE] +
+                            " and " + DT_Risk_Damages.ID_RISK_TREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]))
                             {
                                 item.Delete();
                             }
                             foreach (DataRow itemi in CM_TopRisk.
-                                Select(DT_CounterM_Damage.ID_DAMAGE + " = " + TopRiskTable.Rows[dgTopRisk.SelectedIndex][DT_RiskTree_Damages.ID_DAMAGE] +
-                                " and " + DT_CounterM_Damage.ID_RISK_TREE + " = " + DRow[DT_RiskTree.ID_RISK_TREE]))
+                                Select(DT_CounterM_Damage.ID_DAMAGE + " = " + TopRiskTable.Rows[dgTopRisk.SelectedIndex][DT_Diagram_Damages.ID_DAMAGE] +
+                                " and " + DT_CounterM_Damage.ID_RISK_TREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]))
                             {
                                 itemi.Delete();
                             }
                         }
-                            
+
                         TopRiskTable.Rows[dgTopRisk.SelectedIndex].Delete();
                     }
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();;
+                new WindowMessageOK(ex.Message).ShowDialog(); ;
             }
         }
 
@@ -144,17 +149,17 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                if (TextName.Text!="")
+                if (TextName.Text != "")
                 {
-                    DRow[DT_RiskTree.DIAGRAM_NAME] = TextName.Text;
-                    DRow[DT_RiskTree.ID_WBS] = IdWBS;
+                    DRow[DT_Diagram.DIAGRAM_NAME] = TextName.Text;
+                    DRow[DT_Diagram.ID_PROJECT] = IDProject;
                     this.DialogResult = true;
                 }
                 else
                 {
                     new WindowMessageOK(StringResources.FIELD_REQUIRED).ShowDialog();
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -164,7 +169,7 @@ namespace EnsureRisk.Windows
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;Close();
+            DialogResult = false; Close();
         }
     }
 }

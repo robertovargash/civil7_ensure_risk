@@ -13,7 +13,9 @@ namespace DataMapping.Data
         public const string CHILD = "Child";        
         public const string CNIVEL = "ChildNivel";
         public const string IDPROJECT = "idProject";
-
+        public const string IS_MANAGER = "isManager";
+        public const string CHILD_USER = "CUserName";
+        public const string FATHER_USER = "FUserName";
         public DT_WBS_STRUCTURE() : base()
         {
             CreateTable();
@@ -30,6 +32,9 @@ namespace DataMapping.Data
             this.Columns.Add(CHILD, typeof(System.String));
             this.Columns.Add(CNIVEL, typeof(System.String));
             this.Columns.Add(IDPROJECT, typeof(System.Int32));
+            this.Columns.Add(IS_MANAGER, typeof(System.Boolean));
+            this.Columns.Add(CHILD_USER, typeof(System.String));
+            this.Columns.Add(FATHER_USER, typeof(System.String));
             this.PrimaryKey = PK_COLUMN;
         }
     }

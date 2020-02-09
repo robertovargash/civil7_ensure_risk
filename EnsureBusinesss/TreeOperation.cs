@@ -79,21 +79,21 @@ namespace EnsureBusinesss
                 if (Line.IsCM)
                 {
                     DataRow drCM = Ds.Tables[DT_CounterM.TABLE_NAME].NewRow();
-                    drCM[DT_CounterM.DETAIL_COLUMNA] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.DETAIL_COLUMNA];
-                    drCM[DT_CounterM.ENABLED_COLUMN] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.ENABLED_COLUMN];
+                    drCM[DT_CounterM.DETAIL] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.DETAIL];
+                    drCM[DT_CounterM.ENABLED] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.ENABLED];
                     drCM[DT_CounterM.ID_RISK_TREE] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.ID_RISK_TREE];
-                    drCM[DT_CounterM.NAMESHORT_COLUMNA] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.NAMESHORT_COLUMNA];
-                    drCM[DT_CounterM.POSITION_COLUMN] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.POSITION_COLUMN];
-                    drCM[DT_CounterM.PROBABILITY_COLUMN] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.PROBABILITY_COLUMN];
+                    drCM[DT_CounterM.NAMESHORT] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.NAMESHORT];
+                    drCM[DT_CounterM.POSITION] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.POSITION];
+                    drCM[DT_CounterM.PROBABILITY] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.PROBABILITY];
                     drCM[DT_CounterM.ID_RISK] = idFather;
-                    drCM[DT_CounterM.RISK_NAMESHORT_COLUMNA] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idFather)[DT_Risk.NAMESHORT_COLUMNA];
+                    drCM[DT_CounterM.RISK_NAMESHORT] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idFather)[DT_Risk.NAMESHORT];
                     Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Add(drCM);
                     foreach (DataRow itemi in Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + Line.ID))
                     {
                         DataRow top = Ds.Tables[DT_CounterM_Damage.TABLENAME].NewRow();
                         top[DT_CounterM_Damage.COLOR] = itemi[DT_CounterM_Damage.COLOR];
                         top[DT_CounterM_Damage.ID_DAMAGE] = itemi[DT_CounterM_Damage.ID_DAMAGE];
-                        top[DT_CounterM_Damage.ID_COUNTERM] = drCM[DT_CounterM.ID_COLUMNA];
+                        top[DT_CounterM_Damage.ID_COUNTERM] = drCM[DT_CounterM.ID];
                         top[DT_CounterM_Damage.VALUE] = itemi[DT_CounterM_Damage.VALUE];
                         top[DT_CounterM_Damage.TOP_RISK] = itemi[DT_CounterM_Damage.TOP_RISK];
                         top[DT_CounterM_Damage.COUNTERM_NAMESHORT] = itemi[DT_CounterM_Damage.COUNTERM_NAMESHORT];
@@ -102,17 +102,17 @@ namespace EnsureBusinesss
                         top[DT_CounterM_Damage.IDRISK] = drCM[DT_CounterM.ID_RISK];
                         top[DT_CounterM_Damage.ID_GROUPE] = itemi[DT_CounterM_Damage.ID_GROUPE];
                         top[DT_CounterM_Damage.ID_RISK_TREE] = drCM[DT_CounterM.ID_RISK_TREE];
-                        top[DT_CounterM_Damage.RISK] = drCM[DT_CounterM.RISK_NAMESHORT_COLUMNA];
-                        top[DT_CounterM_Damage.RISK_REDUCTION] = drCM[DT_CounterM.PROBABILITY_COLUMN];
+                        top[DT_CounterM_Damage.RISK] = drCM[DT_CounterM.RISK_NAMESHORT];
+                        top[DT_CounterM_Damage.RISK_REDUCTION] = drCM[DT_CounterM.PROBABILITY];
                         top[DT_CounterM_Damage.STATUS] = itemi[DT_CounterM_Damage.STATUS];
                         Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Add(top);
                     }
                     foreach (DataRow item in Ds.Tables[DT_Role_CM.TABLENAME].Select(DT_Role_CM.ID_CM + " = " + Line.ID))
                     {
-                        if (!(Ds.Tables[DT_Role_CM.TABLENAME].Rows.Contains(new object[] { drCM[DT_CounterM.ID_COLUMNA], item[DT_Role_CM.IDROL_COLUMN] })))
+                        if (!(Ds.Tables[DT_Role_CM.TABLENAME].Rows.Contains(new object[] { drCM[DT_CounterM.ID], item[DT_Role_CM.IDROL_COLUMN] })))
                         {
                             DataRow newRow = Ds.Tables[DT_Role_CM.TABLENAME].NewRow();
-                            newRow[DT_Role_CM.ID_CM] = drCM[DT_CounterM.ID_COLUMNA];
+                            newRow[DT_Role_CM.ID_CM] = drCM[DT_CounterM.ID];
                             newRow[DT_Role_CM.IDROL_COLUMN] = item[DT_Role_CM.IDROL_COLUMN];
                             newRow[DT_Role_CM.Role] = item[DT_Role_CM.Role];
                             Ds.Tables[DT_Role_CM.TABLENAME].Rows.Add(newRow);
@@ -120,10 +120,10 @@ namespace EnsureBusinesss
                     }
                     foreach (DataRow item in Ds.Tables[DT_CM_WBS.TABLENAME].Select(DT_CM_WBS.ID_CM + " = " + Line.ID))
                     {
-                        if (!(Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Contains(new object[] { drCM[DT_Risk.ID_COLUMNA], item[DT_CM_WBS.ID_WBS] })))
+                        if (!(Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Contains(new object[] { drCM[DT_Risk.ID], item[DT_CM_WBS.ID_WBS] })))
                         {
                             DataRow newRow = Ds.Tables[DT_CM_WBS.TABLENAME].NewRow();
-                            newRow[DT_CM_WBS.ID_CM] = drCM[DT_Risk.ID_COLUMNA];
+                            newRow[DT_CM_WBS.ID_CM] = drCM[DT_Risk.ID];
                             newRow[DT_CM_WBS.ID_WBS] = item[DT_CM_WBS.ID_WBS];
                             Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Add(newRow);
                         }
@@ -141,7 +141,7 @@ namespace EnsureBusinesss
                 CreateRiskUntilLine(Line, idFather, drRisk, Ds);
                 foreach (var item in Line.Children)
                 {
-                    BackupLine(item, (Int32)drRisk[DT_Risk.ID_COLUMNA], Ds);
+                    BackupLine(item, (Int32)drRisk[DT_Risk.ID], Ds);
                 }
             }
         }
@@ -149,17 +149,17 @@ namespace EnsureBusinesss
         public static DataRow CreateNewRisk(DataSet Ds, RiskPolyLine Line, int idFather)
         {
             DataRow drRisk = Ds.Tables[DT_Risk.TABLE_NAME].NewRow();
-            drRisk[DT_Risk.DETAIL_COLUMNA] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.DETAIL_COLUMNA];
-            drRisk[DT_Risk.ENABLED_COLUMN] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.ENABLED_COLUMN];
-            drRisk[DT_Risk.FROM_TOP_COLUMNA] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.FROM_TOP_COLUMNA];
-            drRisk[DT_Risk.ID_RISK_TREE] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.ID_RISK_TREE];
-            drRisk[DT_Risk.ISCOLLAPSEDINGUI_COLUMNA] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.ISCOLLAPSEDINGUI_COLUMNA];
-            drRisk[DT_Risk.IS_ROOT_COLUMNA] = false;
-            drRisk[DT_Risk.NAMESHORT_COLUMNA] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.NAMESHORT_COLUMNA];
-            drRisk[DT_Risk.POSITION_COLUMN] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.POSITION_COLUMN];
-            drRisk[DT_Risk.PROBABILITY_COLUMN] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.PROBABILITY_COLUMN];
+            drRisk[DT_Risk.COMMENTS] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.COMMENTS];
+            drRisk[DT_Risk.ENABLED] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.ENABLED];
+            drRisk[DT_Risk.FROM_TOP] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.FROM_TOP];
+            drRisk[DT_Risk.ID_DIAGRAM] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.ID_DIAGRAM];
+            drRisk[DT_Risk.ISCOLLAPSED] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.ISCOLLAPSED];
+            drRisk[DT_Risk.IS_ROOT] = false;
+            drRisk[DT_Risk.NAMESHORT] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.NAMESHORT];
+            drRisk[DT_Risk.POSITION] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.POSITION];
+            drRisk[DT_Risk.PROBABILITY] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.PROBABILITY];
             drRisk[DT_Risk.IDRISK_FATHER] = idFather;
-            drRisk[DT_Risk.FATHER_COLUMNA] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idFather)[DT_Risk.NAMESHORT_COLUMNA];
+            drRisk[DT_Risk.FATHER] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idFather)[DT_Risk.NAMESHORT];
             Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
             return drRisk;
         }
@@ -167,7 +167,7 @@ namespace EnsureBusinesss
         public static void CreateRiskUntilLine(RiskPolyLine Line, int idFather, DataRow drRisk, DataSet Ds)
         {
             DataRow rowstructure = Ds.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
-            rowstructure[DT_RiskStructure.IDRISK] = drRisk[DT_Risk.ID_COLUMNA];
+            rowstructure[DT_RiskStructure.IDRISK] = drRisk[DT_Risk.ID];
             rowstructure[DT_RiskStructure.IDRISK_FATHER] = idFather;
             Ds.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
             foreach (DataRow itemi in Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + Line.ID))
@@ -175,18 +175,18 @@ namespace EnsureBusinesss
                 DataRow top = Ds.Tables[DT_Risk_Damages.TABLENAME].NewRow();
                 top[DT_Risk_Damages.COLOR] = itemi[DT_Risk_Damages.COLOR];
                 top[DT_Risk_Damages.ID_DAMAGE] = itemi[DT_Risk_Damages.ID_DAMAGE];
-                top[DT_Risk_Damages.ID_RISK] = drRisk[DT_Risk.ID_COLUMNA];
+                top[DT_Risk_Damages.ID_RISK] = drRisk[DT_Risk.ID];
                 top[DT_Risk_Damages.VALUE] = itemi[DT_Risk_Damages.VALUE];
                 top[DT_Risk_Damages.TOP_RISK] = itemi[DT_Risk_Damages.TOP_RISK];
                 top[DT_Risk_Damages.DAMAGE] = itemi[DT_Risk_Damages.DAMAGE];
-                top[DT_Risk_Damages.FATHER] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idFather)[DT_Risk.NAMESHORT_COLUMNA];
+                top[DT_Risk_Damages.FATHER] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idFather)[DT_Risk.NAMESHORT];
                 top[DT_Risk_Damages.GROUPE_NAME] = itemi[DT_Risk_Damages.GROUPE_NAME];
                 top[DT_Risk_Damages.ID_FATHER] = idFather;
                 top[DT_Risk_Damages.ID_GROUPE] = itemi[DT_Risk_Damages.ID_GROUPE];
-                top[DT_Risk_Damages.ID_RISK_TREE] = drRisk[DT_Risk.ID_RISK_TREE];
-                top[DT_Risk_Damages.IS_ROOT] = drRisk[DT_Risk.IS_ROOT_COLUMNA];
-                top[DT_Risk_Damages.PROBABILITY] = drRisk[DT_Risk.PROBABILITY_COLUMN];
-                top[DT_Risk_Damages.RISK_NAMESHORT] = drRisk[DT_Risk.NAMESHORT_COLUMNA];
+                top[DT_Risk_Damages.ID_RISK_TREE] = drRisk[DT_Risk.ID_DIAGRAM];
+                top[DT_Risk_Damages.IS_ROOT] = drRisk[DT_Risk.IS_ROOT];
+                top[DT_Risk_Damages.PROBABILITY] = drRisk[DT_Risk.PROBABILITY];
+                top[DT_Risk_Damages.RISK_NAMESHORT] = drRisk[DT_Risk.NAMESHORT];
                 top[DT_Risk_Damages.RISK_TREE] = itemi[DT_Risk_Damages.RISK_TREE];
                 top[DT_Risk_Damages.STATUS] = itemi[DT_Risk_Damages.STATUS];
                 Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Add(top);
@@ -194,10 +194,10 @@ namespace EnsureBusinesss
 
             foreach (DataRow itemo in Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + Line.ID))
             {
-                if (!(Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID_COLUMNA], itemo[DT_Role_Risk.IDROL_COLUMN] })))
+                if (!(Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], itemo[DT_Role_Risk.IDROL_COLUMN] })))
                 {
                     DataRow newRow = Ds.Tables[DT_Role_Risk.TABLENAME].NewRow();
-                    newRow[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID_COLUMNA];
+                    newRow[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
                     newRow[DT_Role_Risk.IDROL_COLUMN] = itemo[DT_Role_Risk.IDROL_COLUMN];
                     newRow[DT_Role_Risk.Role] = itemo[DT_Role_Risk.Role];
                     Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Add(newRow);
@@ -206,16 +206,16 @@ namespace EnsureBusinesss
 
             foreach (DataRow item in Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + Line.ID))
             {
-                if (!(Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID_COLUMNA], item[DT_RISK_WBS.ID_WBS] })))
+                if (!(Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], item[DT_RISK_WBS.ID_WBS] })))
                 {
                     DataRow newRow = Ds.Tables[DT_RISK_WBS.TABLENAME].NewRow();
-                    newRow[DT_RISK_WBS.ID_RISK] = drRisk[DT_Risk.ID_COLUMNA];
+                    newRow[DT_RISK_WBS.ID_RISK] = drRisk[DT_Risk.ID];
                     newRow[DT_RISK_WBS.ID_WBS] = item[DT_RISK_WBS.ID_WBS];
                     newRow[DT_RISK_WBS.WBS] = item[DT_RISK_WBS.WBS];
                     Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Add(newRow);
                 }
             }
-            Line.ID = (Int32)drRisk[DT_Risk.ID_COLUMNA];
+            Line.ID = (Int32)drRisk[DT_Risk.ID];
         }
 
         public static void DeleteLine(RiskPolyLine LineToDelete, List<RiskPolyLine> LinesList, DataSet DsMain)
@@ -268,11 +268,11 @@ namespace EnsureBusinesss
             {
                 if (item.IsCM)
                 {
-                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(item.ID)[DT_CounterM.POSITION_COLUMN] = count;
+                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(item.ID)[DT_CounterM.POSITION] = count;
                 }
                 else
                 {
-                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.POSITION_COLUMN] = count;
+                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.POSITION] = count;
                 }
                 count++;
                 if (item.Children.Count > 0)
@@ -289,11 +289,11 @@ namespace EnsureBusinesss
             {
                 if (item.IsCM)
                 {
-                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(item.ID)[DT_CounterM.POSITION_COLUMN] = count;
+                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(item.ID)[DT_CounterM.POSITION] = count;
                 }
                 else
                 {
-                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.POSITION_COLUMN] = count;
+                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.POSITION] = count;
                 }
                 count++;
                 if (item.Children.Count > 0)
@@ -434,11 +434,11 @@ namespace EnsureBusinesss
             {
                 if (linea.Father.Children[i].IsCM)
                 {
-                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_CounterM.POSITION_COLUMN] = i;
+                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_CounterM.POSITION] = i;
                 }
                 else
                 {
-                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_Risk.POSITION_COLUMN] = i;
+                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_Risk.POSITION] = i;
                 }
             }
         }
@@ -623,11 +623,11 @@ namespace EnsureBusinesss
                 {
                     if (linea.Father.Children[i].IsCM)
                     {
-                        Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_CounterM.POSITION_COLUMN] = i;
+                        Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_CounterM.POSITION] = i;
                     }
                     else
                     {
-                        Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_Risk.POSITION_COLUMN] = i;
+                        Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_Risk.POSITION] = i;
                     }
                 }
             }
@@ -841,9 +841,9 @@ namespace EnsureBusinesss
             try
             {
                 //SET PRIMARY DATA TO A RISK
-                rl.ShortName = RiskRow[DT_Risk.NAMESHORT_COLUMNA].ToString();
-                rl.Position = (Int32)RiskRow[DT_Risk.POSITION_COLUMN];
-                rl.Probability = (Decimal)RiskRow[DT_Risk.PROBABILITY_COLUMN] / 100;
+                rl.ShortName = RiskRow[DT_Risk.NAMESHORT].ToString();
+                rl.Position = (Int32)RiskRow[DT_Risk.POSITION];
+                rl.Probability = (Decimal)RiskRow[DT_Risk.PROBABILITY] / 100;
 
                 if (rl.IsCM)
                 {
@@ -851,7 +851,7 @@ namespace EnsureBusinesss
                 }
                 else
                 {
-                    rl.Collapsed = (Boolean)RiskRow[DT_Risk.ISCOLLAPSEDINGUI_COLUMNA];
+                    rl.Collapsed = (Boolean)RiskRow[DT_Risk.ISCOLLAPSED];
                     if (rl.Collapsed)
                     {
                         rl.Expand.Source = new BitmapImage(new Uri(General.CONTRAIDO));
@@ -1467,20 +1467,20 @@ namespace EnsureBusinesss
         {
             List<RiskPolyLine> lista = new List<RiskPolyLine>();
             //System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(ds.Tables[DT_RiskTree_Damages.TABLENAME].Select(DT_RiskTree_Damages.ID_RISKTREE + " = " + IdTreeRisk)[0][DT_RiskTree_Damages.COLOR].ToString()));
-            foreach (DataRow item in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_RISK_TREE + " = " + IdTreeRisk))
+            foreach (DataRow item in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + IdTreeRisk))
             {
-                if ((Boolean)item[DT_Risk.IS_ROOT_COLUMNA])
+                if ((Boolean)item[DT_Risk.IS_ROOT])
                 {
                     RiskPolyLine MainLine = new RiskPolyLine()
                     {
                         //Stroke = new SolidColorBrush(Color.FromArgb(lnColor.A, lnColor.R, lnColor.G, lnColor.B)),
                         IsRoot = true,
                         IsCM = false,
-                        FromTop = (Boolean)item[DT_Risk.FROM_TOP_COLUMNA],
+                        FromTop = (Boolean)item[DT_Risk.FROM_TOP],
                         StrokeThickness = 6,
-                        ID = (Int32)item[DT_Risk.ID_COLUMNA],
-                        Probability = (Decimal)item[DT_Risk.PROBABILITY_COLUMN],
-                        ShortName = item[DT_Risk.NAMESHORT_COLUMNA].ToString(),
+                        ID = (Int32)item[DT_Risk.ID],
+                        Probability = (Decimal)item[DT_Risk.PROBABILITY],
+                        ShortName = item[DT_Risk.NAMESHORT].ToString(),
                         MyLevel = 0
                     };
                     MainLine.Group = new LineGroup()
@@ -1494,22 +1494,22 @@ namespace EnsureBusinesss
                 {
                     RiskPolyLine riskLine = new RiskPolyLine()
                     {
-                        ShortName = item[DT_Risk.NAMESHORT_COLUMNA].ToString(),
-                        ID = (Int32)item[DT_Risk.ID_COLUMNA],
-                        Position = (Int32)item[DT_Risk.POSITION_COLUMN],
-                        Collapsed = (Boolean)item[DT_Risk.ISCOLLAPSEDINGUI_COLUMNA],
-                        Probability = (Decimal)item[DT_Risk.PROBABILITY_COLUMN],
-                        IsActivated = (Boolean)item[DT_Risk.ENABLED_COLUMN],
+                        ShortName = item[DT_Risk.NAMESHORT].ToString(),
+                        ID = (Int32)item[DT_Risk.ID],
+                        Position = (Int32)item[DT_Risk.POSITION],
+                        Collapsed = (Boolean)item[DT_Risk.ISCOLLAPSED],
+                        Probability = (Decimal)item[DT_Risk.PROBABILITY],
+                        IsActivated = (Boolean)item[DT_Risk.ENABLED],
                         StrokeThickness = 2,
                         IsCM = false,
                         IdRiskFather = (Int32)item[DT_Risk.IDRISK_FATHER]
                     };
-                    if (item[DT_Risk.ID_GROUPE_COLUMN] != DBNull.Value)
+                    if (item[DT_Risk.ID_GROUPE] != DBNull.Value)
                     {
                         riskLine.Group = new LineGroup()
                         {
-                            IdGroup = (Int32)item[DT_Risk.ID_GROUPE_COLUMN],
-                            GroupName = item[DT_Risk.GROUPE_NAME_COLUMN].ToString()
+                            IdGroup = (Int32)item[DT_Risk.ID_GROUPE],
+                            GroupName = item[DT_Risk.GROUPE_NAME].ToString()
                         };
                     }
                     else
@@ -1517,7 +1517,7 @@ namespace EnsureBusinesss
                         riskLine.Group = new LineGroup()
                         {
                             IdGroup = null,
-                            GroupName = item[DT_Risk.GROUPE_NAME_COLUMN].ToString()
+                            GroupName = item[DT_Risk.GROUPE_NAME].ToString()
                         };
                     }
 
@@ -1529,19 +1529,19 @@ namespace EnsureBusinesss
                 RiskPolyLine cmline = new RiskPolyLine()
                 {
                     IsCM = true,
-                    Position = (Int32)item[DT_CounterM.POSITION_COLUMN],
-                    ShortName = item[DT_CounterM.NAMESHORT_COLUMNA].ToString(),
+                    Position = (Int32)item[DT_CounterM.POSITION],
+                    ShortName = item[DT_CounterM.NAMESHORT].ToString(),
                     IdRiskFather = (Int32)item[DT_CounterM.ID_RISK],
-                    ID = (Int32)item[DT_CounterM.ID_COLUMNA],
-                    Probability = (Decimal)item[DT_CounterM.PROBABILITY_COLUMN],
-                    IsActivated = (Boolean)item[DT_CounterM.ENABLED_COLUMN]
+                    ID = (Int32)item[DT_CounterM.ID],
+                    Probability = (Decimal)item[DT_CounterM.PROBABILITY],
+                    IsActivated = (Boolean)item[DT_CounterM.ENABLED]
                 };
-                if (item[DT_Risk.ID_GROUPE_COLUMN] != DBNull.Value)
+                if (item[DT_Risk.ID_GROUPE] != DBNull.Value)
                 {
                     cmline.Group = new LineGroup()
                     {
-                        IdGroup = (Int32)item[DT_Risk.ID_GROUPE_COLUMN],
-                        GroupName = item[DT_Risk.GROUPE_NAME_COLUMN].ToString()
+                        IdGroup = (Int32)item[DT_Risk.ID_GROUPE],
+                        GroupName = item[DT_Risk.GROUPE_NAME].ToString()
                     };
                 }
                 else
@@ -1549,7 +1549,7 @@ namespace EnsureBusinesss
                     cmline.Group = new LineGroup()
                     {
                         IdGroup = null,
-                        GroupName = item[DT_Risk.GROUPE_NAME_COLUMN].ToString()
+                        GroupName = item[DT_Risk.GROUPE_NAME].ToString()
                     };
                 }
 

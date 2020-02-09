@@ -32,8 +32,9 @@
                 <Grid Background="#FFE5E5E5">
                     <DataGrid Name="dgTopRisk" HorizontalAlignment="Left" Height="159" Margin="1,1,0,0" VerticalAlignment="Top" Width="565" AutoGenerateColumns="False" KeyUp="DgTopRisk_KeyUp">
                         <DataGrid.Columns>
-                            <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding Path= Damage}" Width="*" />
-                            <DataGridTextColumn x:Name="TopValue" Header="Value" Binding="{Binding Path= value}" Width="*" />
+                            <DataGridTextColumn x:Name="WBSn" Header="WBS" Binding="{Binding Path= WBSName}" Width="*"/>
+                            <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding Path= Damage}" Width="*"/>
+                            <DataGridTextColumn x:Name="TopValue" Header="Value" Binding="{Binding Path= value}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -46,20 +47,25 @@
                     <Button x:Name="BtnDelWBS" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" Click="BtnDelWBS_Click" materialDesign:ShadowAssist.ShadowDepth="Depth5">
                         <materialDesign:PackIcon Kind="Minus"/>
                     </Button>
+                    <Button x:Name="BtnSetPrimary" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignFloatingActionAccentButton}" ToolTip="Set Primary WBS" Margin="15,89,0,0" VerticalAlignment="Top" Width="47" Click="BtnSetPrimary_Click" materialDesign:ShadowAssist.ShadowDepth="Depth5" Height="44">
+                        <materialDesign:PackIcon Kind="Key"/>
+                    </Button>
                     <DataGrid Name="dgWBS" HorizontalAlignment="Left" Height="156" Margin="71,5,0,0" VerticalAlignment="Top" Width="489" AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= Nivel}" Width="100"/>
                             <DataGridTextColumn x:Name="WBS" Header="WBS Name" Binding="{Binding Path= WBS_Name}" Width="*"/>
+                            <DataGridTextColumn x:Name="WBSUser" Header="User" Binding="{Binding Path= userName}" Width="*"/>
+                            <DataGridTextColumn x:Name="PRIMARY" Header="Primary" Binding="{Binding Path= Primaryy}" Width="100" Foreground="#FFF30808" FontWeight="Bold" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
             </TabItem>
             <TabItem Header="Roles" Name="tabRoles">
                 <Grid Background="#FFE5E5E5">
-                    <Button Name="BtnAddRole"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAdd_Click" materialDesign:ShadowAssist.ShadowDepth="Depth5">
+                    <Button Name="BtnAddRole"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAddRole_Click" materialDesign:ShadowAssist.ShadowDepth="Depth5">
                         <materialDesign:PackIcon Kind="Plus"/>
                     </Button>
-                    <Button x:Name="BtnDelRole" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" Click="BtnDel_Click" materialDesign:ShadowAssist.ShadowDepth="Depth5">
+                    <Button x:Name="BtnDelRole" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" Click="BtnDelRole_Click" materialDesign:ShadowAssist.ShadowDepth="Depth5">
                         <materialDesign:PackIcon Kind="Minus"/>
                     </Button>
                     <DataGrid Name="dgRoles" HorizontalAlignment="Left" Height="156" Margin="71,5,0,0" VerticalAlignment="Top" Width="489" AutoGenerateColumns="False" IsReadOnly="True">

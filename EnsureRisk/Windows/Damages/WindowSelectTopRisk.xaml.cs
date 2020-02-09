@@ -52,16 +52,19 @@ namespace EnsureRisk.Windows
                 WindowSelection frmSelection = new WindowSelection
                 {
                     //dt = topCodif,
-                    dt = General.DeleteExists(topCodif, TopRiskTable, DT_Damage.ID_COLUMNA),
-                    dcolumToShow = new string[] { DT_Damage.TOP_RISK_COLUMN },
-                    dcolumToShowAlias = new string[] { "Damage" },
+                    Dt = General.DeleteExists(topCodif, TopRiskTable, DT_Damage.ID_COLUMNA),
+                    DcolumToShow = new string[] { DT_Damage.TOP_RISK_COLUMN },
+                    DcolumToShowAlias = new string[] { "Damage" },
+                    ColumnToFilter = DT_Damage.TOP_RISK_COLUMN,
+
                     Title = "Damages"
                 };
-                if (frmSelection.dt.Rows.Count == 1)
+                frmSelection.P.FilterString = "Damage";
+                if (frmSelection.Dt.Rows.Count == 1)
                 {
-                    Drow[DT_RiskTree_Damages.ID_DAMAGE] = frmSelection.dt.Rows[0][DT_Damage.ID_COLUMNA];
-                    Drow[DT_RiskTree_Damages.COLOR] = frmSelection.dt.Rows[0][DT_Damage.COLORID_COLUMNA];
-                    TextTopRisk.Text = frmSelection.dt.Rows[0][DT_RiskTree_Damages.DAMAGE].ToString();
+                    Drow[DT_Diagram_Damages.ID_DAMAGE] = frmSelection.Dt.Rows[0][DT_Damage.ID_COLUMNA];
+                    Drow[DT_Diagram_Damages.COLOR] = frmSelection.Dt.Rows[0][DT_Damage.COLORID_COLUMNA];
+                    TextTopRisk.Text = frmSelection.Dt.Rows[0][DT_Diagram_Damages.DAMAGE].ToString();
                 }
                 else
                 {
@@ -70,10 +73,10 @@ namespace EnsureRisk.Windows
                     {
                         if (frmSelection.RowsSelected.Count() > 0)
                         {
-                            Drow[DT_RiskTree_Damages.ID_DAMAGE] = frmSelection.RowsSelected[0][DT_Damage.ID_COLUMNA];
-                            Drow[DT_RiskTree_Damages.COLOR] = frmSelection.RowsSelected[0][DT_Damage.COLORID_COLUMNA];
-                            TextTopRisk.Text = frmSelection.RowsSelected[0][DT_RiskTree_Damages.DAMAGE].ToString();
-                        }                        
+                            Drow[DT_Diagram_Damages.ID_DAMAGE] = frmSelection.RowsSelected[0][DT_Damage.ID_COLUMNA];
+                            Drow[DT_Diagram_Damages.COLOR] = frmSelection.RowsSelected[0][DT_Damage.COLORID_COLUMNA];
+                            TextTopRisk.Text = frmSelection.RowsSelected[0][DT_Diagram_Damages.DAMAGE].ToString();
+                        }
                     }
                 }
 
@@ -91,8 +94,8 @@ namespace EnsureRisk.Windows
             {
                 if (TextTopRisk.Text != "")
                 {
-                    Drow[DT_RiskTree_Damages.DAMAGE] = TextTopRisk.Text;
-                    Drow[DT_RiskTree_Damages.UM] = TextUnit.Text;
+                    Drow[DT_Diagram_Damages.DAMAGE] = TextTopRisk.Text;
+                    Drow[DT_Diagram_Damages.UM] = TextUnit.Text;
                     this.DialogResult = true;
                 }
                 else

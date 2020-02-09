@@ -231,26 +231,19 @@
                     <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200">
                         <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" IsVisibleChanged="AnchorWBSList_IsVisibleChanged" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid Grid.Column="0">
-                                    <Button x:Name="BtnAddWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Add}" HorizontalAlignment="Left" Margin="15,27,0,0" VerticalAlignment="Top" ToolTip="Add WBS" Click="BtnAddWBS_Click"/>
-                                    <Button x:Name="BtnEditWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=ContentCopy}" HorizontalAlignment="Left" Margin="15,81,0,0" VerticalAlignment="Top" ToolTip="Collapse All" Click="BtnEditWBS_Click"/>
-                                    <Button x:Name="BtnDelWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Delete}" HorizontalAlignment="Left"  Margin="15,137,0,0" VerticalAlignment="Top" ToolTip="Remove WBS" Click="BtnDelWBS_Click"/>
-                                    <!--<Button x:Name="BtnExcelWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=FileExcel}" HorizontalAlignment="Left"  Margin="15,81,0,0" VerticalAlignment="Top" ToolTip="Import WBS from Excel" Click="BtnExcelWBS_Click"/>-->
-                                    <Button x:Name="BtnDeselect" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Backspace}" HorizontalAlignment="Left"  Margin="15,137,0,0" VerticalAlignment="Top" ToolTip="DeSelect" Click="BtnDeselect_Click"/>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0">
+                                    <Button x:Name="BtnAddWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Add}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" ToolTip="Add WBS" Click="BtnAddWBS_Click"/>
+                                    <Button x:Name="BtnCollapseWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=ContentCopy}" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" ToolTip="Collapse All" Click="BtnCollapse_Click"/>
+                                    <Button x:Name="BtnDeselect" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=ArrowBack}" HorizontalAlignment="Left"  Margin="100,0,0,0" VerticalAlignment="Top" ToolTip="DeSelect" Click="BtnDeselect_Click"/>
+                                    <Button x:Name="BtnSettings" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Settings}" HorizontalAlignment="Left"  Margin="145,0,0,0" VerticalAlignment="Top" ToolTip="WBS Settings" Click="BtnDeselect_Click"/>
                                 </Grid>
-                                <Grid Grid.Column="1">
+                                <Grid Grid.Row="1">
                                     <TreeView Name="TreeViewWBS"/>
-                                </Grid>                                
-                                <!--<DataGrid x:Name="dgWBS" Margin="50,10,20,21" AutoGenerateColumns="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" IsReadOnly="True" MouseDoubleClick="dgWBS_MouseDoubleClick"  Background="#FFF7F1F1" SelectedCellsChanged="dgWBS_SelectedCellsChanged">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= FNivel}" Width="100"/>
-                                        <DataGridTextColumn x:Name="WBS" Header="WBS" Binding="{Binding Path= WBSFName}" Width="*"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>-->
+                                </Grid>
                             </Grid>
                         </xcad:LayoutAnchorable>
                         <xcad:LayoutAnchorable ContentId="properties" x:Name="LayoutProperties"  Title="Properties"  CanHide="true" CanClose="False" AutoHideWidth="240">
@@ -346,14 +339,14 @@
                                             <md:PackIcon Kind="Magnify" Opacity=".56" />
                                         </Button>
                                         <TextBox TextChanged="TxtFilterRisk_TextChanged" Name="txtFilterRisk" Grid.Column="1" Margin="8 0 0 0" md:HintAssist.Hint="Filter Risk" md:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0" MinWidth="200" VerticalAlignment="Center" />
-                                        <Button Style="{DynamicResource MaterialDesignToolButton}" Name="btnClearFilter" Click="btnClearFilter_Click" Grid.Column="2">
+                                        <Button Style="{DynamicResource MaterialDesignToolButton}" Name="btnClearFilter" Click="BtnClearFilter_Click" Grid.Column="2">
                                             <md:PackIcon Kind="Close" Opacity=".56" />
                                         </Button>
                                     </Grid>
                                     <DataGrid Grid.Row="1" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
                                               VerticalAlignment="Stretch" AutoGenerateColumns="False" 
                                               CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False"  Grid.ColumnSpan="2" MouseLeave="DgRisksCross_MouseLeave" 
-                                              SelectedCellsChanged="DgRisksCross_SelectedCellsChanged" LostFocus="DgRisksCross_LostFocus"  CanUserDeleteRows="False" SelectionChanged="dgRisksCross_SelectionChanged" CellEditEnding="dgRisksCross_CellEditEnding" IsTextSearchEnabled="True">
+                                              SelectedCellsChanged="DgRisksCross_SelectedCellsChanged" LostFocus="DgRisksCross_LostFocus"  CanUserDeleteRows="False" SelectionChanged="DgRisksCross_SelectionChanged" CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True">
 
                                     </DataGrid>
                                 </Grid>
@@ -374,7 +367,7 @@
                                             <md:PackIcon Kind="Magnify" Opacity=".56" />
                                         </Button>
                                         <TextBox TextChanged="TxtFilterCM_TextChanged" Name="txtFilterCM" Grid.Column="1" Margin="8 0 0 0" md:HintAssist.Hint="Filter CM" md:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0" MinWidth="200" VerticalAlignment="Center" />
-                                        <Button Style="{DynamicResource MaterialDesignToolButton}" Name="btnCloseFilterCM" Click="btnCloseFilterCM_Click" Grid.Column="2">
+                                        <Button Style="{DynamicResource MaterialDesignToolButton}" Name="btnCloseFilterCM" Click="BtnCloseFilterCM_Click" Grid.Column="2">
                                             <md:PackIcon Kind="Close" Opacity=".56"  />
                                         </Button>
                                     </Grid>
@@ -431,7 +424,7 @@
                     <MenuItem ToolTip="Start" x:Name="StartMenu" Icon="{md:PackIcon Kind=DotsVertical}">
                         <MenuItem x:Name="LoginMenuItem" Header="Login" Command="local:CustomCommands.Login" Icon="{md:PackIcon Kind=Lock}" InputGestureText="Ctrl+L"/>
                         <MenuItem x:Name="MenuItemNewProject" Header="Project List" Command="local:CustomCommands.Project" Icon="{md:PackIcon Kind=FileMultiple}" InputGestureText="Ctrl+J"/>
-                        <MenuItem x:Name="MenuItemUserList" Header="User List" Command="local:CustomCommands.User" Icon="{md:PackIcon Kind=account}" InputGestureText="Ctrl+U"/>
+                        <MenuItem x:Name="MenuItemUserList" Header="User List" Command="local:CustomCommands.User" Icon="{md:PackIcon Kind=Users}" InputGestureText="Ctrl+U"/>
                         <MenuItem x:Name="MenuItemRoleList" Header="Role List" Command="local:CustomCommands.Role" Icon="{md:PackIcon Kind=AccountKey}" InputGestureText="Ctrl+Shift+R"/>
                         <MenuItem x:Name="MenuItemTopRisk" Header="Top Risk List" Command="local:CustomCommands.Damage" Icon="{md:PackIcon Kind=AlertOutline}" InputGestureText="Ctrl+D"/>
                         <MenuItem x:Name="MenuItemDefaultRisk" Header="Default Risk List" Command="local:CustomCommands.Default" Icon="{md:PackIcon Kind=AlertCircleOutline}" InputGestureText="Ctrl+T"/>

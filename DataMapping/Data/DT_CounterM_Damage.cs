@@ -21,6 +21,9 @@ namespace DataMapping.Data
         public const string STATUS = "Status";
         public const string IDRISK = "idRisk";
         public const string ID_GROUPE = "idGroupe";
+        public const string ID_WBS = "idWBS";
+        public const string WBS_NAME = "WBSName";
+        public const string USERNAME = "userName";
 
         public DT_CounterM_Damage() : base()
         {
@@ -45,6 +48,9 @@ namespace DataMapping.Data
             Columns.Add(ID_RISK_TREE, typeof(System.Int32));
             Columns.Add(IDRISK, typeof(System.Int32));
             Columns.Add(ID_GROUPE, typeof(System.Int32));
+            Columns.Add(ID_WBS, typeof(System.Int32));
+            Columns.Add(WBS_NAME, typeof(System.String));
+            Columns.Add(USERNAME, typeof(System.String));
             PrimaryKey = PK_COLUMN;
         }
     }

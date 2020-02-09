@@ -62,7 +62,7 @@ namespace EnsureRisk.Windows
                 ds.Merge(GetAccess());
                 if (ds.Tables[DT_User.User_TABLA].Rows.Count != 0)
                 {
-                    Usser = ds.Tables[DT_User.User_TABLA].Rows[0][DT_User.USERNAME_COLUMNA].ToString();
+                    Usser = ds.Tables[DT_User.User_TABLA].Rows[0][DT_User.USERNAME].ToString();
                     this.DialogResult = true;
                     foreach (DataRow item in ds.Tables[DT_User_Operation.TABLE_NAME].Rows)
                     {

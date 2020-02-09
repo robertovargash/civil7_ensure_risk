@@ -23,6 +23,7 @@ namespace EnsureBusinesss
         public const string LOCATION = "pack://application:,,/Resources/";
         public const double basicX = 3;
         public const double basicY = 7;
+        public const int NumberOfClasses = 20;
 
         public const string EXPANDIDO = "pack://application:,,,/Images/Expandido.png";
         public const string CONTRAIDO = "pack://application:,,,/Images/Contraido.png";
@@ -207,28 +208,51 @@ namespace EnsureBusinesss
             {
                 if (IsLeaf(itemi, ds.Tables[DT_Risk.TABLE_NAME]))
                 {
-                    DataRow[] drs = ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_COLUMNA + " = " + itemi[DT_Risk.ID_COLUMNA]);
+                    DataRow[] drs = ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID + " = " + itemi[DT_Risk.ID]);
                     foreach (DataRow item in drs)
                     {
-                        int cantidad = ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + item[DT_Risk.ID_COLUMNA]).Count();
+                        int cantidad = ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + item[DT_Risk.ID]).Count();
                         for (int i = 0; i < cantidad; i++)
                         {
-                            ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + item[DT_Risk.ID_COLUMNA]).First().Delete();
+                            ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + item[DT_Risk.ID]).First().Delete();
                         }
-                        ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item[DT_Risk.ID_COLUMNA]).Delete();
+                        ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item[DT_Risk.ID]).Delete();
                     }
                 }
                 else
                 {
                     DeleteRiskAndCMFirst(GetChildss(itemi, ds.Tables[DT_Risk.TABLE_NAME]), ds);
-                    int cantidad = ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + itemi[DT_Risk.ID_COLUMNA]).Count();
+                    int cantidad = ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + itemi[DT_Risk.ID]).Count();
                     for (int i = 0; i < cantidad; i++)
                     {
-                        ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + itemi[DT_Risk.ID_COLUMNA]).First().Delete();
+                        ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + itemi[DT_Risk.ID]).First().Delete();
                     }
-                    ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(itemi[DT_Risk.ID_COLUMNA]).Delete();
+                    ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(itemi[DT_Risk.ID]).Delete();
                 }
             }
+        }
+
+        public static void EliminarMisHijosWBS(List<DataRow> hijos, DataTable dtWBS, DataTable dtStrucutre)
+        {
+            foreach (DataRow item in hijos)
+            {
+                if (dtStrucutre.Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + item[DT_WBS.ID_WBS]).Any())
+                {
+                    EliminarMisHijosWBS(MyWBSChildren(item, dtWBS, dtStrucutre), dtWBS, dtStrucutre);
+                }
+                dtWBS.Rows.Find(item[DT_WBS.ID_WBS]).Delete();
+            }
+        }
+
+        public static List<DataRow> MyWBSChildren(DataRow drFather, DataTable dtWBS, DataTable dtStructure)
+        {
+            List<DataRow> returnList = new List<DataRow>();
+
+            foreach (DataRow item in dtStructure.Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + drFather[DT_WBS.ID_WBS].ToString()))
+            {
+                returnList.Add(dtWBS.Rows.Find(item[DT_WBS_STRUCTURE.ID_CHILD]));
+            }
+            return returnList;
         }
 
         #endregion
@@ -239,7 +263,7 @@ namespace EnsureBusinesss
         {
             List<DataRow> returnList = new List<DataRow>();
 
-            foreach (DataRow item in dtRisk.Select(DT_Risk.IDRISK_FATHER + " = " + drFather[DT_Risk.ID_COLUMNA].ToString()))
+            foreach (DataRow item in dtRisk.Select(DT_Risk.IDRISK_FATHER + " = " + drFather[DT_Risk.ID].ToString()))
             {
                 returnList.Add(item);
             }
@@ -248,7 +272,7 @@ namespace EnsureBusinesss
 
         public static bool IsLeaf(DataRow drChild, DataTable dtStructure)
         {
-            return !dtStructure.Select(DT_Risk.IDRISK_FATHER + " = " + drChild[DT_Risk.ID_COLUMNA]).Any();
+            return !dtStructure.Select(DT_Risk.IDRISK_FATHER + " = " + drChild[DT_Risk.ID]).Any();
         }
 
 
@@ -259,16 +283,16 @@ namespace EnsureBusinesss
         {
             try
             {
-                if ((Boolean)risk[DT_Risk.ENABLED_COLUMN])
+                if ((Boolean)risk[DT_Risk.ENABLED])
                 {
-                    if (!(Risk_TopRisk.Select(DT_Risk_Damages.ID_RISK + " = " + risk[DT_Risk.ID_COLUMNA] + " AND " +
+                    if (!(Risk_TopRisk.Select(DT_Risk_Damages.ID_RISK + " = " + risk[DT_Risk.ID] + " AND " +
                                 DT_Risk_Damages.ID_DAMAGE + " = " + idToprisk).Any()))
                     {
                         return 0;
                     }
                     else
                     {
-                        return (Decimal)Risk_TopRisk.Select(DT_Risk_Damages.ID_RISK + " = " + risk[DT_Risk.ID_COLUMNA] + " AND " +
+                        return (Decimal)Risk_TopRisk.Select(DT_Risk_Damages.ID_RISK + " = " + risk[DT_Risk.ID] + " AND " +
                             DT_Risk_Damages.ID_DAMAGE + " = " + idToprisk).First()[DT_Risk_Damages.VALUE];
                     }
                 }
@@ -287,14 +311,14 @@ namespace EnsureBusinesss
         /// </summary>
         public static decimal CalculateCMTopRiskValue(DataRow CM, DataTable CM_TopRisk, int idToprisk)
         {
-            if (!(CM_TopRisk.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CM[DT_CounterM.ID_COLUMNA] + " AND " +
+            if (!(CM_TopRisk.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CM[DT_CounterM.ID] + " AND " +
                 DT_CounterM_Damage.ID_DAMAGE + " = " + idToprisk).Any()))
             {
                 return 0;
             }
             else
             {
-                return (Decimal)CM_TopRisk.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CM[DT_CounterM.ID_COLUMNA] + " AND " +
+                return (Decimal)CM_TopRisk.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CM[DT_CounterM.ID] + " AND " +
                     DT_CounterM_Damage.ID_DAMAGE + " = " + idToprisk).First()[DT_CounterM_Damage.VALUE];
             }
         }
@@ -304,7 +328,7 @@ namespace EnsureBusinesss
         /// </summary>
         public static DataRow[] MyCounterMeasure(DataRow risk, DataTable CM)
         {
-            return CM.Select(DT_CounterM.ID_RISK + " = " + risk[DT_Risk.ID_COLUMNA] + " and " + DT_CounterM.ENABLED_COLUMN + " = " + true);
+            return CM.Select(DT_CounterM.ID_RISK + " = " + risk[DT_Risk.ID] + " and " + DT_CounterM.ENABLED + " = " + true);
         }
 
         /// <summary>
@@ -488,14 +512,21 @@ namespace EnsureBusinesss
                     if (!(item.IsCM))
                     {
                         item.Value = CalculateTopRiskTreeValue(dtEncoder.Rows.Find(item.ID), dtEncoder, IdTopRisk, Risk_TopRisk, CM, CM_TopRisk);
-                        // TODO todo, aqui podria ponerse el mismo valo para cada segmento hijo, pero antes revisar porque cada segmento tendra su propio valor
+                        //item.MyOwnValue = (decimal)Risk_TopRisk.Rows.Find(new object[] { item.ID, IdTopRisk })[DT_Risk_Damages.VALUE];
+                        decimal TotalAD = CalculateTopRiskTreeValue(dtEncoder.Rows.Find(linesList.Find(r => r.IsRoot == true).ID), dtEncoder, IdTopRisk, Risk_TopRisk, CM, CM_TopRisk);
+                        //decimal RangeOfClases = TotalAD / NumberOfClasses;
+                        //item.Class = item.MyOwnValue / RangeOfClases;
+                        //item.Class = General.MyRound(item.Class, 0);
                     }
                 }
                 decimal min = 0;
                 decimal max = 0;
+                if (linesList.Where(p => !p.IsRoot).Any())
+                {
+                    min = linesList.Where(p => !p.IsRoot).Min(l => l.Value);
+                    max = linesList.Where(p => !p.IsRoot).Max(l => l.Value);
+                }
 
-                min = linesList.Where(p => !p.IsRoot).Min(l => l.Value);
-                max = linesList.Where(p => !p.IsRoot).Max(l => l.Value);
                 foreach (var item in linesList)
                 {
                     if (!(item.IsCM))
@@ -521,6 +552,30 @@ namespace EnsureBusinesss
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        public static decimal RangeOfClass(int ID_MainLine, DataSet ds, int IdTopRisk)
+        {
+            try
+            {
+                DataTable dtRiskEncoder = ds.Tables[DT_Risk.TABLE_NAME].Copy();
+                DataTable dtCMEncoder = ds.Tables[DT_CounterM.TABLE_NAME].Copy();
+                DataTable dtRiskDamages = ds.Tables[DT_Risk_Damages.TABLENAME].Copy();
+                DataTable dtCMDamages = ds.Tables[DT_CounterM_Damage.TABLENAME].Copy();
+                decimal TotalAD = CalculateTopRiskTreeValue(dtRiskEncoder.Rows.Find(ID_MainLine), ds.Tables[DT_Risk.TABLE_NAME], IdTopRisk, dtRiskDamages, dtCMEncoder, dtCMDamages);
+                if (TotalAD / NumberOfClasses != 0)
+                {
+                    return TotalAD / NumberOfClasses;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch
+            {
+                throw new Exception("Class Calculation Wrong");
             }
         }
 
