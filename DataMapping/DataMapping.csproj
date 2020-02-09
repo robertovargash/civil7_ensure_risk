@@ -52,6 +52,9 @@
     <Compile Include="Data\DT_CM_WBS.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Data\DT_WBS_CM_Damage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Data\DT_CounterM.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -82,10 +85,10 @@
     <Compile Include="Data\DT_RiskStructure.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Data\DT_RiskTree.cs">
+    <Compile Include="Data\DT_Diagram.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Data\DT_RiskTree_Damages.cs">
+    <Compile Include="Data\DT_Diagram_Damages.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\DT_Risk_Damages.cs">
@@ -104,6 +107,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\DT_Damage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Data\DT_WBS_RISK_DAMAGE.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\DT_WBS.cs">
