@@ -1058,13 +1058,13 @@ namespace EnsureRisk.Classess
             {
                 if (!item.IsRoot)
                 {
-                    foreach (var riskLineSegment in item.Segments)
+                    foreach (var segmentLine in item.Segments)
                     {
-                        riskLineSegment.MouseLeave += Risk_MouseLeave;
-                        riskLineSegment.MouseEnter += Segment_MouseHover;
+                        segmentLine.MouseLeave += Risk_MouseLeave;
+                        segmentLine.MouseEnter += Segment_MouseHover;
 
-                        riskLineSegment.MouseDown += R_MouseDown_Event;//click en el Riesgo
-                                                                       //riskLineSegment.MouseUp += RiskLine_MouseUp;
+                        segmentLine.MouseDown += S_MouseDown_Event; //click en el segmento
+                        segmentLine.MouseUp += RiskLine_MouseUp;
                     }
                 }
             }
@@ -1629,6 +1629,10 @@ namespace EnsureRisk.Classess
                 {
                     Line_Selected = ((RiskPolyLine)sender);
                 }
+                else if (sender is SegmentPolyLine)
+                {
+                    Line_Selected = ((SegmentPolyLine)sender).Father;
+                }
                 else
                 {
                     Line_Selected = ((LabelPolyLine)sender).Line;
@@ -1658,9 +1662,104 @@ namespace EnsureRisk.Classess
 
         }
 
+        private void createRisk(int ID_Sender)
+        {
+            if (Line_Created.IsCM)
+            {
+                WindowCM windowCM = new WindowCM()
+                {
+                    CMRow = Ds.Tables[DT_CounterM.TABLE_NAME].NewRow(),
+                    DsCM = Ds,
+                    CM_RoleTable = Ds.Tables[DT_Role_CM.TABLENAME].Copy(),
+                    CM_WBS_Table = Ds.Tables[DT_CM_WBS.TABLENAME].Copy(),
+                    TopRiskTable = Ds.Tables[DT_CounterM_Damage.TABLENAME].Copy(),
+                    Operation = General.INSERT,
+                    RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(ID_Sender),
+                    RiskTreeID = ID_Diagram,
+                    RiskPadre = Line_Selected,
+                    //Icon = Icon,
+                    MyCM = Ds.Tables[DT_CounterM.TABLE_NAME].Copy()
+                };
+                windowCM.Probability = 0;
+                if (windowCM.ShowDialog() == true)
+                {
+                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Add(windowCM.CMRow);
+                    Ds.Tables[DT_CounterM_Damage.TABLENAME].Merge(windowCM.TopRiskTable);
+                    Ds.Tables[DT_CM_WBS.TABLENAME].Merge(windowCM.CM_WBS_Table);
+                    Ds.Tables[DT_Role_CM.TABLENAME].Merge(windowCM.CM_RoleTable);
+
+                    Line_Created.ID = (Int32)windowCM.CMRow[DT_CounterM.ID_COLUMNA];
+
+                    Line_Created.Father = Line_Selected;
+                    Line_Created.IdRiskFather = Line_Selected.ID;
+                    //Line_Selected.Children.Add(Line_Created);
+                    Line_Created.FromTop = Line_Selected.FromTop;
+                    Line_Created.IsDiagonal = !Line_Selected.IsDiagonal;
+                    Line_Created.ShortName = windowCM.CMRow[DT_CounterM.NAMESHORT_COLUMNA].ToString();
+                    InsertCM(Line_Created, Line_Selected, Line_Created.Points[1]);
+                    DrawFishBone();
+                }
+            }
+            else
+            {
+                WindowRisk wrisk = new WindowRisk()
+                {
+                    RiskRow = Ds.Tables[DT_Risk.TABLE_NAME].NewRow(),
+                    Ds = Ds,
+                    Risk_RoleTable = Ds.Tables[DT_Role_Risk.TABLENAME].Copy(),
+                    TopRiskTable = Ds.Tables[DT_Risk_Damages.TABLENAME].Copy(),
+                    Risk_WBS_Table = Ds.Tables[DT_RISK_WBS.TABLENAME].Copy(),
+                    Operation = General.INSERT,
+                    RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
+                    RiskTreeID = (Int32)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.ID_RISK_TREE],
+                    RiskSelected = Line_Selected,
+                    //Icon = Icon,
+                    MyRisks = Ds.Tables[DT_Risk.TABLE_NAME].Copy()
+                };
+                if (wrisk.ShowDialog() == true)
+                {
+                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(wrisk.RiskRow);
+                    DataRow rowstructure = Ds.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
+                    rowstructure[DT_RiskStructure.IDRISK] = wrisk.RiskRow[DT_Risk.ID_COLUMNA];
+                    rowstructure[DT_RiskStructure.IDRISK_FATHER] = wrisk.RowFather[DT_Risk.ID_COLUMNA];
+                    Ds.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
+                    Ds.Tables[DT_Risk_Damages.TABLENAME].Merge(wrisk.TopRiskTable);
+                    Ds.Tables[DT_RISK_WBS.TABLENAME].Merge(wrisk.Risk_WBS_Table);
+                    Ds.Tables[DT_Role_Risk.TABLENAME].Merge(wrisk.Risk_RoleTable);
+
+                    Line_Created.ID = (Int32)wrisk.RiskRow[DT_Risk.ID_COLUMNA];
+                    Line_Created.Father = Line_Selected;
+                    Line_Created.IdRiskFather = Line_Selected.ID;
+                    //Line_Selected.Children.Add(Line_Created);
+                    Line_Created.FromTop = Line_Selected.FromTop;
+                    Line_Created.IsDiagonal = !Line_Selected.IsDiagonal;
+                    Line_Created.ShortName = wrisk.RiskRow[DT_Risk.NAMESHORT_COLUMNA].ToString();
+                    InsertRisk(Line_Created, Line_Selected, Line_Created.Points[1]);
+                    DrawFishBone();
+                }
+            }
+        }
+
+
         private void S_MouseDown_Event(object sender, MouseButtonEventArgs e)
         {
-           
+            try
+            {
+                Loose = false;
+                int ID_Sender;
+                bool IsRoot_Sender;
+                RiskPolyLine TheLine;
+
+                ID_Sender = ((SegmentPolyLine)sender).Father.ID;
+                IsRoot_Sender = ((SegmentPolyLine)sender).Father.IsRoot;
+                TheLine = ((SegmentPolyLine)sender).Father;
+
+                MouseDownPress(sender, e, ID_Sender, IsRoot_Sender, TheLine);
+            }
+            catch (Exception ex)
+            {
+                new WindowMessageOK("S_MouseDown_Event: " + ex.Message).ShowDialog();
+            }
         }
         private void R_MouseDown_Event(object sender, MouseButtonEventArgs e)
         {
@@ -1682,297 +1781,7 @@ namespace EnsureRisk.Classess
                     IsRoot_Sender = ((LabelPolyLine)sender).Line.IsRoot;
                     TheLine = ((LabelPolyLine)sender).Line;
                 }
-                if (Creando)
-                {
-                    SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
-                    if (Line_Created.IsCM)
-                    {
-                        WindowCM windowCM = new WindowCM()
-                        {
-                            CMRow = Ds.Tables[DT_CounterM.TABLE_NAME].NewRow(),
-                            DsCM = Ds,
-                            CM_RoleTable = Ds.Tables[DT_Role_CM.TABLENAME].Copy(),
-                            CM_WBS_Table = Ds.Tables[DT_CM_WBS.TABLENAME].Copy(),
-                            TopRiskTable = Ds.Tables[DT_CounterM_Damage.TABLENAME].Copy(),
-                            Operation = General.INSERT,
-                            RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(ID_Sender),
-                            RiskTreeID = ID_Diagram,
-                            RiskPadre = Line_Selected,
-                            //Icon = Icon,
-                            MyCM = Ds.Tables[DT_CounterM.TABLE_NAME].Copy()
-                        };
-                        windowCM.Probability = 0;
-                        if (windowCM.ShowDialog() == true)
-                        {
-                            Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Add(windowCM.CMRow);
-                            Ds.Tables[DT_CounterM_Damage.TABLENAME].Merge(windowCM.TopRiskTable);
-                            Ds.Tables[DT_CM_WBS.TABLENAME].Merge(windowCM.CM_WBS_Table);
-                            Ds.Tables[DT_Role_CM.TABLENAME].Merge(windowCM.CM_RoleTable);
-
-                            Line_Created.ID = (Int32)windowCM.CMRow[DT_CounterM.ID_COLUMNA];
-
-                            Line_Created.Father = Line_Selected;
-                            Line_Created.IdRiskFather = Line_Selected.ID;
-                            //Line_Selected.Children.Add(Line_Created);
-                            Line_Created.FromTop = Line_Selected.FromTop;
-                            Line_Created.IsDiagonal = !Line_Selected.IsDiagonal;
-                            Line_Created.ShortName = windowCM.CMRow[DT_CounterM.NAMESHORT_COLUMNA].ToString();
-                            InsertCM(Line_Created, Line_Selected, Line_Created.Points[1]);
-                            DrawFishBone();
-                        }
-                    }
-                    else
-                    {
-                        WindowRisk wrisk = new WindowRisk()
-                        {
-                            RiskRow = Ds.Tables[DT_Risk.TABLE_NAME].NewRow(),
-                            Ds = Ds,
-                            Risk_RoleTable = Ds.Tables[DT_Role_Risk.TABLENAME].Copy(),
-                            TopRiskTable = Ds.Tables[DT_Risk_Damages.TABLENAME].Copy(),
-                            Risk_WBS_Table = Ds.Tables[DT_RISK_WBS.TABLENAME].Copy(),
-                            Operation = General.INSERT,
-                            RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
-                            RiskTreeID = (Int32)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.ID_RISK_TREE],
-                            RiskSelected = Line_Selected,
-                            //Icon = Icon,
-                            MyRisks = Ds.Tables[DT_Risk.TABLE_NAME].Copy()
-                        };
-                        if (wrisk.ShowDialog() == true)
-                        {
-                            Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(wrisk.RiskRow);
-                            DataRow rowstructure = Ds.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
-                            rowstructure[DT_RiskStructure.IDRISK] = wrisk.RiskRow[DT_Risk.ID_COLUMNA];
-                            rowstructure[DT_RiskStructure.IDRISK_FATHER] = wrisk.RowFather[DT_Risk.ID_COLUMNA];
-                            Ds.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
-                            Ds.Tables[DT_Risk_Damages.TABLENAME].Merge(wrisk.TopRiskTable);
-                            Ds.Tables[DT_RISK_WBS.TABLENAME].Merge(wrisk.Risk_WBS_Table);
-                            Ds.Tables[DT_Role_Risk.TABLENAME].Merge(wrisk.Risk_RoleTable);
-
-                            Line_Created.ID = (Int32)wrisk.RiskRow[DT_Risk.ID_COLUMNA];
-                            Line_Created.Father = Line_Selected;
-                            Line_Created.IdRiskFather = Line_Selected.ID;
-                            //Line_Selected.Children.Add(Line_Created);
-                            Line_Created.FromTop = Line_Selected.FromTop;
-                            Line_Created.IsDiagonal = !Line_Selected.IsDiagonal;
-                            Line_Created.ShortName = wrisk.RiskRow[DT_Risk.NAMESHORT_COLUMNA].ToString();
-                            InsertRisk(Line_Created, Line_Selected, Line_Created.Points[1]);
-                            DrawFishBone();
-                        }
-                    }
-                    GridPaintLines.Children.Remove(Line_Created);
-                    Line_Created = null;
-                    Creando = false;
-                    Loose = true;
-                }
-                else
-                {
-                    if (MoviendoRisk)
-                    {
-                        // Se mueve un riesgo
-
-                        //checking if user don't bad click out of line for moving
-                        //chekea que el usuario no de un mal clic 
-                        if (Line_Selected.IdRiskFather != ID_Sender && Line_Selected.ID != ID_Sender)
-                        {
-                            //Mover el riesgo de un Padre a otro (cambiar de padre)
-                            MoviendoRisk = false;
-                            MoveRisk(TheLine, e.GetPosition(GridPaintLines));
-                        }
-                        else
-                        {
-                            //Mover el riesgo en el mismo Padre (Cambiar la posición, reordenar)
-                            MoviendoRisk = false;
-                            ReorderRisk(TheLine, e.GetPosition(GridPaintLines));
-                        }
-                        DrawFishBone();
-                        ((MainWindow)MyWindow).NormalArrowCursor();
-                    }
-                    else
-                    {
-                        if (MoviendoCM)
-                        {
-                            // Se mueve una contramedida
-
-                            if (Line_Selected.IdRiskFather != ID_Sender && Line_Selected.ID != ID_Sender)
-                            {
-                                //Mover la contramedida de un Padre a otro (cambiar de padre)
-                                MoviendoCM = false;
-                                MoveCounterMeasure(TheLine, e.GetPosition(GridPaintLines));
-                                DrawFishBone();
-                                ((MainWindow)MyWindow).NormalArrowCursor();
-                            }
-                            else
-                            {
-                                //Mover la contramedida en el mismo Padre (Cambiar la posición)
-                                MoviendoCM = false;
-                                ReorderCounterMeasure(TheLine, e.GetPosition(GridPaintLines));
-                                DrawFishBone();
-                                ((MainWindow)MyWindow).NormalArrowCursor();
-                            }
-                        }
-                        else
-                        {
-                            if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Control)
-                            {
-                                // ctrl + click risk
-                                ChoosingRisk = true;
-                                SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
-
-                                if (!RiskGroupSelected.Contains(Line_Selected))
-                                {
-                                    if (TengoPermiso(Line_Selected))
-                                    {
-                                        if (ChoosingCM) // seleccion mixta
-                                        {
-                                            ResetLinesMenu(CMGroupSelected, MenuGroupMixed); // buscar forma mas eficiente, a partir de la segunda vez es innecesario
-                                            Line_Selected.ContextMenu = MenuGroupMixed;
-                                            Line_Selected.MyName.ContextMenu = MenuGroupMixed;
-                                        }
-                                        else
-                                        {
-                                            Line_Selected.ContextMenu = MenuGroupRisk;
-                                            Line_Selected.MyName.ContextMenu = MenuGroupRisk;
-                                        }
-                                        Line_Selected.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
-                                        RiskGroupSelected.Add(Line_Selected);
-                                        //UpdateRiskCounText(1);
-                                    }
-                                }
-                                else
-                                {
-                                    System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (Int32)CbFilterTopR.SelectedValue).First()[DT_Risk_Damages.COLOR].ToString()));
-                                    if (TengoPermiso(Line_Selected))
-                                    {
-                                        Line_Selected.Stroke = new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B));
-                                        Line_Selected.ContextMenu = MenuRisk;
-                                        Line_Selected.MyName.ContextMenu = MenuRisk;
-                                    }
-                                    else
-                                    {
-                                        Line_Selected.Stroke = new SolidColorBrush(Color.FromArgb(80, drawColor.R, drawColor.G, drawColor.B));
-                                        Line_Selected.ContextMenu = null;
-                                        Line_Selected.MyName.ContextMenu = null;
-                                    }
-
-                                    RiskGroupSelected.Remove(Line_Selected);
-                                    //UpdateRiskCounText(-1);
-
-                                    if (RiskGroupSelected.Count == 0) // si haciendo ctrl+click elimine la lista de riesgos seleccionados
-                                    {
-                                        ResetGroupRiksSelection();
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (SelectingToGroup)
-                                {
-                                    if (GroupSelected != null)
-                                    {
-                                        if (sender is RiskPolyLine)
-                                        {
-                                            Line_Selected = ((RiskPolyLine)sender);
-                                        }
-                                        else
-                                        {
-                                            Line_Selected = ((LabelPolyLine)sender).Line;
-                                        }
-                                        Line_Selected.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
-                                        Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.ID_GROUPE_COLUMN] = GroupSelected.IdGroup;
-                                        Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.GROUPE_NAME_COLUMN] = GroupSelected.GroupName;
-                                        LinesList.Find(x => x.ID == Line_Selected.ID).Group = GroupSelected;
-                                        RiskGroupSelected.Add(Line_Selected);
-                                        UpdateGridRiskAndGridCM();
-                                        //p.LSelected = Line_Selected.ShortName;
-                                        //p.TSelected = Line_Selected.IsCM ? "CounterMeasure" : "Risk";
-                                    }
-                                }
-                                else
-                                {
-                                    switch (e.LeftButton == MouseButtonState.Pressed)
-                                    {
-                                        case true: // click izquierdo sin control presionado
-                                            SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
-                                            if (ChoosingCM || ChoosingRisk)
-                                            { // si estaba seleccionando multiple y di click izq
-                                                ResetGroupCMSelection();
-                                                ResetGroupRiksSelection();
-                                            }
-                                            break;
-
-                                        case false: // click derecho sin control presionado en una cm
-                                            SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
-                                            if (ChoosingCM || ChoosingRisk) // si estaba seleccionando limpio seleccion
-                                            {
-                                                if (ChoosingCM && ChoosingRisk) //click derecho en un riesgo y esta una seleccion mixta activa
-                                                {
-                                                    if (!RiskGroupSelected.Contains(Line_Selected)) // si click derecho en un riesgo que no esta en la seleccion actual
-                                                    {
-                                                        ResetGroupCMSelection();
-                                                        ResetGroupRiksSelection();
-                                                    }
-                                                    else
-                                                    {
-                                                        var query = from item in RiskGroupSelected
-                                                                    where (Boolean)item.IsActivated == true
-                                                                    select item;
-                                                        List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
-
-                                                        var queryCM = from item in CMGroupSelected
-                                                                      where (Boolean)item.IsActivated == true
-                                                                      select item;
-                                                        List<RiskPolyLine> resultCM = queryCM.ToList<RiskPolyLine>();
-
-                                                        if (result.Count > 0 || resultCM.Count > 0)
-                                                        {
-                                                            // si hay al menos una "Enabled" envio true, para desactivarlas todas
-                                                            ((MenuItem)MenuGroupMixed.Items[0]).ToolTip = StringResources.DisableValue;
-                                                        }
-                                                        else
-                                                        {
-                                                            ((MenuItem)MenuGroupMixed.Items[0]).ToolTip = StringResources.EnableValue;
-                                                        }
-                                                    }
-                                                }
-                                                else if (ChoosingCM) //click derecho en un riesgo y esta una seleccion de cm activa
-                                                {
-                                                    ResetGroupCMSelection(); // limpio lista de cm porque di click derecho en un riesgo
-
-                                                }
-                                                else //click derecho en un riesgo  y esta una seleccion de riesgos activa
-                                                {
-                                                    if (!RiskGroupSelected.Contains(Line_Selected))
-                                                    {
-                                                        ResetGroupRiksSelection();
-                                                    }
-                                                    else
-                                                    {
-                                                        var query = from item in RiskGroupSelected
-                                                                    where (Boolean)item.IsActivated == true
-                                                                    select item;
-                                                        List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
-
-                                                        if (result.Count > 0)
-                                                        {
-                                                            // si hay al menos una "Enabled" envio true, para desactivarlas todas
-                                                            ((MenuItem)MenuGroupRisk.Items[0]).ToolTip = StringResources.DisableValue;
-                                                        }
-                                                        else
-                                                        {
-                                                            ((MenuItem)MenuGroupRisk.Items[0]).ToolTip = StringResources.EnableValue;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            break;
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }
-                UpdateSelectedPolyLineVisualInfo();
+                MouseDownPress(sender, e, ID_Sender, IsRoot_Sender, TheLine);
             }
             catch (Exception ex)
             {
@@ -1980,6 +1789,229 @@ namespace EnsureRisk.Classess
             }
         }
 
+        private void MouseDownPress(object sender, MouseButtonEventArgs e, int ID_Sender, bool IsRoot_Sender, RiskPolyLine TheLine)
+        {
+            if (Creando)
+            {
+                SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
+
+                createRisk(ID_Sender);
+
+                GridPaintLines.Children.Remove(Line_Created);
+                Line_Created = null;
+                Creando = false;
+                Loose = true;
+            }
+            else
+            {
+                if (MoviendoRisk)
+                {
+                    // Se mueve un riesgo
+
+                    //checking if user don't bad click out of line for moving
+                    //chekea que el usuario no de un mal clic 
+                    if (Line_Selected.IdRiskFather != ID_Sender && Line_Selected.ID != ID_Sender)
+                    {
+                        //Mover el riesgo de un Padre a otro (cambiar de padre)
+                        MoviendoRisk = false;
+                        MoveRisk(TheLine, e.GetPosition(GridPaintLines));
+                    }
+                    else
+                    {
+                        //Mover el riesgo en el mismo Padre (Cambiar la posición, reordenar)
+                        MoviendoRisk = false;
+                        ReorderRisk(TheLine, e.GetPosition(GridPaintLines));
+                    }
+                    DrawFishBone();
+                    ((MainWindow)MyWindow).NormalArrowCursor();
+                }
+                else
+                {
+                    if (MoviendoCM)
+                    {
+                        // Se mueve una contramedida
+
+                        if (Line_Selected.IdRiskFather != ID_Sender && Line_Selected.ID != ID_Sender)
+                        {
+                            //Mover la contramedida de un Padre a otro (cambiar de padre)
+                            MoviendoCM = false;
+                            MoveCounterMeasure(TheLine, e.GetPosition(GridPaintLines));
+                            DrawFishBone();
+                            ((MainWindow)MyWindow).NormalArrowCursor();
+                        }
+                        else
+                        {
+                            //Mover la contramedida en el mismo Padre (Cambiar la posición)
+                            MoviendoCM = false;
+                            ReorderCounterMeasure(TheLine, e.GetPosition(GridPaintLines));
+                            DrawFishBone();
+                            ((MainWindow)MyWindow).NormalArrowCursor();
+                        }
+                    }
+                    else
+                    {
+                        if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.Control)
+                        {
+                            // ctrl + click risk
+                            ChoosingRisk = true;
+                            SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
+
+                            if (!RiskGroupSelected.Contains(Line_Selected))
+                            {
+                                if (TengoPermiso(Line_Selected))
+                                {
+                                    if (ChoosingCM) // seleccion mixta
+                                    {
+                                        ResetLinesMenu(CMGroupSelected, MenuGroupMixed); // buscar forma mas eficiente, a partir de la segunda vez es innecesario
+                                        Line_Selected.ContextMenu = MenuGroupMixed;
+                                        Line_Selected.MyName.ContextMenu = MenuGroupMixed;
+                                    }
+                                    else
+                                    {
+                                        Line_Selected.ContextMenu = MenuGroupRisk;
+                                        Line_Selected.MyName.ContextMenu = MenuGroupRisk;
+                                    }
+                                    Line_Selected.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
+                                    RiskGroupSelected.Add(Line_Selected);
+                                    //UpdateRiskCounText(1);
+                                }
+                            }
+                            else
+                            {
+                                System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (Int32)CbFilterTopR.SelectedValue).First()[DT_Risk_Damages.COLOR].ToString()));
+                                if (TengoPermiso(Line_Selected))
+                                {
+                                    Line_Selected.Stroke = new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B));
+                                    Line_Selected.ContextMenu = MenuRisk;
+                                    Line_Selected.MyName.ContextMenu = MenuRisk;
+                                }
+                                else
+                                {
+                                    Line_Selected.Stroke = new SolidColorBrush(Color.FromArgb(80, drawColor.R, drawColor.G, drawColor.B));
+                                    Line_Selected.ContextMenu = null;
+                                    Line_Selected.MyName.ContextMenu = null;
+                                }
+
+                                RiskGroupSelected.Remove(Line_Selected);
+                                //UpdateRiskCounText(-1);
+
+                                if (RiskGroupSelected.Count == 0) // si haciendo ctrl+click elimine la lista de riesgos seleccionados
+                                {
+                                    ResetGroupRiksSelection();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (SelectingToGroup)
+                            {
+                                if (GroupSelected != null)
+                                {
+                                    if (sender is RiskPolyLine)
+                                    {
+                                        Line_Selected = ((RiskPolyLine)sender);
+                                    }
+                                    else
+                                    {
+                                        Line_Selected = ((LabelPolyLine)sender).Line;
+                                    }
+                                    Line_Selected.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
+                                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.ID_GROUPE_COLUMN] = GroupSelected.IdGroup;
+                                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.GROUPE_NAME_COLUMN] = GroupSelected.GroupName;
+                                    LinesList.Find(x => x.ID == Line_Selected.ID).Group = GroupSelected;
+                                    RiskGroupSelected.Add(Line_Selected);
+                                    UpdateGridRiskAndGridCM();
+                                    //p.LSelected = Line_Selected.ShortName;
+                                    //p.TSelected = Line_Selected.IsCM ? "CounterMeasure" : "Risk";
+                                }
+                            }
+                            else
+                            {
+                                switch (e.LeftButton == MouseButtonState.Pressed)
+                                {
+                                    case true: // click izquierdo sin control presionado
+                                        SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
+                                        if (ChoosingCM || ChoosingRisk)
+                                        { // si estaba seleccionando multiple y di click izq
+                                            ResetGroupCMSelection();
+                                            ResetGroupRiksSelection();
+                                        }
+                                        break;
+
+                                    case false: // click derecho sin control presionado en una cm
+                                        SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
+                                        if (ChoosingCM || ChoosingRisk) // si estaba seleccionando limpio seleccion
+                                        {
+                                            if (ChoosingCM && ChoosingRisk) //click derecho en un riesgo y esta una seleccion mixta activa
+                                            {
+                                                if (!RiskGroupSelected.Contains(Line_Selected)) // si click derecho en un riesgo que no esta en la seleccion actual
+                                                {
+                                                    ResetGroupCMSelection();
+                                                    ResetGroupRiksSelection();
+                                                }
+                                                else
+                                                {
+                                                    var query = from item in RiskGroupSelected
+                                                                where (Boolean)item.IsActivated == true
+                                                                select item;
+                                                    List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
+
+                                                    var queryCM = from item in CMGroupSelected
+                                                                  where (Boolean)item.IsActivated == true
+                                                                  select item;
+                                                    List<RiskPolyLine> resultCM = queryCM.ToList<RiskPolyLine>();
+
+                                                    if (result.Count > 0 || resultCM.Count > 0)
+                                                    {
+                                                        // si hay al menos una "Enabled" envio true, para desactivarlas todas
+                                                        ((MenuItem)MenuGroupMixed.Items[0]).ToolTip = StringResources.DisableValue;
+                                                    }
+                                                    else
+                                                    {
+                                                        ((MenuItem)MenuGroupMixed.Items[0]).ToolTip = StringResources.EnableValue;
+                                                    }
+                                                }
+                                            }
+                                            else if (ChoosingCM) //click derecho en un riesgo y esta una seleccion de cm activa
+                                            {
+                                                ResetGroupCMSelection(); // limpio lista de cm porque di click derecho en un riesgo
+
+                                            }
+                                            else //click derecho en un riesgo  y esta una seleccion de riesgos activa
+                                            {
+                                                if (!RiskGroupSelected.Contains(Line_Selected))
+                                                {
+                                                    ResetGroupRiksSelection();
+                                                }
+                                                else
+                                                {
+                                                    var query = from item in RiskGroupSelected
+                                                                where (Boolean)item.IsActivated == true
+                                                                select item;
+                                                    List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
+
+                                                    if (result.Count > 0)
+                                                    {
+                                                        // si hay al menos una "Enabled" envio true, para desactivarlas todas
+                                                        ((MenuItem)MenuGroupRisk.Items[0]).ToolTip = StringResources.DisableValue;
+                                                    }
+                                                    else
+                                                    {
+                                                        ((MenuItem)MenuGroupRisk.Items[0]).ToolTip = StringResources.EnableValue;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+            UpdateSelectedPolyLineVisualInfo();
+        }
         public void UpdateSelectedPolyLineVisualInfo()
         {
             ((MainWindow)MyWindow).P.LSelected = Line_Selected.ShortName;
@@ -2160,6 +2192,10 @@ namespace EnsureRisk.Classess
                 if (sender is RiskPolyLine)
                 {
                     riskPolyLine = (RiskPolyLine)sender;
+                }
+                else if (sender is SegmentPolyLine)
+                {
+                    riskPolyLine = ((SegmentPolyLine)sender).Father;
                 }
                 else
                 {

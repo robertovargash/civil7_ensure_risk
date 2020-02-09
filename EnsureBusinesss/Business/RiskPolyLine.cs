@@ -676,7 +676,7 @@ namespace EnsureBusinesss.Business
 
         public void UpdateSegmentsStroke()
         {
-            if (Segments!=null )
+            if (Segments != null)
             {
                 foreach (var segment in Segments)
                 {
