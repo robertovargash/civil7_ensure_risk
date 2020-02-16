@@ -256,7 +256,7 @@ namespace EnsureRisk
                 //{
                 //    WindowOpening op = new WindowOpening();
                 //    op.ShowDialog();
-                //}                
+                //}     
                 WindowOpening op = new WindowOpening();
                 op.ShowDialog();
                 TableColors.Dispose();
@@ -545,7 +545,7 @@ namespace EnsureRisk
                     ExportToImage();
                     new WindowAlert("Diagram exported successfully!").ShowDialog();
                 }
-            }
+            }            
         }
 
         private void PrintCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -761,7 +761,7 @@ namespace EnsureRisk
         private void SavingOpenedDiagram()
         {
             try
-            {
+            {               
                 if (CurrentLayout != null)
                 {
                     TheProgress.Visibility = Visibility.Visible;
@@ -2587,7 +2587,7 @@ namespace EnsureRisk
                                     listaHeader.Add(new HeaderExcelContent(Rango.Cells[filaHeader, col].Value2.ToString(), col));
                                 }
                             }
-
+                            
                             ServiceClasifications.WebServiceClasificator wsClasification = new ServiceClasifications.WebServiceClasificator();
                             DataSet dsClasification = wsClasification.GetAllClasifications().Copy();
                             wsClasification.Dispose();
@@ -3179,7 +3179,7 @@ namespace EnsureRisk
             if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + CurrentLayout.Line_Selected.ShortName + "] and all its children?").ShowDialog() == true)
             {
                 TreeOperation.DeleteLine(CurrentLayout.Line_Selected, CurrentLayout.LinesList, CurrentLayout.Ds);
-
+                
                 CurrentLayout.DropLines();
                 CurrentLayout.DropRectangles();
                 CurrentLayout.LoadLines();
@@ -4211,7 +4211,7 @@ namespace EnsureRisk
                             item.Group.IdGroup = wg.IdGroup;
                             item.Group.GroupName = wg.GroupName;
                         }
-                    }
+                    }   
                 }
             }
             catch (Exception ex)
@@ -6243,7 +6243,7 @@ namespace EnsureRisk
                         item.Group.IdGroup = null;
                         item.Group.GroupName = "None";
                     }
-                    CurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(((MyGroupButton)sender).IdGroup).Delete();
+                    CurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(((MyGroupButton)sender).IdGroup).Delete();                    
                 }
             }
             catch (Exception ex)
@@ -6918,7 +6918,7 @@ namespace EnsureRisk
 
         private void BtnDelWBS_Click(object sender, RoutedEventArgs e)
         {
-
+            
 
         }
 
@@ -6938,7 +6938,7 @@ namespace EnsureRisk
             {
 
             }
-        }
+        }       
 
         private void BtnDeselect_Click(object sender, RoutedEventArgs e)
         {
@@ -6952,7 +6952,7 @@ namespace EnsureRisk
                     CurrentLayout.LoadRectangles();
                     CurrentLayout.DrawNumbers();
                     CurrentLayout.LineThickness();
-                }
+                }               
             }
             catch (Exception ex)
             {

@@ -43,6 +43,7 @@ namespace EnsureBusinesss.Business
             ArrowEnds = ArrowEnds.None;
             //Stroke = new SolidColorBrush(Colors.Orange);
             Stroke = father.Stroke;
+            ContextMenu = father.ContextMenu;
 
             //StrokeThickness = father.StrokeThickness;
             StrokeThickness = 1;

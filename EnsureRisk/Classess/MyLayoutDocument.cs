@@ -893,8 +893,8 @@ namespace EnsureRisk.Classess
                             {
                                 ((MenuItem)MenuRisk.Items[9]).ToolTip = StringResources.DisableValue;
                                 riskLine.DrawEntireLine(item[DT_Risk.NAMESHORT].ToString());//this method draw a Line in the Main Form
-                                                                                                    //with its respective LabelName.
-                                                                                                    //aca el color de los roles   
+                                                                                            //with its respective LabelName.
+                                                                                            //aca el color de los roles   
 
 
                                 if (haspermission)
@@ -910,7 +910,7 @@ namespace EnsureRisk.Classess
                             {
                                 ((MenuItem)MenuRisk.Items[9]).ToolTip = StringResources.EnableValue;
                                 riskLine.DrawEntireLine("(Disabled)" + item[DT_Risk.NAMESHORT].ToString());//this method draw a Line in the Main Form
-                                                                                                                   //with its respective LabelName.
+                                                                                                           //with its respective LabelName.
                                 riskLine.Stroke = new SolidColorBrush(Colors.Gray);
                             }
                             riskLine.MyName.AttachDoubleClick(riskLine.MyName, Risk_LabelName_MouseDoubleClick);
@@ -959,7 +959,7 @@ namespace EnsureRisk.Classess
                         {
                             ((MenuItem)MenuCM.Items[3]).ToolTip = StringResources.DisableValue;
                             cmline.DrawEntireLine(item[DT_CounterM.NAMESHORT].ToString());//this method draw a Line in the Main Form
-                                                                                                  //with its respective LabelName.
+                                                                                          //with its respective LabelName.
 
                             if (!(haspermission))
                             {
@@ -970,7 +970,7 @@ namespace EnsureRisk.Classess
                         {
                             ((MenuItem)MenuCM.Items[3]).ToolTip = StringResources.EnableValue;
                             cmline.DrawEntireLine("(Disabled)" + item[DT_CounterM.NAMESHORT].ToString());//this method draw a Line in the Main Form
-                                                                                                                 //with its respective LabelName.
+                                                                                                         //with its respective LabelName.
                             cmline.Stroke = new SolidColorBrush(Colors.Gray);
                         }
 
@@ -1023,17 +1023,17 @@ namespace EnsureRisk.Classess
         {
             foreach (var item in LinesList)
             {
-                if (!item.IsRoot)
+                //if (!item.IsRoot)
+                //{
+                foreach (var segmentLine in item.Segments)
                 {
-                    foreach (var segmentLine in item.Segments)
-                    {
-                        segmentLine.MouseLeave += Risk_MouseLeave;
-                        segmentLine.MouseEnter += Segment_MouseHover;
+                    segmentLine.MouseLeave += Risk_MouseLeave;
+                    segmentLine.MouseEnter += Segment_MouseHover;
 
-                        segmentLine.MouseDown += S_MouseDown_Event; //click en el segmento
-                        segmentLine.MouseUp += RiskLine_MouseUp;
-                    }
+                    segmentLine.MouseDown += S_MouseDown_Event; //click en el segmento
+                    segmentLine.MouseUp += RiskLine_MouseUp;
                 }
+                //}
             }
             Console.WriteLine("ok");
         }
@@ -1188,15 +1188,27 @@ namespace EnsureRisk.Classess
                             if (TengoPermiso(item))
                             {
                                 item.Stroke = new SolidColorBrush(Color.FromArgb(drawingCColor.A, drawingCColor.R, drawingCColor.G, drawingCColor.B));
+                                foreach (SegmentPolyLine sItem in item.Segments)
+                                {
+                                    sItem.Stroke = new SolidColorBrush(Color.FromArgb(drawingCColor.A, drawingCColor.R, drawingCColor.G, drawingCColor.B));
+                                }
                             }
                             else
                             {
                                 item.Stroke = new SolidColorBrush(Color.FromArgb(80, drawingCColor.R, drawingCColor.G, drawingCColor.B));
+                                foreach (SegmentPolyLine sItem in item.Segments)
+                                {
+                                    sItem.Stroke = new SolidColorBrush(Color.FromArgb(80, drawingCColor.R, drawingCColor.G, drawingCColor.B));
+                                }
                             }
                         }
                         else
                         {
                             item.Stroke = new SolidColorBrush(Colors.Gray);
+                            foreach (SegmentPolyLine sItem in item.Segments)
+                            {
+                                sItem.Stroke = new SolidColorBrush(Colors.Gray);
+                            }
                         }
                     }
                 }
@@ -1215,6 +1227,10 @@ namespace EnsureRisk.Classess
                 {
                     item.ContextMenu = menuParam;
                     item.MyName.ContextMenu = menuParam;
+                    foreach (SegmentPolyLine sItem in item.Segments)
+                    {
+                        sItem.ContextMenu = menuParam;
+                    }
                 }
             }
             catch (Exception ex)
@@ -1620,6 +1636,10 @@ namespace EnsureRisk.Classess
                 if (!haspermission)
                 {
                     Line_Selected.ContextMenu = null;
+                    foreach (SegmentPolyLine sItem in Line_Selected.Segments)
+                    {
+                        sItem.ContextMenu = null;
+                    }
                 }
             }
             catch (Exception ex)
@@ -1839,13 +1859,25 @@ namespace EnsureRisk.Classess
                                         ResetLinesMenu(CMGroupSelected, MenuGroupMixed); // buscar forma mas eficiente, a partir de la segunda vez es innecesario
                                         Line_Selected.ContextMenu = MenuGroupMixed;
                                         Line_Selected.MyName.ContextMenu = MenuGroupMixed;
+                                        foreach (SegmentPolyLine sItem in Line_Selected.Segments)
+                                        {
+                                            sItem.ContextMenu = MenuGroupMixed;
+                                        }
                                     }
                                     else
                                     {
                                         Line_Selected.ContextMenu = MenuGroupRisk;
                                         Line_Selected.MyName.ContextMenu = MenuGroupRisk;
+                                        foreach (SegmentPolyLine sItem in Line_Selected.Segments)
+                                        {
+                                            sItem.ContextMenu = MenuGroupRisk;
+                                        }
                                     }
                                     Line_Selected.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
+                                    foreach (SegmentPolyLine sItem in Line_Selected.Segments)
+                                    {
+                                        sItem.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
+                                    }
                                     RiskGroupSelected.Add(Line_Selected);
                                     //UpdateRiskCounText(1);
                                 }
@@ -1858,12 +1890,22 @@ namespace EnsureRisk.Classess
                                     Line_Selected.Stroke = new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B));
                                     Line_Selected.ContextMenu = MenuRisk;
                                     Line_Selected.MyName.ContextMenu = MenuRisk;
+                                    foreach (SegmentPolyLine sItem in Line_Selected.Segments)
+                                    {
+                                        sItem.ContextMenu = MenuRisk;
+                                        sItem.Stroke = new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B));
+                                    }
                                 }
                                 else
                                 {
                                     Line_Selected.Stroke = new SolidColorBrush(Color.FromArgb(80, drawColor.R, drawColor.G, drawColor.B));
                                     Line_Selected.ContextMenu = null;
                                     Line_Selected.MyName.ContextMenu = null;
+                                    foreach (SegmentPolyLine sItem in Line_Selected.Segments)
+                                    {
+                                        sItem.ContextMenu = null;
+                                        sItem.Stroke = new SolidColorBrush(Color.FromArgb(80, drawColor.R, drawColor.G, drawColor.B));
+                                    }
                                 }
 
                                 RiskGroupSelected.Remove(Line_Selected);
@@ -1890,6 +1932,10 @@ namespace EnsureRisk.Classess
                                         Line_Selected = ((LabelPolyLine)sender).Line;
                                     }
                                     Line_Selected.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
+                                    foreach (SegmentPolyLine sItem in Line_Selected.Segments)
+                                    {
+                                        sItem.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
+                                    }
                                     Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.ID_GROUPE] = GroupSelected.IdGroup;
                                     Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.GROUPE_NAME] = GroupSelected.GroupName;
                                     LinesList.Find(x => x.ID == Line_Selected.ID).Group = GroupSelected;
@@ -1912,69 +1958,11 @@ namespace EnsureRisk.Classess
                                         }
                                         break;
 
-                                    case false: // click derecho sin control presionado en una cm
+                                    case false: // click derecho sin control presionado en un risk
                                         SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
                                         if (ChoosingCM || ChoosingRisk) // si estaba seleccionando limpio seleccion
                                         {
-                                            if (ChoosingCM && ChoosingRisk) //click derecho en un riesgo y esta una seleccion mixta activa
-                                            {
-                                                if (!RiskGroupSelected.Contains(Line_Selected)) // si click derecho en un riesgo que no esta en la seleccion actual
-                                                {
-                                                    ResetGroupCMSelection();
-                                                    ResetGroupRiksSelection();
-                                                }
-                                                else
-                                                {
-                                                    var query = from item in RiskGroupSelected
-                                                                where (Boolean)item.IsActivated == true
-                                                                select item;
-                                                    List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
-
-                                                    var queryCM = from item in CMGroupSelected
-                                                                  where (Boolean)item.IsActivated == true
-                                                                  select item;
-                                                    List<RiskPolyLine> resultCM = queryCM.ToList<RiskPolyLine>();
-
-                                                    if (result.Count > 0 || resultCM.Count > 0)
-                                                    {
-                                                        // si hay al menos una "Enabled" envio true, para desactivarlas todas
-                                                        ((MenuItem)MenuGroupMixed.Items[0]).ToolTip = StringResources.DisableValue;
-                                                    }
-                                                    else
-                                                    {
-                                                        ((MenuItem)MenuGroupMixed.Items[0]).ToolTip = StringResources.EnableValue;
-                                                    }
-                                                }
-                                            }
-                                            else if (ChoosingCM) //click derecho en un riesgo y esta una seleccion de cm activa
-                                            {
-                                                ResetGroupCMSelection(); // limpio lista de cm porque di click derecho en un riesgo
-
-                                            }
-                                            else //click derecho en un riesgo  y esta una seleccion de riesgos activa
-                                            {
-                                                if (!RiskGroupSelected.Contains(Line_Selected))
-                                                {
-                                                    ResetGroupRiksSelection();
-                                                }
-                                                else
-                                                {
-                                                    var query = from item in RiskGroupSelected
-                                                                where (Boolean)item.IsActivated == true
-                                                                select item;
-                                                    List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
-
-                                                    if (result.Count > 0)
-                                                    {
-                                                        // si hay al menos una "Enabled" envio true, para desactivarlas todas
-                                                        ((MenuItem)MenuGroupRisk.Items[0]).ToolTip = StringResources.DisableValue;
-                                                    }
-                                                    else
-                                                    {
-                                                        ((MenuItem)MenuGroupRisk.Items[0]).ToolTip = StringResources.EnableValue;
-                                                    }
-                                                }
-                                            }
+                                            LimiparSeleccionAll();
                                         }
                                         break;
                                 }
@@ -1985,6 +1973,69 @@ namespace EnsureRisk.Classess
                 }
             }
             UpdateSelectedPolyLineVisualInfo();
+        }
+
+        public void LimiparSeleccionAll()
+        {
+            if (ChoosingCM && ChoosingRisk) //click derecho en un riesgo y esta una seleccion mixta activa
+            {
+                if (!RiskGroupSelected.Contains(Line_Selected)) // si click derecho en un riesgo que no esta en la seleccion actual
+                {
+                    ResetGroupCMSelection();
+                    ResetGroupRiksSelection();
+                }
+                else
+                {
+                    var query = from item in RiskGroupSelected
+                                where (Boolean)item.IsActivated == true
+                                select item;
+                    List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
+
+                    var queryCM = from item in CMGroupSelected
+                                  where (Boolean)item.IsActivated == true
+                                  select item;
+                    List<RiskPolyLine> resultCM = queryCM.ToList<RiskPolyLine>();
+
+                    if (result.Count > 0 || resultCM.Count > 0)
+                    {
+                        // si hay al menos una "Enabled" envio true, para desactivarlas todas
+                        ((MenuItem)MenuGroupMixed.Items[0]).ToolTip = StringResources.DisableValue;
+                    }
+                    else
+                    {
+                        ((MenuItem)MenuGroupMixed.Items[0]).ToolTip = StringResources.EnableValue;
+                    }
+                }
+            }
+            else if (ChoosingCM) //click derecho en un riesgo y esta una seleccion de cm activa
+            {
+                ResetGroupCMSelection(); // limpio lista de cm porque di click derecho en un riesgo
+
+            }
+            else //click derecho en un riesgo  y esta una seleccion de riesgos activa
+            {
+                if (!RiskGroupSelected.Contains(Line_Selected))
+                {
+                    ResetGroupRiksSelection();
+                }
+                else
+                {
+                    var query = from item in RiskGroupSelected
+                                where (Boolean)item.IsActivated == true
+                                select item;
+                    List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
+
+                    if (result.Count > 0)
+                    {
+                        // si hay al menos una "Enabled" envio true, para desactivarlas todas
+                        ((MenuItem)MenuGroupRisk.Items[0]).ToolTip = StringResources.DisableValue;
+                    }
+                    else
+                    {
+                        ((MenuItem)MenuGroupRisk.Items[0]).ToolTip = StringResources.EnableValue;
+                    }
+                }
+            }
         }
         public void UpdateSelectedPolyLineVisualInfo()
         {

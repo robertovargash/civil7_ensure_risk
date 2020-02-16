@@ -504,42 +504,42 @@ namespace EnsureBusinesss
         /// </summary>
         /// <param name="lineas"></param>
         /// <param name="MainLine"></param>
-        public static void FixMainLine(List<RiskPolyLine> lineas, RiskPolyLine MainLine)
-        {
-            //this function find the line with the minimal X size and asign this value to Main Line X.           
-            //AddTail(lineas);
-            if (MainLine.Segments.Any())
-            {
-                ReorderMainLineSegments(MainLine);
-            }
+        //public static void FixMainLine(List<RiskPolyLine> lineas, RiskPolyLine MainLine)
+        //{
+        //    //this function find the line with the minimal X size and asign this value to Main Line X.           
+        //    //AddTail(lineas);
+        //    if (MainLine.Segments.Any())
+        //    {
+        //        ReorderMainLineSegments(MainLine);
+        //    }
 
-            if (MainLine.Children.Count > 0)
-            {
-                if (MainLine.Children.Where(rl => rl.Collapsed == false).Any())
-                {
-                    RiskPolyLine lineaMasX = MainLine.Children.Where(rl => rl.Collapsed == false).OrderBy(rl => rl.XTremee()).First();
-                    //the X of the main line will be the minor X of their entire generation
-                    if (MainLine.Segments != null && MainLine.Segments.Any())
-                    {
-                        //MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), lineas.Find(rl => rl.IsRoot == true).Points[0].Y);
-                        //MainLine.AddTail();
-                        if (MainLine.Segments.Count > 1)
-                        {
-                            MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), MainLine.Points[0].Y);
-                            MainLine.Segments[MainLine.Segments.Count - 1].Points[1] = new Point(MainLine.Segments[MainLine.Segments.Count - 2].Points[0].X, MainLine.Segments[MainLine.Segments.Count - 2].Points[0].Y);
-                        }
-                        else
-                        {
-                            MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), MainLine.Points[0].Y);
-                        }
-                    }
-                    else
-                    {
-                        lineas.Find(rl => rl.IsRoot == true).Points[0] = new Point(lineaMasX.XTremee(), lineas.Find(rl => rl.IsRoot == true).Points[0].Y);
-                    }
-                }
-            }
-        }
+        //    if (MainLine.Children.Count > 0)
+        //    {
+        //        if (MainLine.Children.Where(rl => rl.Collapsed == false).Any())
+        //        {
+        //            RiskPolyLine lineaMasX = MainLine.Children.Where(rl => rl.Collapsed == false).OrderBy(rl => rl.XTremee()).First();
+        //            //the X of the main line will be the minor X of their entire generation
+        //            if (MainLine.Segments != null && MainLine.Segments.Any())
+        //            {
+        //                //MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), lineas.Find(rl => rl.IsRoot == true).Points[0].Y);
+        //                //MainLine.AddTail();
+        //                if (MainLine.Segments.Count > 1)
+        //                {
+        //                    MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), MainLine.Points[0].Y);
+        //                    MainLine.Segments[MainLine.Segments.Count - 1].Points[1] = new Point(MainLine.Segments[MainLine.Segments.Count - 2].Points[0].X, MainLine.Segments[MainLine.Segments.Count - 2].Points[0].Y);
+        //                }
+        //                else
+        //                {
+        //                    MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), MainLine.Points[0].Y);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                lineas.Find(rl => rl.IsRoot == true).Points[0] = new Point(lineaMasX.XTremee(), lineas.Find(rl => rl.IsRoot == true).Points[0].Y);
+        //            }
+        //        }
+        //    }
+        //}
 
         private static void FixRisk(List<RiskPolyLine> lineas)
         {
