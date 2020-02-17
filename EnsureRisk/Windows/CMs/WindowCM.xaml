@@ -24,9 +24,9 @@
     <Grid>
         <Button Name="BtnOK" Content="OK" HorizontalAlignment="Left" Height="25" Margin="449,405,0,0" VerticalAlignment="Top" Width="90" Click="BtnOK_Click" IsDefault="True" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
         <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Left" Height="25" Margin="551,405,0,0" VerticalAlignment="Top" Width="90" Click="BtnCancel_Click" IsCancel="True" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
-        <TextBox materialDesign:HintAssist.Hint="Short Name" materialDesign:HintAssist.IsFloating="True" Name="TextName" MaxLength="250" HorizontalAlignment="Left" Margin="34,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Width="288" MaxLines="1"/>
+        <TextBox IsEnabled="{Binding Path = HasAccess}" materialDesign:HintAssist.Hint="Short Name" materialDesign:HintAssist.IsFloating="True" Name="TextName" MaxLength="250" HorizontalAlignment="Left" Margin="34,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Width="288" MaxLines="1"/>
         <TextBox materialDesign:HintAssist.Hint="Father" materialDesign:HintAssist.IsFloating="True" x:Name="TextFather" HorizontalAlignment="Left" Margin="408,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="246" IsReadOnly="True" IsEnabled="False"/>
-        <TextBox materialDesign:HintAssist.Hint="Comments" materialDesign:HintAssist.IsFloating="True" Name="TextDetail" HorizontalAlignment="Left" Height="71" Margin="34,59,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="622" TextAlignment="Justify"/>
+        <TextBox IsEnabled="{Binding Path = HasAccess}" materialDesign:HintAssist.Hint="Comments" materialDesign:HintAssist.IsFloating="True" Name="TextDetail" HorizontalAlignment="Left" Height="71" Margin="34,59,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="622" TextAlignment="Justify"/>
         <TabControl HorizontalAlignment="Left" Height="192" Margin="79,186,0,0" VerticalAlignment="Top" Width="575">
             <TabItem Header="Values" Name="tabValues" >
                 <Grid Background="#FFE5E5E5">
@@ -40,7 +40,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="WBS" Name="tabWBS" >
-                <Grid Background="#FFE5E5E5">
+                <Grid Background="#FFE5E5E5" Name="gridTabWBS" IsEnabled="{Binding Path = HasAccess}">
                     <Button Name="BtnAddWBS"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAddWBS_Click" materialDesign:ShadowAssist.ShadowDepth="Depth5">
                         <materialDesign:PackIcon Kind="Plus"/>
                     </Button>
@@ -60,8 +60,8 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Roles" Name="tabRoles">
-                <Grid Background="#FFE5E5E5">
+            <TabItem Header="Roles" Name="tabRoles" >
+                <Grid Background="#FFE5E5E5" Name="gridTabRoles" IsEnabled="{Binding Path = HasAccess}">
                     <Button Name="BtnAddRole"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAddRole_Click" materialDesign:ShadowAssist.ShadowDepth="Depth5">
                         <materialDesign:PackIcon Kind="Plus"/>
                     </Button>
@@ -76,7 +76,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <TextBox x:Name="TextProbability" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Height="27" Margin="577,145,0,0" TextWrapping="Wrap" Text="0" PreviewLostKeyboardFocus="TextProbability_LostFocus" VerticalAlignment="Top" Width="73"  MaxLines="2" TextAlignment="Right"/>
+        <TextBox IsEnabled="{Binding Path = HasAccess}" x:Name="TextProbability" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Height="27" Margin="577,145,0,0" TextWrapping="Wrap" Text="0" PreviewLostKeyboardFocus="TextProbability_LostFocus" VerticalAlignment="Top" Width="73"  MaxLines="2" TextAlignment="Right"/>
         <Label x:Name="LabelProbability" Content="Risk Reduction (%):" HorizontalAlignment="Left" Margin="430,145,0,0" VerticalAlignment="Top"/>
 
     </Grid>

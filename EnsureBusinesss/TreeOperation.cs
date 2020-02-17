@@ -1341,7 +1341,8 @@ namespace EnsureBusinesss
 
         public static void BalancearDiagrama(RiskPolyLine Line)
         {
-            double MaxUp = LinesUp.Min(x => x.HorizontalMaxXTremee(hmax).X); double MaxDown = LinesDown.Min(x => x.HorizontalMaxXTremee(hmax).X);
+            double MaxUp = LinesUp.Min(x => x.HorizontalMaxXTremee(hmax).X); 
+            double MaxDown = LinesDown.Min(x => x.HorizontalMaxXTremee(hmax).X);
             RiskPolyLine t;
             if (MaxUp < MaxDown)
             {

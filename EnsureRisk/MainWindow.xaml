@@ -77,6 +77,30 @@
                     </MenuItem.Header>
                 </MenuItem>
             </ContextMenu>
+            <ContextMenu x:Key="MenuRiskLimited" Visibility="Visible" Background="Transparent">
+                <MenuItem Height="35" x:Name="MenuEditRiskLimited">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EditButtonLimited" Click="MenuEditRisk_Click" Content="{md:PackIcon Kind=Pencil}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuZoomLimited">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtomZoomLimited" Click="ButtomZoom_Click" Content="{md:PackIcon Kind=Loupe}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+
+                <MenuItem Height="35" x:Name="MenuCopyLimited">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonCopyLimited" Click="ButtonCopy_Click" Content="{md:PackIcon Kind=ContentCopy}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuEnableRiskLimited">
+                    <MenuItem.Header>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EnableRiskButtonLimited" Click="EnableRiskButton_Click" Content="{md:PackIcon Kind=ToggleSwitch}" Width="32" Height="32"/>
+                    </MenuItem.Header>
+                </MenuItem>
+            </ContextMenu>
+
             <ContextMenu x:Key="MenuMainRisk" Visibility="Hidden" Background="Transparent">
                 <MenuItem Height="35" x:Name="MenuMainAddRisk">
                     <MenuItem.Header>
@@ -288,7 +312,7 @@
                     <xcad:LayoutDocumentPaneGroup>
                         <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel"/>
                     </xcad:LayoutDocumentPaneGroup >
-                    <xcad:LayoutAnchorablePaneGroup DockWidth="250" ScrollViewer.CanContentScroll="True" DockMinWidth="250" FloatingWidth="250">
+                    <xcad:LayoutAnchorablePaneGroup DockWidth="250" ScrollViewer.CanContentScroll="True" DockMinWidth="50" FloatingWidth="250">
                         <xcad:LayoutAnchorablePane ScrollViewer.CanContentScroll="True">
                             <xcad:LayoutAnchorable x:Name="AnchorDiagramList"  Title="Diagrams" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Diagrams" AutoHideWidth="250" FloatingWidth="250">
                                 <!--<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">-->

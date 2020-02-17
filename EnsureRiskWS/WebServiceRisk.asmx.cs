@@ -30,8 +30,8 @@ namespace EnsureRiskWS
                 ds.Tables[2].TableName = DT_Risk.TABLE_NAME;
                 ds.Tables[3].TableName = DT_RiskStructure.TABLE_NAME;
                 ds.Tables[4].TableName = DT_Risk_Damages.TABLENAME;
-                ds.Tables[5].TableName = DT_WBS_RISK_DAMAGE.TABLE_NAME;
-                ds.Tables[6].TableName = DT_RISK_WBS.TABLENAME;
+                ds.Tables[5].TableName = DT_RISK_WBS.TABLENAME;
+                ds.Tables[6].TableName = DT_WBS_RISK_DAMAGE.TABLE_NAME;
                 ds.Tables[7].TableName = DT_Role_Risk.TABLENAME;
                 ds.Tables[8].TableName = DT_CounterM.TABLE_NAME;
                 ds.Tables[9].TableName = DT_CounterM_Damage.TABLENAME;
@@ -179,9 +179,9 @@ namespace EnsureRiskWS
                 ds.Tables[1].TableName = DT_Diagram_Damages.TABLENAME;
                 ds.Tables[2].TableName = DT_Risk.TABLE_NAME;
                 ds.Tables[3].TableName = DT_RiskStructure.TABLE_NAME;
-                ds.Tables[4].TableName = DT_Risk_Damages.TABLENAME;
-                ds.Tables[5].TableName = DT_WBS_RISK_DAMAGE.TABLE_NAME;
-                ds.Tables[6].TableName = DT_RISK_WBS.TABLENAME;
+                ds.Tables[4].TableName = DT_Risk_Damages.TABLENAME;                
+                ds.Tables[5].TableName = DT_RISK_WBS.TABLENAME;
+                ds.Tables[6].TableName = DT_WBS_RISK_DAMAGE.TABLE_NAME;
                 ds.Tables[7].TableName = DT_Role_Risk.TABLENAME;
                 ds.Tables[8].TableName = DT_CounterM.TABLE_NAME;
                 ds.Tables[9].TableName = DT_CounterM_Damage.TABLENAME;

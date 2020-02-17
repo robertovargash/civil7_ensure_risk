@@ -416,7 +416,7 @@ namespace EnsureBusinesss
                 ValueToReturn = (LineFather.IsActivated ? LineFather.Probability : 1) * EL_Inclusion_Exclusion(Probability_List);
                 foreach (var item in CM_Probabilities)
                 {
-                    ValueToReturn = ValueToReturn * (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure
+                    ValueToReturn *= (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure
                 }
             }
             else
@@ -424,7 +424,7 @@ namespace EnsureBusinesss
                 ValueToReturn = LineFather.IsActivated ? LineFather.Probability : 1;//If don´t have child, Acum. Likelihood = its Probability
                 foreach (var item in CM_Probabilities)
                 {
-                    ValueToReturn = ValueToReturn * (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure
+                    ValueToReturn *= (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure
                 }
             }
             if (ValueToReturn > 1)
@@ -499,6 +499,46 @@ namespace EnsureBusinesss
             return (A + B) - (A * B);
         }
 
+        public static void UpdateThickness(List<RiskPolyLine> linesList)
+        {
+            //decimal TotalAD = linesList.Find(r => r.IsRoot == true).AcDamage;
+            //decimal RangeOfClases = TotalAD / NumberOfClasses;
+            //foreach (var item in linesList)
+            //{
+            //    if (!(item.IsCM))
+            //    {
+            //        item.Class = RangeOfClases != 0 ? item.OwnValue / RangeOfClases : 1;
+            //        item.Class = General.MyRound(item.Class, 0);
+            //    }
+            //}
+            decimal min = 0;
+            decimal max = 0;
+            if (linesList.Where(p => !p.IsRoot).Any())
+            {
+                min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage);
+                max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage);
+            }
+
+            foreach (var item in linesList)
+            {
+                if (!(item.IsCM))
+                {
+                    item.SetThickness(item.AcDamage, min, max);
+                }
+            }
+            RiskPolyLine rootPolyLine = linesList.Find(r => r.IsRoot);
+            rootPolyLine.StrokeThickness = 6;
+            UpdateSegmentsStrokeThickness(rootPolyLine);
+
+            IEnumerable<RiskPolyLine> rootChildren = linesList.FindAll(p => !p.IsRoot && !p.IsCM && p.Father.IsRoot);
+            IEnumerable<RiskPolyLine> orderedRootChildren = rootChildren.OrderBy(p => p.Points[1].X);
+            foreach (RiskPolyLine polyLine in orderedRootChildren)
+            {
+                UpdateSegmentsStrokeThickness(polyLine);
+            }
+
+        }
+
         /// <summary>
         /// Update the Thickness of the line acording the damages
         /// </summary>
@@ -511,11 +551,11 @@ namespace EnsureBusinesss
                 {
                     if (!(item.IsCM))
                     {
-                        item.Value = CalculateTopRiskTreeValue(dtEncoder.Rows.Find(item.ID), dtEncoder, IdTopRisk, Risk_TopRisk, CM, CM_TopRisk);
-                        //item.MyOwnValue = (decimal)Risk_TopRisk.Rows.Find(new object[] { item.ID, IdTopRisk })[DT_Risk_Damages.VALUE];
-                        decimal TotalAD = CalculateTopRiskTreeValue(dtEncoder.Rows.Find(linesList.Find(r => r.IsRoot == true).ID), dtEncoder, IdTopRisk, Risk_TopRisk, CM, CM_TopRisk);
+                        item.AcValue = CalculateTopRiskTreeValue(dtEncoder.Rows.Find(item.ID), dtEncoder, IdTopRisk, Risk_TopRisk, CM, CM_TopRisk);
+                        item.OwnValue = (decimal)Risk_TopRisk.Rows.Find(new object[] { item.ID, IdTopRisk })[DT_Risk_Damages.VALUE];
+                        //decimal TotalAD = CalculateTopRiskTreeValue(dtEncoder.Rows.Find(linesList.Find(r => r.IsRoot == true).ID), dtEncoder, IdTopRisk, Risk_TopRisk, CM, CM_TopRisk);
                         //decimal RangeOfClases = TotalAD / NumberOfClasses;
-                        //item.Class = item.MyOwnValue / RangeOfClases;
+                        //item.Class = RangeOfClases != 0 ? item.OwnValue / RangeOfClases : 1;
                         //item.Class = General.MyRound(item.Class, 0);
                     }
                 }
@@ -523,19 +563,15 @@ namespace EnsureBusinesss
                 decimal max = 0;
                 if (linesList.Where(p => !p.IsRoot).Any())
                 {
-                    min = linesList.Where(p => !p.IsRoot).Min(l => l.Value);
-                    max = linesList.Where(p => !p.IsRoot).Max(l => l.Value);
+                    min = linesList.Where(p => !p.IsRoot).Min(l => l.AcValue);
+                    max = linesList.Where(p => !p.IsRoot).Max(l => l.AcValue);
                 }
 
                 foreach (var item in linesList)
                 {
                     if (!(item.IsCM))
                     {
-                        item.SetThickness(item.Value, min, max);
-                        //foreach (SegmentPolyLine sgm in item.Segments)
-                        //{
-                        //    sgm.SetThickness(sgm.Value, min, max);
-                        //}
+                        item.SetThickness(item.AcValue, min, max);
                     }
                 }
                 RiskPolyLine rootPolyLine = linesList.Find(r => r.IsRoot);

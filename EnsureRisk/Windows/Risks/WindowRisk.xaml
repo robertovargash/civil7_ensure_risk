@@ -26,14 +26,14 @@
     <Grid>
         <Button Name="BtnOK" Content="OK" Height="25" Margin="0,0,143,19" Click="BtnOK_Click" IsDefault="True" materialDesign:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
         <Button Name="BtnCancel" Content="Cancel" Height="25" Margin="0,0,39,17" Click="BtnCancel_Click" IsCancel="True" materialDesign:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
-        <TextBox TabIndex="1" KeyUp="TextName_KeyUp" materialDesign:HintAssist.Hint="Short Name" materialDesign:HintAssist.IsFloating="True" Name="TextName" MaxLength="250" Margin="34,7,347,0" TextWrapping="Wrap"  VerticalAlignment="Top" LostFocus="TextName_LostFocus" MaxLines="1" TextOptions.TextHintingMode="Animated"/>
+        <TextBox TabIndex="1" IsEnabled="{Binding Path = HasAccess}" KeyUp="TextName_KeyUp" materialDesign:HintAssist.Hint="Short Name" materialDesign:HintAssist.IsFloating="True" Name="TextName" MaxLength="250" Margin="34,7,347,0" TextWrapping="Wrap"  VerticalAlignment="Top" LostFocus="TextName_LostFocus" MaxLines="1" TextOptions.TextHintingMode="Animated"/>
         <Border Width="291" Height="61" BorderBrush="Black"  BorderThickness="0" HorizontalAlignment="Left" Margin="31,45,0,0" VerticalAlignment="Top">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Name="resultStack"></StackPanel>
             </ScrollViewer>
         </Border>
         <TextBox materialDesign:HintAssist.Hint="Father" materialDesign:HintAssist.IsFloating="True" x:Name="TextFather" Margin="0,7,15,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" IsReadOnly="True" IsEnabled="False" HorizontalAlignment="Right" Width="246"/>
-        <TextBox TabIndex="2" materialDesign:HintAssist.Hint="Comments" materialDesign:HintAssist.IsFloating="True" Name="TextDetail" Height="71" Margin="34,119,13,0" TextWrapping="Wrap"  VerticalAlignment="Top" TextAlignment="Justify" MaxLength="250"/>
+        <TextBox TabIndex="2" IsEnabled="{Binding Path = HasAccess}" materialDesign:HintAssist.Hint="Comments" materialDesign:HintAssist.IsFloating="True" Name="TextDetail" Height="71" Margin="34,119,13,0" TextWrapping="Wrap"  VerticalAlignment="Top" TextAlignment="Justify" MaxLength="250"/>
         <TabControl Margin="37,269,28,71">
             <TabItem Header="Values" Name="tabValues" >
                 <Grid Background="#FFE5E5E5">
@@ -46,8 +46,8 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem Header="WBS" Name="tabWBS">
-                <Grid Background="#FFE5E5E5">
+            <TabItem Header="WBS" Name="tabWBS" >
+                <Grid Background="#FFE5E5E5" Name="gridTabWBS" IsEnabled="{Binding Path = HasAccess}">
                     <Button Name="BtnAddWBS"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAddWBS_Click" materialDesign:ShadowAssist.ShadowDepth="Depth5">
                         <materialDesign:PackIcon Kind="Plus"/>
                     </Button>
@@ -68,7 +68,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Roles" Name="tabRoles">
-                <Grid Background="#FFE5E5E5">
+                <Grid Background="#FFE5E5E5" Name="gridTabRoles" IsEnabled="{Binding Path = HasAccess}">
                     <Button Name="BtnAdd"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAddRole_Click" materialDesign:ShadowAssist.ShadowDepth="Depth5">
                         <materialDesign:PackIcon Kind="Plus"/>
                     </Button>
@@ -83,7 +83,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <TextBox TabIndex="3" x:Name="TextProbability" Text="100" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Height="27" Margin="157,223,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="73" LostFocus="TextProbability_LostFocus" MaxLines="2" TextAlignment="Right">
+        <TextBox TabIndex="3" x:Name="TextProbability" Text="100" PreviewTextInput="NumberValidationTextBox" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Height="27" Margin="157,223,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="73" LostFocus="TextProbability_LostFocus" MaxLines="2" TextAlignment="Right">
 
         </TextBox>
         <Label x:Name="LabelProbability" Content="Probability (%):" HorizontalAlignment="Left" Margin="37,223,0,0" VerticalAlignment="Top"/>

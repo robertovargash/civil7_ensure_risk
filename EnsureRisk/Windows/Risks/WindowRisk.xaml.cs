@@ -18,14 +18,42 @@ using EnsureBusinesss;
 using EnsureBusinesss.Business;
 using EnsureRisk.Resources;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
 
 namespace EnsureRisk.Windows
 {
+    public class DataCurrentRisk : INotifyPropertyChanged
+    {
+        private bool hasAccess = false;
+
+        public bool HasAccess
+        {
+            get
+            {
+                return hasAccess;
+            }
+
+            set
+            {
+                hasAccess = value;
+                OnPropertyChanged("HasAccess");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new
+                PropertyChangedEventArgs(property));
+        }
+    }
     /// <summary>
     /// Interaction logic for WindowRisk.xaml
     /// </summary>
     public partial class WindowRisk : Window
     {
+        public DataCurrentRisk Pi { get; set; }
         public DataRow RiskRow { get; set; }
         public string Operation { get; set; }
         public int RiskTreeID { get; set; }
@@ -60,7 +88,13 @@ namespace EnsureRisk.Windows
         public WindowRisk()
         {
             InitializeComponent();
+            Pi = new DataCurrentRisk();
             ChangeLanguage();
+            TextName.DataContext = Pi;
+            TextDetail.DataContext = Pi;
+            TextProbability.DataContext = Pi;
+            gridTabRoles.DataContext = Pi;
+            gridTabWBS.DataContext = Pi;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -122,8 +156,8 @@ namespace EnsureRisk.Windows
                             newRow[DT_RISK_WBS.ID_WBS] = itemWBS[DT_RISK_WBS.ID_WBS];
                             newRow[DT_RISK_WBS.NIVEL] = itemWBS[DT_RISK_WBS.NIVEL];
                             newRow[DT_RISK_WBS.WBS] = itemWBS[DT_RISK_WBS.WBS];
-                            newRow[DT_RISK_WBS.IS_PRIMARY] = false;
-                            newRow[DT_RISK_WBS.PRIMARY] = "Not";
+                            newRow[DT_RISK_WBS.IS_PRIMARY] = itemWBS[DT_RISK_WBS.IS_PRIMARY];
+                            newRow[DT_RISK_WBS.PRIMARY] = itemWBS[DT_RISK_WBS.PRIMARY];
                             newRow[DT_RISK_WBS.USERNAME] = itemWBS[DT_RISK_WBS.USERNAME];
                             Risk_WBS_Table.Rows.Add(newRow);
                             if (WBS_isSheet((Int32)itemWBS[DT_RISK_WBS.ID_WBS]))
@@ -374,8 +408,8 @@ namespace EnsureRisk.Windows
                     item[DT_WBS.WBS_NAME] = item[DT_WBS.WBS_NAME].ToString().Insert(0, TreeOperation.Spaces(item[DT_WBS.NIVEL].ToString().Split('.').Count() - 1));
                     item[DT_WBS.NIVEL] = item[DT_WBS.NIVEL].ToString().Insert(0, TreeOperation.Spaces(item[DT_WBS.NIVEL].ToString().Split('.').Count() - 1));
                 }
-                frmSelection.DcolumToShow = new string[] { DT_WBS.NIVEL, DT_WBS.WBS_NAME };
-                frmSelection.DcolumToShowAlias = new string[] { "Level", DT_WBS.WBS_NAME };
+                frmSelection.DcolumToShow = new string[] { DT_WBS.NIVEL, DT_WBS.WBS_NAME, DT_WBS.USERNAME };
+                frmSelection.DcolumToShowAlias = new string[] { "Level", DT_WBS.WBS_NAME, "User Owner" };
                 frmSelection.Title = "WBS";
                 frmSelection.P.FilterString = "WBS Name";
                 frmSelection.ColumnToFilter = DT_WBS.WBS_NAME;
@@ -393,6 +427,22 @@ namespace EnsureRisk.Windows
                         drRiskWBS[DT_RISK_WBS.PRIMARY] = "Not";
                         drRiskWBS[DT_RISK_WBS.USERNAME] = itemWBS[DT_WBS.USERNAME];
                         Risk_WBS_Table.Rows.Add(drRiskWBS);
+                        foreach (DataRow itemAncestors in BuscarAncestros((Int32)itemWBS[DT_WBS.ID_WBS], dsWBS.Tables[DT_WBS.TABLE_NAME].Clone()).Rows)
+                        {
+                            if (!(Risk_WBS_Table.Rows.Contains(new object[] { RiskRow[DT_Risk.ID], itemAncestors[DT_WBS.ID_WBS] })))
+                            {
+                                DataRow drRiskWBSi = Risk_WBS_Table.NewRow();
+                                drRiskWBSi[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
+                                drRiskWBSi[DT_RISK_WBS.RISK] = TextName.Text;
+                                drRiskWBSi[DT_RISK_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
+                                drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
+                                drRiskWBSi[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
+                                drRiskWBSi[DT_RISK_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
+                                drRiskWBSi[DT_RISK_WBS.IS_PRIMARY] = false;
+                                drRiskWBSi[DT_RISK_WBS.PRIMARY] = "Not";
+                                Risk_WBS_Table.Rows.Add(drRiskWBSi);
+                            }
+                        }
                         if (Operation == General.UPDATE)
                         {
                             foreach (var itemLines in ChildrenLines)
@@ -433,6 +483,26 @@ namespace EnsureRisk.Windows
                                             }
                                         }
                                     }
+                                    //Buscando los ancestros para c/u de los wbs del cm
+                                    foreach (DataRow itemCMWBSi in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + itemLines.ID))
+                                    {
+                                        foreach (DataRow itemAncestors in BuscarAncestros((Int32)itemCMWBSi[DT_CM_WBS.ID_WBS], dsWBS.Tables[DT_WBS.TABLE_NAME].Clone()).Rows)
+                                        {
+                                            if (!(CM_WBS_Table.Rows.Contains(new object[] { itemLines.ID, itemAncestors[DT_WBS.ID_WBS] })))
+                                            {
+                                                DataRow drCMWBS = CM_WBS_Table.NewRow();
+                                                drCMWBS[DT_CM_WBS.ID_CM] = itemLines.ID;
+                                                drCMWBS[DT_CM_WBS.CM] = itemLines.ShortName;
+                                                drCMWBS[DT_CM_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
+                                                drCMWBS[DT_CM_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
+                                                drCMWBS[DT_CM_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
+                                                drCMWBS[DT_CM_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
+                                                drCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
+                                                drCMWBS[DT_CM_WBS.PRIMARY] = "Not";
+                                                CM_WBS_Table.Rows.Add(drCMWBS);
+                                            }
+                                        }
+                                    }
                                 }
                                 else
                                 {
@@ -470,6 +540,25 @@ namespace EnsureRisk.Windows
                                             }
                                         }
                                     }
+                                    foreach (DataRow itemRISKWBSi in Risk_WBS_Table.Select(DT_RISK_WBS.ID_RISK + " = " + itemLines.ID))
+                                    {
+                                        foreach (DataRow itemAncestors in BuscarAncestros((Int32)itemRISKWBSi[DT_RISK_WBS.ID_WBS], dsWBS.Tables[DT_WBS.TABLE_NAME].Clone()).Rows)
+                                        {
+                                            if (!(Risk_WBS_Table.Rows.Contains(new object[] { itemLines.ID, itemAncestors[DT_WBS.ID_WBS] })))
+                                            {
+                                                DataRow drRiskWBSi = Risk_WBS_Table.NewRow();
+                                                drRiskWBSi[DT_RISK_WBS.ID_RISK] = itemLines.ID;
+                                                drRiskWBSi[DT_RISK_WBS.RISK] = itemLines.ShortName;
+                                                drRiskWBSi[DT_RISK_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
+                                                drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
+                                                drRiskWBSi[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
+                                                drRiskWBSi[DT_RISK_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
+                                                drRiskWBSi[DT_RISK_WBS.IS_PRIMARY] = false;
+                                                drRiskWBSi[DT_RISK_WBS.PRIMARY] = "Not";
+                                                Risk_WBS_Table.Rows.Add(drRiskWBSi);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -500,6 +589,29 @@ namespace EnsureRisk.Windows
             catch (Exception ex)
             {
                 new WindowMessageOK(ex.Message).ShowDialog();
+            }
+        }
+        
+        private bool TengoPadre(int idWBS)
+        {
+            return dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + idWBS).Any();
+        }
+        private DataRow BuscarMiPadre(int idWBS)
+        {
+            int idPadre = (Int32)dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + idWBS).First()[DT_WBS_STRUCTURE.ID_FATHER];
+            return dsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idPadre);
+        }
+
+        public DataTable BuscarAncestros(int idWBS, DataTable dtWBSAncestors)
+        {
+            if (TengoPadre(idWBS))
+            {
+                dtWBSAncestors.ImportRow(BuscarMiPadre(idWBS));
+                return BuscarAncestros((Int32)BuscarMiPadre(idWBS)[DT_WBS.ID_WBS],dtWBSAncestors);
+            }
+            else
+            {
+                return dtWBSAncestors;
             }
         }
 

@@ -26,7 +26,7 @@ namespace EnsureBusinesss.Business
         public const double diagonalShiftLabelX = 50;
         public const double diagonalShiftLabelY = 185;
         public const double horizontalShiftLabelX = 200;
-
+        public bool FullAccess { get; set; }
         public const double angle = 67.625;
         public int ID { get; set; }
         public const double basicX = 3;
@@ -37,6 +37,7 @@ namespace EnsureBusinesss.Business
         public Point EndDrawPoint { get; set; }
         public bool IsDiagonal { get; set; }
         public RiskPolyLine Father { get; set; }
+        public double PxThickness { get; set; }
         public bool IsActivated { get; set; }
         public LineGroup Group { get; set; }
         public int IdRiskFather { get; set; }
@@ -44,8 +45,12 @@ namespace EnsureBusinesss.Business
         public bool FromTop { get; set; }
         public bool IsRoot { get; set; }
         public int Size { get; set; }
-        public decimal Value { get; set; }
-        public decimal MyOwnValue { get; set; }
+
+        public decimal AcValue { get; set; }
+        public decimal OwnValue { get; set; }
+        public decimal AcDamage { get; set; }
+        public decimal AcLike { get; set; }
+
         public bool IsCM { get; set; }
         public bool Collapsed { get; set; }
         public decimal Probability { get; set; }
@@ -56,7 +61,7 @@ namespace EnsureBusinesss.Business
         public List<RiskPolyLine> Children { get; set; }
         public PictureBoxPolyLine Expand { get; set; }
         public Grid MyContainer { get; set; }
-        public decimal Class { get; set; }
+        //public decimal Class { get; set; }
 
         //public static RoutedEvent DobleClick;
         //public List<RiskPolyLine> Segments { get; set; }
@@ -220,6 +225,25 @@ namespace EnsureBusinesss.Business
             }
             this.MyName.Line = this;
         }
+
+        public void SetMenu(ContextMenu Menu)
+        {
+            ContextMenu = Menu;
+            MyName.ContextMenu = Menu;
+            foreach (var item in Segments)
+            {
+                item.ContextMenu = Menu;
+            }
+        }
+
+        public void SetColor(SolidColorBrush color)
+        {
+            Stroke = color;
+            foreach (var item in Segments)
+            {
+                item.Stroke = color;
+            }
+        }
         public void SetThickness(decimal cost, decimal min, decimal max)
         {
 
@@ -266,6 +290,7 @@ namespace EnsureBusinesss.Business
                     }
                 }
             }
+            PxThickness = StrokeThickness;
             //if (Segments.Any())
             //{
             //    IEnumerable<RiskPolyLine> orderedChild = Children.OrderBy(pl => pl.Points[1].X);
@@ -413,12 +438,15 @@ namespace EnsureBusinesss.Business
             {
                 if (altura == 101)
                 {
-                    xtremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderBy(x => x.Points[0].X).First().Points[0];
+                    //xtremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderBy(x => x.Points[0].X).First().Points[0];
+                    xtremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderBy(x => x.MyMinXPoint().X).First().MyMinXPoint();
                 }
                 else
                 {
-                    RiskPolyLine rtremo = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.Points[0].Y > altura)).OrderBy(x => x.Points[0].X).FirstOrDefault();
-                    xtremo = (rtremo != null) ? rtremo.Points[0] : xtremo;
+                    //RiskPolyLine rtremo = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.Points[0].Y > altura)).OrderBy(x => x.Points[0].X).FirstOrDefault();
+                    RiskPolyLine rtremo = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.MyMinXPoint().Y > altura)).OrderBy(x => x.MyMinXPoint().X).FirstOrDefault();
+                    //xtremo = (rtremo != null) ? rtremo.Points[0] : xtremo;
+                    xtremo = (rtremo != null) ? rtremo.MyMinXPoint() : xtremo;
                 }
             }
             return xtremo;
@@ -429,24 +457,24 @@ namespace EnsureBusinesss.Business
         /// siempre es vertical
         /// </summary>
         /// <returns></returns>
-        public int HorizontalMaxCountChildren()
-        {
-            int result = 0;
-            if (!(Collapsed))
-            {
-                result = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.IsDiagonal == false)).Count();
-            }
-            return result;
-        }
-        public int VerticalMaxCountChildren()
-        {
-            int result = 0;
-            if (!(Collapsed))
-            {
-                result = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.IsDiagonal == true)).Count();
-            }
-            return result;
-        }
+        //public int HorizontalMaxCountChildren()
+        //{
+        //    int result = 0;
+        //    if (!(Collapsed))
+        //    {
+        //        result = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.IsDiagonal == false)).Count();
+        //    }
+        //    return result;
+        //}
+        //public int VerticalMaxCountChildren()
+        //{
+        //    int result = 0;
+        //    if (!(Collapsed))
+        //    {
+        //        result = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.IsDiagonal == true)).Count();
+        //    }
+        //    return result;
+        //}
 
         //public Point HorizontalMaxXTremee(Double Y)
         //{
@@ -479,6 +507,7 @@ namespace EnsureBusinesss.Business
             YxTreme = segment.Points[0].Y;
             MyContainer.Children.Add(segment);
             segment.MyContainer = MyContainer;
+            segment.ContextMenu = ContextMenu;
         }
         public void Move(int deltaX, int deltaY)
         {
@@ -536,6 +565,32 @@ namespace EnsureBusinesss.Business
                 }
             }
             return minX;
+        }
+
+        public Double PointMinX()
+        {
+            double minX = 0;
+            List<SegmentPolyLine> segments;
+            if (!(Collapsed))
+            {
+                segments = GetChildAndMeSegments();
+                if (segments.Any())
+                {
+                    minX = segments.Min(s => s.Points[0].X);
+                }
+            }
+            return minX;
+        }
+        private Point MyMinXPoint()
+        {
+            if (Segments != null && Segments.Any())
+            {
+                return Segments.OrderBy(s => s.Points[0].X).First().Points[0];
+            }
+            else
+            {
+                return Points[0];
+            }
         }
         public void AllSegmentClear()
         {
@@ -668,6 +723,10 @@ namespace EnsureBusinesss.Business
                             {
                                 segment.StrokeThickness = lastSegment.StrokeThickness;
                             }
+                        }
+                        else
+                        {
+                            segment.StrokeThickness = lastSegment.StrokeThickness;
                         }
                         lastSegment = segment;
                     }
