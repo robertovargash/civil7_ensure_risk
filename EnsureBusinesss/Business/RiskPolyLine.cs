@@ -552,36 +552,36 @@ namespace EnsureBusinesss.Business
             return segmentsToReturn;
         }
 
-        public Double SegmentMinX()
-        {
-            double minX = 0;
-            List<SegmentPolyLine> segments;
-            if (!(Collapsed))
-            {
-                segments = GetChildAndMeSegments();
-                if (segments.Any())
-                {
-                    minX = segments.Min(s => s.Points[0].X);
-                }
-            }
-            return minX;
-        }
+        //public Double SegmentMinX()
+        //{
+        //    double minX = 0;
+        //    List<SegmentPolyLine> segments;
+        //    if (!(Collapsed))
+        //    {
+        //        segments = GetChildAndMeSegments();
+        //        if (segments.Any())
+        //        {
+        //            minX = segments.Min(s => s.Points[0].X);
+        //        }
+        //    }
+        //    return minX;
+        //}
 
-        public Double PointMinX()
-        {
-            double minX = 0;
-            List<SegmentPolyLine> segments;
-            if (!(Collapsed))
-            {
-                segments = GetChildAndMeSegments();
-                if (segments.Any())
-                {
-                    minX = segments.Min(s => s.Points[0].X);
-                }
-            }
-            return minX;
-        }
-        private Point MyMinXPoint()
+        //public Double PointMinX()
+        //{
+        //    double minX = 0;
+        //    List<SegmentPolyLine> segments;
+        //    if (!(Collapsed))
+        //    {
+        //        segments = GetChildAndMeSegments();
+        //        if (segments.Any())
+        //        {
+        //            minX = segments.Min(s => s.Points[0].X);
+        //        }
+        //    }
+        //    return minX;
+        //}
+        public Point MyMinXPoint()
         {
             if (Segments != null && Segments.Any())
             {

@@ -4170,6 +4170,16 @@ namespace EnsureRisk
                         CurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Add(CMRow);
                         CurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Merge(TopRiskTable);
                         CurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Merge(CM_RoleTable);
+
+                        RiskPolyLine Line_Created = new RiskPolyLine
+                        {
+                            ID = (Int32)CMRow[DT_CounterM.ID],
+                            IsCM = true,
+                            Father = itemRisk,
+                            IdRiskFather = itemRisk.ID
+                        };
+
+                        CurrentLayout.InsertCM(Line_Created, itemRisk, itemRisk.MyMinXPoint());
                     }
 
                     CurrentLayout.ResetGroupRiksSelection();
