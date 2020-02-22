@@ -347,7 +347,7 @@ namespace EnsureRisk
             {
                 new WindowMessageOK(ex.Message).ShowDialog();
             }
-        }        
+        }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
@@ -2229,7 +2229,7 @@ namespace EnsureRisk
             {
                 if (!(DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + item[DT_WBS.ID_WBS]).Any()))
                 {
-                    if (!(DsMain.Tables[DT_RISK_WBS.TABLENAME].Rows.Contains(new object[] {drRisk[DT_Risk.ID], item[DT_WBS.ID_WBS]})))
+                    if (!(DsMain.Tables[DT_RISK_WBS.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], item[DT_WBS.ID_WBS] })))
                     {
                         DataRow drRiskWBS = DsMain.Tables[DT_RISK_WBS.TABLENAME].NewRow();
                         drRiskWBS[DT_RISK_WBS.ID_RISK] = drRisk[DT_Risk.ID];
@@ -2237,7 +2237,7 @@ namespace EnsureRisk
                         drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = primary;
                         primary = false;
                         DsMain.Tables[DT_RISK_WBS.TABLENAME].Rows.Add(drRiskWBS);
-                    }                    
+                    }
                 }
             }
         }
@@ -2257,7 +2257,7 @@ namespace EnsureRisk
                         primary = false;
                         DsMain.Tables[DT_CM_WBS.TABLENAME].Rows.Add(drRCMWBS);
                     }
-                        
+
                 }
             }
         }
@@ -2344,8 +2344,8 @@ namespace EnsureRisk
                                     if (Rango.Cells[currentRow, j] != null && Rango.Cells[currentRow, j].Value2 != null)
                                     {
                                         string TopRisk = Rango.Cells[currentRow, j].Value2.ToString();//separo el daño de la UM
-                                                                                                     //string Damage = TopRisk.Split(new char[] { '(', ')' })[0];
-                                                                                                     //string UM = TopRisk.Split(new char[] { '(', ')' })[1];
+                                                                                                      //string Damage = TopRisk.Split(new char[] { '(', ')' })[0];
+                                                                                                      //string UM = TopRisk.Split(new char[] { '(', ')' })[1];
                                         if (!(dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + TopRisk + "'").Any()))//si el nombre del daño no existe 
                                         {
                                             DataRow drDamage = dsImporting.Tables[DT_Damage.TopRisk_TABLA].NewRow();//creo un nuevo daño
@@ -2353,7 +2353,7 @@ namespace EnsureRisk
 
                                             drDamage[DT_Damage.COLORID_COLUMNA] = System.Drawing.Color.Blue.ToArgb().ToString();
                                             dsImporting.Tables[DT_Damage.TopRisk_TABLA].Rows.Add(drDamage);
-                                            CreateDiagramDamagesExcel(dsImporting, drDamage, TopRisk, drDiagrams, true);                                            
+                                            CreateDiagramDamagesExcel(dsImporting, drDamage, TopRisk, drDiagrams, true);
                                         }
                                         else
                                         {
@@ -2462,7 +2462,7 @@ namespace EnsureRisk
                                     }
 
                                 }
-                                
+
                                 for (int i = rowHeader + 1; i <= rowCount; i++)
                                 {//ajustando estructura
                                     if (Rango.Cells[i, colIdHijo] != null && Rango.Cells[i, colIdHijo].Value2 != null && Rango.Cells[i, colIdRisk] != null && Rango.Cells[i, colIdRisk].Value2 != null)
@@ -2516,7 +2516,7 @@ namespace EnsureRisk
                                             if (Rango.Cells[rowHeader, j] != null && Rango.Cells[rowHeader, j].Value2 != null)
                                             {
                                                 string TopRisk = Rango.Cells[rowHeader, j].Value2.ToString();
-                                                DamagesToCM(dsImporting, TopRisk, drCM, theDiagram);                                                
+                                                DamagesToCM(dsImporting, TopRisk, drCM, theDiagram);
                                             }
                                         }
                                         //AsignRoleToCM(dsImporting, drCM);
@@ -2576,7 +2576,7 @@ namespace EnsureRisk
             }
         }
 
-        private void CreateDiagramDamagesExcel(DataSet dsImporting,DataRow drDamage, string Damage, DataRow drDiagram, bool existDamage)
+        private void CreateDiagramDamagesExcel(DataSet dsImporting, DataRow drDamage, string Damage, DataRow drDiagram, bool existDamage)
         {
             if (existDamage)
             {
@@ -2600,29 +2600,29 @@ namespace EnsureRisk
                 drDamage_Diagram[DT_Diagram_Damages.DAMAGE] = Damage;
                 dsImporting.Tables[DT_Diagram_Damages.TABLENAME].Rows.Add(drDamage_Diagram);
             }
-            
+
         }
 
         private void AsignRoleAdminToRisk(DataSet dsImporting, DataRow drRisk)
         {
-            if (!(dsImporting.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] {drRisk[DT_Risk.ID], 101 })))
+            if (!(dsImporting.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], 101 })))
             {
                 DataRow drRiskRole = dsImporting.Tables[DT_Role_Risk.TABLENAME].NewRow();
                 drRiskRole[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
                 drRiskRole[DT_Role_Risk.IDROL_COLUMN] = 101;
                 dsImporting.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRiskRole);
-            }            
+            }
         }
 
         private void AsignRoleToCM(DataSet dsImporting, DataRow drCM)
         {
-            if (!(dsImporting.Tables[DT_Role_CM.TABLENAME].Rows.Contains(new object[] {drCM[DT_CounterM.ID], 101})))
+            if (!(dsImporting.Tables[DT_Role_CM.TABLENAME].Rows.Contains(new object[] { drCM[DT_CounterM.ID], 101 })))
             {
                 DataRow drRoleCM = dsImporting.Tables[DT_Role_CM.TABLENAME].NewRow();
                 drRoleCM[DT_Role_CM.ID_CM] = drCM[DT_CounterM.ID];
                 drRoleCM[DT_Role_CM.IDROL_COLUMN] = 101;
                 dsImporting.Tables[DT_Role_CM.TABLENAME].Rows.Add(drRoleCM);
-            }            
+            }
         }
         private void DamagesToMainRisk(DataSet dsImporting, DataRow drRisk, DataRow drDiagram)
         {
@@ -2745,7 +2745,7 @@ namespace EnsureRisk
                                         }
 
                                         dsImporting.Tables[DT_Damage.TopRisk_TABLA].Rows.Add(drDamage);
-                                        CreateDiagramDamagesExcel(dsImporting, drDamage, TopRisk, drDiagrams, true);                                       
+                                        CreateDiagramDamagesExcel(dsImporting, drDamage, TopRisk, drDiagrams, true);
                                     }
                                     else
                                     {
@@ -2843,11 +2843,11 @@ namespace EnsureRisk
                                             {
                                                 value = 0;
                                             }
-                                            DamagesToRisk(dsImporting, TopRisk, drRiskN, value, theDiagram);                                           
+                                            DamagesToRisk(dsImporting, TopRisk, drRiskN, value, theDiagram);
                                         }
 
                                         //por cada riesgo, le agrega el rol admin
-                                        AsignRoleAdminToRisk(dsImporting, drRiskN);                                        
+                                        AsignRoleAdminToRisk(dsImporting, drRiskN);
                                         dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRiskN);
                                         AsignarWBSDefaultToRisk(drRiskN, dsImporting);
                                     }
@@ -3252,7 +3252,7 @@ namespace EnsureRisk
         {
             if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + CurrentLayout.Line_Selected.ShortName + "] and all its children?").ShowDialog() == true)
             {
-                TreeOperation.DeleteLine(CurrentLayout.Line_Selected, CurrentLayout.LinesList, CurrentLayout.Ds);
+                TreeOperation.DeleteLine(CurrentLayout.Line_Selected, CurrentLayout.Ds);
 
                 CurrentLayout.DropLines();
                 CurrentLayout.DropRectangles();
@@ -3472,7 +3472,7 @@ namespace EnsureRisk
                 {
                     VerticalMenu win = new VerticalMenu("Paste...");
                     win.ShowDialog();
-                    TreeOperation.BackupLine(CurrentLayout.CopyRisk, CurrentLayout.Line_Selected.ID, CurrentLayout.Ds);
+                    TreeOperation.CreateCopy(CurrentLayout.CopyRisk, CurrentLayout.Line_Selected.ID, CurrentLayout.Ds);
                     CurrentLayout.CopyRisk.Father = CurrentLayout.Line_Selected;
                     CurrentLayout.CopyRisk.Position = CurrentLayout.Line_Selected.Children.Count - 1;
                     CurrentLayout.InsertRisk(CurrentLayout.CopyRisk, CurrentLayout.Line_Selected, CurrentLayout.PointSelected);
@@ -3914,7 +3914,7 @@ namespace EnsureRisk
             //DsMain = CurrentLayout.Ds;
             if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + CurrentLayout.Line_Selected.ShortName + "] ?").ShowDialog() == true)
             {
-                TreeOperation.DeleteLine(CurrentLayout.Line_Selected, CurrentLayout.LinesList, CurrentLayout.Ds);
+                TreeOperation.DeleteLine(CurrentLayout.Line_Selected, CurrentLayout.Ds);
                 CurrentLayout.DropLines();
                 CurrentLayout.DropRectangles();
                 CurrentLayout.LoadLines();
@@ -5707,21 +5707,21 @@ namespace EnsureRisk
             cbDiagramValues.Header = StringResources.DiagramValuesGroupB;
             cbFilterTR.Header = StringResources.FilterTRGroupB;
             //cbScale.Header = StringResources.ScaleGroupB;
-            ((MenuItem)MenuRisk.Items[0]).ToolTip = StringResources.AddRiskMenu;
-            ((MenuItem)MenuRisk.Items[1]).ToolTip = StringResources.EditRiskMenu;
-            ((MenuItem)MenuRisk.Items[2]).ToolTip = StringResources.DeleteRiskMenu;
-            ((MenuItem)MenuRisk.Items[3]).ToolTip = StringResources.MoveRiskMenu;
-            ((MenuItem)MenuRisk.Items[4]).ToolTip = StringResources.AddCMMenu;
-            ((MenuItem)MenuRisk.Items[5]).ToolTip = StringResources.MENU_SCOPE;
-            ((MenuItem)MenuRisk.Items[6]).ToolTip = StringResources.COPY_MENU;
-            ((MenuItem)MenuRisk.Items[7]).ToolTip = StringResources.PASTE_MENU;
-            ((MenuItem)MenuRisk.Items[8]).ToolTip = StringResources.MENU_IMPORT;
-            ((MenuItem)MenuRisk.Items[9]).ToolTip = StringResources.DisableValue;
+            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.AddRisk]).ToolTip = StringResources.AddRiskMenu;
+            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.EditRisk]).ToolTip = StringResources.EditRiskMenu;
+            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.DelRisk]).ToolTip = StringResources.DeleteRiskMenu;
+            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.MRisk]).ToolTip = StringResources.MoveRiskMenu;
+            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.AddCM]).ToolTip = StringResources.AddCMMenu;
+            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.Scope]).ToolTip = StringResources.MENU_SCOPE;
+            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.Copy]).ToolTip = StringResources.COPY_MENU;
+            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.Paste]).ToolTip = StringResources.PASTE_MENU;
+            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.Import]).ToolTip = StringResources.MENU_IMPORT;
+            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
 
-            ((MenuItem)MenuRiskLimited.Items[0]).ToolTip = StringResources.EditRiskMenu;
-            ((MenuItem)MenuRiskLimited.Items[1]).ToolTip = StringResources.MENU_SCOPE;
-            ((MenuItem)MenuRiskLimited.Items[2]).ToolTip = StringResources.COPY_MENU;
-            ((MenuItem)MenuRiskLimited.Items[3]).ToolTip = StringResources.DisableValue;
+            ((MenuItem)MenuRiskLimited.Items[(Int32)MRLimited.EditRisk]).ToolTip = StringResources.EditRiskMenu;
+            ((MenuItem)MenuRiskLimited.Items[(Int32)MRLimited.Scope]).ToolTip = StringResources.MENU_SCOPE;
+            ((MenuItem)MenuRiskLimited.Items[(Int32)MRLimited.Copy]).ToolTip = StringResources.COPY_MENU;
+            ((MenuItem)MenuRiskLimited.Items[(Int32)MRLimited.Enable]).ToolTip = StringResources.DisableValue;
 
             ((MenuItem)MenuCM.Items[0]).ToolTip = StringResources.EditCMMenu;
             ((MenuItem)MenuCM.Items[1]).ToolTip = StringResources.DeleteCMMenu;

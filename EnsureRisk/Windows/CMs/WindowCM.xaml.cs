@@ -129,6 +129,7 @@ namespace EnsureRisk.Windows
                     }
                     if (RiskPadre != null)
                     {
+                        bool hasWBS = false;
                         foreach (DataRow itemWBS in DsCM.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskPadre.ID))
                         {
                             DataRow newRow = CM_WBS_Table.NewRow();
@@ -139,6 +140,7 @@ namespace EnsureRisk.Windows
                             newRow[DT_CM_WBS.IS_PRIMARY] = itemWBS[DT_RISK_WBS.IS_PRIMARY];
                             newRow[DT_CM_WBS.PRIMARY] = itemWBS[DT_RISK_WBS.PRIMARY];
                             newRow[DT_CM_WBS.USERNAME] = itemWBS[DT_RISK_WBS.USERNAME];
+                            hasWBS = true;
                             CM_WBS_Table.Rows.Add(newRow);
                             
                             if (WBS_isSheet((Int32)itemWBS[DT_RISK_WBS.ID_WBS]))
@@ -156,6 +158,30 @@ namespace EnsureRisk.Windows
                                     {
                                         WBS_CM_Damage.Rows.Add(drWBS_CM_Damage);
                                     }
+                                }
+                            }
+                        }
+                        foreach (DataRow item in dsWBS.Tables[DT_WBS.TABLE_NAME].Select())
+                        {
+                            if (!(dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + item[DT_WBS.ID_WBS]).Any()))
+                            {
+                                if (!(DsCM.Tables[DT_CM_WBS.TABLENAME].Rows.Contains(new object[] { CMRow[DT_CounterM.ID], item[DT_WBS.ID_WBS] })))
+                                {
+                                    DataRow drRCMWBS = DsCM.Tables[DT_CM_WBS.TABLENAME].NewRow();
+                                    drRCMWBS[DT_CM_WBS.ID_CM] = CMRow[DT_CounterM.ID];
+                                    drRCMWBS[DT_CM_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
+                                    drRCMWBS[DT_CM_WBS.USERNAME] = item[DT_WBS.USERNAME];
+                                    if (!hasWBS)
+                                    {
+                                        drRCMWBS[DT_CM_WBS.PRIMARY] = "Primary";
+                                        drRCMWBS[DT_CM_WBS.IS_PRIMARY] = true;
+                                    }
+                                    else
+                                    {
+                                        drRCMWBS[DT_CM_WBS.PRIMARY] = "";
+                                        drRCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
+                                    }                                    
+                                    DsCM.Tables[DT_CM_WBS.TABLENAME].Rows.Add(drRCMWBS);
                                 }
                             }
                         }
@@ -474,7 +500,7 @@ namespace EnsureRisk.Windows
                         drCMWBS[DT_CM_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
                         drCMWBS[DT_CM_WBS.NIVEL] = item[DT_WBS.NIVEL].ToString().TrimStart();
                         drCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
-                        drCMWBS[DT_CM_WBS.PRIMARY] = "Not";
+                        drCMWBS[DT_CM_WBS.PRIMARY] = "";
                         drCMWBS[DT_CM_WBS.USERNAME] = item[DT_WBS.USERNAME];
                         CM_WBS_Table.Rows.Add(drCMWBS);
                     }
@@ -492,7 +518,7 @@ namespace EnsureRisk.Windows
                                 drRiskWBSi[DT_CM_WBS.NIVEL] = itemAncestors[DT_WBS.NIVEL].ToString().TrimStart();
                                 drRiskWBSi[DT_CM_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
                                 drRiskWBSi[DT_CM_WBS.IS_PRIMARY] = false;
-                                drRiskWBSi[DT_CM_WBS.PRIMARY] = "Not";
+                                drRiskWBSi[DT_CM_WBS.PRIMARY] = "";
                                 CM_WBS_Table.Rows.Add(drRiskWBSi);
                             }
                         }
@@ -599,7 +625,7 @@ namespace EnsureRisk.Windows
                     foreach (DataRow item in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
                     {
                         item[DT_CM_WBS.IS_PRIMARY] = false;
-                        item[DT_CM_WBS.PRIMARY] = "Not";
+                        item[DT_CM_WBS.PRIMARY] = "";
                     }
                     DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.IS_PRIMARY] = true;
                     DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.PRIMARY] = "PRIMARY";

@@ -741,13 +741,6 @@ namespace EnsureRisk.Classess
                     IdDamageSelected = (Int32)CbFilterTopR.SelectedValue;
                     if (IdDamageSelected != 0)
                     {
-                        //DataTable dtRisk = Ds.Tables[DT_Risk.TABLE_NAME].Clone();
-                        //foreach (var item in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram))
-                        //{
-                        //    dtRisk.ImportRow(item);
-                        //}
-                        //General.UpdateThickness(IdDamageSelected, dtRisk, LinesList, Ds.Tables[DT_Risk_Damages.TABLENAME],
-                        //               Ds.Tables[DT_CounterM.TABLE_NAME], Ds.Tables[DT_CounterM_Damage.TABLENAME]);
                         General.UpdateThickness(LinesList);
                     }
 
@@ -2493,9 +2486,15 @@ namespace EnsureRisk.Classess
                         }
                     }
                 }
+                RiskPolyLine linetoDel = new RiskPolyLine
+                {
+                    ID = Line_Selected.ID,
+                    IsCM = Line_Selected.IsCM
 
-                TreeOperation.BackupLine(Line_Selected, destinationPolyLine.ID, Ds);
-                TreeOperation.DeleteLine(Line_Selected, LinesList, Ds);
+                };
+
+                TreeOperation.CreateCopy(Line_Selected, destinationPolyLine.ID, Ds);
+                TreeOperation.DeleteLine(linetoDel, Ds);
             }
         }
 
@@ -2503,6 +2502,19 @@ namespace EnsureRisk.Classess
         {
             int pos = TreeOperation.DetectClickPosition(point, destinationPolyLine);
             int lastCounterMeasurePosition = TreeOperation.LastCounterMeasurePosition(destinationPolyLine.Children);
+            if (pos > lastCounterMeasurePosition)
+            {
+                pos = lastCounterMeasurePosition + 1;
+            }
+
+            //Insertar la CM en su nuevo padre (el PolyLine destino)
+            destinationPolyLine.Children.Insert(pos, insertedCM);
+            SetPolyLinePosition(destinationPolyLine.Children);
+        }
+        public void InsertCM(RiskPolyLine insertedCM, RiskPolyLine destinationPolyLine)
+        {            
+            int lastCounterMeasurePosition = TreeOperation.LastCounterMeasurePosition(destinationPolyLine.Children);
+            int pos = 0;
             if (pos > lastCounterMeasurePosition)
             {
                 pos = lastCounterMeasurePosition + 1;
@@ -2558,8 +2570,8 @@ namespace EnsureRisk.Classess
                     }
                 }
 
-                TreeOperation.BackupLine(Line_Selected, destinationPolyLine.ID, Ds);
-                TreeOperation.DeleteLine(Line_Selected, LinesList, Ds);
+                TreeOperation.CreateCopy(Line_Selected, destinationPolyLine.ID, Ds);
+                TreeOperation.DeleteLine(Line_Selected, Ds);
             }            
         }
 

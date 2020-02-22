@@ -134,6 +134,8 @@
     <Compile Include="Classess\LSlider.cs" />
     <Compile Include="Classess\LTextBlock.cs" />
     <Compile Include="Classess\LTextBox.cs" />
+    <Compile Include="Classess\MenuRiskItems.cs" />
+    <Compile Include="Classess\MRLimited.cs" />
     <Compile Include="Classess\MyGrid.cs" />
     <Compile Include="Classess\MyLayoutDocument.cs" />
     <Compile Include="Classess\MyRadioButton.cs" />

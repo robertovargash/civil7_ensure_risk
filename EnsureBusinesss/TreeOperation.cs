@@ -51,14 +51,6 @@ namespace EnsureBusinesss
             {
                 foreach (RiskPolyLine item in lineList)
                 {
-                    //item.Points[0] = new Point(item.Points[0].X + x, item.Points[0].Y + y);
-                    //item.Points[1] = new Point(item.Points[1].X + x, item.Points[1].Y + y);
-                    ////item.Points[2] = new Point(item.Points[2].X + x, item.Points[2].Y + y);
-                    //item.StartDrawPoint = item.Points[1];
-                    //if (item.Points.Count == 3)
-                    //{
-                    //    item.Points[2] = new Point(item.Points[2].X + x, item.Points[2].Y + y);
-                    //}
                     item.Move((int)x, (int)y);
                     (item).DrawEntireLine(item.ShortName);
                 }
@@ -72,7 +64,7 @@ namespace EnsureBusinesss
         #endregion
 
         #region Move&Copy
-        public static void BackupLine(RiskPolyLine Line, int idFather, DataSet Ds)
+        public static void CreateCopy(RiskPolyLine Line, int idFather, DataSet Ds)
         {
             if (Line.IsLeaf())
             {
@@ -125,8 +117,55 @@ namespace EnsureBusinesss
                             DataRow newRow = Ds.Tables[DT_CM_WBS.TABLENAME].NewRow();
                             newRow[DT_CM_WBS.ID_CM] = drCM[DT_Risk.ID];
                             newRow[DT_CM_WBS.ID_WBS] = item[DT_CM_WBS.ID_WBS];
+                            newRow[DT_CM_WBS.WBS] = item[DT_CM_WBS.WBS];
+                            newRow[DT_CM_WBS.USERNAME] = item[DT_CM_WBS.USERNAME];
+                            newRow[DT_CM_WBS.IS_PRIMARY] = item[DT_CM_WBS.IS_PRIMARY];
+                            newRow[DT_CM_WBS.PRIMARY] = item[DT_CM_WBS.PRIMARY];
+                            newRow[DT_CM_WBS.NIVEL] = item[DT_CM_WBS.NIVEL];
                             Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Add(newRow);
                         }
+                    }
+                    //Añadiendo los wbs y  los WBS con Daños del padre
+                    foreach (DataRow item in Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + idFather))
+                    {
+                        if (!(Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Contains(new object[] { drCM[DT_CounterM.ID], item[DT_CM_WBS.ID_WBS] })))
+                        {
+                            DataRow newRow = Ds.Tables[DT_CM_WBS.TABLENAME].NewRow();
+                            newRow[DT_CM_WBS.ID_CM] = drCM[DT_CounterM.ID];
+                            newRow[DT_CM_WBS.ID_WBS] = item[DT_RISK_WBS.ID_WBS];
+                            newRow[DT_CM_WBS.WBS] = item[DT_RISK_WBS.WBS];
+                            newRow[DT_CM_WBS.USERNAME] = item[DT_RISK_WBS.USERNAME];
+                            newRow[DT_CM_WBS.IS_PRIMARY] = false;
+                            newRow[DT_CM_WBS.PRIMARY] = "";
+                            newRow[DT_CM_WBS.NIVEL] = item[DT_RISK_WBS.NIVEL];
+                            Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Add(newRow);
+                        }
+                    }
+                    foreach (DataRow item in Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + idFather))
+                    {
+                        DataRow newRow = Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
+                        newRow[DT_WBS_CM_Damage.ID_CM] = drCM[DT_CounterM.ID];
+                        newRow[DT_WBS_CM_Damage.ID_WBS] = item[DT_WBS_RISK_DAMAGE.ID_WBS];
+                        newRow[DT_WBS_CM_Damage.WBS] = item[DT_WBS_RISK_DAMAGE.WBS];
+                        newRow[DT_WBS_CM_Damage.ID_DAMAGE] = item[DT_WBS_RISK_DAMAGE.ID_DAMAGE];
+                        newRow[DT_WBS_CM_Damage.DAMAGE] = item[DT_WBS_RISK_DAMAGE.DAMAGE];
+                        newRow[DT_WBS_CM_Damage.VALUE] = 0;
+                        if (!(Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { item[DT_WBS_RISK_DAMAGE.ID_WBS], item[DT_WBS_RISK_DAMAGE.ID_DAMAGE], drCM[DT_CounterM.ID] })))
+                        {                           
+                            Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newRow);
+                        }
+                    }
+                    if (Ds.Tables[DT_CM_WBS.TABLENAME].Select(DT_CM_WBS.ID_CM + " = " + drCM[DT_CounterM.ID] + " and " + DT_CM_WBS.IS_PRIMARY + " = 1").Any())
+                    {
+                        DataRow drWBS = Ds.Tables[DT_CM_WBS.TABLENAME].Select(DT_CM_WBS.ID_CM + " = " + drCM[DT_CounterM.ID] + " and " + DT_CM_WBS.IS_PRIMARY + " = 1").First();
+                        foreach (DataRow itemi in Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + drCM[DT_CounterM.ID]))
+                        {
+                            itemi[DT_CounterM_Damage.ID_WBS] = drWBS[DT_CM_WBS.ID_WBS];
+                            itemi[DT_CounterM_Damage.WBS_NAME] = drWBS[DT_CM_WBS.NIVEL] + " " + drWBS[DT_CM_WBS.WBS];
+                            itemi[DT_CounterM_Damage.USERNAME] = drWBS[DT_CM_WBS.USERNAME];
+                        }
+                        drCM[DT_CounterM.ID_WBS] = drWBS[DT_RISK_WBS.ID_WBS];
+                        drCM[DT_CounterM.WBS_NAME] = drWBS[DT_CM_WBS.NIVEL] + " " + drWBS[DT_CM_WBS.WBS];
                     }
                 }
                 else
@@ -141,7 +180,7 @@ namespace EnsureBusinesss
                 CreateRiskUntilLine(Line, idFather, drRisk, Ds);
                 foreach (var item in Line.Children)
                 {
-                    BackupLine(item, (Int32)drRisk[DT_Risk.ID], Ds);
+                    CreateCopy(item, (Int32)drRisk[DT_Risk.ID], Ds);
                 }
             }
         }
@@ -212,34 +251,82 @@ namespace EnsureBusinesss
                     newRow[DT_RISK_WBS.ID_RISK] = drRisk[DT_Risk.ID];
                     newRow[DT_RISK_WBS.ID_WBS] = item[DT_RISK_WBS.ID_WBS];
                     newRow[DT_RISK_WBS.WBS] = item[DT_RISK_WBS.WBS];
+                    newRow[DT_RISK_WBS.NIVEL] = item[DT_RISK_WBS.NIVEL];
+                    newRow[DT_RISK_WBS.PRIMARY] = item[DT_RISK_WBS.PRIMARY];
+                    newRow[DT_RISK_WBS.IS_PRIMARY] = item[DT_RISK_WBS.IS_PRIMARY];
+                    newRow[DT_RISK_WBS.USERNAME] = item[DT_RISK_WBS.USERNAME];
                     Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Add(newRow);
                 }
             }
+            foreach (DataRow item in Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + Line.ID))
+            {
+                DataRow newRow = Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
+                newRow[DT_WBS_RISK_DAMAGE.ID_RISK] = drRisk[DT_Risk.ID];
+                newRow[DT_WBS_RISK_DAMAGE.ID_WBS] = item[DT_WBS_RISK_DAMAGE.ID_WBS];
+                newRow[DT_WBS_RISK_DAMAGE.WBS] = item[DT_WBS_RISK_DAMAGE.WBS];
+                newRow[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = item[DT_WBS_RISK_DAMAGE.ID_DAMAGE];
+                newRow[DT_WBS_RISK_DAMAGE.DAMAGE] = item[DT_WBS_RISK_DAMAGE.DAMAGE];
+                newRow[DT_WBS_RISK_DAMAGE.VALUE] = item[DT_WBS_RISK_DAMAGE.VALUE];
+                if (!(Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { item[DT_WBS_RISK_DAMAGE.ID_WBS], item[DT_WBS_RISK_DAMAGE.ID_DAMAGE], drRisk[DT_Risk.ID] })))
+                {
+                    Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(newRow);
+                }
+                
+            }
+            AddWBSOfMyFather(idFather, Ds, drRisk);
+            if (Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + drRisk[DT_Risk.ID] + " and " + DT_RISK_WBS.IS_PRIMARY + " = 1").Any())
+            {
+                DataRow drWBS = Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + drRisk[DT_Risk.ID] + " and " + DT_RISK_WBS.IS_PRIMARY + " = 1").First();
+                foreach (DataRow itemi in Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + drRisk[DT_Risk.ID]))
+                {
+                    itemi[DT_Risk_Damages.ID_WBS] = drWBS[DT_RISK_WBS.ID_WBS];
+                    itemi[DT_Risk_Damages.WBS_NAME] = drWBS[DT_RISK_WBS.NIVEL]+ " " + drWBS[DT_RISK_WBS.WBS];
+                    itemi[DT_Risk_Damages.USERNAME] = drWBS[DT_RISK_WBS.USERNAME];
+                }
+                drRisk[DT_Risk.ID_WBS] = drWBS[DT_RISK_WBS.ID_WBS];
+                drRisk[DT_Risk.WBS_NAME] = drWBS[DT_RISK_WBS.NIVEL] + " " + drWBS[DT_RISK_WBS.WBS];
+            }
+            
             Line.ID = (Int32)drRisk[DT_Risk.ID];
         }
 
-        public static void DeleteLine(RiskPolyLine LineToDelete, List<RiskPolyLine> LinesList, DataSet DsMain)
+        private static void AddWBSOfMyFather(int idFather, DataSet dataSet, DataRow drRisk)
+        {
+            foreach (DataRow item in dataSet.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + idFather))
+            {
+                if (!(dataSet.Tables[DT_RISK_WBS.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], item[DT_RISK_WBS.ID_WBS] })))
+                {
+                    DataRow newRow = dataSet.Tables[DT_RISK_WBS.TABLENAME].NewRow();
+                    newRow[DT_RISK_WBS.ID_RISK] = drRisk[DT_Risk.ID];
+                    newRow[DT_RISK_WBS.ID_WBS] = item[DT_RISK_WBS.ID_WBS];
+                    newRow[DT_RISK_WBS.WBS] = item[DT_RISK_WBS.WBS];
+                    newRow[DT_RISK_WBS.NIVEL] = item[DT_RISK_WBS.NIVEL];
+                    newRow[DT_RISK_WBS.PRIMARY] = "";
+                    newRow[DT_RISK_WBS.IS_PRIMARY] = false;
+                    newRow[DT_RISK_WBS.USERNAME] = item[DT_RISK_WBS.USERNAME];
+                    dataSet.Tables[DT_RISK_WBS.TABLENAME].Rows.Add(newRow);
+                }
+            }
+            foreach (DataRow item in dataSet.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + idFather))
+            {
+                DataRow newRow = dataSet.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
+                newRow[DT_WBS_RISK_DAMAGE.ID_RISK] = drRisk[DT_Risk.ID];
+                newRow[DT_WBS_RISK_DAMAGE.ID_WBS] = item[DT_WBS_RISK_DAMAGE.ID_WBS];
+                newRow[DT_WBS_RISK_DAMAGE.WBS] = item[DT_WBS_RISK_DAMAGE.WBS];
+                newRow[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = item[DT_WBS_RISK_DAMAGE.ID_DAMAGE];
+                newRow[DT_WBS_RISK_DAMAGE.DAMAGE] = item[DT_WBS_RISK_DAMAGE.DAMAGE];
+                newRow[DT_WBS_RISK_DAMAGE.VALUE] = 0;
+                if (!(dataSet.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { item[DT_WBS_RISK_DAMAGE.ID_WBS], item[DT_WBS_RISK_DAMAGE.ID_DAMAGE], drRisk[DT_Risk.ID] })))
+                {
+                    dataSet.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(newRow);
+                }
+            }
+        }
+
+        public static void DeleteLine(RiskPolyLine LineToDelete, DataSet DsMain)
         {
             try
             {
-                //foreach (var item in LinesList.FindAll(rl => rl.IdRiskFather == LineToDelete.IdRiskFather && rl.Position > LineToDelete.Position).ToList())
-                //{//decremento en 1 la posicion de los risk, pa las cm no hace falta pues estan delante
-                //    item.Position -= 1;
-                //    if (item.IsCM)
-                //    {
-                //        if (DsMain.Tables[DT_CounterM.TABLE_NAME].Rows.Contains(item.ID))
-                //        {
-                //            DsMain.Tables[DT_CounterM.TABLE_NAME].Rows.Find(item.ID)[DT_CounterM.POSITION_COLUMN] = item.Position;
-                //        }
-                //    }
-                //    else
-                //    {
-                //        if (DsMain.Tables[DT_Risk.TABLE_NAME].Rows.Contains(item.ID))
-                //        {
-                //            DsMain.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.POSITION_COLUMN] = item.Position;
-                //        }
-                //    }
-                //}
                 if (!(LineToDelete.IsCM))
                 {
                     List<DataRow> lista = new List<DataRow>
@@ -1341,8 +1428,7 @@ namespace EnsureBusinesss
 
         public static void BalancearDiagrama(RiskPolyLine Line)
         {
-            double MaxUp = LinesUp.Min(x => x.HorizontalMaxXTremee(hmax).X); 
-            double MaxDown = LinesDown.Min(x => x.HorizontalMaxXTremee(hmax).X);
+            double MaxUp = LinesUp.Min(x => x.HorizontalMaxXTremee(hmax).X); double MaxDown = LinesDown.Min(x => x.HorizontalMaxXTremee(hmax).X);
             RiskPolyLine t;
             if (MaxUp < MaxDown)
             {
