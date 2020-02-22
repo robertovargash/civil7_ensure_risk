@@ -11,21 +11,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EnsureRisk.Windows"
         mc:Ignorable="d"
-        Title="WBS" Height="427" Width="491" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="WBS" Height="427" Width="613.662" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <TextBox TabIndex="1" materialDesign:HintAssist.Hint="Level" materialDesign:HintAssist.IsFloating="True" x:Name="TextLevel" MaxLength="50" HorizontalAlignment="Left" Margin="11,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="107"  TextOptions.TextHintingMode="Animated"/>
-        <TextBox TextChanged="TextName_TextChanged" materialDesign:HintAssist.Hint="WBS Name" materialDesign:HintAssist.IsFloating="True" x:Name="TextName" HorizontalAlignment="Left" Margin="156,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="319" TextOptions.TextHintingMode="Animated"/>
-        <Grid Background="#FFE5E5E5" Height="264" Margin="11,80,0,0" VerticalAlignment="Top">
+
+        <StackPanel Orientation="Horizontal" Margin="24,69,64,256" >
+            <materialDesign:PackIcon Kind="User" VerticalAlignment="Center"/>
+            <ComboBox materialDesign:HintAssist.Hint="User" Name="cbUser" IsEditable="True" 
+                  materialDesign:HintAssist.HintOpacity=".26" ToolTip="Select a User" Width="162"/>
+
+        </StackPanel>
+        <TextBox TextChanged="TextName_TextChanged" materialDesign:HintAssist.Hint="WBS Name" materialDesign:HintAssist.IsFloating="True" x:Name="TextName" HorizontalAlignment="Left" Margin="156,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="426" TextOptions.TextHintingMode="Animated"/>
+        <CheckBox x:Name="chkIsManager" Content="Is Manager?" Visibility="Collapsed" Margin="480,69,26,281" IsChecked="True" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+        <Grid Background="#FFE5E5E5" Height="202" Margin="11,156,0,0" VerticalAlignment="Top">
             <Button Name="BtnAdd"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAdd_Click" materialDesign:ShadowAssist.ShadowDepth="Depth5">
                 <materialDesign:PackIcon Kind="Plus"/>
             </Button>
             <Button x:Name="BtnDel" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" Click="BtnDel_Click" materialDesign:ShadowAssist.ShadowDepth="Depth5">
                 <materialDesign:PackIcon Kind="Minus"/>
             </Button>
-            <DataGrid Name="dgWBS" HorizontalAlignment="Left" Height="249" Margin="71,5,0,0" VerticalAlignment="Top" Width="393" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid Name="dgWBS" Margin="71,5,0,0"  AutoGenerateColumns="False" IsReadOnly="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= ChildNivel}" Width="100"/>
                     <DataGridTextColumn x:Name="WBS" Header="WBS" Binding="{Binding Path= Child}" Width="*"/>
+                    <DataGridTextColumn x:Name="UserName" Header="User Owner" Binding="{Binding Path= CUserName}" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

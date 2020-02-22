@@ -2035,27 +2035,13 @@ namespace EnsureRisk.Classess
                                     {
                                         ResetLinesMenu(CMGroupSelected, MenuGroupMixed); // buscar forma mas eficiente, a partir de la segunda vez es innecesario
                                         Line_Selected.SetMenu(MenuGroupMixed);
-                                        //Line_Selected.ContextMenu = MenuGroupMixed;
-                                        //Line_Selected.MyName.ContextMenu = MenuGroupMixed;
-                                        //foreach (var item in Line_Selected.Segments)
-                                        //{
-                                        //    item.ContextMenu = MenuGroupMixed;
-                                        //}
                                     }
                                     else
                                     {
                                         Line_Selected.SetMenu(MenuGroupRisk);
-                                        //Line_Selected.ContextMenu = MenuGroupRisk;
-                                        //Line_Selected.MyName.ContextMenu = MenuGroupRisk;
-                                        //foreach (var item in Line_Selected.Segments)
-                                        //{
-                                        //    item.ContextMenu = MenuGroupRisk;
-                                        //}
                                     }
                                     Line_Selected.SetColor(new SolidColorBrush(Colors.LightSkyBlue));
-                                    //Line_Selected.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
                                     RiskGroupSelected.Add(Line_Selected);
-                                    //UpdateRiskCounText(1);
                                 }
                             }
                             else
@@ -2075,7 +2061,6 @@ namespace EnsureRisk.Classess
                                 }
 
                                 RiskGroupSelected.Remove(Line_Selected);
-                                //UpdateRiskCounText(-1);
 
                                 if (RiskGroupSelected.Count == 0) // si haciendo ctrl+click elimine la lista de riesgos seleccionados
                                 {
@@ -2103,8 +2088,6 @@ namespace EnsureRisk.Classess
                                     LinesList.Find(x => x.ID == Line_Selected.ID).Group = GroupSelected;
                                     RiskGroupSelected.Add(Line_Selected);
                                     UpdateGridRiskAndGridCM();
-                                    //p.LSelected = Line_Selected.ShortName;
-                                    //p.TSelected = Line_Selected.IsCM ? "CounterMeasure" : "Risk";
                                 }
                             }
                             else
@@ -2490,7 +2473,6 @@ namespace EnsureRisk.Classess
                 {
                     ID = Line_Selected.ID,
                     IsCM = Line_Selected.IsCM
-
                 };
 
                 TreeOperation.CreateCopy(Line_Selected, destinationPolyLine.ID, Ds);
@@ -2511,20 +2493,7 @@ namespace EnsureRisk.Classess
             destinationPolyLine.Children.Insert(pos, insertedCM);
             SetPolyLinePosition(destinationPolyLine.Children);
         }
-        public void InsertCM(RiskPolyLine insertedCM, RiskPolyLine destinationPolyLine)
-        {            
-            int lastCounterMeasurePosition = TreeOperation.LastCounterMeasurePosition(destinationPolyLine.Children);
-            int pos = 0;
-            if (pos > lastCounterMeasurePosition)
-            {
-                pos = lastCounterMeasurePosition + 1;
-            }
-
-            //Insertar la CM en su nuevo padre (el PolyLine destino)
-            destinationPolyLine.Children.Insert(pos, insertedCM);
-            SetPolyLinePosition(destinationPolyLine.Children);
-        }
-
+       
         private void MoveCounterMeasure(RiskPolyLine destinationPolyLine, Point point)
         {
             if (FullAccess(destinationPolyLine))
@@ -2569,9 +2538,13 @@ namespace EnsureRisk.Classess
                         }
                     }
                 }
-
+                RiskPolyLine linetoDel = new RiskPolyLine
+                {
+                    ID = Line_Selected.ID,
+                    IsCM = Line_Selected.IsCM
+                };
                 TreeOperation.CreateCopy(Line_Selected, destinationPolyLine.ID, Ds);
-                TreeOperation.DeleteLine(Line_Selected, Ds);
+                TreeOperation.DeleteLine(linetoDel, Ds);
             }            
         }
 

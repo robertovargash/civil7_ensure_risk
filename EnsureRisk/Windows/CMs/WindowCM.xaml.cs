@@ -138,6 +138,12 @@ namespace EnsureRisk.Windows
                             newRow[DT_CM_WBS.NIVEL] = itemWBS[DT_RISK_WBS.NIVEL];
                             newRow[DT_CM_WBS.WBS] = itemWBS[DT_RISK_WBS.WBS];
                             newRow[DT_CM_WBS.IS_PRIMARY] = itemWBS[DT_RISK_WBS.IS_PRIMARY];
+                            if ((bool)itemWBS[DT_RISK_WBS.IS_PRIMARY])
+                            {
+                                ID_WBS = (Int32)itemWBS[DT_RISK_WBS.ID_WBS];
+                                WBS_NAME = itemWBS[DT_RISK_WBS.NIVEL].ToString() + " " + itemWBS[DT_RISK_WBS.WBS].ToString();
+                                USER_NAME = itemWBS[DT_RISK_WBS.USERNAME].ToString();
+                            }
                             newRow[DT_CM_WBS.PRIMARY] = itemWBS[DT_RISK_WBS.PRIMARY];
                             newRow[DT_CM_WBS.USERNAME] = itemWBS[DT_RISK_WBS.USERNAME];
                             hasWBS = true;

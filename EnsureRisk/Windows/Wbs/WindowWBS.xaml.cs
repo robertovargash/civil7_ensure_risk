@@ -27,10 +27,17 @@ namespace EnsureRisk.Windows
         {
             try
             {
+                ServiceUserController.WebServiceUser wsu = new ServiceUserController.WebServiceUser();
+                DataTable OpCod = wsu.GetUserData().Tables[DT_User.User_TABLA].Copy();
+                cbUser.ItemsSource = OpCod.DefaultView;
+                cbUser.SelectedValuePath = DT_User.USERNAME;
+                cbUser.DisplayMemberPath = DT_User.USERNAME;
                 if (Operation == General.UPDATE)
                 {
                     TextName.Text = DrWBS[DT_WBS.WBS_NAME].ToString();
                     TextLevel.Text = DrWBS[DT_WBS.NIVEL].ToString();
+                    //chkIsManager.IsChecked = (bool)DrWBS[DT_WBS.IS_MANAGER];
+                    cbUser.Text = DrWBS[DT_WBS.USERNAME].ToString();
                 }
                 if (TextName.Text == "")
                 {
@@ -55,13 +62,19 @@ namespace EnsureRisk.Windows
                     DrWBS[DT_WBS.WBS_NAME] = TextName.Text;
                     DrWBS[DT_WBS.NIVEL] = TextLevel.Text;
                     DrWBS[DT_WBS.IDPROJECT] = IdProject;
+                    //DrWBS[DT_WBS.IS_MANAGER] = chkIsManager.IsChecked;
+                    DrWBS[DT_WBS.USERNAME] = cbUser.Text;
                 }
                 if (Operation == General.UPDATE)
                 {
                     DrWBS[DT_WBS.IDPROJECT] = IdProject;
+                    //DrWBS[DT_WBS.IS_MANAGER] = chkIsManager.IsChecked;
+                    DrWBS[DT_WBS.USERNAME] = cbUser.Text;
                     WBS_Encoder.Rows.Find(DrWBS[DT_WBS.ID_WBS])[DT_WBS.WBS_NAME] = TextName.Text;
-                }               
-                
+                    //WBS_Encoder.Rows.Find(DrWBS[DT_WBS.ID_WBS])[DT_WBS.IS_MANAGER] = chkIsManager.IsChecked;
+                    WBS_Encoder.Rows.Find(DrWBS[DT_WBS.ID_WBS])[DT_WBS.USERNAME] = cbUser.Text;
+                }
+
                 DialogResult = true;
             }
             catch (Exception ex)
@@ -81,17 +94,20 @@ namespace EnsureRisk.Windows
             WindowWBSChild wBSChild = new WindowWBSChild
             {
                 DrWBS_Structure = WBS_Structure.NewRow(),
+                Cantidad = count,
+                MyFather = this,
                 DrWBS = WBS_Encoder.NewRow(),
                 IdProject = IdProject
             };
             wBSChild.TextLevel.Text = TextLevel.Text + "." + count;
             wBSChild.DrWBS_Structure[DT_WBS_STRUCTURE.ID_FATHER] = DrWBS[DT_WBS.ID_WBS];
             wBSChild.DrWBS_Structure[DT_WBS_STRUCTURE.FATHER] = DrWBS[DT_WBS.WBS_NAME];
-            if (wBSChild.ShowDialog() == true)
-            {                
-                WBS_Encoder.Rows.Add(wBSChild.DrWBS);
-                WBS_Structure.Rows.Add(wBSChild.DrWBS_Structure);
-            }
+            wBSChild.ShowDialog();
+            //if (wBSChild.ShowDialog() == true)
+            //{                
+            //    WBS_Encoder.Rows.Add(wBSChild.DrWBS);
+            //    WBS_Structure.Rows.Add(wBSChild.DrWBS_Structure);
+            //}
         }
 
         private void BtnDel_Click(object sender, RoutedEventArgs e)
@@ -126,7 +142,7 @@ namespace EnsureRisk.Windows
             catch (Exception ex)
             {
                 new WindowMessageOK(ex.Message).ShowDialog();
-            }            
+            }
         }
     }
 }

@@ -11,12 +11,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EnsureRisk.Windows"
         mc:Ignorable="d"
-        Title="WBS" Height="187" Width="505" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="WBS" Height="212" Width="499" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <TextBox TabIndex="1" materialDesign:HintAssist.Hint="Level" materialDesign:HintAssist.IsFloating="True" x:Name="TextLevel" MaxLength="50" HorizontalAlignment="Left" Margin="11,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="107"  TextOptions.TextHintingMode="Animated"/>
         <TextBox materialDesign:HintAssist.Hint="WBS Name" materialDesign:HintAssist.IsFloating="True" x:Name="TextName" HorizontalAlignment="Left" Margin="156,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="319" TextOptions.TextHintingMode="Animated"/>
         <Button x:Name="BtnOK" Content="OK" HorizontalAlignment="Right" Height="25" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" Margin="0,0,172,24" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
         <Button x:Name="BtnCancel" Content="Cancel" HorizontalAlignment="Right" Height="25"  VerticalAlignment="Bottom" Width="90" Click="BtnCancel_Click" IsCancel="True" Margin="0,0,24,24" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
+        <StackPanel Orientation="Horizontal" >
+            <materialDesign:PackIcon Kind="User" VerticalAlignment="Center"/>
+            <ComboBox materialDesign:HintAssist.Hint="User" Name="cbUser" IsEditable="True" 
+                  materialDesign:HintAssist.HintOpacity=".26" ToolTip="Select a User" Width="162"/>
 
+        </StackPanel>
     </Grid>
 </Window>

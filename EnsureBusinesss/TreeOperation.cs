@@ -79,6 +79,9 @@ namespace EnsureBusinesss
                     drCM[DT_CounterM.PROBABILITY] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.PROBABILITY];
                     drCM[DT_CounterM.ID_RISK] = idFather;
                     drCM[DT_CounterM.RISK_NAMESHORT] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idFather)[DT_Risk.NAMESHORT];
+                    drCM[DT_CounterM.WBS_NAME] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.WBS_NAME];
+                    drCM[DT_CounterM.ID_WBS] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.ID_WBS];
+                    drCM[DT_CounterM.USER_NAME] = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line.ID)[DT_CounterM.USER_NAME];
                     Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Add(drCM);
                     foreach (DataRow itemi in Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + Line.ID))
                     {
@@ -112,10 +115,10 @@ namespace EnsureBusinesss
                     }
                     foreach (DataRow item in Ds.Tables[DT_CM_WBS.TABLENAME].Select(DT_CM_WBS.ID_CM + " = " + Line.ID))
                     {
-                        if (!(Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Contains(new object[] { drCM[DT_Risk.ID], item[DT_CM_WBS.ID_WBS] })))
+                        if (!(Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Contains(new object[] { drCM[DT_CounterM.ID], item[DT_CM_WBS.ID_WBS] })))
                         {
                             DataRow newRow = Ds.Tables[DT_CM_WBS.TABLENAME].NewRow();
-                            newRow[DT_CM_WBS.ID_CM] = drCM[DT_Risk.ID];
+                            newRow[DT_CM_WBS.ID_CM] = drCM[DT_CounterM.ID];
                             newRow[DT_CM_WBS.ID_WBS] = item[DT_CM_WBS.ID_WBS];
                             newRow[DT_CM_WBS.WBS] = item[DT_CM_WBS.WBS];
                             newRow[DT_CM_WBS.USERNAME] = item[DT_CM_WBS.USERNAME];
@@ -150,7 +153,7 @@ namespace EnsureBusinesss
                         newRow[DT_WBS_CM_Damage.ID_DAMAGE] = item[DT_WBS_RISK_DAMAGE.ID_DAMAGE];
                         newRow[DT_WBS_CM_Damage.DAMAGE] = item[DT_WBS_RISK_DAMAGE.DAMAGE];
                         newRow[DT_WBS_CM_Damage.VALUE] = 0;
-                        if (!(Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { item[DT_WBS_RISK_DAMAGE.ID_WBS], item[DT_WBS_RISK_DAMAGE.ID_DAMAGE], drCM[DT_CounterM.ID] })))
+                        if (!(Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { newRow[DT_WBS_CM_Damage.ID_WBS], newRow[DT_WBS_CM_Damage.ID_DAMAGE], drCM[DT_CounterM.ID] })))
                         {                           
                             Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newRow);
                         }
@@ -199,6 +202,9 @@ namespace EnsureBusinesss
             drRisk[DT_Risk.PROBABILITY] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.PROBABILITY];
             drRisk[DT_Risk.IDRISK_FATHER] = idFather;
             drRisk[DT_Risk.FATHER] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idFather)[DT_Risk.NAMESHORT];
+            drRisk[DT_Risk.USER_NAME] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.USER_NAME];
+            drRisk[DT_Risk.ID_WBS] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.ID_WBS];
+            drRisk[DT_Risk.WBS_NAME] = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line.ID)[DT_Risk.WBS_NAME];
             Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
             return drRisk;
         }
