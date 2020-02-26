@@ -357,7 +357,7 @@ namespace EnsureBusinesss.Business
             double xtremo = XTreme;
             if (!(Collapsed))
             {
-                xtremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderBy(x => x.Points[0].X).First().Points[0].X;
+                xtremo = TreeOperation.GetMeAndMyChildrenWithCM(this).OrderBy(x => x.Points[0].X).First().Points[0].X;
 
             }
 
@@ -371,12 +371,12 @@ namespace EnsureBusinesss.Business
             {
                 if (FromTop)
                 {
-                    ytremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderBy(x => x.Points[0].Y).First().Points[0].Y;
+                    ytremo = TreeOperation.GetMeAndMyChildrenWithCM(this).OrderBy(x => x.Points[0].Y).First().Points[0].Y;
                 }
                 else
                 {
                     // TODO: revisar yxtremee esta fundio para la mitad de abajo
-                    ytremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderBy(x => x.Points[0].Y).First().Points[0].Y;
+                    ytremo = TreeOperation.GetMeAndMyChildrenWithCM(this).OrderBy(x => x.Points[0].Y).First().Points[0].Y;
                     //ytremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderByDescending(x => x.Points[0].Y).First().Points[0].Y;
                 }
             }
@@ -389,7 +389,7 @@ namespace EnsureBusinesss.Business
             double ytremo = YxTreme;
             if (!(Collapsed))
             {
-                ytremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderBy(x => x.Points[0].Y).First().Points[0].Y;
+                ytremo = TreeOperation.GetMeAndMyChildrenWithCM(this).OrderBy(x => x.Points[0].Y).First().Points[0].Y;
             }
 
             YxTreme = ytremo;
@@ -439,12 +439,12 @@ namespace EnsureBusinesss.Business
                 if (altura == 101)
                 {
                     //xtremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderBy(x => x.Points[0].X).First().Points[0];
-                    xtremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderBy(x => x.MyMinXPoint().X).First().MyMinXPoint();
+                    xtremo = TreeOperation.GetMeAndMyChildrenWithCM(this).OrderBy(x => x.MyMinXPoint().X).First().MyMinXPoint();
                 }
                 else
                 {
                     //RiskPolyLine rtremo = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.Points[0].Y > altura)).OrderBy(x => x.Points[0].X).FirstOrDefault();
-                    RiskPolyLine rtremo = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.MyMinXPoint().Y > altura)).OrderBy(x => x.MyMinXPoint().X).FirstOrDefault();
+                    RiskPolyLine rtremo = TreeOperation.GetMeAndMyChildrenWithCM(this).Where(x => (x.MyMinXPoint().Y > altura)).OrderBy(x => x.MyMinXPoint().X).FirstOrDefault();
                     //xtremo = (rtremo != null) ? rtremo.Points[0] : xtremo;
                     xtremo = (rtremo != null) ? rtremo.MyMinXPoint() : xtremo;
                 }

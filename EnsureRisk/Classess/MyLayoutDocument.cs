@@ -262,8 +262,6 @@ namespace EnsureRisk.Classess
             }
         }
 
-
-
         public void Scope()
         {
             if (IsScoping)
@@ -274,24 +272,29 @@ namespace EnsureRisk.Classess
                     {
                         item.Visibility = Visibility.Hidden;
                         item.MyName.Visibility = Visibility.Hidden;
+                        foreach (var itemi in item.Segments)
+                        {
+                            itemi.Visibility = Visibility.Hidden;
+                        }
                         if (!(item.IsCM))
                         {
                             (item).Expand.Visibility = Visibility.Collapsed;
                         }
                     }
-                    //TreeOperation.Build_Tree(LinesList);
-                    foreach (RiskPolyLine item in TreeOperation.GetMeAndAllChildsWithCM(LinesList.Find(x => x.ID == ScopeLine.ID)))
+                    foreach (RiskPolyLine item in TreeOperation.GetMeAndMyChildrenWithCM(LinesList.Find(x => x.ID == ScopeLine.ID)))
                     {
                         item.Visibility = Visibility.Visible;
                         item.MyName.Visibility = Visibility.Visible;
+                        foreach (var itemi in item.Segments)
+                        {
+                            itemi.Visibility = Visibility.Visible;
+                        }
                         if (!(item.IsCM))
                         {
                             item.Expand.Visibility = Visibility.Visible;
                             item.Expand.Visibility = item.Children.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
                         }
                     }
-                    //DropRectangles();
-
                     LoadRectangles();
 
                     DrawNumbers();
@@ -301,6 +304,8 @@ namespace EnsureRisk.Classess
                     LinesList.Find(x => x.ID == ScopeLine.ID).ExtrasVisibility(Visibility.Hidden);
 
                     ((MainWindow)MyWindow).BtnBackward.Visibility = Visibility.Visible;
+
+                   
                 }
                 catch (Exception ex)
                 {
@@ -308,6 +313,8 @@ namespace EnsureRisk.Classess
                 }
             }
         }
+        
+        
 
         public void EnterWorking()
         {
@@ -695,7 +702,7 @@ namespace EnsureRisk.Classess
                     if (LinesList.Count > 0)
                     {
                         decimal AcumDamage = 0;
-                        foreach (var itemI in TreeOperation.GetMeAndAllChildsWithCM(LinesList.Find(rl => rl.ID == MyMainLine.ID)))
+                        foreach (var itemI in TreeOperation.GetMeAndMyChildrenWithCM(LinesList.Find(rl => rl.ID == MyMainLine.ID)))
                         {
                             decimal value = 0;
                             if (itemI.IsCM)
@@ -752,7 +759,7 @@ namespace EnsureRisk.Classess
             }
         }
 
-        public void AddMainLine(DataRow dr, System.Drawing.Color lnColor, string DiagramName)
+        public void AddMainLine(DataRow dr, System.Drawing.Color lnColor)
         {
             try
             {
@@ -771,7 +778,7 @@ namespace EnsureRisk.Classess
                 };
                 MainLine.Group = new LineGroup()
                 {
-                    IdGroup = null,
+                    IdGroup = 0,
                     GroupName = "None"
                 };
                 //adding the 3 points of the risk. The Main line the angle = 180º
@@ -863,7 +870,7 @@ namespace EnsureRisk.Classess
                 if (CbFilterTopR.SelectedIndex >= 0)
                 {
                     System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
-                    AddMainLine(Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram + " and " + DT_Risk.IS_ROOT + " = " + 1).First(), drawingCColor, Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString());
+                    AddMainLine(Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram + " and " + DT_Risk.IS_ROOT + " = " + 1).First(), drawingCColor);
 
                     foreach (DataRow item in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram))
                     {
@@ -1030,7 +1037,7 @@ namespace EnsureRisk.Classess
                         myvalue = (decimal)Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { item.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
                     }
                     decimal AcumDamage = 0;
-                    foreach (var itemI in TreeOperation.GetMeAndAllChildsWithCM(item))
+                    foreach (var itemI in TreeOperation.GetMeAndMyChildrenWithCM(item))
                     {
                         if (itemI.IsActivated)
                         {
@@ -1226,7 +1233,7 @@ namespace EnsureRisk.Classess
             {
                 polyLine.Group = new LineGroup()
                 {
-                    IdGroup = null,
+                    IdGroup = 0,
                     GroupName = item[DT_Risk.GROUPE_NAME].ToString()
                 };
             }
@@ -1777,7 +1784,7 @@ namespace EnsureRisk.Classess
         #endregion
 
         #region EventosRisk
-        private void SelectOneRisk(object sender, MouseButtonEventArgs e, int ID_Sender, bool IsRoot_Sender)
+        private void SelectOneRisk(object sender, MouseButtonEventArgs e, int ID_Sender)
         {
             try
             {
@@ -1821,7 +1828,7 @@ namespace EnsureRisk.Classess
             }
         }
 
-        private void CreateRisk(int ID_Sender)
+        private void CreateRisk()
         {
             if (Line_Created.IsCM)
             {
@@ -1921,7 +1928,7 @@ namespace EnsureRisk.Classess
                 IsRoot_Sender = ((SegmentPolyLine)sender).Father.IsRoot;
                 TheLine = ((SegmentPolyLine)sender).Father;
 
-                MouseDownPress(sender, e, ID_Sender, IsRoot_Sender, TheLine);
+                MouseDownPress(sender, e, ID_Sender, TheLine);
             }
             catch (Exception ex)
             {
@@ -1948,7 +1955,7 @@ namespace EnsureRisk.Classess
                     IsRoot_Sender = ((LabelPolyLine)sender).Line.IsRoot;
                     TheLine = ((LabelPolyLine)sender).Line;
                 }
-                MouseDownPress(sender, e, ID_Sender, IsRoot_Sender, TheLine);
+                MouseDownPress(sender, e, ID_Sender, TheLine);
             }
             catch (Exception ex)
             {
@@ -1956,14 +1963,14 @@ namespace EnsureRisk.Classess
             }
         }
 
-        private void MouseDownPress(object sender, MouseButtonEventArgs e, int ID_Sender, bool IsRoot_Sender, RiskPolyLine TheLine)
+        private void MouseDownPress(object sender, MouseButtonEventArgs e, int ID_Sender, RiskPolyLine TheLine)
         {
             if (Creando)
             {
-                SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
+                SelectOneRisk(sender, e, ID_Sender);
                 if (FullAccess(Line_Selected))
                 {
-                    CreateRisk(ID_Sender);
+                    CreateRisk();
                 }
                 else { new WindowMessageOK("No Access Granted to do this Operation").ShowDialog(); }
 
@@ -2025,7 +2032,7 @@ namespace EnsureRisk.Classess
                         {
                             // ctrl + click risk
                             ChoosingRisk = true;
-                            SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
+                            SelectOneRisk(sender, e, ID_Sender);
 
                             if (!RiskGroupSelected.Contains(Line_Selected))
                             {
@@ -2095,7 +2102,7 @@ namespace EnsureRisk.Classess
                                 switch (e.LeftButton == MouseButtonState.Pressed)
                                 {
                                     case true: // click izquierdo sin control presionado
-                                        SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
+                                        SelectOneRisk(sender, e, ID_Sender);
                                         if (ChoosingCM || ChoosingRisk)
                                         { // si estaba seleccionando multiple y di click izq
                                             ResetGroupCMSelection();
@@ -2104,7 +2111,7 @@ namespace EnsureRisk.Classess
                                         break;
 
                                     case false: // click derecho sin control presionado en un risk
-                                        SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
+                                        SelectOneRisk(sender, e, ID_Sender);
                                         if (ChoosingCM || ChoosingRisk) // si estaba seleccionando limpio seleccion
                                         {
                                             LimiparSeleccionAll();
@@ -2475,7 +2482,7 @@ namespace EnsureRisk.Classess
                     IsCM = Line_Selected.IsCM
                 };
 
-                TreeOperation.CreateCopy(Line_Selected, destinationPolyLine.ID, Ds);
+                TreeOperation.CreateCopyOfLine(Line_Selected, destinationPolyLine.ID, Ds);
                 TreeOperation.DeleteLine(linetoDel, Ds);
             }
         }
@@ -2543,7 +2550,7 @@ namespace EnsureRisk.Classess
                     ID = Line_Selected.ID,
                     IsCM = Line_Selected.IsCM
                 };
-                TreeOperation.CreateCopy(Line_Selected, destinationPolyLine.ID, Ds);
+                TreeOperation.CreateCopyOfLine(Line_Selected, destinationPolyLine.ID, Ds);
                 TreeOperation.DeleteLine(linetoDel, Ds);
             }            
         }
@@ -2588,22 +2595,6 @@ namespace EnsureRisk.Classess
 
             risk.Children.Insert(pos, Line_Selected);
             SetPolyLinePosition(risk.Children);
-        }
-
-        private void ReorderCounterMeasure(RiskPolyLine sourceRisk, RiskPolyLine destinationRisk, Point point)
-        {
-            sourceRisk.Children.Remove(Line_Selected);
-            SetPolyLinePosition(sourceRisk.Children);
-
-            int pos = TreeOperation.DetectClickPosition(point, destinationRisk);
-            int lastCounterMeasurePosition = TreeOperation.LastCounterMeasurePosition(destinationRisk.Children);
-            if (pos > lastCounterMeasurePosition)
-            {
-                pos = lastCounterMeasurePosition + 1;
-            }
-
-            destinationRisk.Children.Insert(pos, Line_Selected);
-            SetPolyLinePosition(destinationRisk.Children);
         }
 
         public void DrawFishBone()
@@ -2727,7 +2718,7 @@ namespace EnsureRisk.Classess
                     if (Creando)
                     {
                         Loose = false;
-                        SelectOneRisk(sender, e, ID_Sender, IsRoot_Sender);
+                        SelectOneRisk(sender, e, ID_Sender);
                         if (!(Line_Created.IsCM))
                         {
                             WindowRisk wrisk = new WindowRisk()
@@ -3027,7 +3018,7 @@ namespace EnsureRisk.Classess
                                     {
                                         MoviendoRisk = true;
                                         LinesMoving = new List<RiskPolyLine>();
-                                        LinesMoving.AddRange(TreeOperation.GetMeAndAllChildsWithCM(Line_Selected));
+                                        LinesMoving.AddRange(TreeOperation.GetMeAndMyChildrenWithCM(Line_Selected));
                                         //Cursor = Cursors.Hand;
                                         //VerticalMenu win = new VerticalMenu("Moving");
                                         //win.ShowDialog();

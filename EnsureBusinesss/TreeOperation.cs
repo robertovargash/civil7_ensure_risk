@@ -16,8 +16,8 @@ namespace EnsureBusinesss
     {
         private const double skewAngle = 22.375;
         private const int hmax = 101;
-        private static List<RiskPolyLine> LinesUp = new List<RiskPolyLine>();
-        private static List<RiskPolyLine> LinesDown = new List<RiskPolyLine>();
+        private static readonly List<RiskPolyLine> LinesUp = new List<RiskPolyLine>();
+        private static readonly List<RiskPolyLine> LinesDown = new List<RiskPolyLine>();
         #region MovingLines
         /// <summary>
         /// Move the entire diagram to position  "X,Y" including the Damages
@@ -64,7 +64,7 @@ namespace EnsureBusinesss
         #endregion
 
         #region Move&Copy
-        public static void CreateCopy(RiskPolyLine Line, int idFather, DataSet Ds)
+        public static void CreateCopyOfLine(RiskPolyLine Line, int idFather, DataSet Ds)
         {
             if (Line.IsLeaf())
             {
@@ -183,7 +183,7 @@ namespace EnsureBusinesss
                 CreateRiskUntilLine(Line, idFather, drRisk, Ds);
                 foreach (var item in Line.Children)
                 {
-                    CreateCopy(item, (Int32)drRisk[DT_Risk.ID], Ds);
+                    CreateCopyOfLine(item, (Int32)drRisk[DT_Risk.ID], Ds);
                 }
             }
         }
@@ -233,7 +233,7 @@ namespace EnsureBusinesss
                 top[DT_Risk_Damages.PROBABILITY] = drRisk[DT_Risk.PROBABILITY];
                 top[DT_Risk_Damages.RISK_NAMESHORT] = drRisk[DT_Risk.NAMESHORT];
                 top[DT_Risk_Damages.RISK_TREE] = itemi[DT_Risk_Damages.RISK_TREE];
-                top[DT_Risk_Damages.STATUS] = itemi[DT_Risk_Damages.STATUS];
+                top[DT_Risk_Damages.STATUS] = itemi[DT_Risk_Damages.STATUS];               
                 Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Add(top);
             }
 
@@ -818,7 +818,7 @@ namespace EnsureBusinesss
             {
                 var root = data.FirstOrDefault(p => p.IsRoot);
 
-                data.FirstOrDefault(p => p.IsRoot).Children = GetChildNodes(root, data);
+                data.FirstOrDefault(p => p.IsRoot).Children = GetChildrenNodes(root, data);
                 foreach (var item in data.FirstOrDefault(p => p.IsRoot).Children)
                 {
                     item.Father = data.FirstOrDefault(p => p.IsRoot);
@@ -833,7 +833,7 @@ namespace EnsureBusinesss
             //var root = data.FirstOrDefault(p => p.IdRiskFather == 0);
             if (data.Count > 0)
             {
-                root.Children = GetChildNodes(root, data);
+                root.Children = GetChildrenNodes(root, data);
                 foreach (var item in root.Children)
                 {
                     item.Father = root;
@@ -845,7 +845,7 @@ namespace EnsureBusinesss
         /// <summary>
         /// Seek the children of the father and viceversa
         /// </summary>
-        private static List<RiskPolyLine> GetChildNodes(RiskPolyLine padre, List<RiskPolyLine> Lista)
+        private static List<RiskPolyLine> GetChildrenNodes(RiskPolyLine padre, List<RiskPolyLine> Lista)
         {
             var nodes = new List<RiskPolyLine>();
             if (!(padre.IsCM))
@@ -853,7 +853,7 @@ namespace EnsureBusinesss
                 foreach (var item in Lista.Where(p => p.IdRiskFather == padre.ID).OrderBy(p => p.Position))
                 {
 
-                    item.Children = GetChildNodes(item, Lista);
+                    item.Children = GetChildrenNodes(item, Lista);
 
                     foreach (var itemi in item.Children.OrderBy(p => p.Position))
                     {
@@ -869,7 +869,7 @@ namespace EnsureBusinesss
         /// <summary>
         /// Return the entire descendence of the father giving the list , excluding the Father
         /// </summary>
-        public static List<RiskPolyLine> GetOnlyMyAllChildsWithCM(RiskPolyLine fatherLine)
+        public static List<RiskPolyLine> GetOnlyMyChildrenWithCM(RiskPolyLine fatherLine)
         {
             try
             {
@@ -883,7 +883,7 @@ namespace EnsureBusinesss
                     }
                     else
                     {
-                        returnList.AddRange(GetMeAndAllChildsWithCM(item));
+                        returnList.AddRange(GetMeAndMyChildrenWithCM(item));
                     }
                 }
                 return returnList;
@@ -897,7 +897,7 @@ namespace EnsureBusinesss
         /// <summary>
         /// Return the entire descendence of the father giving the list , including the Father
         /// </summary>
-        public static List<RiskPolyLine> GetMeAndAllChildsWithCM(RiskPolyLine lineFather)
+        public static List<RiskPolyLine> GetMeAndMyChildrenWithCM(RiskPolyLine lineFather)
         {
             try
             {
@@ -915,7 +915,7 @@ namespace EnsureBusinesss
                     }
                     else
                     {
-                        returnList.AddRange(GetMeAndAllChildsWithCM(item));
+                        returnList.AddRange(GetMeAndMyChildrenWithCM(item));
                     }
                 }
                 return returnList;
@@ -1039,22 +1039,6 @@ namespace EnsureBusinesss
                         line.IsDiagonal = !line.Father.IsDiagonal;
                         line.FromTop = line.Father.FromTop;
                     }
-
-                    //if (i == 0 && line.Father.IsRoot)
-                    //{
-                    //    if (line.Father.Segments.Any())
-                    //    {
-                    //        line.Father.ExtendHorizontal(StartPoint.X + RiskPolyLine.horizontalShiftX);
-                    //        line.NewDrawAtPoint(new Point(line.Father.XTreme, line.Father.YxTreme), line.ShortName);
-                    //    }
-                    //    else
-                    //    {
-                    //        // Esto solo ocurre cuando MainLine no tiene segmentos
-                    //        line.NewDrawAtPoint(new Point(StartPoint.X, StartPoint.Y), line.ShortName);
-                    //    }
-                    //}
-                    //else
-                    //{
                     if (i == 0)
                     {
                         line.NewDrawAtPoint(new Point(StartPoint.X, StartPoint.Y), line.ShortName);
@@ -1103,16 +1087,6 @@ namespace EnsureBusinesss
                             MoveRight(Lines, line, hmax);
                         }
                     }
-
-                    //Console.WriteLine(line.ShortName + " : " + i);
-                    //if (line.Father.Father == null && i > 0 && line.FromTop == true)
-                    //{
-                    //    line.ShortName += "-referencePoint-";
-                    //    // hacer validaciones aqui para ver si puede moverse a la derecha
-                    //    // en caso positivo poner punto inicial y repintar
-                    //    line.Father.Points[0] = new Point(orderedLines.ElementAt(i - 1).XTremee() + RiskPolyLine.horizontalShiftX, line.Father.Points[0].Y);
-                    //    line.NewDrawAtPoint(new Point(line.Father.Points[0].X, line.Father.Points[0].Y), line.ShortName);
-                    //}
                 }
             }
             catch (Exception ex)
@@ -1578,7 +1552,7 @@ namespace EnsureBusinesss
                     };
                     MainLine.Group = new LineGroup()
                     {
-                        IdGroup = null,
+                        IdGroup = 0,
                         GroupName = "None"
                     };
                     lista.Add(MainLine);
@@ -1609,7 +1583,7 @@ namespace EnsureBusinesss
                     {
                         riskLine.Group = new LineGroup()
                         {
-                            IdGroup = null,
+                            IdGroup = 0,
                             GroupName = item[DT_Risk.GROUPE_NAME].ToString()
                         };
                     }
@@ -1641,7 +1615,7 @@ namespace EnsureBusinesss
                 {
                     cmline.Group = new LineGroup()
                     {
-                        IdGroup = null,
+                        IdGroup = 0,
                         GroupName = item[DT_Risk.GROUPE_NAME].ToString()
                     };
                 }

@@ -8,7 +8,7 @@ namespace EnsureBusinesss.Business
 {
     public class LineGroup
     {
-        public int? IdGroup { get; set; }
+        public int IdGroup { get; set; }
         public string GroupName { get; set; }
 
         public LineGroup()

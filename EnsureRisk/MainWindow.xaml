@@ -17,7 +17,7 @@
         x:Class="EnsureRisk.MainWindow"           
         mc:Ignorable="d"
         Title="Ensure Risk" Height="715.725" Width="1385" WindowStartupLocation="CenterScreen" WindowState="Maximized" 
-        Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown"  MouseMove="Window_MouseMove">
+        Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown"  MouseMove="Window_MouseMove" Closing="Window_Closing">
     <Window.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
@@ -52,7 +52,7 @@
 
                 <MenuItem Height="35" x:Name="MenuZoom">
                     <MenuItem.Header>
-                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtomZoom" Click="ButtomZoom_Click" Content="{md:PackIcon Kind=Loupe}" Width="32" Height="32"/>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtomZoom" Click="Scope_Click" Content="{md:PackIcon Kind=Loupe}" Width="32" Height="32"/>
                     </MenuItem.Header>
                 </MenuItem>
 
@@ -85,7 +85,7 @@
                 </MenuItem>
                 <MenuItem Height="35" x:Name="MenuZoomLimited">
                     <MenuItem.Header>
-                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtomZoomLimited" Click="ButtomZoom_Click" Content="{md:PackIcon Kind=Loupe}" Width="32" Height="32"/>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtomZoomLimited" Click="Scope_Click" Content="{md:PackIcon Kind=Loupe}" Width="32" Height="32"/>
                     </MenuItem.Header>
                 </MenuItem>
 
