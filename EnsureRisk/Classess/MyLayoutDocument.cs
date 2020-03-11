@@ -770,7 +770,7 @@ namespace EnsureRisk.Classess
                     IsRoot = true,
                     IsCM = false,
                     FromTop = false,
-                    StrokeThickness = 6,
+                    StrokeThickness = General.MaxThickness,
                     ID = (Int32)dr[DT_Risk.ID],
                     Probability = (Decimal)dr[DT_Risk.PROBABILITY] / 100,
                     ShortName = "Total Risk",
@@ -1486,7 +1486,7 @@ namespace EnsureRisk.Classess
 
                 string Value = "Value: " + General.MyRound(valor, 4);
 
-                string probability = "Prob.: " + General.MyRound(CMLine.Probability * 100, 2).ToString() + " %";
+                string probability = "Reduction.: " + General.MyRound(CMLine.Probability * 100, 2).ToString() + " %";
 
                 Popin = new Popin(GridPaintLines, pointToShowPopup, "CM: " + CMLine.ShortName, probability, Value)
                 {

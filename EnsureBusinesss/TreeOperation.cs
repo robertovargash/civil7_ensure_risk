@@ -1544,7 +1544,7 @@ namespace EnsureBusinesss
                         IsRoot = true,
                         IsCM = false,
                         FromTop = (Boolean)item[DT_Risk.FROM_TOP],
-                        StrokeThickness = 6,
+                        StrokeThickness = General.MaxThickness,
                         ID = (Int32)item[DT_Risk.ID],
                         Probability = (Decimal)item[DT_Risk.PROBABILITY],
                         ShortName = item[DT_Risk.NAMESHORT].ToString(),

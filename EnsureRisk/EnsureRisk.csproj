@@ -67,6 +67,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\EnsureBusinesss\Referencias\Arrowheads.dll</HintPath>
     </Reference>
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>Referencias\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialDesign, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Referencias\MaterialDesign.dll</HintPath>

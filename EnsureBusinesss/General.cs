@@ -25,6 +25,8 @@ namespace EnsureBusinesss
         public const double basicY = 7;
         public const int NumberOfClasses = 20;
 
+        public const double MaxThickness = 15;
+
         public const string EXPANDIDO = "pack://application:,,,/Images/Expandido.png";
         public const string CONTRAIDO = "pack://application:,,,/Images/Contraido.png";
 
@@ -35,7 +37,7 @@ namespace EnsureBusinesss
 
         public string Usser { get; set; }
 
-        private static System.Text.RegularExpressions.Regex wsExprex = new System.Text.RegularExpressions.Regex("\\/WebService([a-zA-Z_\\-0-9]+)?\\/", System.Text.RegularExpressions.RegexOptions.IgnoreCase); //,
+        private static readonly System.Text.RegularExpressions.Regex wsExprex = new System.Text.RegularExpressions.Regex("\\/WebService([a-zA-Z_\\-0-9]+)?\\/", System.Text.RegularExpressions.RegexOptions.IgnoreCase); //,
 
         public General()
         {
@@ -527,7 +529,7 @@ namespace EnsureBusinesss
                 }
             }
             RiskPolyLine rootPolyLine = linesList.Find(r => r.IsRoot);
-            rootPolyLine.StrokeThickness = 6;
+            rootPolyLine.StrokeThickness = MaxThickness;
             UpdateSegmentsStrokeThickness(rootPolyLine);
 
             IEnumerable<RiskPolyLine> rootChildren = linesList.FindAll(p => !p.IsRoot && !p.IsCM && p.Father.IsRoot);
@@ -637,7 +639,8 @@ namespace EnsureBusinesss
         {
             UnicodeEncoding uEncode = new UnicodeEncoding();
             byte[] array = uEncode.GetBytes(source);
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            MD5CryptoServiceProvider mD5CryptoServiceProvider = new MD5CryptoServiceProvider();
+            MD5CryptoServiceProvider md5 = mD5CryptoServiceProvider;
             return md5.ComputeHash(array);
         }
 
@@ -668,25 +671,6 @@ namespace EnsureBusinesss
             return tableReturn;
         }
 
-        //public static DataTable EliminarExistenColumString(DataTable dtFrom, DataTable dtToCompare, string ID_Column)
-        //{
-        //    DataTable tableReturn = dtFrom.Clone();
-        //    DataTable tableTemp = dtFrom.Copy();
-        //    foreach (DataRow item in dtToCompare.Rows)
-        //    {
-        //        if (dtFrom.Rows.Contains(item[columnName: ID_Column]))
-        //        {
-        //            tableTemp.Select(filterExpression: ID_Column + " = '" + item[columnName: ID_Column] + "'").First().Delete();
-        //        }
-        //    }
-        //    tableTemp.AcceptChanges();
-        //    foreach (DataRow item in tableTemp.Rows)
-        //    {
-        //        tableReturn.ImportRow(item);
-        //    }
-        //    return tableReturn;
-        //}
-
         public static DataTable TableLanguages()
         {
             DT_Language table = new DT_Language();
@@ -702,7 +686,5 @@ namespace EnsureBusinesss
             return Convert.ToDecimal(Math.Floor(N * pow + 0.5M) / pow);
         }
         #endregion
-
-
     }
 }
