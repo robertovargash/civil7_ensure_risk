@@ -749,6 +749,13 @@ namespace EnsureRisk.Classess
                     if (IdDamageSelected != 0)
                     {
                         General.UpdateThickness(LinesList);
+                        foreach (RiskPolyLine polyLine in LinesList)
+                        {
+                            if (!polyLine.IsCM && !polyLine.IsRoot)
+                            {
+                                polyLine.OnThicknessChange();
+                            }
+                        }
                     }
 
                 }
