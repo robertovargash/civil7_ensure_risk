@@ -1011,110 +1011,6 @@ D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRisk\obj\
 D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowHeaderClasification.baml
 D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowExcelClasification.g.cs
 D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowExcelClasification.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\Color.xml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\ConnectionServer.xml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureRisk.exe.config
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureRisk.exe
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureRisk.pdb
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\NL-NL\EnsureRisk.resources.dll
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\ES-ES\EnsureRisk.resources.dll
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EN-US\EnsureRisk.resources.dll
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csprojAssemblyReference.cache
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\VerticalMenu.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOpening.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\App.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\MainWindow.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Pages\SetConnectionPage.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Pages\ThemePage.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\LoginWindow.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\SetConnectionWindow.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\VerticalMenu.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Window1.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowAlert.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCMGroup.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCM.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Risks\WindowDefaultRiskList.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowExcelClasification.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Group\WindowGroupe.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowHeaderClasification.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageInformation.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageOK.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageYesNo.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowMultiRadio.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOpening.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOption.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Project\WindowProject.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Project\WindowProjectList.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Group\WindowRenameGroup.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Risks\WindowRisk.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRole.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRoleList.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowSaveAs.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowSelection.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowSelectTopRisk.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowText.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRisk.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRiskList.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowTreeRisk.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\User\WindowUser.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\User\WindowUserList.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBS.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBSChild.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBSList.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\App.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk_Content.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\GeneratedInternalTypeHelper.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk_MarkupCompile.cache
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk_MarkupCompile.lref
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\MainWindow.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Pages\SetConnectionPage.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Pages\ThemePage.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\LoginWindow.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\SetConnectionWindow.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Window1.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowAlert.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCMGroup.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCM.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Risks\WindowDefaultRiskList.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowExcelClasification.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Group\WindowGroupe.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowHeaderClasification.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageInformation.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageOK.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageYesNo.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowMultiRadio.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOption.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Project\WindowProject.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Project\WindowProjectList.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Group\WindowRenameGroup.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Risks\WindowRisk.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRole.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRoleList.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowSaveAs.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowSelection.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowSelectTopRisk.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowText.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRisk.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRiskList.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowTreeRisk.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\User\WindowUser.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\User\WindowUserList.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBS.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBSChild.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBSList.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.g.resources
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Properties.Resources.resources
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.StringResources.resources
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.StringResources.NL-NL.resources
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.StringResources.ES-ES.resources
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.StringResources.EN-US.resources
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csproj.GenerateResource.cache
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\NL-NL\EnsureRisk.resources.dll
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\ES-ES\EnsureRisk.resources.dll
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EN-US\EnsureRisk.resources.dll
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csproj.CopyComplete
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.exe
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.pdb
 C:\proyectos\visualdragdrop\Output\Debug\Color.xml
 C:\proyectos\visualdragdrop\Output\Debug\ConnectionServer.xml
 C:\proyectos\visualdragdrop\Output\Debug\EnsureRisk.exe.config
@@ -1219,3 +1115,212 @@ C:\proyectos\visualdragdrop\EnsureRisk\obj\Debug\EN-US\EnsureRisk.resources.dll
 C:\proyectos\visualdragdrop\EnsureRisk\obj\Debug\EnsureRisk.csproj.CopyComplete
 C:\proyectos\visualdragdrop\EnsureRisk\obj\Debug\EnsureRisk.exe
 C:\proyectos\visualdragdrop\EnsureRisk\obj\Debug\EnsureRisk.pdb
+C:\Work\Projects\EnsureRisk\VisualDragDrop\Output\Debug\Color.xml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\Output\Debug\ConnectionServer.xml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\Output\Debug\EnsureRisk.exe.config
+C:\Work\Projects\EnsureRisk\VisualDragDrop\Output\Debug\EnsureRisk.exe
+C:\Work\Projects\EnsureRisk\VisualDragDrop\Output\Debug\EnsureRisk.pdb
+C:\Work\Projects\EnsureRisk\VisualDragDrop\Output\Debug\NL-NL\EnsureRisk.resources.dll
+C:\Work\Projects\EnsureRisk\VisualDragDrop\Output\Debug\ES-ES\EnsureRisk.resources.dll
+C:\Work\Projects\EnsureRisk\VisualDragDrop\Output\Debug\EN-US\EnsureRisk.resources.dll
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csprojAssemblyReference.cache
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\VerticalMenu.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOpening.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\App.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\MainWindow.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Pages\SetConnectionPage.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Pages\ThemePage.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\LoginWindow.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\SetConnectionWindow.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\VerticalMenu.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Window1.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowAlert.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCMGroup.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCM.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Risks\WindowDefaultRiskList.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowExcelClasification.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Group\WindowGroupe.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowHeaderClasification.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageInformation.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageOK.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageYesNo.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowMultiRadio.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOpening.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOption.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Project\WindowProject.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Project\WindowProjectList.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Group\WindowRenameGroup.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Risks\WindowRisk.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRole.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRoleList.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowSaveAs.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowSelection.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowSelectTopRisk.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowText.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRisk.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRiskList.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowTreeRisk.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\User\WindowUser.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\User\WindowUserList.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBS.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBSChild.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBSList.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\App.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk_Content.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk_MarkupCompile.cache
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk_MarkupCompile.lref
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\MainWindow.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Pages\SetConnectionPage.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Pages\ThemePage.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\LoginWindow.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\SetConnectionWindow.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Window1.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowAlert.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCMGroup.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCM.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Risks\WindowDefaultRiskList.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowExcelClasification.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Group\WindowGroupe.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowHeaderClasification.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageInformation.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageOK.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageYesNo.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowMultiRadio.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOption.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Project\WindowProject.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Project\WindowProjectList.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Group\WindowRenameGroup.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Risks\WindowRisk.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRole.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRoleList.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowSaveAs.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowSelection.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowSelectTopRisk.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowText.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRisk.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRiskList.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowTreeRisk.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\User\WindowUser.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\User\WindowUserList.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBS.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBSChild.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBSList.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.g.resources
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Properties.Resources.resources
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.StringResources.resources
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.StringResources.NL-NL.resources
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.StringResources.ES-ES.resources
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.StringResources.EN-US.resources
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csproj.GenerateResource.cache
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csproj.CoreCompileInputs.cache
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\NL-NL\EnsureRisk.resources.dll
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\ES-ES\EnsureRisk.resources.dll
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EN-US\EnsureRisk.resources.dll
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csproj.CopyComplete
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.exe
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csprojAssemblyReference.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\VerticalMenu.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOpening.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\App.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\MainWindow.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Pages\SetConnectionPage.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Pages\ThemePage.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\LoginWindow.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\SetConnectionWindow.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\VerticalMenu.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Window1.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowAlert.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCMGroup.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCM.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Risks\WindowDefaultRiskList.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowExcelClasification.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Group\WindowGroupe.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowHeaderClasification.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageInformation.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageOK.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageYesNo.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowMultiRadio.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOpening.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOption.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Project\WindowProject.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Project\WindowProjectList.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Group\WindowRenameGroup.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Risks\WindowRisk.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRole.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRoleList.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowSaveAs.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowSelection.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowSelectTopRisk.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowText.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRisk.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRiskList.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowTreeRisk.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\User\WindowUser.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\User\WindowUserList.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBS.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBSChild.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBSList.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\App.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk_Content.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk_MarkupCompile.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk_MarkupCompile.lref
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\Color.xml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\ConnectionServer.xml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureRisk.exe.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureRisk.exe
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureRisk.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\NL-NL\EnsureRisk.resources.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\ES-ES\EnsureRisk.resources.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EN-US\EnsureRisk.resources.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\MainWindow.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Pages\SetConnectionPage.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Pages\ThemePage.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\LoginWindow.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\SetConnectionWindow.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Window1.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowAlert.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCMGroup.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCM.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Risks\WindowDefaultRiskList.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowExcelClasification.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Group\WindowGroupe.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowHeaderClasification.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageInformation.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageOK.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageYesNo.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Excel\WindowMultiRadio.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOption.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Project\WindowProject.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Project\WindowProjectList.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Group\WindowRenameGroup.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Risks\WindowRisk.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRole.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRoleList.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowSaveAs.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowSelection.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowSelectTopRisk.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowText.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRisk.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRiskList.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\WindowTreeRisk.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\User\WindowUser.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\User\WindowUserList.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBS.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBSChild.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Wbs\WindowWBSList.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.g.resources
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Properties.Resources.resources
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.StringResources.resources
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.StringResources.NL-NL.resources
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.StringResources.ES-ES.resources
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.StringResources.EN-US.resources
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csproj.GenerateResource.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\NL-NL\EnsureRisk.resources.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\ES-ES\EnsureRisk.resources.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EN-US\EnsureRisk.resources.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csproj.CopyComplete
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.exe
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.pdb

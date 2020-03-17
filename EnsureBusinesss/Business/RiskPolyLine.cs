@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Petzold.Media2D;
 using System.Windows.Media.Imaging;
 using System.Windows.Input;
 using System.Windows.Data;
@@ -73,10 +72,11 @@ namespace EnsureBusinesss.Business
         /// </summary>
         private Point OriginalStartPoint { get; set; }
         public bool OriginalStartPointHasValue { get; set; } = false;
+
         public RiskPolyLine()
         {
             //Segments = new List<RiskPolyLine>();
-            Segments = new List<SegmentPolyLine>();
+            Segments = new List<SegmentPolyLine>(); 
             StrokeStartLineCap = PenLineCap.Flat;
             StrokeEndLineCap = PenLineCap.Flat;
         }
@@ -291,7 +291,7 @@ namespace EnsureBusinesss.Business
                             {
                                 this.StrokeThickness = 5;
                                 //this.StrokeThickness = 8;
-
+                                
                             }
                             else
                             {
@@ -327,7 +327,7 @@ namespace EnsureBusinesss.Business
                                             }
                                         }
                                     }
-                                }
+                                }                                
                             }
                         }
                     }
@@ -786,8 +786,8 @@ namespace EnsureBusinesss.Business
                     segment.Stroke = Stroke;
                 }
             }
-        }
-
+        } 
+        
         public void OnThicknessChange()
         {
             if (!IsCM && !IsRoot)
@@ -845,42 +845,5 @@ namespace EnsureBusinesss.Business
             }
             return visualParentStrokeThickness;
         }
-
-        //protected override Geometry DefiningGeometry
-        //{
-        //    get
-        //    {
-        //        double maxWidth = Math.Max(0.0, RenderSize.Width - StrokeThickness);
-        //        double maxHeight = Math.Max(0.0, RenderSize.Height - StrokeThickness);
-        //        //Console.WriteLine(string.Format("* maxWidth={0}, maxHeight={1}", maxWidth, maxHeight));
-
-        //        double xStart = maxWidth / 2.0 * Math.Cos(StartAngle * Math.PI / 180.0);
-        //        double yStart = maxHeight / 2.0 * Math.Sin(StartAngle * Math.PI / 180.0);
-
-        //        double xEnd = maxWidth / 2.0 * Math.Cos(EndAngle * Math.PI / 180.0);
-        //        double yEnd = maxHeight / 2.0 * Math.Sin(EndAngle * Math.PI / 180.0);
-
-        //        //StreamGeometry geom = new StreamGeometry();
-        //        //using (StreamGeometryContext ctx = geom.Open())
-        //        //{
-        //        //    ctx.BeginFigure(
-        //        //        new Point((RenderSize.Width / 2.0) + xStart,
-        //        //                  (RenderSize.Height / 2.0) - yStart),
-        //        //        false,
-        //        //        false);
-        //        //    ctx.ArcTo(
-        //        //        new Point((RenderSize.Width / 2.0) + xEnd,
-        //        //                  (RenderSize.Height / 2.0) - yEnd),
-        //        //        new Size(maxWidth / 2.0, maxHeight / 2),
-        //        //        0.0,     // rotationAngle
-        //        //        (EndAngle - StartAngle) > 180,   // greater than 180 deg?
-        //        //        SweepDirection.Counterclockwise,
-        //        //        true,    // isStroked
-        //        //        true);
-        //        //}
-
-        //        return geom;
-        //    }
-        //}
     }
 }

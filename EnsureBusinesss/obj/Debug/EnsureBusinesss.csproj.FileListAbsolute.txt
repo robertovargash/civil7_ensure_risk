@@ -136,20 +136,6 @@ D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss
 D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.cache
 D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.lref
 D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.cache
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.lref
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.baml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
 C:\proyectos\visualdragdrop\Output\Debug\EnsureBusinesss.dll.config
 C:\proyectos\visualdragdrop\Output\Debug\EnsureBusinesss.dll
 C:\proyectos\visualdragdrop\Output\Debug\EnsureBusinesss.pdb
@@ -164,3 +150,32 @@ C:\proyectos\visualdragdrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.Gen
 C:\proyectos\visualdragdrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
 C:\proyectos\visualdragdrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
 C:\proyectos\visualdragdrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+C:\Work\Projects\EnsureRisk\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+C:\Work\Projects\EnsureRisk\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+C:\Work\Projects\EnsureRisk\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.g.cs
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.cache
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.lref
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.baml
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CoreCompileInputs.cache
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.lref
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureBusinesss.dll.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureBusinesss.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureBusinesss.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\Business\MyDamage.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.g.resources
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.Properties.Resources.resources
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.GenerateResource.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb

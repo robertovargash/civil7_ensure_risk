@@ -41,10 +41,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Arrowheads, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Referencias\Arrowheads.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -67,6 +63,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Business\ArrowEnds.cs" />
+    <Compile Include="Business\ArrowLine.cs" />
+    <Compile Include="Business\ArrowLineBase.cs" />
+    <Compile Include="Business\ArrowPolyline.cs" />
     <Compile Include="Business\LabelPolyLine.cs" />
     <Compile Include="Business\LineGroup.cs" />
     <Compile Include="Business\MyGroupButton.cs" />

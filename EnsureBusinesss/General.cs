@@ -639,9 +639,11 @@ namespace EnsureBusinesss
         {
             UnicodeEncoding uEncode = new UnicodeEncoding();
             byte[] array = uEncode.GetBytes(source);
-            MD5CryptoServiceProvider mD5CryptoServiceProvider = new MD5CryptoServiceProvider();
-            MD5CryptoServiceProvider md5 = mD5CryptoServiceProvider;
-            return md5.ComputeHash(array);
+            using (MD5CryptoServiceProvider mD5CryptoServiceProvider = new MD5CryptoServiceProvider())
+            {
+                MD5CryptoServiceProvider md5 = mD5CryptoServiceProvider;
+                return md5.ComputeHash(array);
+            }           
         }
 
         public static string ByteArrayToString(byte[] ByteArrayString)

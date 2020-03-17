@@ -9,24 +9,108 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Excel = Microsoft.Office.Interop.Excel;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace EnsureRisk.Export
 {
     public class ExportRiskTree : IDisposable
     {
         private const int BEGIN_AT_ROWINDEX = 2;
-        private RiskTreeDataSetTrader _riskTreeDataSetTrader;
+        private readonly RiskTreeDataSetTrader _riskTreeDataSetTrader;
 
-        private string _fileName;
+        public DataTable DtToExport { get; set; }
+        private DataRow drToExport;
+        private readonly string _fileName;
 
-        private Excel.Application _excelApplication;
-        private Excel.Workbook _workbook;
-        private Excel.Worksheet _worksheet;
+        //private Excel.Application _excelApplication;
+        //private Excel.Workbook _workbook;
+        //private Excel.Worksheet _worksheet;
 
         private int _columnIndex;
         private int _rowIndex;
-        private int _rowsCount;
+        private readonly int _rowsCount;
+
+        #region Constantes
+        private const string RiskID = "Risk ID";
+        private const string RiskName = "Risk Name";
+        private const string RiskComments = "Risk Comments";
+        private const string RiskProbability = "Probability";
+        private const string RiskStatus = "Risk Status";
+        private const string RiskFather = "Father";
+        private const string RiskWBSName = "WBS Name";
+
+        private const string CMID = "CounterM ID";
+        private const string CMName = "CM Name";
+        private const string CMComments = "CM Comments";
+        private const string CMRiskRed = "Risk Reduction";
+        private const string CMStatus = "CM Status";
+        #endregion
+
+        private void ExportDataSet(DataSet ds, string destination)
+        {
+            using (var workbook = SpreadsheetDocument.Create(destination, DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook))
+            {
+                var workbookPart = workbook.AddWorkbookPart();
+                workbook.WorkbookPart.Workbook = new Workbook
+                {
+                    Sheets = new Sheets()
+                };
+                foreach (DataTable table in ds.Tables)
+                {
+                    var sheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
+                    var sheetData = new SheetData();
+                    sheetPart.Worksheet = new Worksheet(sheetData);
+
+                    Sheets sheets = workbook.WorkbookPart.Workbook.GetFirstChild<Sheets>();
+                    string relationshipId = workbook.WorkbookPart.GetIdOfPart(sheetPart);
+
+                    uint sheetId = 1;
+                    if (sheets.Elements<Sheet>().Count() > 0)
+                    {
+                        sheetId = sheets.Elements<Sheet>().Select(s => s.SheetId.Value).Max() + 1;
+                    }
+
+                    Sheet sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = table.TableName };
+                    sheets.Append(sheet);
+
+                    Row headerRow = new Row();
+
+                    List<DataColumn> columns = new List<DataColumn>();
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        columns.Add(new DataColumn(column.ColumnName, column.DataType));
+                        Cell cell = new Cell
+                        {
+                            DataType = CellValues.String,
+                            CellValue = new CellValue(column.ColumnName)                            
+                        };
+                        
+                        headerRow.AppendChild(cell);                       
+                    }
+                    sheetData.AppendChild(headerRow);
+
+                    foreach (DataRow dsrow in table.Rows)
+                    {
+                        Row newRow = new Row();
+                        foreach (var col in columns)
+                        {
+                            Cell cell = new Cell
+                            {
+                                DataType = CellValues.String,
+                                CellValue = new CellValue(dsrow[col.ColumnName].ToString())
+                            };
+                            if (col.DataType == typeof(decimal))
+                            {
+                                cell.DataType = CellValues.Number;
+                            }
+                            newRow.AppendChild(cell);               
+                        }
+                        sheetData.AppendChild(newRow);
+                    }
+                }
+            }
+        }
 
         public ExportRiskTree(RiskTreeDataSetTrader riskTreeDataSetTrader, string fileName)
         {
@@ -34,237 +118,100 @@ namespace EnsureRisk.Export
             _fileName = fileName;
             _rowsCount = _riskTreeDataSetTrader.RowsCount();
         }
-        public void Export()
-        {
-            InitializeExcel();
-            SetHeader();
-            FreezeFirstRow();
-            Fill();
-            try
-            {
-                SaveToExcel();
-            }
-            finally
-            {
-                CloseExcel();
-            }
-        }
         public void Export(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
         {
             InitializeExcel();
             SetHeader();
-            FreezeFirstRow();
+            //FreezeFirstRow();
             Fill(backgroundWorker, e);
             try
             {
                 if (!e.Cancel)
                 {
-                    SaveToExcel();
+                    //SaveToExcel();
+                    using (DataSet ds = new DataSet())
+                    {
+                        ds.Tables.Add(DtToExport);
+                        ExportDataSet(ds, _fileName);
+                    }
                 }
             }
             finally
             {
-                CloseExcel();
+                //CloseExcel();
             }
         }
         private void InitializeExcel()
-        {
-            _excelApplication = new Excel.Application();
-            _workbook = _excelApplication.Workbooks.Add(Type.Missing);
-            _worksheet = _workbook.Sheets[1];
+        {           
+            DtToExport = new DataTable();
         }
         private void SetHeader()
         {
             _columnIndex = 1;
             SetRiskHeader();
             SetCounterMHeader();
-            _worksheet.Rows.VerticalAlignment = Excel.XlVAlign.xlVAlignTop;
         }
-        private void FreezeFirstRow()
-        {
-            Excel.Range firstRow = (Excel.Range)_worksheet.Cells[1, 1];
-            _worksheet.Activate();
-            _worksheet.Application.ActiveWindow.SplitRow = 1;
-            _worksheet.Application.ActiveWindow.SplitColumn = 1;
-            firstRow.Application.ActiveWindow.FreezePanes = true;
-        }
+
         private void SetRiskHeader()
-        {
-            _worksheet.Cells[1, _columnIndex] = "Risk ID";
-            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-            _worksheet.Columns[_columnIndex].AutoFit();
+        {                      
             _columnIndex++;
-            _worksheet.Cells[1, _columnIndex] = "Risk Name";
-            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-            _worksheet.Columns[_columnIndex].ColumnWidth = 40;
-            _worksheet.Columns[_columnIndex].Style.WrapText = true;
+            DtToExport.Columns.Add(RiskID);
+
             _columnIndex++;
-            _worksheet.Cells[1, _columnIndex] = "Comments";
-            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-            _worksheet.Columns[_columnIndex].ColumnWidth = 100;
-            _worksheet.Columns[_columnIndex].Style.WrapText = true;
+            DtToExport.Columns.Add(RiskName);
+
             _columnIndex++;
-            _worksheet.Cells[1, _columnIndex] = "Probability";
-            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-            _worksheet.Columns[_columnIndex].AutoFit();
+            DtToExport.Columns.Add(RiskComments);
+
             _columnIndex++;
-            _worksheet.Cells[1, _columnIndex] = "Status";
-            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-            _worksheet.Columns[_columnIndex].ColumnWidth = 12;
+            DtToExport.Columns.Add(RiskProbability, typeof(decimal));
+
             _columnIndex++;
-            _worksheet.Cells[1, _columnIndex] = "Father";
-            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-            _worksheet.Columns[_columnIndex].AutoFit();
+            DtToExport.Columns.Add(RiskStatus);
+
             _columnIndex++;
-            _worksheet.Cells[1, _columnIndex] = "WBS Name";
-            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-            _worksheet.Columns[_columnIndex].ColumnWidth = 20;
-            _worksheet.Columns[_columnIndex].Style.WrapText = true;
+            DtToExport.Columns.Add(RiskFather);
+
             _columnIndex++;
+            DtToExport.Columns.Add(RiskWBSName);
+
             SetDynamicHeader(false);
         }
         private void SetCounterMHeader()
         {
-            _worksheet.Cells[1, _columnIndex] = "CounterM ID";
-            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-            _worksheet.Cells[1, _columnIndex].Font.Italic = true;
-            _worksheet.Columns[_columnIndex].AutoFit();
             _columnIndex++;
-            _worksheet.Cells[1, _columnIndex] = "CM Name";
-            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-            _worksheet.Cells[1, _columnIndex].Font.Italic = true;
-            _worksheet.Columns[_columnIndex].ColumnWidth = 20;
-            _worksheet.Columns[_columnIndex].Style.WrapText = true;
+            DtToExport.Columns.Add(CMID);
+
             _columnIndex++;
-            _worksheet.Cells[1, _columnIndex] = "Comments";
-            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-            _worksheet.Cells[1, _columnIndex].Font.Italic = true;
-            _worksheet.Columns[_columnIndex].ColumnWidth = 100;
-            _worksheet.Columns[_columnIndex].Style.WrapText = true;
+            DtToExport.Columns.Add(CMName);
+
             _columnIndex++;
-            _worksheet.Cells[1, _columnIndex] = "Risk Reduction";
-            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-            _worksheet.Cells[1, _columnIndex].Font.Italic = true;
-            _worksheet.Columns[_columnIndex].AutoFit();
+            DtToExport.Columns.Add(CMComments);
+
             _columnIndex++;
-            _worksheet.Cells[1, _columnIndex] = "Status";
-            _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-            _worksheet.Cells[1, _columnIndex].Font.Italic = true;
-            _worksheet.Columns[_columnIndex].ColumnWidth = 12;
+            DtToExport.Columns.Add(CMRiskRed, typeof(decimal));
+
             _columnIndex++;
+            DtToExport.Columns.Add(CMStatus);
 
             SetDynamicHeader(true);
         }
-        private void SetDynamicHeader(Boolean UseItalicFont)
+        private void SetDynamicHeader(bool useCM)
         {
             foreach (var propertyType in _riskTreeDataSetTrader.RiskTypeList)
             {
-                _worksheet.Cells[1, _columnIndex] = propertyType;
-                _worksheet.Cells[1, _columnIndex].Font.FontStyle = "Bold";
-                _worksheet.Cells[1, _columnIndex].Font.Italic = UseItalicFont;
-                _worksheet.Columns[_columnIndex].AutoFit();
                 _columnIndex++;
+                DtToExport.Columns.Add(useCM ? "CM-" + propertyType : propertyType, typeof(decimal));
             }
-        }
-        private void Fill()
-        {
-            _rowIndex = BEGIN_AT_ROWINDEX;
-            FillWithRisk(_riskTreeDataSetTrader.GetMainRiskChildList());
         }
         private void Fill(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
         {
             _rowIndex = BEGIN_AT_ROWINDEX;
             FillWithRisk(_riskTreeDataSetTrader.GetMainRiskChildList(), backgroundWorker, e, true);
         }
-        private void SaveToExcel()
-        {
-            _workbook.SaveAs(_fileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing,
-                    Type.Missing, Type.Missing);
-        }
-        private void CloseExcel()
-        {
-            _workbook.Close();
-            _excelApplication.Quit();
-
-            Marshal.ReleaseComObject(_worksheet);
-            Marshal.ReleaseComObject(_workbook);
-            Marshal.ReleaseComObject(_excelApplication);
-        }
-        private void FillWithRisk(IEnumerable<DataRow> mainRiskChildDataRowQuery)
-        {
-            String columnHeader = String.Empty;
-
-            foreach (DataRow riskDataRow in mainRiskChildDataRowQuery)
-            {
-                _columnIndex = 1;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.ID];
-                _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.NAMESHORT];
-                _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.COMMENTS];
-                _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.PROBABILITY];
-                _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.ENABLED];
-                _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.IDRISK_FATHER];
-                _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.WBS_NAME];
-                _columnIndex++;
-
-                IEnumerable<DataRow> riskProperties = _riskTreeDataSetTrader.GetRiskPropertyList((int)riskDataRow[DT_Risk.ID]);
-
-                foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
-                {
-                    columnHeader = _worksheet.Cells[1, _columnIndex].Value2;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnHeader)[DT_Risk_Damages.VALUE];
-                    _columnIndex++;
-                }
-                int _counterMcolumnIndexBeginAt = _columnIndex++;
-
-                IEnumerable<DataRow> counterMeasureChildList = _riskTreeDataSetTrader.GetCounterMeasureChildList((int)riskDataRow[DT_Risk.ID]);
-
-                if (!counterMeasureChildList.Any())
-                    _rowIndex++;
-
-                foreach (DataRow counterMDataRow in counterMeasureChildList)
-                {
-                    _columnIndex = _counterMcolumnIndexBeginAt;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.ID];
-                    _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.NAMESHORT];
-                    _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.DETAIL];
-                    _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.PROBABILITY];
-                    _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.ENABLED];
-                    _columnIndex++;
-
-                    IEnumerable<DataRow> counterMProperties = _riskTreeDataSetTrader.GetCounterMPropertyList((int)counterMDataRow[DT_CounterM.ID]);
-
-                    foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
-                    {
-                        columnHeader = _worksheet.Cells[1, _columnIndex].Value2;
-                        _worksheet.Cells[_rowIndex, _columnIndex] = counterMProperties.FirstOrDefault(counterMProperty => counterMProperty[DT_CounterM_Damage.DAMAGE].ToString() == columnHeader)[DT_CounterM_Damage.VALUE];
-                        _columnIndex++;
-                    }
-
-                    _rowIndex++;
-                }
-
-                IEnumerable<DataRow> riskChildList = _riskTreeDataSetTrader.GetRiskChildList((int)riskDataRow[DT_Risk.ID]);
-
-                if (riskChildList.Any())
-                {
-                    FillWithRisk(riskChildList);
-                }
-            }
-        }
         private void FillWithRisk(IEnumerable<DataRow> mainRiskChildDataRowQuery, BackgroundWorker backgroundWorker, DoWorkEventArgs e, bool isMain)
         {
-            String columnHeader = String.Empty;
-
+            drToExport = DtToExport.NewRow();
             foreach (DataRow riskDataRow in mainRiskChildDataRowQuery)
             {
                 if (backgroundWorker.CancellationPending)
@@ -272,73 +219,76 @@ namespace EnsureRisk.Export
                     e.Cancel = true;
                     break;
                 }
-                _columnIndex = 1;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.ID];
+                _columnIndex = 0;               
+                
+                drToExport[RiskID] = riskDataRow[DT_Risk.ID];
                 _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.NAMESHORT];
+                drToExport[RiskName] = riskDataRow[DT_Risk.NAMESHORT];
                 _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.COMMENTS];
+                drToExport[RiskComments] = riskDataRow[DT_Risk.COMMENTS];
                 _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.PROBABILITY];
+                drToExport[RiskProbability] = riskDataRow[DT_Risk.PROBABILITY];
                 _columnIndex++;
-                _worksheet.Cells[_rowIndex, _columnIndex] = (bool)riskDataRow[DT_Risk.ENABLED] ? "Activated" : "No Activated";
+                drToExport[RiskStatus] = (bool)riskDataRow[DT_Risk.ENABLED] ? "Activated" : "No Activated";
                 _columnIndex++;
 
                 if (isMain)
                 {
-                    _worksheet.Cells[_rowIndex, _columnIndex] = "";
-                    _columnIndex++;
+                    drToExport[RiskFather] = "";
                 }
                 else
                 {
-                    _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.IDRISK_FATHER];
-                    _columnIndex++;
+                    drToExport[RiskFather] = riskDataRow[DT_Risk.IDRISK_FATHER];
                 }
+                _columnIndex++;
 
-                _worksheet.Cells[_rowIndex, _columnIndex] = riskDataRow[DT_Risk.WBS_NAME];
+                drToExport[RiskWBSName] = riskDataRow[DT_Risk.WBS_NAME];
                 _columnIndex++;
 
                 IEnumerable<DataRow> riskProperties = _riskTreeDataSetTrader.GetRiskPropertyList((int)riskDataRow[DT_Risk.ID]);
 
                 foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
                 {
-                    columnHeader = _worksheet.Cells[1, _columnIndex].Value2;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnHeader)[DT_Risk_Damages.VALUE];
+                    string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
+                    drToExport[columnaNombre] = riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre)[DT_Risk_Damages.VALUE];
                     _columnIndex++;
                 }
-                int _counterMcolumnIndexBeginAt = _columnIndex++;
+                int _counterMcolumnIndexBeginAt = _columnIndex;
 
                 IEnumerable<DataRow> counterMeasureChildList = _riskTreeDataSetTrader.GetCounterMeasureChildList((int)riskDataRow[DT_Risk.ID]);
 
                 if (!counterMeasureChildList.Any())
-                    _rowIndex++;
-
+                {                   
+                    DtToExport.Rows.Add(drToExport);
+                    drToExport = DtToExport.NewRow();
+                }
                 foreach (DataRow counterMDataRow in counterMeasureChildList)
                 {
                     _columnIndex = _counterMcolumnIndexBeginAt;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.ID];
+                    drToExport[CMID] = counterMDataRow[DT_CounterM.ID];
                     _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.NAMESHORT];
+                    drToExport[CMName] = counterMDataRow[DT_CounterM.NAMESHORT];
                     _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.DETAIL];
+                    drToExport[CMComments] = counterMDataRow[DT_CounterM.DETAIL];
                     _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = counterMDataRow[DT_CounterM.PROBABILITY];
+                    drToExport[CMRiskRed] = counterMDataRow[DT_CounterM.PROBABILITY];
                     _columnIndex++;
-                    _worksheet.Cells[_rowIndex, _columnIndex] = (bool)counterMDataRow[DT_CounterM.ENABLED] ? "Activated" : "No Activated";
+                    drToExport[CMStatus] = (bool)counterMDataRow[DT_CounterM.ENABLED] ? "Activated" : "No Activated";
                     _columnIndex++;
 
                     IEnumerable<DataRow> counterMProperties = _riskTreeDataSetTrader.GetCounterMPropertyList((int)counterMDataRow[DT_CounterM.ID]);
 
                     foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
                     {
-                        columnHeader = _worksheet.Cells[1, _columnIndex].Value2;
-                        _worksheet.Cells[_rowIndex, _columnIndex] = counterMProperties.FirstOrDefault(counterMProperty => counterMProperty[DT_CounterM_Damage.DAMAGE].ToString() == columnHeader)[DT_CounterM_Damage.VALUE];
+                        string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
+                        drToExport[columnaNombre] = counterMProperties.FirstOrDefault(counterMProperty => counterMProperty[DT_CounterM_Damage.DAMAGE].ToString() == columnaNombre.Split('-')[1].ToString())[DT_CounterM_Damage.VALUE];
                         _columnIndex++;
                     }
 
                     int progressPercentage = (_rowIndex * 100 / _rowsCount);
                     backgroundWorker.ReportProgress(progressPercentage);
-
+                    DtToExport.Rows.Add(drToExport);
+                    drToExport = DtToExport.NewRow();
                     _rowIndex++;
                 }
 
@@ -350,6 +300,7 @@ namespace EnsureRisk.Export
                 }
             }
         }
+
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
@@ -369,14 +320,6 @@ namespace EnsureRisk.Export
             }
         }
 
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~ExportRiskTree()
-        // {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
-
-        // This code added to correctly implement the disposable pattern.
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

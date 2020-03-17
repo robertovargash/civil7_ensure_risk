@@ -14,6 +14,7 @@ namespace DataMapping.Data
         public const string IS_PRIMARY = "isPrimary";
         public const string PRIMARY = "Primaryy";
         public const string USERNAME = "userName";
+        public const string PROBABILITY = "probability";
 
         public DT_RISK_WBS() : base()
         {
@@ -32,6 +33,7 @@ namespace DataMapping.Data
             Columns.Add(IS_PRIMARY, typeof(System.Boolean));
             Columns.Add(PRIMARY, typeof(System.String));
             Columns.Add(USERNAME, typeof(System.String));
+            Columns.Add(PROBABILITY, typeof(decimal));
             PrimaryKey = PK_COLUMN;
         }
     }
