@@ -25,7 +25,7 @@ namespace EnsureBusinesss
         public const double basicY = 7;
         public const int NumberOfClasses = 20;
 
-        public const double MaxThickness = 15;
+        public const double MaxThickness = 20;
 
         public const string EXPANDIDO = "pack://application:,,,/Images/Expandido.png";
         public const string CONTRAIDO = "pack://application:,,,/Images/Contraido.png";

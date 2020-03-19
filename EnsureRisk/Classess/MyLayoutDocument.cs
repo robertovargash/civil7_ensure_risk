@@ -1211,17 +1211,17 @@ namespace EnsureRisk.Classess
         {
             foreach (var item in LinesList)
             {
-                //if (!item.IsRoot)
-                //{
-                foreach (var segmentLine in item.Segments)
+                if (!item.IsRoot)
                 {
-                    segmentLine.MouseLeave += Risk_MouseLeave;
-                    segmentLine.MouseEnter += Segment_MouseHover;
+                    foreach (var segmentLine in item.Segments)
+                    {
+                        segmentLine.MouseLeave += Risk_MouseLeave;
+                        segmentLine.MouseEnter += Segment_MouseHover;
 
-                    segmentLine.MouseDown += MouseDown_Event; //click en el segmento
-                    segmentLine.MouseUp += RiskLine_MouseUp;
+                        segmentLine.MouseDown += MouseDown_Event; //click en el segmento
+                        segmentLine.MouseUp += RiskLine_MouseUp;
+                    }
                 }
-                //}
             }
             //Console.WriteLine("ok");
         }
@@ -1904,10 +1904,6 @@ namespace EnsureRisk.Classess
                     DataRow rowstructure = Ds.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
                     rowstructure[DT_RiskStructure.IDRISK] = wrisk.RiskRow[DT_Risk.ID];
                     rowstructure[DT_RiskStructure.IDRISK_FATHER] = wrisk.RowFather[DT_Risk.ID];
-                    //Ds.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
-                    //Ds.Tables[DT_Risk_Damages.TABLENAME].Merge(wrisk.Risk_DamageTable);
-                    //Ds.Tables[DT_RISK_WBS.TABLENAME].Merge(wrisk.Risk_WBS_Table);
-                    //Ds.Tables[DT_Role_Risk.TABLENAME].Merge(wrisk.Risk_RoleTable);
 
                     Line_Created.ID = (Int32)wrisk.RiskRow[DT_Risk.ID];
                     Line_Created.Father = Line_Selected;

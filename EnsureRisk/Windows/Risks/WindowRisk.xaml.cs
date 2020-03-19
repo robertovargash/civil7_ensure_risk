@@ -25,6 +25,9 @@ namespace EnsureRisk.Windows
     public class DataCurrentRisk : INotifyPropertyChanged
     {
         private bool hasAccess = false;
+        private decimal probability;
+
+        public decimal Probability { get {return probability; } set { probability = value;OnPropertyChanged("Probability"); } }
 
         public bool HasAccess
         {
@@ -81,6 +84,7 @@ namespace EnsureRisk.Windows
         public bool Enabled { get; set; }
         public int Posicion { get; set; }
         private DataSet dsWBS;
+        public decimal Probability { get; set; }
 
         private bool Editando;
         private bool Seleccionando;
@@ -160,9 +164,10 @@ namespace EnsureRisk.Windows
                             newRow[DT_RISK_WBS.IS_PRIMARY] = itemWBS[DT_RISK_WBS.IS_PRIMARY];
                             newRow[DT_RISK_WBS.PRIMARY] = itemWBS[DT_RISK_WBS.PRIMARY];
                             newRow[DT_RISK_WBS.USERNAME] = itemWBS[DT_RISK_WBS.USERNAME];
+                            newRow[DT_RISK_WBS.PROBABILITY] = 100;
                             if ((bool)itemWBS[DT_RISK_WBS.IS_PRIMARY])
                             {
-                                ID_WBS = (Int32)itemWBS[DT_RISK_WBS.ID_WBS];
+                                ID_WBS = (int)itemWBS[DT_RISK_WBS.ID_WBS];
                                 WBS_NAME = itemWBS[DT_RISK_WBS.NIVEL].ToString() + " " + itemWBS[DT_RISK_WBS.WBS].ToString();
                                 USER_NAME = itemWBS[DT_RISK_WBS.USERNAME].ToString();
                             }
@@ -186,6 +191,7 @@ namespace EnsureRisk.Windows
                                 }
                             }
                         }
+                        
                         foreach (DataRow item in dsWBS.Tables[DT_WBS.TABLE_NAME].Select())
                         {
                             if (!(dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + item[DT_WBS.ID_WBS]).Any()))
@@ -198,6 +204,7 @@ namespace EnsureRisk.Windows
                                     drRiskWBS[DT_RISK_WBS.WBS] = item[DT_WBS.WBS_NAME];
                                     drRiskWBS[DT_RISK_WBS.NIVEL] = item[DT_WBS.NIVEL];
                                     drRiskWBS[DT_RISK_WBS.USERNAME] = item[DT_WBS.USERNAME];
+                                    drRiskWBS[DT_RISK_WBS.PROBABILITY] = 100;
                                     if (!hasWBS)
                                     {
                                         drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = true;
@@ -266,9 +273,19 @@ namespace EnsureRisk.Windows
                 dgRoles.ItemsSource = DvRoleRisk;
                 DvRoleRisk.RowFilter = DT_Role_Risk.ID_RISK + " = " + RiskRow[DT_Risk.ID];
 
-                DvRiskWBS = Risk_WBS_Table.DefaultView;
-                dgWBS.ItemsSource = DvRiskWBS;
-                DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
+                if (Pi.HasAccess)
+                {
+                    DvRiskWBS = Risk_WBS_Table.DefaultView;
+                    dgWBS.ItemsSource = DvRiskWBS;
+                    DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
+                }
+                else
+                {
+                    DvRiskWBS = Risk_WBS_Table.DefaultView;
+                    dgWBS.ItemsSource = DvRiskWBS;
+                    DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " AND " + DT_RISK_WBS.USERNAME + " = '" + LOGIN_USER + "'";
+                }
+                
 
                 //DvTopRisk = TopRiskTable.DefaultView;
                 //dgTopRisk.ItemsSource = DvTopRisk;
@@ -296,10 +313,45 @@ namespace EnsureRisk.Windows
                     filter += ")";
                     DvTopRisk.RowFilter += filter;
                 }
+                CalculateProbability();
             }
             catch (Exception ex)
             {
                 new WindowMessageOK(ex.Message).ShowDialog(); ;
+            }
+        }
+
+        private void CalculateProbability()
+        {
+            try
+            {
+                List<decimal> Probabilities = new List<decimal>();
+                foreach (DataRow item in Risk_WBS_Table.Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+                {
+                    if (WBS_isSheet((int)item[DT_RISK_WBS.ID_WBS]))
+                    {
+                        if (item[DT_RISK_WBS.PROBABILITY] == DBNull.Value)
+                        {
+                            Probabilities.Add(100);
+                        }
+                        else
+                        {
+                            Probabilities.Add((decimal)item[DT_RISK_WBS.PROBABILITY]);
+                        }
+                    }
+                }
+                if (Probabilities.Count > 0)
+                {
+                    Pi.Probability = Probabilities.Sum() / Probabilities.Count;
+                }
+                else
+                {
+                    Pi.Probability = 100;
+                }
+            }
+            catch (Exception ex)
+            {
+                new WindowMessageOK(ex.Message).ShowDialog();
             }
         }
 
@@ -461,6 +513,7 @@ namespace EnsureRisk.Windows
                         drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = false;
                         drRiskWBS[DT_RISK_WBS.PRIMARY] = "";
                         drRiskWBS[DT_RISK_WBS.USERNAME] = itemWBS[DT_WBS.USERNAME];
+                        drRiskWBS[DT_RISK_WBS.PROBABILITY] = 100;
                         Risk_WBS_Table.Rows.Add(drRiskWBS);
                         foreach (DataRow itemAncestors in BuscarAncestros((Int32)itemWBS[DT_WBS.ID_WBS], dsWBS.Tables[DT_WBS.TABLE_NAME].Clone()).Rows)
                         {
@@ -475,6 +528,7 @@ namespace EnsureRisk.Windows
                                 drRiskWBSi[DT_RISK_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
                                 drRiskWBSi[DT_RISK_WBS.IS_PRIMARY] = false;
                                 drRiskWBSi[DT_RISK_WBS.PRIMARY] = "";
+                                drRiskWBSi[DT_RISK_WBS.PROBABILITY] = 100;
                                 Risk_WBS_Table.Rows.Add(drRiskWBSi);
                             }
                         }
@@ -552,6 +606,7 @@ namespace EnsureRisk.Windows
                                         drRiskWBSS[DT_RISK_WBS.USERNAME] = itemWBS[DT_WBS.USERNAME];
                                         drRiskWBSS[DT_RISK_WBS.IS_PRIMARY] = false;
                                         drRiskWBSS[DT_RISK_WBS.PRIMARY] = "";
+                                        drRiskWBSS[DT_RISK_WBS.PROBABILITY] = 100;
                                         Risk_WBS_Table.Rows.Add(drRiskWBSS);
                                     }
                                     foreach (DataRow itemWBSRisk in Risk_WBS_Table.Select(DT_RISK_WBS.ID_RISK + " = " + itemLines.ID))
@@ -590,6 +645,7 @@ namespace EnsureRisk.Windows
                                                 drRiskWBSi[DT_RISK_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
                                                 drRiskWBSi[DT_RISK_WBS.IS_PRIMARY] = false;
                                                 drRiskWBSi[DT_RISK_WBS.PRIMARY] = "";
+                                                drRiskWBSi[DT_RISK_WBS.PROBABILITY] = 100;
                                                 Risk_WBS_Table.Rows.Add(drRiskWBSi);
                                             }
                                         }
@@ -816,7 +872,7 @@ namespace EnsureRisk.Windows
 
             if (Versioned.IsNumeric(TextProbability.Text))
             {
-                if (decimal.Parse(TextProbability.Text) > 100)
+                if (Pi.Probability > 100)
                 {
                     new WindowMessageOK(StringResources.PROBABILITY_FIELD).ShowDialog();
                 }
@@ -834,7 +890,8 @@ namespace EnsureRisk.Windows
                     }
                     if (flag)
                     {
-                        RiskRow[DT_Risk.PROBABILITY] = decimal.Parse(TextProbability.Text);
+                        CalculateProbability();
+                        RiskRow[DT_Risk.PROBABILITY] = Pi.Probability;
                         this.DialogResult = true;
                     }
                 }
@@ -979,6 +1036,26 @@ namespace EnsureRisk.Windows
             {
                 new WindowMessageOK(ex.Message).ShowDialog();
             }
+        }
+
+        private void DgWBS_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            CalculateProbability();
+        }
+
+        private void DgWBS_LostFocus(object sender, RoutedEventArgs e)
+        {
+            CalculateProbability();
+        }
+
+        private void DgWBS_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CalculateProbability();
+        }
+
+        private void DgWBS_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            CalculateProbability();
         }
     }
 }

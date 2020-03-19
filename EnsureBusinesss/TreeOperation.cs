@@ -260,6 +260,7 @@ namespace EnsureBusinesss
                     newRow[DT_RISK_WBS.PRIMARY] = item[DT_RISK_WBS.PRIMARY];
                     newRow[DT_RISK_WBS.IS_PRIMARY] = item[DT_RISK_WBS.IS_PRIMARY];
                     newRow[DT_RISK_WBS.USERNAME] = item[DT_RISK_WBS.USERNAME];
+                    newRow[DT_RISK_WBS.PROBABILITY] = item[DT_RISK_WBS.PROBABILITY];
                     Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Add(newRow);
                 }
             }
@@ -309,6 +310,7 @@ namespace EnsureBusinesss
                     newRow[DT_RISK_WBS.PRIMARY] = "";
                     newRow[DT_RISK_WBS.IS_PRIMARY] = false;
                     newRow[DT_RISK_WBS.USERNAME] = item[DT_RISK_WBS.USERNAME];
+                    newRow[DT_RISK_WBS.PROBABILITY] = 100;
                     dataSet.Tables[DT_RISK_WBS.TABLENAME].Rows.Add(newRow);
                 }
             }
@@ -641,53 +643,6 @@ namespace EnsureBusinesss
                 if (!item.IsRoot && !(item.Collapsed) && (item.Children.Count > 0))
                 {
                     item.AddTail();
-                    //if (item.Children.Count > 0)
-                    //{
-                    //    item.AddTail();
-                    //lastChild = item.Children[item.Children.Count - 1];
-                    //if (item.IsDiagonal)
-                    //{
-                    //    if (item.FromTop)
-                    //    {
-                    //        //item.Points[0] = new Point(item.Children[item.Children.Count - 1].Points[1].X - (General.basicX * 5), item.Children[item.Children.Count - 1].Points[1].Y - (General.basicY * 5));
-                    //        if (item.Segments != null && item.Segments.Any())
-                    //        {
-                    //            item.Segments[item.Segments.Count - 1].Points[0] = new Point(lastChild.Points[1].X - General.basicX * 5, 2.5 * (-General.basicX * 5) + lastChild.Points[1].Y);
-
-                    //        }
-                    //        else
-                    //        {
-                    //            item.Points[0] = new Point(lastChild.Points[1].X - General.basicX * 5, 2.5 * (-General.basicX * 5) + lastChild.Points[1].Y);
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        //item.Points[0] = new Point(item.Children[item.Children.Count - 1].Points[1].X - (General.basicX * 5), item.Children[item.Children.Count - 1].Points[1].Y + (General.basicY * 5));
-                    //        if (item.Segments != null && item.Segments.Any())
-                    //        {
-                    //            item.Segments[item.Segments.Count - 1].Points[0] = new Point(lastChild.Points[1].X - General.basicX * 5, -2.5 * (-General.basicX * 5) + lastChild.Points[1].Y);
-                    //        }
-                    //        else
-                    //        {
-                    //            item.Points[0] = new Point(lastChild.Points[1].X - General.basicX * 5, -2.5 * (-General.basicX * 5) + lastChild.Points[1].Y);
-                    //        }
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    //item.Points[0] = new Point(item.Children[item.Children.Count - 1].Points[1].X - 25, item.Children[item.Children.Count - 1].Points[1].Y);
-                    //    if (item.Segments != null && item.Segments.Any())
-                    //    {
-                    //        item.Segments[item.Segments.Count - 1].Points[0] = new Point(lastChild.Points[1].X - 25, lastChild.Points[1].Y);
-                    //    }
-                    //    else
-                    //    {
-                    //        item.Points[0] = new Point(lastChild.Points[1].X - 25, lastChild.Points[1].Y);
-                    //    }
-                    //}
-                    //item.XTreme = item.Points[0].X;
-                    //item.YxTreme = item.Points[0].Y;
-                    //}
                 }
             }
         }

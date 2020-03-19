@@ -263,62 +263,62 @@ namespace EnsureBusinesss.Business
 
             if (cost <= skoda)
             {
-                this.StrokeThickness = 1;
+                this.StrokeThickness = 2;
             }
             else
             {
-                if (cost > skoda && cost <= 2 * skoda)
+                if (cost > skoda && cost <= 4 * skoda)
                 {
                     //this.StrokeThickness = 2;
-                    this.StrokeThickness = 2;
+                    this.StrokeThickness = 4;
                 }
                 else
                 {
-                    if (cost > 2 * skoda && cost <= 3 * skoda)
+                    if (cost > 4 * skoda && cost <= 6 * skoda)
                     {
-                        this.StrokeThickness = 3;
+                        this.StrokeThickness = 6;
                     }
                     else
                     {
-                        if (cost > 3 * skoda && cost <= 4 * skoda)
+                        if (cost > 6 * skoda && cost <= 8 * skoda)
                         {
-                            this.StrokeThickness = 4;
+                            this.StrokeThickness = 8;
                             //this.StrokeThickness = 6;
                         }
                         else
                         {
-                            if (cost > 4 * skoda && cost <= 5 * skoda)
+                            if (cost > 8 * skoda && cost <= 10 * skoda)
                             {
-                                this.StrokeThickness = 5;
+                                this.StrokeThickness = 10;
                                 //this.StrokeThickness = 8;
                                 
                             }
                             else
                             {
-                                if (cost > 5 * skoda && cost <= 7 * skoda)
+                                if (cost > 10 * skoda && cost <= 12 * skoda)
                                 {
-                                    this.StrokeThickness = 7;
+                                    this.StrokeThickness = 12;
                                     //this.StrokeThickness = 8;
                                 }
                                 else
                                 {
-                                    if (cost > 7 * skoda && cost <= 9 * skoda)
+                                    if (cost > 12 * skoda && cost <= 14 * skoda)
                                     {
-                                        this.StrokeThickness = 9;
+                                        this.StrokeThickness = 14;
                                         //this.StrokeThickness = 8;
                                     }
                                     else
                                     {
-                                        if (cost > 9 * skoda && cost <= 11 * skoda)
+                                        if (cost > 14 * skoda && cost <= 16 * skoda)
                                         {
-                                            this.StrokeThickness = 11;
+                                            this.StrokeThickness = 16;
                                             //this.StrokeThickness = 8;
                                         }
                                         else
                                         {
-                                            if (cost > 11 * skoda && cost <= 13 * skoda)
+                                            if (cost > 16 * skoda && cost <= 18 * skoda)
                                             {
-                                                this.StrokeThickness = 13;
+                                                this.StrokeThickness = 18;
                                                 //this.StrokeThickness = 8;
                                             }
                                             else
@@ -834,7 +834,7 @@ namespace EnsureBusinesss.Business
 
         public double GetStrokeThicknessInPosition(int pos)
         {
-            double visualParentStrokeThickness = 0;
+            double visualParentStrokeThickness;
             if (pos > 0)
             {
                 visualParentStrokeThickness = Father.Segments.ElementAt(pos - 1).StrokeThickness;
