@@ -76,7 +76,7 @@ namespace EnsureBusinesss.Business
         public RiskPolyLine()
         {
             //Segments = new List<RiskPolyLine>();
-            Segments = new List<SegmentPolyLine>(); 
+            Segments = new List<SegmentPolyLine>();
             StrokeStartLineCap = PenLineCap.Flat;
             StrokeEndLineCap = PenLineCap.Flat;
         }
@@ -291,7 +291,7 @@ namespace EnsureBusinesss.Business
                             {
                                 this.StrokeThickness = 10;
                                 //this.StrokeThickness = 8;
-                                
+
                             }
                             else
                             {
@@ -327,46 +327,13 @@ namespace EnsureBusinesss.Business
                                             }
                                         }
                                     }
-                                }                                
+                                }
                             }
                         }
                     }
                 }
             }
             PxThickness = StrokeThickness;
-            //if (Segments.Any())
-            //{
-            //    IEnumerable<RiskPolyLine> orderedChild = Children.OrderBy(pl => pl.Points[1].X);
-            //    //int i = 0;
-            //    int segmentIndex = Segments.Count - 1;
-            //    SegmentPolyLine segment;
-            //    SegmentPolyLine lastSegment = Segments[segmentIndex];
-            //    lastSegment.StrokeThickness = 1;
-
-            //    foreach (RiskPolyLine rpl in orderedChild)
-            //    {
-            //        segmentIndex--;
-            //        if (segmentIndex >= 0)
-            //        {
-            //            segment = Segments[segmentIndex];
-
-            //            if (segment.StrokeThickness < rpl.StrokeThickness)
-            //            {
-            //                segment.StrokeThickness = rpl.StrokeThickness;
-            //            }
-            //            if (segment.StrokeThickness < lastSegment.StrokeThickness)
-            //            {
-            //                segment.StrokeThickness = lastSegment.StrokeThickness;
-            //            }
-            //            lastSegment = segment;
-            //        }
-            //    }
-            //}
-
-            //foreach (SegmentPolyLine segment in Segments)
-            //{
-            //    segment.StrokeThickness = StrokeThickness;
-            //}
         }
         public void DrawEntireLine(string LabelName)
         {
@@ -786,8 +753,8 @@ namespace EnsureBusinesss.Business
                     segment.Stroke = Stroke;
                 }
             }
-        } 
-        
+        }
+
         public void OnThicknessChange()
         {
             if (!IsCM && !IsRoot)
@@ -800,18 +767,18 @@ namespace EnsureBusinesss.Business
 
                 if (IsDiagonal)
                 {
-                    //double StrokeThicknessToApply = (Father.StrokeThickness / 2 + StrokeThickness / 6);
-                    double StrokeThicknessToApply = (GetStrokeThicknessInPosition(Father.Children.IndexOf(this)) / 2 + StrokeThickness / 6);
+                    double StrokeThicknessToApply = (GetStrokeThicknessInPosition(Father.Children.IndexOf(this)) / 2 + StrokeThickness + StrokeThickness / 6);
+
+                    StrokeThicknessToApply = FromTop ? StrokeThicknessToApply : -StrokeThicknessToApply;
 
                     double m = (OriginalStartPoint.Y - Points[0].Y) / (OriginalStartPoint.X - Points[0].X);
                     double b = OriginalStartPoint.Y - m * OriginalStartPoint.X;
-                    double X = OriginalStartPoint.X - StrokeThicknessToApply;
-                    double Y = m * X + b;
-                    Points[1] = new Point(X, Y);
+                    //double X = OriginalStartPoint.X - StrokeThicknessToApply;
+                    //double Y = m * X + b;
+                    double Y = OriginalStartPoint.Y - StrokeThicknessToApply;
+                    double X = (Y - b) / m;
 
-                    //double mp = (Father.Points[1].Y - Father.Points[0].Y) / (Father.Points[0].X - Father.Points[0].X);
-                    //double bp = Father.Points[1].Y - m * Father.Points[0].X;
-                    //double Xp = Father.Points[0].X - O;
+                    Points[1] = new Point(X, Y);
                 }
                 else
                 {
