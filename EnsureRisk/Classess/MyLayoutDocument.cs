@@ -2202,7 +2202,6 @@ namespace EnsureRisk.Classess
         {
             try
             {
-
                 RiskLeave();
             }
             catch (Exception ex)

@@ -25,14 +25,14 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             TableName = TABLENAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_RISK, typeof(System.Int32));
-            PK_COLUMN[1] = this.Columns.Add(ID_WBS, typeof(System.Int32));
-            Columns.Add(RISK, typeof(System.String));
-            Columns.Add(WBS, typeof(System.String));
-            Columns.Add(NIVEL, typeof(System.String));
-            Columns.Add(IS_PRIMARY, typeof(System.Boolean));
-            Columns.Add(PRIMARY, typeof(System.String));
-            Columns.Add(USERNAME, typeof(System.String));
+            PK_COLUMN[0] = this.Columns.Add(ID_RISK, typeof(int));
+            PK_COLUMN[1] = this.Columns.Add(ID_WBS, typeof(int));
+            Columns.Add(RISK, typeof(string));
+            Columns.Add(WBS, typeof(string));
+            Columns.Add(NIVEL, typeof(string));
+            Columns.Add(IS_PRIMARY, typeof(bool));
+            Columns.Add(PRIMARY, typeof(string));
+            Columns.Add(USERNAME, typeof(string));
             Columns.Add(PROBABILITY, typeof(decimal));
             PrimaryKey = PK_COLUMN;
         }

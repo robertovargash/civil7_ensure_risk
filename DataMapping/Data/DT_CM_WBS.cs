@@ -14,6 +14,7 @@ namespace DataMapping.Data
         public const string IS_PRIMARY = "isPrimary";
         public const string PRIMARY = "Primaryy";
         public const string USERNAME = "userName";
+        public const string PROBABILITY = "probability";
 
         public DT_CM_WBS() : base()
         {
@@ -24,14 +25,15 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             TableName = TABLENAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_CM, typeof(System.Int32));
-            PK_COLUMN[1] = this.Columns.Add(ID_WBS, typeof(System.Int32));
-            Columns.Add(CM, typeof(System.String));
-            Columns.Add(WBS, typeof(System.String));
-            Columns.Add(NIVEL, typeof(System.String));
-            Columns.Add(IS_PRIMARY, typeof(System.Boolean));
-            Columns.Add(PRIMARY, typeof(System.String));
-            Columns.Add(USERNAME, typeof(System.String));
+            PK_COLUMN[0] = this.Columns.Add(ID_CM, typeof(int));
+            PK_COLUMN[1] = this.Columns.Add(ID_WBS, typeof(int));
+            Columns.Add(CM, typeof(string));
+            Columns.Add(WBS, typeof(string));
+            Columns.Add(NIVEL, typeof(string));
+            Columns.Add(IS_PRIMARY, typeof(bool));
+            Columns.Add(PRIMARY, typeof(string));
+            Columns.Add(USERNAME, typeof(string));
+            Columns.Add(PROBABILITY, typeof(decimal));
             PrimaryKey = PK_COLUMN;
         }
     }

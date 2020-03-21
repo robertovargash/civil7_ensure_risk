@@ -18,15 +18,14 @@ D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\ERDA\obj\Debug\
 D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\ERDA\obj\Debug\ERDA.csproj.CoreCompileInputs.cache
 D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\ERDA\obj\Debug\ERDA.dll
 D:\personal\Documents\Visual Studio 2017\Projects\VisualDragDrop\ERDA\obj\Debug\ERDA.pdb
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Debug\ERDA.dll.config
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Debug\ERDA.dll
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Debug\ERDA.pdb
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Debug\ERDA.dll
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Debug\ERDA.pdb
 C:\proyectos\visualdragdrop\ERDA\bin\Debug\ERDA.dll.config
 C:\proyectos\visualdragdrop\ERDA\bin\Debug\ERDA.dll
 C:\proyectos\visualdragdrop\ERDA\bin\Debug\ERDA.pdb
 C:\proyectos\visualdragdrop\ERDA\obj\Debug\ERDA.csprojAssemblyReference.cache
 C:\proyectos\visualdragdrop\ERDA\obj\Debug\ERDA.dll
 C:\proyectos\visualdragdrop\ERDA\obj\Debug\ERDA.pdb
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Debug\ERDA.csprojAssemblyReference.cache
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Debug\ERDA.dll.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Debug\ERDA.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Debug\ERDA.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Debug\ERDA.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Debug\ERDA.pdb

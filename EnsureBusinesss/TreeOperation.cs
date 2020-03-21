@@ -124,6 +124,7 @@ namespace EnsureBusinesss
                             newRow[DT_CM_WBS.IS_PRIMARY] = item[DT_CM_WBS.IS_PRIMARY];
                             newRow[DT_CM_WBS.PRIMARY] = item[DT_CM_WBS.PRIMARY];
                             newRow[DT_CM_WBS.NIVEL] = item[DT_CM_WBS.NIVEL];
+                            newRow[DT_CM_WBS.PROBABILITY] = item[DT_CM_WBS.PROBABILITY];
                             Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Add(newRow);
                         }
                     }
@@ -140,6 +141,7 @@ namespace EnsureBusinesss
                             newRow[DT_CM_WBS.IS_PRIMARY] = false;
                             newRow[DT_CM_WBS.PRIMARY] = "";
                             newRow[DT_CM_WBS.NIVEL] = item[DT_RISK_WBS.NIVEL];
+                            newRow[DT_CM_WBS.PROBABILITY] = 0;
                             Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Add(newRow);
                         }
                     }

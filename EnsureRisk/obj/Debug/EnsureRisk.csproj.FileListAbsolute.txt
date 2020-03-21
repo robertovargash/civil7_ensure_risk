@@ -1220,6 +1220,14 @@ C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EN-US\EnsureRisk
 C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csproj.CopyComplete
 C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.exe
 C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\Color.xml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\ConnectionServer.xml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureRisk.exe.config
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureRisk.exe
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureRisk.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\NL-NL\EnsureRisk.resources.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\ES-ES\EnsureRisk.resources.dll
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EN-US\EnsureRisk.resources.dll
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csprojAssemblyReference.cache
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\VerticalMenu.baml
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Windows\Settings\WindowOpening.baml
@@ -1267,14 +1275,6 @@ C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\En
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk_MarkupCompile.cache
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk_MarkupCompile.lref
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\Color.xml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\ConnectionServer.xml
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureRisk.exe.config
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureRisk.exe
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EnsureRisk.pdb
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\NL-NL\EnsureRisk.resources.dll
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\ES-ES\EnsureRisk.resources.dll
-C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\Output\Debug\EN-US\EnsureRisk.resources.dll
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\MainWindow.baml
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Pages\SetConnectionPage.baml
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Pages\ThemePage.baml

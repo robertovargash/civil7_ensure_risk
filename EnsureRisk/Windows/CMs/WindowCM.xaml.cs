@@ -25,6 +25,9 @@ namespace EnsureRisk.Windows
     public class DataCurrentCM : INotifyPropertyChanged
     {
         private bool hasAccess = false;
+        private decimal probability;
+
+        public decimal Probability { get { return probability; } set { probability = value; OnPropertyChanged("Probability"); } }
 
         public bool HasAccess
         {
@@ -138,6 +141,7 @@ namespace EnsureRisk.Windows
                             newRow[DT_CM_WBS.NIVEL] = itemWBS[DT_RISK_WBS.NIVEL];
                             newRow[DT_CM_WBS.WBS] = itemWBS[DT_RISK_WBS.WBS];
                             newRow[DT_CM_WBS.IS_PRIMARY] = itemWBS[DT_RISK_WBS.IS_PRIMARY];
+                            newRow[DT_CM_WBS.PROBABILITY] = 0;
                             if ((bool)itemWBS[DT_RISK_WBS.IS_PRIMARY])
                             {
                                 ID_WBS = (Int32)itemWBS[DT_RISK_WBS.ID_WBS];
@@ -177,6 +181,7 @@ namespace EnsureRisk.Windows
                                     drRCMWBS[DT_CM_WBS.ID_CM] = CMRow[DT_CounterM.ID];
                                     drRCMWBS[DT_CM_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
                                     drRCMWBS[DT_CM_WBS.USERNAME] = item[DT_WBS.USERNAME];
+                                    drRCMWBS[DT_CM_WBS.PROBABILITY] = 0;
                                     if (!hasWBS)
                                     {
                                         drRCMWBS[DT_CM_WBS.PRIMARY] = "Primary";
@@ -239,9 +244,20 @@ namespace EnsureRisk.Windows
                 dgRoles.ItemsSource = DvRoleCM;
                 DvRoleCM.RowFilter = DT_Role_CM.ID_CM + " = " + CMRow[DT_CounterM.ID];
 
-                DVCMWBS = CM_WBS_Table.DefaultView;
-                dgWBS.ItemsSource = DVCMWBS;
-                DVCMWBS.RowFilter = DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID];
+               
+
+                if (Pi.HasAccess)
+                {
+                    DVCMWBS = CM_WBS_Table.DefaultView;
+                    dgWBS.ItemsSource = DVCMWBS;
+                    DVCMWBS.RowFilter = DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID];
+                }
+                else
+                {
+                    DVCMWBS = CM_WBS_Table.DefaultView;
+                    dgWBS.ItemsSource = DVCMWBS;
+                    DVCMWBS.RowFilter = DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID] + " AND " + DT_CM_WBS.USERNAME + " = '" + LOGIN_USER + "'";
+                }
 
 
                 DvTopRisk = WBS_CM_Damage.DefaultView;
@@ -265,6 +281,41 @@ namespace EnsureRisk.Windows
                     }
                     filter += ")";
                     DvTopRisk.RowFilter += filter;
+                }
+                CalculateProbability();
+            }
+            catch (Exception ex)
+            {
+                new WindowMessageOK(ex.Message).ShowDialog();
+            }
+        }
+
+        private void CalculateProbability()
+        {
+            try
+            {
+                List<decimal> Probabilities = new List<decimal>();
+                foreach (DataRow item in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
+                {
+                    if (WBS_isSheet((int)item[DT_CM_WBS.ID_WBS]))
+                    {
+                        if (item[DT_CM_WBS.PROBABILITY] == DBNull.Value)
+                        {
+                            Probabilities.Add(0);
+                        }
+                        else
+                        {
+                            Probabilities.Add((decimal)item[DT_CM_WBS.PROBABILITY]);
+                        }
+                    }
+                }
+                if (Probabilities.Count > 0)
+                {
+                    Pi.Probability = Probabilities.Sum() / Probabilities.Count;
+                }
+                else
+                {
+                    Pi.Probability = 0;
                 }
             }
             catch (Exception ex)
@@ -365,7 +416,7 @@ namespace EnsureRisk.Windows
             }
             if (Versioned.IsNumeric(TextProbability.Text))
             {
-                if (decimal.Parse(TextProbability.Text) > 100)
+                if (Pi.Probability > 100)
                 {
                     new WindowMessageOK(StringResources.PROBABILITY_FIELD).ShowDialog();
                 }
@@ -383,7 +434,8 @@ namespace EnsureRisk.Windows
                     }
                     if (flag)
                     {
-                        CMRow[DT_CounterM.PROBABILITY] = decimal.Parse(TextProbability.Text);
+                        CalculateProbability();
+                        CMRow[DT_CounterM.PROBABILITY] = Pi.Probability;
                         this.DialogResult = true;
                     }
                 }
@@ -508,6 +560,7 @@ namespace EnsureRisk.Windows
                         drCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
                         drCMWBS[DT_CM_WBS.PRIMARY] = "";
                         drCMWBS[DT_CM_WBS.USERNAME] = item[DT_WBS.USERNAME];
+                        drCMWBS[DT_CM_WBS.PROBABILITY] = 0;
                         CM_WBS_Table.Rows.Add(drCMWBS);
                     }
                     foreach (DataRow itemRISKWBSi in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
@@ -525,6 +578,7 @@ namespace EnsureRisk.Windows
                                 drRiskWBSi[DT_CM_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
                                 drRiskWBSi[DT_CM_WBS.IS_PRIMARY] = false;
                                 drRiskWBSi[DT_CM_WBS.PRIMARY] = "";
+                                drRiskWBSi[DT_CM_WBS.PROBABILITY] = 0;
                                 CM_WBS_Table.Rows.Add(drRiskWBSi);
                             }
                         }
@@ -577,39 +631,6 @@ namespace EnsureRisk.Windows
             }
         }
 
-        private void TextProbability_LostFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void TextProbability_LostFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (!(Versioned.IsNumeric(TextProbability.Text)))
-            {
-                new WindowMessageOK(StringResources.NUMERIC_FIELD).ShowDialog();
-                TextProbability.Focus();
-                TextProbability.SelectAll();
-            }
-            else
-            {
-                if (decimal.Parse(TextProbability.Text) > 100)
-                {
-                    new WindowMessageOK(StringResources.PROBABILITY_FIELD).ShowDialog();
-                    TextProbability.Focus();
-                    TextProbability.SelectAll();
-                }
-                else
-                {
-                    if (decimal.Parse(TextProbability.Text) < 0)
-                    {
-                        new WindowMessageOK(StringResources.PROBABILITY_FIELD).ShowDialog();
-                        TextProbability.Focus();
-                        TextProbability.SelectAll();
-                    }
-                }
-            }
-        }
-
         private void DgTopRisk_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key != Key.NumPad0 && e.Key != Key.NumPad1 && e.Key != Key.NumPad2 && e.Key != Key.NumPad3 && e.Key != Key.NumPad4 && e.Key != Key.NumPad5 && e.Key != Key.NumPad6 &&
@@ -657,5 +678,24 @@ namespace EnsureRisk.Windows
             { return true; }
         }
 
+        private void DgWBS_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            CalculateProbability();
+        }
+
+        private void DgWBS_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CalculateProbability();
+        }
+
+        private void DgWBS_LostFocus(object sender, RoutedEventArgs e)
+        {
+            CalculateProbability();
+        }
+
+        private void DgWBS_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            CalculateProbability();
+        }
     }
 }
