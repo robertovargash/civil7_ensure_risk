@@ -44,7 +44,6 @@ namespace EnsureBusinesss.Business
         public bool FromTop { get; set; }
         public bool IsRoot { get; set; }
         public int Size { get; set; }
-
         public decimal AcValue { get; set; }
         public decimal OwnValue { get; set; }
         public decimal AcDamage { get; set; }
@@ -166,7 +165,7 @@ namespace EnsureBusinesss.Business
 
             XTreme = Points[0].X;
             YxTreme = Points[0].Y;
-            LabelLineName(LabelName, 22.375);
+            DrawLabelLineName(LabelName, 22.375);
             ShortName = LabelName;
         }
         public void NewDrawAtPoint(Point StartPoint)
@@ -191,7 +190,7 @@ namespace EnsureBusinesss.Business
                 Points[0] = new Point(Points[1].X - 100, Points[1].Y);
             }
         }
-        private void LabelLineName(string LabelName, double AngleX)
+        private void DrawLabelLineName(string LabelName, double AngleX)
         {
             MyName.MaxWidth = 180;
             ElStackPannel.RenderTransformOrigin = new Point(0, 0);
@@ -208,7 +207,7 @@ namespace EnsureBusinesss.Business
                     double extra = (LabelName.Length > 26) ? 13 : -5;
                     //-2.5 * (RiskPolyLine.diagonalCMTailX) + line.Points[1].Y
                     //this.ElStackPannel.Margin = new Thickness(StartDrawPoint.X - RiskPolyLine.diagonalShiftLabelX + extra, StartDrawPoint.Y - RiskPolyLine.diagonalShiftLabelY, 0, 0);
-                    this.ElStackPannel.Margin = new Thickness(Points[1].X - RiskPolyLine.diagonalShiftLabelX + extra, Points[1].Y - RiskPolyLine.diagonalShiftLabelY, 0, 0);
+                    this.ElStackPannel.Margin = new Thickness(Points[1].X - RiskPolyLine.diagonalShiftLabelX + extra, Points[1].Y - RiskPolyLine.diagonalShiftLabelY - StrokeThickness, 0, 0);
                     RotateTransform rotateTransform1 = new RotateTransform(AngleX);
                     this.ElStackPannel.RenderTransform = rotateTransform1;
                 }
@@ -216,7 +215,7 @@ namespace EnsureBusinesss.Business
                 {
                     double extra = (LabelName.Length > 26) ? -19 : -19;
                     //this.ElStackPannel.Margin = new Thickness(StartDrawPoint.X - RiskPolyLine.diagonalShiftLabelX + extra, StartDrawPoint.Y + RiskPolyLine.diagonalShiftLabelY - 10, 0, 0);
-                    this.ElStackPannel.Margin = new Thickness(Points[1].X - RiskPolyLine.diagonalShiftLabelX + extra, Points[1].Y + RiskPolyLine.diagonalShiftLabelY - 10, 0, 0);
+                    this.ElStackPannel.Margin = new Thickness(Points[1].X - RiskPolyLine.diagonalShiftLabelX + extra, Points[1].Y + RiskPolyLine.diagonalShiftLabelY - 10 + StrokeThickness, 0, 0);
 
                     RotateTransform rotateTransform1 = new RotateTransform(-AngleX);
                     this.ElStackPannel.RenderTransform = rotateTransform1;
@@ -225,7 +224,7 @@ namespace EnsureBusinesss.Business
             else
             {
                 //this.ElStackPannel.Margin = new Thickness(StartDrawPoint.X - RiskPolyLine.horizontalShiftLabelX, StartDrawPoint.Y + 1, 0, 0);
-                this.ElStackPannel.Margin = new Thickness(Points[1].X - RiskPolyLine.horizontalShiftLabelX, Points[1].Y + 1, 0, 0);
+                this.ElStackPannel.Margin = new Thickness(Points[1].X - RiskPolyLine.horizontalShiftLabelX, Points[1].Y + 1 + StrokeThickness, 0, 0);
 
             }
 
@@ -338,7 +337,7 @@ namespace EnsureBusinesss.Business
         public void DrawEntireLine(string LabelName)
         {
             //LabelLineName(LabelName);
-            LabelLineName(LabelName, angle);
+            DrawLabelLineName(LabelName, angle);
             ShortName = LabelName;
         }
         public void Increase()

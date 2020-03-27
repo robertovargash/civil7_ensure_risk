@@ -606,8 +606,43 @@ namespace EnsureRisk
             Close();
         }
 
+        public void ViewInMiniMap()
+        {
+            try
+            {
+                Image myImage = new Image();
+                Transform transform = CurrentLayout.GridPaintLines.LayoutTransform;
+                // reset current transform (in case it is scaled or rotated)
+                CurrentLayout.GridPaintLines.LayoutTransform = null;
+
+                // Get the size of canvas
+                Size size = new Size(CurrentLayout.GridPaintLines.Width, CurrentLayout.GridPaintLines.Height);
+                // Measure and arrange the surface
+                // VERY IMPORTANT
+                CurrentLayout.GridPaintLines.Measure(size);
+                CurrentLayout.GridPaintLines.Arrange(new Rect(size));
+
+                RenderTargetBitmap bmp = new RenderTargetBitmap((int)size.Width, (int)size.Height, 91, 96, PixelFormats.Default);
+                bmp.Render(CurrentLayout.GridPaintLines);
+                myImage.Source = bmp;
+
+                // Add Image to the UI
+                StackPanel myStackPanel = new StackPanel();
+                myStackPanel.Children.Add(myImage);
+                gridMiniMap.Children.Add(myStackPanel);
+                CurrentLayout.GridPaintLines.LayoutTransform = transform;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
         private void MenuItemFish_Tree_Click(object sender, RoutedEventArgs e)
         {
+            ViewInMiniMap();
             //try
             //{
             //    if (CurrentLayout.LinesList.Count > 0)

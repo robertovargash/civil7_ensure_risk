@@ -29,3 +29,4 @@ C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Debug\ERDA.dll
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\bin\Debug\ERDA.pdb
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Debug\ERDA.dll
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Debug\ERDA.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\ERDA\obj\Debug\ERDA.csprojAssemblyReference.cache

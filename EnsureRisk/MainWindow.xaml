@@ -100,7 +100,6 @@
                     </MenuItem.Header>
                 </MenuItem>
             </ContextMenu>
-
             <ContextMenu x:Key="MenuMainRisk" Visibility="Hidden" Background="Transparent">
                 <MenuItem Height="35" x:Name="MenuMainAddRisk">
                     <MenuItem.Header>
@@ -307,7 +306,10 @@
                                     </GroupBox>
                                 </Grid>
                             </ScrollViewer>
-                        </xcad:LayoutAnchorable>                        
+                        </xcad:LayoutAnchorable>
+                        <xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="MiniMap" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300">
+                            <Grid Name="gridMiniMap"/>
+                        </xcad:LayoutAnchorable>
                     </xcad:LayoutAnchorablePane>
                     <xcad:LayoutDocumentPaneGroup>
                         <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel"/>
@@ -438,7 +440,7 @@
                         <Button x:Name="ExportToExcel" ToolTip="Save to Excel" HorizontalAlignment="Left" Click="ExportToExcel_Click" Content="{md:PackIcon Kind=FileExport}"/>
                         <Separator/>
                         <Button x:Name="MenuItemReload" ToolTip="Restart" Click="MenuItemReload_Click" Content="{md:PackIcon Kind=Restart}" />
-                        <Button x:Name="MenuItemFish_Tree" ToolTip="View current diagram as Tree" IsEnabled="False" Click="MenuItemFish_Tree_Click" Content="{md:PackIcon Kind=Lan}" Visibility="Collapsed"/>
+                        <Button x:Name="MenuItemFish_Tree" ToolTip="View current diagram as Tree" IsEnabled="True" Click="MenuItemFish_Tree_Click" Content="{md:PackIcon Kind=Lan}" Visibility="Visible"/>
                         <Button x:Name="MenuItemExport" ToolTip="Export to Image" Command="local:CustomCommands.Export" Content="{md:PackIcon Kind=Image}" />
                         <Button x:Name="MenuItemPrint" ToolTip="Print diagram" Command="Print" Content="{md:PackIcon Kind=Printer}" />
                         <Separator />

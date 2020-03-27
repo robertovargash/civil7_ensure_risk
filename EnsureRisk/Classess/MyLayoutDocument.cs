@@ -670,7 +670,7 @@ namespace EnsureRisk.Classess
                     Color mediaColor = Color.FromArgb(colorete.A, colorete.R, colorete.G, colorete.B);
 
                     MyDamage rectangle = new MyDamage(GridPaintLines,
-                    new Point(MyMainLine.Points[1].X + 5, puntoinicialY),
+                    new Point(MyMainLine.Points[1].X + 5 + General.MaxThickness, puntoinicialY),
                     item[DT_Diagram_Damages.DAMAGE].ToString() + " (" + item[DT_Diagram_Damages.UM].ToString() + ")",
                     StringResources.ACUM_VALUE + "(" + item[DT_Diagram_Damages.UM].ToString() + ") :",
                     StringResources.ACUM_DAMAGE, mediaColor, (Int32)item[DT_Diagram_Damages.ID_DAMAGE], item[DT_Diagram_Damages.UM].ToString());
@@ -3215,7 +3215,6 @@ namespace EnsureRisk.Classess
                 ScrollGridPaint.ScrollToHorizontalOffset(offset.X);
                 ScrollGridPaint.ScrollToVerticalOffset(offset.Y);
                 MyWindow.UpdateLayout();
-
                 e.Handled = true;
             }
             catch (Exception ex)
@@ -3333,16 +3332,6 @@ namespace EnsureRisk.Classess
                 }
 
                 Rect rectangleRPL = new Rect(new Point(x0, y0), new Point(x1, y1));
-
-                //System.Windows.Shapes.Line myLine = new System.Windows.Shapes.Line();
-                //myLine.Stroke = System.Windows.Media.Brushes.Black;
-                //myLine.Fill = System.Windows.Media.Brushes.SkyBlue;
-                //myLine.X1 = x0;
-                //myLine.Y1 = y0;
-                //myLine.X2 = x1;
-                //myLine.Y2 = y1;
-                //GridPaintLines.Children.Add(myLine);
-
                 line.BringIntoView(rectangleRPL);
             }
         }
