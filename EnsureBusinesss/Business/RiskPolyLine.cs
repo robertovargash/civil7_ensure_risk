@@ -24,16 +24,20 @@ namespace EnsureBusinesss.Business
 
         public const double diagonalShiftLabelX = 50;
         public const double diagonalShiftLabelY = 185;
-        public const double horizontalShiftLabelX = 200;
-        public bool FullAccess { get; set; }
+        public const double horizontalShiftLabelX = 180;
         public const double angle = 67.625;
+
+        public bool FullAccess { get; set; }        
         public int ID { get; set; }
         public const double basicX = 3;
         public const double basicY = 7;
         public double XTreme { get; set; }
         public double YxTreme { get; set; }
+
+        public decimal RefMin { get; set; }
+        public decimal RefMax { get; set; }
+
         public Point StartDrawPoint { get; set; }
-        public Point EndDrawPoint { get; set; }
         public bool IsDiagonal { get; set; }
         public RiskPolyLine Father { get; set; }
         public double PxThickness { get; set; }
@@ -48,23 +52,19 @@ namespace EnsureBusinesss.Business
         public decimal OwnValue { get; set; }
         public decimal AcDamage { get; set; }
         public decimal AcLike { get; set; }
-
+        public bool DescendentHide { get; set; }
+        public bool Oculto { get; set; }
         public bool IsCM { get; set; }
         public bool Collapsed { get; set; }
         public decimal Probability { get; set; }
         public int Position { get; set; }
         public int MyLevel { get; set; }
         public LabelPolyLine MyName { get; set; }
-        public StackPanel ElStackPannel { get; set; }
+        public StackPanel TextPanel { get; set; }
         public List<RiskPolyLine> Children { get; set; }
         public PictureBoxPolyLine Expand { get; set; }
         public Grid MyContainer { get; set; }
-        //public decimal Class { get; set; }
-
-        //public static RoutedEvent DobleClick;
-        //public List<RiskPolyLine> Segments { get; set; }
         public List<SegmentPolyLine> Segments { get; set; }
-        //public ThicknessProvider thicknessProvider { get; set; }
 
         /// <summary>
         /// Es el punto donde esta la flecha originalmente
@@ -76,8 +76,8 @@ namespace EnsureBusinesss.Business
         {
             //Segments = new List<RiskPolyLine>();
             Segments = new List<SegmentPolyLine>();
-            StrokeStartLineCap = PenLineCap.Flat;
-            StrokeEndLineCap = PenLineCap.Flat;
+            StrokeStartLineCap = PenLineCap.Round;
+            StrokeEndLineCap = PenLineCap.Round;
         }
         public RiskPolyLine(Grid Container, ContextMenu Menu, bool isCMI)
         {
@@ -107,27 +107,19 @@ namespace EnsureBusinesss.Business
                 Risk = this,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Center,
-                Visibility = Visibility.Collapsed
+                Visibility = Visibility.Visible
             };
-            ElStackPannel = new StackPanel()
+            TextPanel = new StackPanel()
             {
                 Orientation = Orientation.Horizontal,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
 
             };
-            ElStackPannel.Children.Add(Expand);
-            ElStackPannel.Children.Add(MyName);
-            Container.Children.Add(ElStackPannel);
-            if (Collapsed)
-            {
-                Expand.Source = new BitmapImage(new Uri(General.CONTRAIDO));
-            }
-            else
-            {
-                Expand.Source = new BitmapImage(new Uri(General.EXPANDIDO));
-            }
-
+            TextPanel.Children.Add(Expand);
+            TextPanel.Children.Add(MyName);
+            Container.Children.Add(TextPanel);
+            
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment = VerticalAlignment.Top;
             Children = new List<RiskPolyLine>();
@@ -139,8 +131,8 @@ namespace EnsureBusinesss.Business
             }
             //Segments = new List<RiskPolyLine>();
             Segments = new List<SegmentPolyLine>();
-            StrokeStartLineCap = PenLineCap.Flat;
-            StrokeEndLineCap = PenLineCap.Flat;
+            StrokeStartLineCap = PenLineCap.Round;
+            StrokeEndLineCap = PenLineCap.Round;
         }
 
         public bool IsLeaf()
@@ -165,7 +157,7 @@ namespace EnsureBusinesss.Business
 
             XTreme = Points[0].X;
             YxTreme = Points[0].Y;
-            DrawLabelLineName(LabelName, 22.375);
+            DrawLabelLineName();
             ShortName = LabelName;
         }
         public void NewDrawAtPoint(Point StartPoint)
@@ -190,49 +182,91 @@ namespace EnsureBusinesss.Business
                 Points[0] = new Point(Points[1].X - 100, Points[1].Y);
             }
         }
-        private void DrawLabelLineName(string LabelName, double AngleX)
-        {
-            MyName.MaxWidth = 180;
-            ElStackPannel.RenderTransformOrigin = new Point(0, 0);
-            MyName.MaxHeight = 40;
-            if (!(LabelName is null))
-            {
-                this.MyName.Text = LabelName;
-            }
 
+        private void DefinyTextPosition()
+        {
             if (IsDiagonal)
             {
                 if (FromTop)
                 {
-                    double extra = (LabelName.Length > 26) ? 13 : -5;
-                    //-2.5 * (RiskPolyLine.diagonalCMTailX) + line.Points[1].Y
-                    //this.ElStackPannel.Margin = new Thickness(StartDrawPoint.X - RiskPolyLine.diagonalShiftLabelX + extra, StartDrawPoint.Y - RiskPolyLine.diagonalShiftLabelY, 0, 0);
-                    this.ElStackPannel.Margin = new Thickness(Points[1].X - RiskPolyLine.diagonalShiftLabelX + extra, Points[1].Y - RiskPolyLine.diagonalShiftLabelY - StrokeThickness, 0, 0);
-                    RotateTransform rotateTransform1 = new RotateTransform(AngleX);
-                    this.ElStackPannel.RenderTransform = rotateTransform1;
+                    double extra = (MyName.Text.Length > 26) ? 13 : -5;
+                    this.TextPanel.Margin = new Thickness(Points[1].X - diagonalShiftLabelX + extra, Points[1].Y - diagonalShiftLabelY - StrokeThickness, 0, 0);
+                    RotateTransform rotateTransform1 = new RotateTransform(angle);
+                    this.TextPanel.RenderTransform = rotateTransform1;
                 }
                 else
                 {
-                    double extra = (LabelName.Length > 26) ? -19 : -19;
-                    //this.ElStackPannel.Margin = new Thickness(StartDrawPoint.X - RiskPolyLine.diagonalShiftLabelX + extra, StartDrawPoint.Y + RiskPolyLine.diagonalShiftLabelY - 10, 0, 0);
-                    this.ElStackPannel.Margin = new Thickness(Points[1].X - RiskPolyLine.diagonalShiftLabelX + extra, Points[1].Y + RiskPolyLine.diagonalShiftLabelY - 10 + StrokeThickness, 0, 0);
-
-                    RotateTransform rotateTransform1 = new RotateTransform(-AngleX);
-                    this.ElStackPannel.RenderTransform = rotateTransform1;
+                    double extra = (MyName.Text.Length > 26) ? -19 : -19;
+                    this.TextPanel.Margin = new Thickness(Points[1].X - diagonalShiftLabelX + extra, Points[1].Y + diagonalShiftLabelY - 10 + StrokeThickness, 0, 0);
+                    RotateTransform rotateTransform1 = new RotateTransform(-angle);
+                    this.TextPanel.RenderTransform = rotateTransform1;
                 }
             }
             else
             {
-                //this.ElStackPannel.Margin = new Thickness(StartDrawPoint.X - RiskPolyLine.horizontalShiftLabelX, StartDrawPoint.Y + 1, 0, 0);
-                this.ElStackPannel.Margin = new Thickness(Points[1].X - RiskPolyLine.horizontalShiftLabelX, Points[1].Y + 1 + StrokeThickness, 0, 0);
-
+                this.TextPanel.Margin = new Thickness(Points[1].X - horizontalShiftLabelX, Points[1].Y + 1 + StrokeThickness, 0, 0);
             }
+        }
 
-            if (IsCM)
-            {
-                Expand.Visibility = Visibility.Collapsed;
-            }
+        private void DrawLabelLineName()
+        {            
             this.MyName.Line = this;
+        }
+
+       
+
+        protected override Geometry DefiningGeometry
+        {
+            get
+            {
+                MyName.MaxWidth = 180;
+                TextPanel.RenderTransformOrigin = new Point(0, 0);
+                MyName.MaxHeight = 40;
+                if (IsRoot)
+                {
+                    TextPanel.Visibility = Visibility.Collapsed;                    
+                }
+                if (Children.Count <= 0 || IsRoot || IsCM)
+                {
+                    Expand.Visibility = Visibility.Collapsed;
+                }
+                if (Collapsed)
+                {
+                    Expand.Source = new BitmapImage(new Uri(General.CONTRAIDO));
+                    foreach (var item in TreeOperation.GetOnlyMyChildrenWithCM(this))
+                    {
+                        item.Oculto = true;
+                    }
+                    foreach (var item in Segments)
+                    {
+                        item.Visibility = Visibility.Collapsed;
+                    }
+                }
+                else
+                {
+                    Expand.Source = new BitmapImage(new Uri(General.EXPANDIDO));
+                }
+                if (!(IsActivated))
+                {
+                    MyName.Text = "(Disabled)" + ShortName;
+                }
+                else
+                {
+                    MyName.Text = ShortName;
+                }
+                DefinyTextPosition();
+                if (Oculto)
+                {
+                    TextPanel.Visibility = Visibility.Collapsed;
+                    foreach (var itemseg in Segments)
+                    {
+                        itemseg.Visibility = Visibility.Collapsed;
+                    }
+                    Visibility = Visibility.Collapsed;
+                }
+
+                return base.DefiningGeometry;
+            }
         }
 
         public void SetMenu(ContextMenu Menu)
@@ -333,41 +367,14 @@ namespace EnsureBusinesss.Business
                 }
             }
             PxThickness = StrokeThickness;
-        }
-        public void DrawEntireLine(string LabelName)
-        {
-            //LabelLineName(LabelName);
-            DrawLabelLineName(LabelName, angle);
-            ShortName = LabelName;
-        }
-        public void Increase()
-        {
-            if (IsDiagonal)
-            {
-                if (FromTop)
-                {
-                    Points[0] = new Point(Points[0].X - (basicX * 29), Points[0].Y - (basicY * 29));
-                }
-                else
-                {
-                    Points[0] = new Point(Points[0].X - (basicX * 29), Points[0].Y + (basicY * 29));
-                }
-            }
-            else
-            {
-                Points[0] = new Point(Points[0].X - 210, Points[0].Y);
-            }
-            Size++;
-            XTreme = Points[0].X;
-            YxTreme = Points[0].Y;
-        }
+        }        
+
         public double XTremee()
         {
             double xtremo = XTreme;
             if (!(Collapsed))
             {
                 xtremo = TreeOperation.GetMeAndMyChildrenWithCM(this).OrderBy(x => x.Points[0].X).First().Points[0].X;
-
             }
 
             XTreme = xtremo;
@@ -384,9 +391,7 @@ namespace EnsureBusinesss.Business
                 }
                 else
                 {
-                    // TODO: revisar yxtremee esta fundio para la mitad de abajo
                     ytremo = TreeOperation.GetMeAndMyChildrenWithCM(this).OrderBy(x => x.Points[0].Y).First().Points[0].Y;
-                    //ytremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderByDescending(x => x.Points[0].Y).First().Points[0].Y;
                 }
             }
 
@@ -460,40 +465,7 @@ namespace EnsureBusinesss.Business
             }
             return xtremo;
         }
-        /// <summary>
-        /// Dado una rama busca la cantidad de sus hijos horizontales
-        /// una rama es un hijo de mainline con toda su descendencia, 
-        /// siempre es vertical
-        /// </summary>
-        /// <returns></returns>
-        //public int HorizontalMaxCountChildren()
-        //{
-        //    int result = 0;
-        //    if (!(Collapsed))
-        //    {
-        //        result = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.IsDiagonal == false)).Count();
-        //    }
-        //    return result;
-        //}
-        //public int VerticalMaxCountChildren()
-        //{
-        //    int result = 0;
-        //    if (!(Collapsed))
-        //    {
-        //        result = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.IsDiagonal == true)).Count();
-        //    }
-        //    return result;
-        //}
-
-        //public Point HorizontalMaxXTremee(Double Y)
-        //{
-        //    Point xtremo = new Point(XTreme, YxTreme);
-        //    if (!(Collapsed))
-        //    {
-        //        xtremo = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.IsDiagonal == false) && (x.Points[0].Y<Y)).OrderBy(x => x.Points[0].X).Last().Points[0];
-        //    }
-        //    return xtremo;
-        //}
+        
         public void ExtendHorizontal(double FromX)
         {
             CreateSegmentAt(new Point(FromX - horizontalShiftX, Points[0].Y));
@@ -560,36 +532,7 @@ namespace EnsureBusinesss.Business
             }
             return segmentsToReturn;
         }
-
-        //public Double SegmentMinX()
-        //{
-        //    double minX = 0;
-        //    List<SegmentPolyLine> segments;
-        //    if (!(Collapsed))
-        //    {
-        //        segments = GetChildAndMeSegments();
-        //        if (segments.Any())
-        //        {
-        //            minX = segments.Min(s => s.Points[0].X);
-        //        }
-        //    }
-        //    return minX;
-        //}
-
-        //public Double PointMinX()
-        //{
-        //    double minX = 0;
-        //    List<SegmentPolyLine> segments;
-        //    if (!(Collapsed))
-        //    {
-        //        segments = GetChildAndMeSegments();
-        //        if (segments.Any())
-        //        {
-        //            minX = segments.Min(s => s.Points[0].X);
-        //        }
-        //    }
-        //    return minX;
-        //}
+        
         public Point MyMinXPoint()
         {
             if (Segments != null && Segments.Any())
@@ -615,6 +558,7 @@ namespace EnsureBusinesss.Business
                 }
             }
         }
+
         public void SegmentClear()
         {
             if (Segments != null && Segments.Any())
@@ -622,51 +566,7 @@ namespace EnsureBusinesss.Business
                 Segments.Clear();
             }
         }
-        //protected override void OnMouseEnter(MouseEventArgs e)
-        //{
-        //    base.OnMouseEnter(e);
-        //    if (Father != null)
-        //    {
-        //        OnMouseEnterStrokeThickness();
-        //    }
-        //}
-        //protected override void OnMouseLeave(MouseEventArgs e)
-        //{
-        //    base.OnMouseLeave(e);
-        //    if (!IsRoot)
-        //    {
-        //        //StrokeThickness = Segments == null ? 1 : (Father != null ? Father.StrokeThickness : 1);
-        //        //OnMouseEnterStrokeThickness();
-        //        OnMouseLeaveStrokeThickness();
-        //    }
-        //}
-        //public virtual void OnMouseEnterStrokeThickness()
-        //{
-        //    if (!IsCM && !IsRoot)
-        //    {
-        //        StrokeThickness = 10;
-        //        foreach (SegmentPolyLine segment in Segments)
-        //        {
-        //            segment.StrokeThickness = StrokeThickness;
-        //        }
-        //    }
-        //}
 
-        //public virtual void OnMouseLeaveStrokeThickness()
-        //{
-        //    if (!IsCM && !IsRoot)
-        //    {
-        //        thicknessProvider.UpdateThickness();
-        //        //foreach (SegmentPolyLine segment in Segments)
-        //        //{
-        //        //    segment.StrokeThickness = StrokeThickness;
-        //        //}
-        //    }
-        //}
-        //private bool IsMainLine()
-        //{ 
-        //    return Father == null;
-        //}
         public void AddTail()
         {
             if (!IsCM && Children.Any())
@@ -756,7 +656,7 @@ namespace EnsureBusinesss.Business
 
         public void OnThicknessChange()
         {
-            if (!IsCM && !IsRoot)
+            if (!IsCM && !IsRoot && !Oculto)
             {
                 if (!OriginalStartPointHasValue)
                 {

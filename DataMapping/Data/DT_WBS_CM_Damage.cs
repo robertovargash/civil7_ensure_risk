@@ -21,12 +21,12 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[3];
             this.TableName = TABLE_NAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_WBS, typeof(System.Int32));
-            PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(System.Int32));
-            PK_COLUMN[2] = this.Columns.Add(ID_CM, typeof(System.Int32));
-            Columns.Add(WBS, typeof(System.String));
-            Columns.Add(DAMAGE, typeof(System.String));
-            Columns.Add(VALUE, typeof(System.Decimal));
+            PK_COLUMN[0] = this.Columns.Add(ID_WBS, typeof(int));
+            PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(int));
+            PK_COLUMN[2] = this.Columns.Add(ID_CM, typeof(int));
+            Columns.Add(WBS, typeof(string));
+            Columns.Add(DAMAGE, typeof(string));
+            Columns.Add(VALUE, typeof(decimal));
             this.PrimaryKey = PK_COLUMN;
         }
     }

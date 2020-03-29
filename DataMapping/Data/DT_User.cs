@@ -22,11 +22,11 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
             this.TableName = User_TABLA;
-            PK_COLUMN[0] = this.Columns.Add(USERNAME, typeof(System.String));
+            PK_COLUMN[0] = this.Columns.Add(USERNAME, typeof(string));
             //PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
             this.Columns.Add(USERPASSWORD, typeof(System.Byte[]));
-            this.Columns.Add(POSITIONDESCRIPTION, typeof(System.String));
-            this.Columns.Add(FULL_NAME, typeof(System.String));
+            this.Columns.Add(POSITIONDESCRIPTION, typeof(string));
+            this.Columns.Add(FULL_NAME, typeof(string));
             this.PrimaryKey = PK_COLUMN;
         }
         public static DataTable Create()

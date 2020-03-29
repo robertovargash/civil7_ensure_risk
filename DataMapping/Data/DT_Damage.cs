@@ -21,10 +21,10 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
             this.TableName = TopRisk_TABLA;
-            PK_COLUMN[0] = this.Columns.Add(ID_COLUMNA, typeof(System.Int32));
+            PK_COLUMN[0] = this.Columns.Add(ID_COLUMNA, typeof(int));
             PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
-            this.Columns.Add(COLORID_COLUMNA, typeof(System.String));
-            this.Columns.Add(TOP_RISK_COLUMN, typeof(System.String));
+            this.Columns.Add(COLORID_COLUMNA, typeof(string));
+            this.Columns.Add(TOP_RISK_COLUMN, typeof(string));
             this.PrimaryKey = PK_COLUMN;
         }
         public static DataTable Create()

@@ -17,9 +17,9 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
             TableName = TABLE_NAME;
-            PK_COLUMN[0] = Columns.Add(IDCLASIFICATOR, typeof(System.Int32));
+            PK_COLUMN[0] = Columns.Add(IDCLASIFICATOR, typeof(int));
             //PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = 200; PK_COLUMN[0].AutoIncrementStep = 1;           
-            Columns.Add(CLASIFICATOR, typeof(System.String));
+            Columns.Add(CLASIFICATOR, typeof(string));
             PrimaryKey = PK_COLUMN;
         }
     }

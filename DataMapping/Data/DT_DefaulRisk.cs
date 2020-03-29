@@ -23,9 +23,9 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
             TableName = Risk_TABLA;
-            PK_COLUMN[0] = Columns.Add(ID_COLUMNA, typeof(System.Int32));
+            PK_COLUMN[0] = Columns.Add(ID_COLUMNA, typeof(int));
             PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
-            Columns.Add(RISK_NAME_COLUMNA, typeof(System.String));
+            Columns.Add(RISK_NAME_COLUMNA, typeof(string));
             PrimaryKey = PK_COLUMN;
         }
     }

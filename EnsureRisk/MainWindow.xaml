@@ -252,6 +252,34 @@
             <xcad:LayoutRoot x:Name="_layoutRoot">
                 <xcad:LayoutPanel Orientation="Horizontal">
                     <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200">
+                        <!--<xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="MiniMap" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300">
+                            <Grid Name="gridMiniMap"  >                                
+                                <Image Name="MyImage" Source="Images/English.png"/>
+                                <ItemsControl x:Name="content" ItemsSource="{Binding ElementName=MyImage, Path=Source}" Background="White" >
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style>
+                                            <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                            <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                        </Style>
+                                    </ItemsControl.ItemContainerStyle>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Canvas />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                                <Canvas>
+                                    <Thumb x:Name="overviewZoomRectThumb" Canvas.Left="100" Canvas.Top="200" Width="200" Height="200" DragDelta="overviewZoomRectThumb_DragDelta" Opacity="0.5" >
+                                        <Thumb.Template>
+                                            <ControlTemplate  TargetType="{x:Type Thumb}" >
+                                                <Border BorderBrush="Black" BorderThickness="1" Background="Yellow" CornerRadius="1" />
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Canvas>
+
+                            </Grid>
+                        </xcad:LayoutAnchorable>-->
                         <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" IsVisibleChanged="AnchorWBSList_IsVisibleChanged" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -306,9 +334,6 @@
                                     </GroupBox>
                                 </Grid>
                             </ScrollViewer>
-                        </xcad:LayoutAnchorable>
-                        <xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="MiniMap" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300">
-                            <Grid Name="gridMiniMap"/>
                         </xcad:LayoutAnchorable>
                     </xcad:LayoutAnchorablePane>
                     <xcad:LayoutDocumentPaneGroup>
@@ -440,7 +465,7 @@
                         <Button x:Name="ExportToExcel" ToolTip="Save to Excel" HorizontalAlignment="Left" Click="ExportToExcel_Click" Content="{md:PackIcon Kind=FileExport}"/>
                         <Separator/>
                         <Button x:Name="MenuItemReload" ToolTip="Restart" Click="MenuItemReload_Click" Content="{md:PackIcon Kind=Restart}" />
-                        <Button x:Name="MenuItemFish_Tree" ToolTip="View current diagram as Tree" IsEnabled="True" Click="MenuItemFish_Tree_Click" Content="{md:PackIcon Kind=Lan}" Visibility="Visible"/>
+                        <Button x:Name="MenuItemFish_Tree" ToolTip="View current diagram as Tree" IsEnabled="True" Click="MenuItemFish_Tree_Click" Content="{md:PackIcon Kind=Lan}" Visibility="Collapsed"/>
                         <Button x:Name="MenuItemExport" ToolTip="Export to Image" Command="local:CustomCommands.Export" Content="{md:PackIcon Kind=Image}" />
                         <Button x:Name="MenuItemPrint" ToolTip="Print diagram" Command="Print" Content="{md:PackIcon Kind=Printer}" />
                         <Separator />

@@ -19,9 +19,9 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             this.TableName = TABLE_NAME;
-            PK_COLUMN[0] = this.Columns.Add(USER, typeof(System.String));
-            PK_COLUMN[1] = this.Columns.Add(IDROL_COLUMN, typeof(System.Int32));
-            Columns.Add(ROLE, typeof(System.String));
+            PK_COLUMN[0] = this.Columns.Add(USER, typeof(string));
+            PK_COLUMN[1] = this.Columns.Add(IDROL_COLUMN, typeof(int));
+            Columns.Add(ROLE, typeof(string));
             this.PrimaryKey = PK_COLUMN;
         }
       

@@ -501,18 +501,27 @@ namespace EnsureBusinesss
             return (A + B) - (A * B);
         }
 
-        public static void UpdateThickness(List<RiskPolyLine> linesList)
+        private static void SetMargin(RiskPolyLine line)
         {
-            //decimal TotalAD = linesList.Find(r => r.IsRoot == true).AcDamage;
-            //decimal RangeOfClases = TotalAD / NumberOfClasses;
-            //foreach (var item in linesList)
-            //{
-            //    if (!(item.IsCM))
-            //    {
-            //        item.Class = RangeOfClases != 0 ? item.OwnValue / RangeOfClases : 1;
-            //        item.Class = General.MyRound(item.Class, 0);
-            //    }
-            //}
+            if (line.IsDiagonal)
+            {
+                if (line.FromTop)
+                {
+                    line.TextPanel.Margin = new System.Windows.Thickness(line.TextPanel.Margin.Left, line.TextPanel.Margin.Top - line.StrokeThickness, 0, 0);
+                }
+                else
+                {
+                    line.TextPanel.Margin = new System.Windows.Thickness(line.TextPanel.Margin.Left, line.TextPanel.Margin.Top + line.StrokeThickness, 0, 0);
+                }
+            }
+            else
+            {
+                line.TextPanel.Margin = new System.Windows.Thickness(line.TextPanel.Margin.Left, line.TextPanel.Margin.Top + line.StrokeThickness, 0, 0);
+            }
+        }
+
+        public static void UpdateThickness(List<RiskPolyLine> linesList)
+        {           
             decimal min = 0;
             decimal max = 0;
             if (linesList.Where(p => !p.IsRoot).Any())
@@ -527,6 +536,7 @@ namespace EnsureBusinesss
                 {
                     item.SetThickness(item.AcDamage, min, max);
                 }
+                //SetMargin(item);
             }
             RiskPolyLine rootPolyLine = linesList.Find(r => r.IsRoot);
             rootPolyLine.StrokeThickness = MaxThickness;
@@ -541,81 +551,6 @@ namespace EnsureBusinesss
 
         }
 
-        /// <summary>
-        /// Update the Thickness of the line acording the damages
-        /// </summary>
-        public static void UpdateThickness(int IdTopRisk, DataTable dtEncoder, List<RiskPolyLine> linesList, DataTable Risk_TopRisk, DataTable CM, DataTable CM_TopRisk)
-        {
-            try
-            {
-                //decimal valor = 0;
-                foreach (var item in linesList)
-                {
-                    if (!(item.IsCM))
-                    {
-                        item.AcValue = CalculateTopRiskTreeValue(dtEncoder.Rows.Find(item.ID), dtEncoder, IdTopRisk, Risk_TopRisk, CM, CM_TopRisk);
-                        item.OwnValue = (decimal)Risk_TopRisk.Rows.Find(new object[] { item.ID, IdTopRisk })[DT_Risk_Damages.VALUE];
-                        //decimal TotalAD = CalculateTopRiskTreeValue(dtEncoder.Rows.Find(linesList.Find(r => r.IsRoot == true).ID), dtEncoder, IdTopRisk, Risk_TopRisk, CM, CM_TopRisk);
-                        //decimal RangeOfClases = TotalAD / NumberOfClasses;
-                        //item.Class = RangeOfClases != 0 ? item.OwnValue / RangeOfClases : 1;
-                        //item.Class = General.MyRound(item.Class, 0);
-                    }
-                }
-                decimal min = 0;
-                decimal max = 0;
-                if (linesList.Where(p => !p.IsRoot).Any())
-                {
-                    min = linesList.Where(p => !p.IsRoot).Min(l => l.AcValue);
-                    max = linesList.Where(p => !p.IsRoot).Max(l => l.AcValue);
-                }
-
-                foreach (var item in linesList)
-                {
-                    if (!(item.IsCM))
-                    {
-                        item.SetThickness(item.AcValue, min, max);
-                    }
-                }
-                RiskPolyLine rootPolyLine = linesList.Find(r => r.IsRoot);
-                rootPolyLine.StrokeThickness = 6;
-                UpdateSegmentsStrokeThickness(rootPolyLine);
-
-                IEnumerable<RiskPolyLine> rootChildren = linesList.FindAll(p => !p.IsRoot && !p.IsCM && p.Father.IsRoot);
-                IEnumerable<RiskPolyLine> orderedRootChildren = rootChildren.OrderBy(p => p.Points[1].X);
-                foreach (RiskPolyLine polyLine in orderedRootChildren)
-                {
-                    UpdateSegmentsStrokeThickness(polyLine);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public static decimal RangeOfClass(int ID_MainLine, DataSet ds, int IdTopRisk)
-        {
-            try
-            {
-                DataTable dtRiskEncoder = ds.Tables[DT_Risk.TABLE_NAME].Copy();
-                DataTable dtCMEncoder = ds.Tables[DT_CounterM.TABLE_NAME].Copy();
-                DataTable dtRiskDamages = ds.Tables[DT_Risk_Damages.TABLENAME].Copy();
-                DataTable dtCMDamages = ds.Tables[DT_CounterM_Damage.TABLENAME].Copy();
-                decimal TotalAD = CalculateTopRiskTreeValue(dtRiskEncoder.Rows.Find(ID_MainLine), ds.Tables[DT_Risk.TABLE_NAME], IdTopRisk, dtRiskDamages, dtCMEncoder, dtCMDamages);
-                if (TotalAD / NumberOfClasses != 0)
-                {
-                    return TotalAD / NumberOfClasses;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-            catch
-            {
-                throw new Exception("Class Calculation Wrong");
-            }
-        }
 
         private static void UpdateSegmentsStrokeThickness(RiskPolyLine riskPolyLine)
         {

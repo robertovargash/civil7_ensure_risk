@@ -26,15 +26,6 @@ namespace EnsureBusinesss
             LinesList = polyLines;
             ID_TopRisk = id_TopRisk;
         }
-        public void UpdateThickness()
-        {
-            DataTable dtRisk = Ds.Tables[DT_Risk.TABLE_NAME].Clone();
-            foreach (var item in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram))
-            {
-                dtRisk.ImportRow(item);
-            }
-            General.UpdateThickness(ID_TopRisk, dtRisk, LinesList, Ds.Tables[DT_Risk_Damages.TABLENAME],
-                           Ds.Tables[DT_CounterM.TABLE_NAME], Ds.Tables[DT_CounterM_Damage.TABLENAME]);
-        }
+       
     }
 }

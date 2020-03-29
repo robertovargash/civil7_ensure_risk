@@ -34,23 +34,23 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             TableName = TABLENAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_COUNTERM, typeof(System.Int32));
-            PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(System.Int32));
-            Columns.Add(COUNTERM_NAMESHORT, typeof(System.String));
-            Columns.Add(TOP_RISK, typeof(System.String));
-            Columns.Add(DAMAGE, typeof(System.String));
-            Columns.Add(COLOR, typeof(System.String));
-            Columns.Add(RISK_REDUCTION, typeof(System.Decimal));
-            Columns.Add(RISK, typeof(System.String));
-            Columns.Add(GROUPENAME, typeof(System.String));
-            Columns.Add(STATUS, typeof(System.String));
-            Columns.Add(VALUE, typeof(System.Decimal));
-            Columns.Add(ID_RISK_TREE, typeof(System.Int32));
-            Columns.Add(IDRISK, typeof(System.Int32));
-            Columns.Add(ID_GROUPE, typeof(System.Int32));
-            Columns.Add(ID_WBS, typeof(System.Int32));
-            Columns.Add(WBS_NAME, typeof(System.String));
-            Columns.Add(USERNAME, typeof(System.String));
+            PK_COLUMN[0] = this.Columns.Add(ID_COUNTERM, typeof(int));
+            PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(int));
+            Columns.Add(COUNTERM_NAMESHORT, typeof(string));
+            Columns.Add(TOP_RISK, typeof(string));
+            Columns.Add(DAMAGE, typeof(string));
+            Columns.Add(COLOR, typeof(string));
+            Columns.Add(RISK_REDUCTION, typeof(decimal));
+            Columns.Add(RISK, typeof(string));
+            Columns.Add(GROUPENAME, typeof(string));
+            Columns.Add(STATUS, typeof(string));
+            Columns.Add(VALUE, typeof(decimal));
+            Columns.Add(ID_RISK_TREE, typeof(int));
+            Columns.Add(IDRISK, typeof(int));
+            Columns.Add(ID_GROUPE, typeof(int));
+            Columns.Add(ID_WBS, typeof(int));
+            Columns.Add(WBS_NAME, typeof(string));
+            Columns.Add(USERNAME, typeof(string));
             PrimaryKey = PK_COLUMN;
         }
     }

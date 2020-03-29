@@ -36,25 +36,25 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             TableName = TABLENAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_RISK, typeof(System.Int32));
-            PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(System.Int32));
-            Columns.Add(RISK_NAMESHORT, typeof(System.String));
-            Columns.Add(FATHER, typeof(System.String));
-            Columns.Add(STATUS, typeof(System.String));
-            Columns.Add(PROBABILITY, typeof(System.Decimal));
-            Columns.Add(TOP_RISK, typeof(System.String));
-            Columns.Add(DAMAGE, typeof(System.String));
-            Columns.Add(COLOR, typeof(System.String));
-            Columns.Add(GROUPE_NAME, typeof(System.String));
-            Columns.Add(RISK_TREE, typeof(System.String));
-            Columns.Add(IS_ROOT, typeof(System.Boolean));
-            Columns.Add(VALUE, typeof(System.Decimal));
-            Columns.Add(ID_RISK_TREE, typeof(System.Int32));
-            Columns.Add(ID_GROUPE, typeof(System.Int32));
-            Columns.Add(ID_FATHER, typeof(System.Int32));
-            Columns.Add(ID_WBS, typeof(System.Int32));
-            Columns.Add(WBS_NAME, typeof(System.String));
-            Columns.Add(USERNAME, typeof(System.String));
+            PK_COLUMN[0] = this.Columns.Add(ID_RISK, typeof(int));
+            PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(int));
+            Columns.Add(RISK_NAMESHORT, typeof(string));
+            Columns.Add(FATHER, typeof(string));
+            Columns.Add(STATUS, typeof(string));
+            Columns.Add(PROBABILITY, typeof(decimal));
+            Columns.Add(TOP_RISK, typeof(string));
+            Columns.Add(DAMAGE, typeof(string));
+            Columns.Add(COLOR, typeof(string));
+            Columns.Add(GROUPE_NAME, typeof(string));
+            Columns.Add(RISK_TREE, typeof(string));
+            Columns.Add(IS_ROOT, typeof(bool));
+            Columns.Add(VALUE, typeof(decimal));
+            Columns.Add(ID_RISK_TREE, typeof(int));
+            Columns.Add(ID_GROUPE, typeof(int));
+            Columns.Add(ID_FATHER, typeof(int));
+            Columns.Add(ID_WBS, typeof(int));
+            Columns.Add(WBS_NAME, typeof(string));
+            Columns.Add(USERNAME, typeof(string));
             PrimaryKey = PK_COLUMN;
         }       
     }

@@ -46,9 +46,7 @@ namespace EnsureRisk.Windows
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string property)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new
-                PropertyChangedEventArgs(property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
     /// <summary>
@@ -105,10 +103,11 @@ namespace EnsureRisk.Windows
             try
             {
                 ServiceWBS.WebServiceWBS wsWBS = new ServiceWBS.WebServiceWBS();
-                dsWBS = wsWBS.GetAllWBS().Copy();
+                dsWBS = wsWBS.GetAllWBSFiltered(new object[] { ID_PROJECT }).Copy();
                 wsWBS.Dispose();
                 if (Operation == General.INSERT)
                 {
+                    Enabled = true;
                     if (RowFather != null)
                     {
                         TextFather.Text = RowFather[DT_Risk.NAMESHORT].ToString();

@@ -28,7 +28,7 @@ namespace EnsureBusinesss
                 foreach (RiskPolyLine item in lineList)
                 {
                     item.Move(x, y);
-                    (item).DrawEntireLine(item.ShortName);
+                    //(item).DrawEntireLine(item.ShortName);
                 }
                 foreach (MyDamage item in Rectangles)
                 {
@@ -51,7 +51,6 @@ namespace EnsureBusinesss
                 foreach (RiskPolyLine item in lineList)
                 {
                     item.Move((int)x, (int)y);
-                    (item).DrawEntireLine(item.ShortName);
                 }
             }
             catch (Exception ex)

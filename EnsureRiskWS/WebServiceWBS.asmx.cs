@@ -24,12 +24,13 @@ namespace EnsureRiskWS
             try
             {
                 UserDataSet userds = new UserDataSet();
-                DataSet ds = new DataSet();
+                DataSet ds = new DataSet();                
                 SQLAccessBuilder SQL = new SQLAccessBuilder(DT_WBS.TABLE_NAME);
                 SQL.GetDataset(ref ds, "pa_SelectWBSFiltered", param);
                 ds.Tables[0].TableName = DT_WBS.TABLE_NAME;
                 ds.Tables[1].TableName = DT_WBS_STRUCTURE.TABLE_NAME;
                 userds.Merge(ds);
+                SQL.Dispose();
                 return userds;
             }
             catch (Exception ex)
@@ -50,6 +51,7 @@ namespace EnsureRiskWS
                 ds.Tables[0].TableName = DT_WBS.TABLE_NAME;
                 ds.Tables[1].TableName = DT_WBS_STRUCTURE.TABLE_NAME;
                 userds.Merge(ds);
+                SQL.Dispose();
                 return userds;
             }
             catch (Exception ex)
@@ -61,7 +63,7 @@ namespace EnsureRiskWS
         [WebMethod]
         public DataSet SaveWBS(DataSet ds)
         {
-            SqlConnection sql = new SqlConnection();
+            //SqlConnection sql = new SqlConnection();
             SqlTransaction trans;
             SSQLConnection conection = SQLAccessBuilder.GetClassSSQLConnection();
             trans = (SqlTransaction)conection.BeginTransaction();
@@ -87,6 +89,8 @@ namespace EnsureRiskWS
                 {
                     conection.EndTransaction(trans);
                 }
+                trDA.Dispose();
+                StrDA.Dispose();
                 return ds;
             }
             catch (Exception ex)

@@ -22,12 +22,12 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             TableName = TABLENAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_RISKTREE, typeof(System.Int32));
-            PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(System.Int32));
-            Columns.Add(RISK_TREE, typeof(System.String));
-            Columns.Add(DAMAGE, typeof(System.String));
-            Columns.Add(COLOR, typeof(System.String));
-            Columns.Add(UM, typeof(System.String));
+            PK_COLUMN[0] = this.Columns.Add(ID_RISKTREE, typeof(int));
+            PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(int));
+            Columns.Add(RISK_TREE, typeof(string));
+            Columns.Add(DAMAGE, typeof(string));
+            Columns.Add(COLOR, typeof(string));
+            Columns.Add(UM, typeof(string));
             PrimaryKey = PK_COLUMN;
         }
         public static DataTable Create()

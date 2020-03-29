@@ -24,10 +24,10 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             this.TableName = OPERATION_ROLE_TABLE;
-            PK_COLUMN[0] = this.Columns.Add(ID_OPERATION_COLUM, typeof(System.Int32));
-            PK_COLUMN[1] = this.Columns.Add(IDROL_COLUMN, typeof(System.Int32));
-            this.Columns.Add(OPERATION_COLUMN, typeof(System.String));
-            Columns.Add(ROLE_COLUM, typeof(System.String));
+            PK_COLUMN[0] = this.Columns.Add(ID_OPERATION_COLUM, typeof(int));
+            PK_COLUMN[1] = this.Columns.Add(IDROL_COLUMN, typeof(int));
+            this.Columns.Add(OPERATION_COLUMN, typeof(string));
+            Columns.Add(ROLE_COLUM, typeof(string));
             this.PrimaryKey = PK_COLUMN;
         }
         public static DataTable Create()

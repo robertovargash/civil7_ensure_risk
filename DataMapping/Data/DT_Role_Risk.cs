@@ -20,10 +20,10 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             TableName = TABLENAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_RISK, typeof(System.Int32));
-            PK_COLUMN[1] = this.Columns.Add(IDROL_COLUMN, typeof(System.Int32));
-            Columns.Add(NAME_SHORT, typeof(System.String));
-            Columns.Add(Role, typeof(System.String));
+            PK_COLUMN[0] = this.Columns.Add(ID_RISK, typeof(int));
+            PK_COLUMN[1] = this.Columns.Add(IDROL_COLUMN, typeof(int));
+            Columns.Add(NAME_SHORT, typeof(string));
+            Columns.Add(Role, typeof(string));
             PrimaryKey = PK_COLUMN;
         }
     }

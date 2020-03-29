@@ -25,16 +25,16 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             this.TableName = TABLE_NAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_FATHER, typeof(System.Int32));
-            PK_COLUMN[1] = this.Columns.Add(ID_CHILD, typeof(System.Int32));
-            this.Columns.Add(FATHER, typeof(System.String));
-            this.Columns.Add(FNIVEL, typeof(System.String));
-            this.Columns.Add(CHILD, typeof(System.String));
-            this.Columns.Add(CNIVEL, typeof(System.String));
-            this.Columns.Add(IDPROJECT, typeof(System.Int32));
-            this.Columns.Add(IS_MANAGER, typeof(System.Boolean));
-            this.Columns.Add(CHILD_USER, typeof(System.String));
-            this.Columns.Add(FATHER_USER, typeof(System.String));
+            PK_COLUMN[0] = this.Columns.Add(ID_FATHER, typeof(int));
+            PK_COLUMN[1] = this.Columns.Add(ID_CHILD, typeof(int));
+            this.Columns.Add(FATHER, typeof(string));
+            this.Columns.Add(FNIVEL, typeof(string));
+            this.Columns.Add(CHILD, typeof(string));
+            this.Columns.Add(CNIVEL, typeof(string));
+            this.Columns.Add(IDPROJECT, typeof(int));
+            this.Columns.Add(IS_MANAGER, typeof(bool));
+            this.Columns.Add(CHILD_USER, typeof(string));
+            this.Columns.Add(FATHER_USER, typeof(string));
             this.PrimaryKey = PK_COLUMN;
         }
     }

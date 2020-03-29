@@ -22,12 +22,12 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
             this.TableName = TABLE_NAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_DIAGRAM, typeof(System.Int32));
+            PK_COLUMN[0] = this.Columns.Add(ID_DIAGRAM, typeof(int));
             PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
-            this.Columns.Add(DIAGRAM_NAME, typeof(System.String));
-            this.Columns.Add(ROOT_NAME_SHORT, typeof(System.String));
-            this.Columns.Add(ROOT_ID, typeof(System.Int32));
-            this.Columns.Add(ID_PROJECT, typeof(System.Int32));
+            this.Columns.Add(DIAGRAM_NAME, typeof(string));
+            this.Columns.Add(ROOT_NAME_SHORT, typeof(string));
+            this.Columns.Add(ROOT_ID, typeof(int));
+            this.Columns.Add(ID_PROJECT, typeof(int));
             this.PrimaryKey = PK_COLUMN;
         }
       

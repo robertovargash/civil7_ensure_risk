@@ -18,8 +18,8 @@ namespace DataMapping.Data
 
         private void CreateTable()
         {
-            this.Columns.Add(LANGUAJE_COLUMN, typeof(System.String));
-            this.Columns.Add(CULTURE_COLUMN, typeof(System.String));
+            this.Columns.Add(LANGUAJE_COLUMN, typeof(string));
+            this.Columns.Add(CULTURE_COLUMN, typeof(string));
         }
 
     }

@@ -24,15 +24,15 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
             this.TableName = TABLE_NAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_WBS, typeof(System.Int32));
+            PK_COLUMN[0] = this.Columns.Add(ID_WBS, typeof(int));
             PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
-            this.Columns.Add(WBS_NAME, typeof(System.String));
-            this.Columns.Add(WBS_FNAME, typeof(System.String));
-            this.Columns.Add(NIVEL, typeof(System.String));
-            this.Columns.Add(FNIVEL, typeof(System.String));
-            this.Columns.Add(IDPROJECT, typeof(System.Int32));
-            //this.Columns.Add(IS_MANAGER, typeof(System.Boolean));
-            this.Columns.Add(USERNAME, typeof(System.String));
+            this.Columns.Add(WBS_NAME, typeof(string));
+            this.Columns.Add(WBS_FNAME, typeof(string));
+            this.Columns.Add(NIVEL, typeof(string));
+            this.Columns.Add(FNIVEL, typeof(string));
+            this.Columns.Add(IDPROJECT, typeof(int));
+            //this.Columns.Add(IS_MANAGER, typeof(bool));
+            this.Columns.Add(USERNAME, typeof(string));
             this.PrimaryKey = PK_COLUMN;
         }
     }

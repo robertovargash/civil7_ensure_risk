@@ -46,9 +46,7 @@ namespace EnsureRisk.Windows
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string property)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new
-                PropertyChangedEventArgs(property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
     /// <summary>
@@ -58,6 +56,7 @@ namespace EnsureRisk.Windows
     public partial class WindowCM : Window
     {
         public DataCurrentCM Pi { get; set; }
+        public int ID_Project { get; set; }
         public int ID_WBS { get; set; }
         public string WBS_NAME { get; set; }
         public string USER_NAME { get; set; }
@@ -98,7 +97,7 @@ namespace EnsureRisk.Windows
             try
             {
                 ServiceWBS.WebServiceWBS wsWBS = new ServiceWBS.WebServiceWBS();
-                dsWBS = wsWBS.GetAllWBS().Copy();
+                dsWBS = wsWBS.GetAllWBSFiltered(new object[] { ID_Project }).Copy();
                 wsWBS.Dispose();
                 if (Operation == General.INSERT)
                 {
