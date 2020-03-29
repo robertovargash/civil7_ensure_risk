@@ -239,30 +239,30 @@ namespace EnsureBusinesss.Business
                     }
                     foreach (var item in Segments)
                     {
-                        item.Visibility = Visibility.Collapsed;
+                        item.Visibility = Visibility.Hidden;
                     }
                 }
                 else
                 {
                     Expand.Source = new BitmapImage(new Uri(General.EXPANDIDO));
                 }
-                if (!(IsActivated))
+                if (IsActivated)
                 {
-                    MyName.Text = "(Disabled)" + ShortName;
+                    MyName.Text = ShortName;                   
                 }
                 else
                 {
-                    MyName.Text = ShortName;
+                    MyName.Text = "(Disabled)" + ShortName;
                 }
                 DefinyTextPosition();
                 if (Oculto)
                 {
-                    TextPanel.Visibility = Visibility.Collapsed;
+                    TextPanel.Visibility = Visibility.Hidden;
                     foreach (var itemseg in Segments)
                     {
-                        itemseg.Visibility = Visibility.Collapsed;
+                        itemseg.Visibility = Visibility.Hidden;
                     }
-                    Visibility = Visibility.Collapsed;
+                    Visibility = Visibility.Hidden;
                 }
 
                 return base.DefiningGeometry;
@@ -701,8 +701,8 @@ namespace EnsureBusinesss.Business
         public double GetStrokeThicknessInPosition(int pos)
         {
             double visualParentStrokeThickness;
-            if (pos > 0)
-            {
+            if (pos > 0 && Father.Segments.Count > 0)
+            {                
                 visualParentStrokeThickness = Father.Segments.ElementAt(pos - 1).StrokeThickness;
             }
             else

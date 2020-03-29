@@ -917,6 +917,31 @@ namespace EnsureBusinesss
             }
         }
 
+        public static void SetCMLineValues(RiskPolyLine rl, DataRow CMRow)
+        {
+            try
+            {
+                //SET PRIMARY DATA TO A CM
+                rl.ShortName = CMRow[DT_CounterM.NAMESHORT].ToString();
+                rl.Position = (int)CMRow[DT_CounterM.POSITION];
+                rl.Probability = (decimal)CMRow[DT_CounterM.PROBABILITY] / 100;
+
+                if (rl.IsCM)
+                {
+                    rl.Collapsed = false;
+                }
+                else
+                {
+                    rl.Collapsed = false;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         //private static int Recursivo(RiskPolyLine line, bool IsDiagonal)
         //{
         //    return 1;

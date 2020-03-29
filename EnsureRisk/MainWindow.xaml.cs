@@ -2651,25 +2651,8 @@ namespace EnsureRisk
 
                 if (formRisk.ShowDialog() == true)
                 {
-                    //CurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Merge(formRisk.Risk_DamageTable);
-                    //CurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Merge(formRisk.CM_DamageTable);
-                    //CurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Merge(formRisk.WBS_RISK_Damage);
-                    //CurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Merge(formRisk.WBS_CM_Damage);
-                    //CurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Merge(formRisk.Risk_WBS_Table);
-                    //CurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Merge(formRisk.Risk_RoleTable);
-                    //CurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Merge(formRisk.CM_RoleTable);
-                    //CurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Merge(formRisk.CM_WBS_Table);
                     if (P.TheCurrentLayout.Ds.HasChanges())
                     {
-                        //if ((Boolean)formRisk.RiskRow[DT_Risk.ENABLED])
-                        //{
-                        //    (P.TheCurrentLayout.Line_Selected).DrawEntireLine(formRisk.RiskRow[DT_Risk.NAMESHORT].ToString());
-                        //}
-                        //else
-                        //{
-                        //    (P.TheCurrentLayout.Line_Selected).DrawEntireLine("(Disabled)" + formRisk.RiskRow[DT_Risk.NAMESHORT].ToString());
-                        //}
-
                         TreeOperation.SetRiskLineValues(P.TheCurrentLayout.Line_Selected, formRisk.RiskRow);
                         int pos = P.TheCurrentLayout.LinesList.FindIndex(rl => rl.ID == P.TheCurrentLayout.Line_Selected.ID);
                         P.TheCurrentLayout.LinesList[pos] = P.TheCurrentLayout.Line_Selected;
@@ -2716,11 +2699,25 @@ namespace EnsureRisk
         {
             try
             {
-                VerticalMenu win = new VerticalMenu("Moving");
-                win.ShowDialog();
+                new VerticalMenu("Moving").ShowDialog();
                 P.TheCurrentLayout.MoviendoRisk = true;
                 P.TheCurrentLayout.LinesMoving = new List<RiskPolyLine>();
                 P.TheCurrentLayout.LinesMoving.AddRange(TreeOperation.GetMeAndMyChildrenWithCM(P.TheCurrentLayout.Line_Selected));
+                if (P.TheCurrentLayout != null)
+                {
+                    P.TheCurrentLayout.GridPaintLines.Children.Remove(P.TheCurrentLayout.LineInMoving);
+                    System.Drawing.Color lnColor = System.Drawing.Color.FromArgb(int.Parse(P.TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + P.TheCurrentLayout.ID_Diagram)[P.TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
+                    P.TheCurrentLayout.LineInMoving = new RiskPolyLine(P.TheCurrentLayout.GridPaintLines, MenuRisk, false)
+                    {
+                        Stroke = new SolidColorBrush(System.Windows.Media.Color.FromArgb(lnColor.A, lnColor.R, lnColor.G, lnColor.B)),
+                        StrokeThickness = 3
+                    };
+                    P.TheCurrentLayout.LineInMoving.NewDrawAtPoint(new Point(P.TheCurrentLayout.X, P.TheCurrentLayout.Y), "");
+                }
+                foreach (var item in P.TheCurrentLayout.LinesMoving)
+                {
+                    item.Oculto = true;
+                }
                 Cursor = Cursors.Hand;
             }
             catch (Exception ex)
@@ -3228,6 +3225,8 @@ namespace EnsureRisk
                     {
                         if (itemi.IsCM)
                         {
+                            itemi.IsActivated = false;
+                            itemi.SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
                             //(P.TheCurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).DrawEntireLine("(Disabled)" + P.TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(itemi.ID)[DT_CounterM.NAMESHORT]);
                             //(CurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).Stroke = new SolidColorBrush(Colors.Gray);
                             (P.TheCurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
@@ -3308,26 +3307,22 @@ namespace EnsureRisk
                         WBS_CM_Damage = P.TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME],
                         CM_WBS_Table = P.TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME],
                         CM_RoleTable = P.TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME],
-                        Posicion = (Int32)P.TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(P.TheCurrentLayout.Line_Selected.ID)[DT_CounterM.POSITION],
+                        Posicion = (int)P.TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(P.TheCurrentLayout.Line_Selected.ID)[DT_CounterM.POSITION],
                         Icon = Icon,
                         MyCM = P.TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Copy()
                     };
                     windowCM.Pi.HasAccess = P.TheCurrentLayout.FullAccess(P.TheCurrentLayout.Line_Selected);
                     windowCM.RiskPadre = P.TheCurrentLayout.LinesList.Find(l => l.ID == P.TheCurrentLayout.Line_Selected.IdRiskFather);
-                    windowCM.RiskTreeID = (Int32)P.TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(P.TheCurrentLayout.Line_Selected.ID)[DT_CounterM.ID_RISK_TREE];
+                    windowCM.RiskTreeID = (int)P.TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(P.TheCurrentLayout.Line_Selected.ID)[DT_CounterM.ID_RISK_TREE];
 
                     if (windowCM.ShowDialog() == true)
                     {
-                        //CurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Merge(windowCM.TopRiskTable);
-                        //CurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Merge(windowCM.WBS_CM_Damage);
-                        //CurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Merge(windowCM.CM_WBS_Table);
-                        //CurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Merge(windowCM.CM_RoleTable);
                         if (P.TheCurrentLayout.Ds.HasChanges())
                         {
-                            P.TheCurrentLayout.Line_Selected.Probability = (Decimal)windowCM.CMRow[DT_CounterM.PROBABILITY] / 100;
-                            //P.TheCurrentLayout.Line_Selected.DrawEntireLine(windowCM.CMRow[DT_CounterM.NAMESHORT].ToString());
-
-                            P.TheCurrentLayout.LinesList[P.TheCurrentLayout.LinesList.FindIndex(rl => rl.ID == P.TheCurrentLayout.Line_Selected.ID)] = P.TheCurrentLayout.Line_Selected;
+                            TreeOperation.SetCMLineValues(P.TheCurrentLayout.Line_Selected, windowCM.CMRow);
+                            P.TheCurrentLayout.Line_Selected.StrokeThickness = 3;
+                            P.TheCurrentLayout.Line_Selected.StrokeThickness = 2;
+                            //P.TheCurrentLayout.LinesList[P.TheCurrentLayout.LinesList.FindIndex(rl => rl.ID == P.TheCurrentLayout.Line_Selected.ID)] = P.TheCurrentLayout.Line_Selected;
                             TextProbabilityChange(P.TheCurrentLayout.MainLine);
                             P.TheCurrentLayout.DrawNumbers();
                             P.TheCurrentLayout.LoadLinesValues();
@@ -5625,6 +5620,7 @@ namespace EnsureRisk
                         item.Group.GroupName = "None";
                     }
                     P.TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(((MyGroupButton)sender).IdGroup).Delete();
+                    FillTableGroup(P.TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)

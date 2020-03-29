@@ -404,6 +404,7 @@ namespace EnsureRisk.Windows
             CMRow[DT_CounterM.ID_WBS] = ID_WBS;
             CMRow[DT_CounterM.WBS_NAME] = WBS_NAME;
             CMRow[DT_CounterM.USER_NAME] = USER_NAME;
+
             foreach (DataRow itemDamage in TopRiskTable.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CMRow[DT_CounterM.ID]))
             {//primero recorro los Daños de los riesgos
                 decimal valor = 0;

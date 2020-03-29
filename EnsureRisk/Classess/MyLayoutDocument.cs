@@ -1,25 +1,23 @@
-﻿using Xceed.Wpf.AvalonDock.Controls;
-using Xceed.Wpf.AvalonDock.Layout;
-using System.Windows.Controls;
-using System.Windows;
-using EnsureBusinesss.Business;
-using System.Collections.Generic;
+﻿using DataMapping.Data;
 using EnsureBusinesss;
-using System.Linq;
-using System.Windows.Media;
-using DataMapping.Data;
-using System.Windows.Media.Imaging;
-using System;
+using EnsureBusinesss.Business;
+using EnsureRisk.Export;
+using EnsureRisk.Export.Trader;
 using EnsureRisk.Resources;
+using EnsureRisk.Windows;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Globalization;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
-using EnsureRisk.Windows;
-using System.ComponentModel;
-using EnsureRisk.Export.Trader;
-using EnsureRisk.Export;
-using System.Globalization;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace EnsureRisk.Classess
 {
@@ -74,6 +72,7 @@ namespace EnsureRisk.Classess
         public RiskPolyLine Line_Selected { get; set; }
         public RiskPolyLine MainLine { get; set; }
         public RiskPolyLine Line_Created { get; set; }
+        public RiskPolyLine LineInMoving { get; set; }
         #endregion
 
         #region Componentes
@@ -271,46 +270,46 @@ namespace EnsureRisk.Classess
 
         public void Scope()
         {
-            //if (IsScoping)
-            //{
-            //    try
-            //    {
-            //        foreach (RiskPolyLine item in LinesList)
-            //        {
-            //            item.Visibility = Visibility.Hidden;
-            //            item.MyName.Visibility = Visibility.Hidden;
-            //            foreach (var itemi in item.Segments)
-            //            {
-            //                itemi.Visibility = Visibility.Hidden;
-            //            }                        
-            //        }
-            //        foreach (RiskPolyLine item in TreeOperation.GetMeAndMyChildrenWithCM(LinesList.Find(x => x.ID == ScopeLine.ID)))
-            //        {
-            //            item.Visibility = Visibility.Visible;
-            //            item.MyName.Visibility = Visibility.Visible;
-            //            foreach (var itemi in item.Segments)
-            //            {
-            //                itemi.Visibility = Visibility.Visible;
-            //            }
-            //        }
-            //        LoadRectangles();
+            if (IsScoping)
+            {
+                try
+                {
+                    foreach (RiskPolyLine item in LinesList)
+                    {
+                        item.Visibility = Visibility.Hidden;
+                        item.TextPanel.Visibility = Visibility.Hidden;
+                        foreach (var itemi in item.Segments)
+                        {
+                            itemi.Visibility = Visibility.Hidden;
+                        }
+                    }
+                    foreach (RiskPolyLine item in TreeOperation.GetMeAndMyChildrenWithCM(LinesList.Find(x => x.ID == ScopeLine.ID)))
+                    {
+                        item.Visibility = Visibility.Visible;
+                        item.TextPanel.Visibility = Visibility.Visible;
+                        foreach (var itemi in item.Segments)
+                        {
+                            itemi.Visibility = Visibility.Visible;
+                        }
+                    }
+                    LoadRectangles();
 
-            //        DrawNumbers();
-            //        ((MainWindow)MyWindow).TextProbabilityChange(LinesList.Find(x => x.ID == ScopeLine.ID));
-            //        Title = LinesList.Find(x => x.ID == ScopeLine.ID).ShortName;
-            //        ((MainWindow)MyWindow).TextDiagram.Text = LinesList.Find(x => x.ID == ScopeLine.ID).ShortName;
-            //        LinesList.Find(x => x.ID == ScopeLine.ID).ExtrasVisibility(Visibility.Hidden);
+                    DrawNumbers();
+                    ((MainWindow)MyWindow).TextProbabilityChange(LinesList.Find(x => x.ID == ScopeLine.ID));
+                    Title = LinesList.Find(x => x.ID == ScopeLine.ID).ShortName;
+                    ((MainWindow)MyWindow).TextDiagram.Text = LinesList.Find(x => x.ID == ScopeLine.ID).ShortName;
+                    LinesList.Find(x => x.ID == ScopeLine.ID).ExtrasVisibility(Visibility.Hidden);
 
-            //        ((MainWindow)MyWindow).BtnBackward.Visibility = Visibility.Visible;
+                    ((MainWindow)MyWindow).BtnBackward.Visibility = Visibility.Visible;
 
-                   
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        new WindowMessageOK(ex.Message).ShowDialog();
-            //    }
-            //}
-        }        
+
+                }
+                catch (Exception ex)
+                {
+                    new WindowMessageOK(ex.Message).ShowDialog();
+                }
+            }
+        }
 
         public void EnterWorking()
         {
@@ -327,7 +326,7 @@ namespace EnsureRisk.Classess
             {
                 if (LinesList.Count > 0)
                 {
-                   
+
                     if (!(CbFilterTopR.SelectedValue is null))
                     {
                         IdDamageSelected = (Int32)CbFilterTopR.SelectedValue;
@@ -747,7 +746,7 @@ namespace EnsureRisk.Classess
                 {
                     IdDamageSelected = (int)CbFilterTopR.SelectedValue;
                     if (IdDamageSelected != 0)
-                    {
+                    {                        
                         General.UpdateThickness(LinesList);
                         foreach (RiskPolyLine polyLine in LinesList)
                         {
@@ -765,6 +764,7 @@ namespace EnsureRisk.Classess
                 new WindowMessageOK(ex.Message).ShowDialog();
             }
         }
+
 
         public void AddMainLine(DataRow dr, System.Drawing.Color lnColor)
         {
@@ -895,7 +895,7 @@ namespace EnsureRisk.Classess
                             }
                             //RiskPolyLine riskLine = haspermission ? CreateRiskShape(GridPaintLines, MenuRisk, false, item) : CreateRiskShape(GridPaintLines, null, false, item);
                             RiskPolyLine riskLine = haspermission ? CreateRiskShape(((MainWindow)MyWindow).P.TheCurrentLayout.GridPaintLines, MenuRisk, false, item) : CreateRiskShape(((MainWindow)MyWindow).P.TheCurrentLayout.GridPaintLines, null, false, item);
-                            SetPolyLineGroup(riskLine, item);                            
+                            SetPolyLineGroup(riskLine, item);
 
                             riskLine.Collapsed = (bool)item[DT_Risk.ISCOLLAPSED];
                             if (((bool)item[DT_Risk.ENABLED]))
@@ -1053,7 +1053,7 @@ namespace EnsureRisk.Classess
                     item.AcValue = valor;
                     item.OwnValue = myvalue;
                     item.AcDamage = AcumDamage;
-                }                
+                }
             }
         }
 
@@ -1176,7 +1176,7 @@ namespace EnsureRisk.Classess
             return access;
         }
 
-        public void BuscarAncestrosRisk(RiskPolyLine line, List<RiskPolyLine> ancestors) 
+        public void BuscarAncestrosRisk(RiskPolyLine line, List<RiskPolyLine> ancestors)
         {
             if (line.IdRiskFather != 0 || line.Father != null)
             {
@@ -1184,7 +1184,7 @@ namespace EnsureRisk.Classess
                 BuscarAncestrosRisk(line.Father, ancestors);
             }
         }
-        
+
         private void SetEventsToSegments()
         {
             foreach (var item in LinesList)
@@ -1313,7 +1313,7 @@ namespace EnsureRisk.Classess
             {
                 ChoosingRisk = false;
                 ResetLinesColor(RiskGroupSelected);
-                ResetLinesMenu(RiskGroupSelected, MenuRisk); 
+                ResetLinesMenu(RiskGroupSelected, MenuRisk);
                 SetRightMenu(RiskGroupSelected);
                 RiskGroupSelected.Clear();
                 //UpdateRiskCounText(-1 * p.RiskCount);
@@ -1955,7 +1955,7 @@ namespace EnsureRisk.Classess
                 }
                 else { new WindowMessageOK("No Access Granted to do this Operation").ShowDialog(); }
 
-                
+
                 GridPaintLines.Children.Remove(Line_Created);
                 Line_Created = null;
                 Creando = false;
@@ -2188,7 +2188,7 @@ namespace EnsureRisk.Classess
             }
         }
 
-       
+
         public void RiskLeave()
         {
             SetLinesThickness();
@@ -2232,11 +2232,11 @@ namespace EnsureRisk.Classess
         {
             if (TheLine != null)
             {
-                TheLine.StrokeThickness = 10;
+                TheLine.StrokeThickness = General.MaxThickness;
                 // se recorre la lista de todos los hermanos, incluyendose el que se genero el evento.
                 foreach (SegmentPolyLine segmentLine in TheLine.Segments)
                 {
-                    segmentLine.StrokeThickness = 10;
+                    segmentLine.StrokeThickness = General.MaxThickness;
                 }
             }
         }
@@ -2270,7 +2270,7 @@ namespace EnsureRisk.Classess
                         decimal el = TheLine.AcLike;
                         decimal valor = TheLine.AcValue;
                         string AcumValue = StringResources.ACUM_VALUE + General.MyRound(valor, 4);
-                        string Valuee = "";                       
+                        string Valuee = "";
                         Valuee = StringResources.VALUE + General.MyRound(TheLine.OwnValue, 2).ToString();
                         string ED = StringResources.ACUM_DAMAGE + General.MyRound(TheLine.AcDamage, 4);
                         string probability = StringResources.PROBABILITY + General.MyRound(TheLine.Probability * 100, 2).ToString() + " %";
@@ -2287,7 +2287,7 @@ namespace EnsureRisk.Classess
                         {
                             ((MenuItem)MenuRisk.Items[9]).ToolTip = StringResources.EnableValue;
                         }
-                    }                    
+                    }
                 }
             }
             catch (Exception ex)
@@ -2468,6 +2468,9 @@ namespace EnsureRisk.Classess
 
                 TreeOperation.CreateCopyOfLine(Line_Selected, destinationPolyLine.ID, Ds);
                 TreeOperation.DeleteLine(linetoDel, Ds);
+
+                GridPaintLines.Children.Remove(LineInMoving);
+                LineInMoving = null;
             }
         }
 
@@ -2484,7 +2487,7 @@ namespace EnsureRisk.Classess
             destinationPolyLine.Children.Insert(pos, insertedCM);
             SetPolyLinePosition(destinationPolyLine.Children);
         }
-       
+
         private void MoveCounterMeasure(RiskPolyLine destinationPolyLine, Point point)
         {
             if (FullAccess(destinationPolyLine))
@@ -2536,7 +2539,7 @@ namespace EnsureRisk.Classess
                 };
                 TreeOperation.CreateCopyOfLine(Line_Selected, destinationPolyLine.ID, Ds);
                 TreeOperation.DeleteLine(linetoDel, Ds);
-            }            
+            }
         }
 
         /// <summary>
@@ -2650,12 +2653,10 @@ namespace EnsureRisk.Classess
             {
                 if (((PictureBoxPolyLine)sender).Risk.Collapsed)
                 {
-                    //((PictureBoxPolyLine)sender).Source = new BitmapImage(new Uri(General.EXPANDIDO));
                     ((PictureBoxPolyLine)sender).Risk.Collapsed = false;
                 }
                 else
                 {
-                    //((PictureBoxPolyLine)sender).Source = new BitmapImage(new Uri(General.CONTRAIDO));
                     ((PictureBoxPolyLine)sender).Risk.Collapsed = true;
                 }
                 Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(((PictureBoxPolyLine)sender).Risk.ID)[DT_Risk.ISCOLLAPSED] = ((PictureBoxPolyLine)sender).Risk.Collapsed;
@@ -2993,15 +2994,27 @@ namespace EnsureRisk.Classess
                                 }
                                 else
                                 {
-                                    if (!(MoviendoRisk))
                                     {
                                         MoviendoRisk = true;
                                         LinesMoving = new List<RiskPolyLine>();
                                         LinesMoving.AddRange(TreeOperation.GetMeAndMyChildrenWithCM(Line_Selected));
+                                        foreach (var item in LinesMoving)
+                                        {
+                                            item.Oculto = true;
+                                        }
+                                        GridPaintLines.Children.Remove(LineInMoving);
+                                        System.Drawing.Color lnColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
+                                        LineInMoving = new RiskPolyLine(GridPaintLines, MenuRisk, false)
+                                        {
+                                            Stroke = new SolidColorBrush(System.Windows.Media.Color.FromArgb(lnColor.A, lnColor.R, lnColor.G, lnColor.B)),
+                                            StrokeThickness = 3
+                                        };
+                                        LineInMoving.NewDrawAtPoint(new Point(X, Y), "");
                                     }
                                     if (MoviendoRisk)
                                     {
-                                        TreeOperation.MoveLines(LinesMoving, e.GetPosition(GridPaintLines).X - Line_Selected.Points[1].X - 35, e.GetPosition(GridPaintLines).Y - Line_Selected.Points[1].Y);
+                                        LineInMoving.NewDrawAtPoint(e.GetPosition(GridPaintLines));
+                                        TreeOperation.MoveLines(new List<RiskPolyLine>() { LineInMoving }, e.GetPosition(GridPaintLines).X - LineInMoving.Points[1].X - 25, e.GetPosition(GridPaintLines).Y - LineInMoving.Points[1].Y);
                                         X = e.GetPosition(GridPaintLines).X;
                                         Y = e.GetPosition(GridPaintLines).Y;
                                         Main_Y = MainLine.Points[0].Y;
@@ -3015,10 +3028,22 @@ namespace EnsureRisk.Classess
                     {
                         if (MoviendoRisk || MoviendoCM)
                         {
-                            TreeOperation.MoveLines(LinesMoving, e.GetPosition(GridPaintLines).X - Line_Selected.Points[1].X - 35, e.GetPosition(GridPaintLines).Y - Line_Selected.Points[1].Y);
-                            X = e.GetPosition(GridPaintLines).X;
-                            Y = e.GetPosition(GridPaintLines).Y;
-                            Main_Y = MainLine.Points[0].Y; //Si se movio el arbol, regista la posicion de las lineas
+                            if (MoviendoRisk)
+                            {
+                                LineInMoving.NewDrawAtPoint(e.GetPosition(GridPaintLines));
+                                TreeOperation.MoveLines(new List<RiskPolyLine>() { LineInMoving }, e.GetPosition(GridPaintLines).X - LineInMoving.Points[1].X - 25, e.GetPosition(GridPaintLines).Y - LineInMoving.Points[1].Y);
+                                X = e.GetPosition(GridPaintLines).X;
+                                Y = e.GetPosition(GridPaintLines).Y;
+                                Main_Y = MainLine.Points[0].Y;
+                            }
+                            if (MoviendoCM)
+                            {
+                                TreeOperation.MoveLines(LinesMoving, e.GetPosition(GridPaintLines).X - Line_Selected.Points[1].X - 35, e.GetPosition(GridPaintLines).Y - Line_Selected.Points[1].Y);
+                                X = e.GetPosition(GridPaintLines).X;
+                                Y = e.GetPosition(GridPaintLines).Y;
+                                Main_Y = MainLine.Points[0].Y;
+                            }
+                           
                         }
                         else
                         {
@@ -3072,10 +3097,15 @@ namespace EnsureRisk.Classess
                 }
                 if (MoviendoRisk || MoviendoCM || Creando)
                 {
+                    if (MoviendoRisk)
+                    {
+                        GridPaintLines.Children.Remove(LineInMoving);
+                    }
                     MoviendoRisk = false;
                     Creando = false;
                     Line_Created = null;
                     MoviendoCM = false;
+                    LineInMoving = null;
                     //Cursor = Cursors.Arrow;
                     //TreeOperation.DrawEntireDiagramAsFishBone(MainLine);
                     //TreeOperation.FixMainLine(LinesList, MainLine);
@@ -3129,6 +3159,10 @@ namespace EnsureRisk.Classess
                 Loose = true;
                 if (MoviendoRisk || MoviendoCM)
                 {
+                    if (MoviendoRisk)
+                    {
+                        GridPaintLines.Children.Remove(LineInMoving);
+                    }
                     MoviendoRisk = false;
                     Creando = false;
                     MoviendoCM = false;
