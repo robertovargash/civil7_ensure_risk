@@ -446,15 +446,15 @@
             <StackPanel Orientation="Horizontal"  VerticalAlignment="Top" HorizontalAlignment="Right"  Grid.Column="0">
                 <ToolBarTray>
                     <ToolBar Style="{DynamicResource MaterialDesignToolBar}" ClipToBounds="False">
-                        <Button x:Name="ButtonHand" Click="ButtonHand_Click"  Content="{md:PackIcon Kind=Hand}" RenderTransformOrigin="0.5,0.5" >
-                            <Button.RenderTransform>
+                        <Button x:Name="ButtonHand" Click="ButtonHand_Click"  Content="{md:PackIcon Kind=Hand}">
+                            <!--<Button.RenderTransform>
                                 <TransformGroup>
                                     <ScaleTransform ScaleX="-1"/>
                                     <SkewTransform/>
                                     <RotateTransform/>
                                     <TranslateTransform/>
                                 </TransformGroup>
-                            </Button.RenderTransform>
+                            </Button.RenderTransform>-->
                         </Button>
                         <Separator/>
                         <Button x:Name="MenuItemOptionNewRisk" ToolTip="New Risk (Ctrl + R)" Command="local:CustomCommands.Risk" Content="{md:PackIcon Kind=ArrowBottomRight}" />
