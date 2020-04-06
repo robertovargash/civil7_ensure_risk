@@ -134,6 +134,9 @@
     <Compile Include="Classess\LTextBlock.cs" />
     <Compile Include="Classess\LTextBox.cs" />
     <Compile Include="Classess\MenuRiskItems.cs" />
+    <Compile Include="Classess\MiniMapControl.xaml.cs">
+      <DependentUpon>MiniMapControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Classess\MRLimited.cs" />
     <Compile Include="Classess\MyGrid.cs" />
     <Compile Include="Classess\MyLayoutDocument.cs" />
@@ -329,6 +332,10 @@
     <Compile Include="Windows\Wbs\WindowWBSList.xaml.cs">
       <DependentUpon>WindowWBSList.xaml</DependentUpon>
     </Compile>
+    <Page Include="Classess\MiniMapControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -34,7 +34,7 @@ namespace EnsureRisk.Windows
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            textooo.Text = Ele.Text.TrimStart();
+            //textooo.Text = Ele.Text.TrimStart();
             //For example, the return value of "abc".Insert(2, "XYZ") is "abXYZc".
 
         }

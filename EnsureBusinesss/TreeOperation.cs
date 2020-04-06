@@ -1516,17 +1516,17 @@ namespace EnsureBusinesss
             //System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(ds.Tables[DT_RiskTree_Damages.TABLENAME].Select(DT_RiskTree_Damages.ID_RISKTREE + " = " + IdTreeRisk)[0][DT_RiskTree_Damages.COLOR].ToString()));
             foreach (DataRow item in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + IdTreeRisk))
             {
-                if ((Boolean)item[DT_Risk.IS_ROOT])
+                if ((bool)item[DT_Risk.IS_ROOT])
                 {
                     RiskPolyLine MainLine = new RiskPolyLine()
                     {
                         //Stroke = new SolidColorBrush(Color.FromArgb(lnColor.A, lnColor.R, lnColor.G, lnColor.B)),
                         IsRoot = true,
                         IsCM = false,
-                        FromTop = (Boolean)item[DT_Risk.FROM_TOP],
+                        FromTop = (bool)item[DT_Risk.FROM_TOP],
                         StrokeThickness = General.MaxThickness,
-                        ID = (Int32)item[DT_Risk.ID],
-                        Probability = (Decimal)item[DT_Risk.PROBABILITY],
+                        ID = (int)item[DT_Risk.ID],
+                        Probability = (decimal)item[DT_Risk.PROBABILITY],
                         ShortName = item[DT_Risk.NAMESHORT].ToString(),
                         MyLevel = 0
                     };
@@ -1542,11 +1542,11 @@ namespace EnsureBusinesss
                     RiskPolyLine riskLine = new RiskPolyLine()
                     {
                         ShortName = item[DT_Risk.NAMESHORT].ToString(),
-                        ID = (Int32)item[DT_Risk.ID],
-                        Position = (Int32)item[DT_Risk.POSITION],
-                        Collapsed = (Boolean)item[DT_Risk.ISCOLLAPSED],
-                        Probability = (Decimal)item[DT_Risk.PROBABILITY],
-                        IsActivated = (Boolean)item[DT_Risk.ENABLED],
+                        ID = (int)item[DT_Risk.ID],
+                        Position = (int)item[DT_Risk.POSITION],
+                        Collapsed = (bool)item[DT_Risk.ISCOLLAPSED],
+                        Probability = (decimal)item[DT_Risk.PROBABILITY],
+                        IsActivated = (bool)item[DT_Risk.ENABLED],
                         StrokeThickness = 2,
                         IsCM = false,
                         IdRiskFather = (Int32)item[DT_Risk.IDRISK_FATHER]
@@ -1555,7 +1555,7 @@ namespace EnsureBusinesss
                     {
                         riskLine.Group = new LineGroup()
                         {
-                            IdGroup = (Int32)item[DT_Risk.ID_GROUPE],
+                            IdGroup = (int)item[DT_Risk.ID_GROUPE],
                             GroupName = item[DT_Risk.GROUPE_NAME].ToString()
                         };
                     }
@@ -1576,18 +1576,18 @@ namespace EnsureBusinesss
                 RiskPolyLine cmline = new RiskPolyLine()
                 {
                     IsCM = true,
-                    Position = (Int32)item[DT_CounterM.POSITION],
+                    Position = (int)item[DT_CounterM.POSITION],
                     ShortName = item[DT_CounterM.NAMESHORT].ToString(),
-                    IdRiskFather = (Int32)item[DT_CounterM.ID_RISK],
-                    ID = (Int32)item[DT_CounterM.ID],
-                    Probability = (Decimal)item[DT_CounterM.PROBABILITY],
-                    IsActivated = (Boolean)item[DT_CounterM.ENABLED]
+                    IdRiskFather = (int)item[DT_CounterM.ID_RISK],
+                    ID = (int)item[DT_CounterM.ID],
+                    Probability = (decimal)item[DT_CounterM.PROBABILITY],
+                    IsActivated = (bool)item[DT_CounterM.ENABLED],
                 };
                 if (item[DT_Risk.ID_GROUPE] != DBNull.Value)
                 {
                     cmline.Group = new LineGroup()
                     {
-                        IdGroup = (Int32)item[DT_Risk.ID_GROUPE],
+                        IdGroup = (int)item[DT_Risk.ID_GROUPE],
                         GroupName = item[DT_Risk.GROUPE_NAME].ToString()
                     };
                 }

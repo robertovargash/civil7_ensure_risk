@@ -9,7 +9,8 @@
         xmlns:resx="clr-namespace:EnsureRisk.Resources"
         xmlns:Business="clr-namespace:EnsureBusinesss.Business;assembly=EnsureBusinesss"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
-        Background="{DynamicResource MaterialDesignPaper}"
+    xmlns:classess="clr-namespace:EnsureRisk.Classess"
+    Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
@@ -195,6 +196,7 @@
             <md:PackIcon Kind="Lan" x:Key="Tree"/>
             <md:PackIcon Kind="Fish" x:Key="Fish"/>
             <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Key="DeleteRow" Content="{md:PackIcon Kind=Delete}" ToolTip="Remove this group"/>
+            <TextBox Style="{StaticResource MaterialDesignFilledTextFieldTextBox}" x:Key="TextName"/>
             <Slider x:Key="CommonSlider"/>
             <ComboBox x:Key="CommonCB"/>
             <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Key="Delete" Content="{md:PackIcon Kind=Delete}" ToolTip="Remove this group"/>
@@ -252,34 +254,11 @@
             <xcad:LayoutRoot x:Name="_layoutRoot">
                 <xcad:LayoutPanel Orientation="Horizontal">
                     <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200">
-                        <!--<xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="MiniMap" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300">
-                            <Grid Name="gridMiniMap"  >                                
-                                <Image Name="MyImage" Source="Images/English.png"/>
-                                <ItemsControl x:Name="content" ItemsSource="{Binding ElementName=MyImage, Path=Source}" Background="White" >
-                                    <ItemsControl.ItemContainerStyle>
-                                        <Style>
-                                            <Setter Property="Canvas.Left" Value="{Binding X}" />
-                                            <Setter Property="Canvas.Top" Value="{Binding Y}" />
-                                        </Style>
-                                    </ItemsControl.ItemContainerStyle>
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <Canvas />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                </ItemsControl>
-                                <Canvas>
-                                    <Thumb x:Name="overviewZoomRectThumb" Canvas.Left="100" Canvas.Top="200" Width="200" Height="200" DragDelta="overviewZoomRectThumb_DragDelta" Opacity="0.5" >
-                                        <Thumb.Template>
-                                            <ControlTemplate  TargetType="{x:Type Thumb}" >
-                                                <Border BorderBrush="Black" BorderThickness="1" Background="Yellow" CornerRadius="1" />
-                                            </ControlTemplate>
-                                        </Thumb.Template>
-                                    </Thumb>
-                                </Canvas>
-
+                        <xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="MiniMap" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300">
+                            <Grid Name="gridMiniMap" Background="#FF918080">
+                                <classess:MiniMapControl x:Name="MiniMap" />
                             </Grid>
-                        </xcad:LayoutAnchorable>-->
+                        </xcad:LayoutAnchorable>
                         <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" IsVisibleChanged="AnchorWBSList_IsVisibleChanged" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
                             <Grid>
                                 <Grid.RowDefinitions>

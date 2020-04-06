@@ -1324,3 +1324,5 @@ C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EN
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.csproj.CopyComplete
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.exe
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Classess\MiniMapControl.baml
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Classess\MiniMapControl.g.cs

@@ -631,27 +631,11 @@ namespace EnsureRisk
         public void ViewInMiniMap()
         {
             try
-            {
-                //gridMiniMap.Children.Clear();
-                ////Image myImage = new Image();
-                //Transform transform = P.TheCurrentLayout.GridPaintLines.LayoutTransform;
-                //// reset current transform (in case it is scaled or rotated)
-                //P.TheCurrentLayout.GridPaintLines.LayoutTransform = null;
-
-                //// Get the size of canvas
-                //Size size = new Size(P.TheCurrentLayout.GridPaintLines.Width, P.TheCurrentLayout.GridPaintLines.Height);
-                //// Measure and arrange the surface
-                //// VERY IMPORTANT
-                //P.TheCurrentLayout.GridPaintLines.Measure(size);
-                //P.TheCurrentLayout.GridPaintLines.Arrange(new Rect(size));
-
-                //RenderTargetBitmap bmp = new RenderTargetBitmap((int)size.Width, (int)size.Height, 91, 96, PixelFormats.Default);
-                //bmp.Render(P.TheCurrentLayout.GridPaintLines);
-                //MyImage.Source = bmp;
-
-                //// Add Image to the UI                
-                ////gridMiniMap.Children.Add(MyImage);
-                //P.TheCurrentLayout.GridPaintLines.LayoutTransform = transform;
+            { 
+                if (P.TheCurrentLayout != null)
+                {
+                    MiniMap.MapSource = P.TheCurrentLayout.ScrollGridPaint;
+                }
             }
             catch (Exception ex)
             {
@@ -662,7 +646,6 @@ namespace EnsureRisk
 
         private void MenuItemFish_Tree_Click(object sender, RoutedEventArgs e)
         {
-            ViewInMiniMap();
             //try
             //{
             //    if (CurrentLayout.LinesList.Count > 0)
@@ -1472,8 +1455,7 @@ namespace EnsureRisk
                 P.TheCurrentLayout.SetLinesThickness();
                 TextProbabilityChange(P.TheCurrentLayout.MainLine);
 
-                P.TheCurrentLayout.ScrollGridPaint.ScrollToRightEnd();
-                P.TheCurrentLayout.ScrollGridPaint.ScrollToVerticalOffset(P.TheCurrentLayout.MainLine.Points[1].Y - 200);
+                
                 BtnBackward.Visibility = Visibility.Hidden;
 
                 CruzarTablaRisk(P.TheCurrentLayout.Ds);
@@ -1485,6 +1467,8 @@ namespace EnsureRisk
                 }
                 P.TheCurrentLayout.EnterWorking();
                 TheProgress.Visibility = Visibility.Hidden;
+                P.TheCurrentLayout.ScrollGridPaint.ScrollToRightEnd();
+                P.TheCurrentLayout.ScrollGridPaint.ScrollToVerticalOffset(P.TheCurrentLayout.MainLine.Points[1].Y - 200);
                 HabilitarBotones(true);
             }
             catch (Exception ex)
@@ -2570,6 +2554,7 @@ namespace EnsureRisk
                     {
                         ID = (Int32)wrisk.RiskRow[DT_Risk.ID],
                         IsCM = false,
+                        ShortName = "LineCreated",
                         Father = P.TheCurrentLayout.Line_Selected,
                         IdRiskFather = P.TheCurrentLayout.Line_Selected.ID
                     };
@@ -2658,7 +2643,7 @@ namespace EnsureRisk
                         P.TheCurrentLayout.LinesList[pos] = P.TheCurrentLayout.Line_Selected;
                         TextProbabilityChange(P.TheCurrentLayout.MainLine);
                         P.TheCurrentLayout.DrawNumbers();
-                        P.TheCurrentLayout.LoadLinesValues();
+                        P.TheCurrentLayout.UpdateLinesValues();
                         P.TheCurrentLayout.SetLinesThickness();
                         CruzarTablaRisk(P.TheCurrentLayout.Ds);
                         CruzarTablaCM(P.TheCurrentLayout.Ds);
@@ -2710,7 +2695,8 @@ namespace EnsureRisk
                     P.TheCurrentLayout.LineInMoving = new RiskPolyLine(P.TheCurrentLayout.GridPaintLines, MenuRisk, false)
                     {
                         Stroke = new SolidColorBrush(System.Windows.Media.Color.FromArgb(lnColor.A, lnColor.R, lnColor.G, lnColor.B)),
-                        StrokeThickness = 3
+                        StrokeThickness = 3,
+                        IsMoving = true
                     };
                     P.TheCurrentLayout.LineInMoving.NewDrawAtPoint(new Point(P.TheCurrentLayout.X, P.TheCurrentLayout.Y), "");
                 }
@@ -2762,6 +2748,7 @@ namespace EnsureRisk
                         ID = (int)windowCM.CMRow[DT_CounterM.ID],
                         IsCM = true,
                         Father = P.TheCurrentLayout.Line_Selected,
+                        ShortName = "LineCreated",
                         IdRiskFather = P.TheCurrentLayout.Line_Selected.ID
                     };
                     P.TheCurrentLayout.InsertCM(Line_Created, P.TheCurrentLayout.Line_Selected, P.TheCurrentLayout.PointSelected);
@@ -2857,6 +2844,7 @@ namespace EnsureRisk
                     IsCM = LineToCpy.IsCM,
                     IsRoot = false
                 };
+                P.TheCurrentLayout.CopyRisk.TextPanel.Visibility = Visibility.Collapsed;
                 P.TheCurrentLayout.ListCopy.Add(P.TheCurrentLayout.CopyRisk);
                 foreach (var item in TreeOperation.GetOnlyMyChildrenWithCM(LineToCpy))
                 {
@@ -2874,6 +2862,7 @@ namespace EnsureRisk
                             FromTop = item.FromTop,
                             IsRoot = item.IsRoot
                         };
+                        line.TextPanel.Visibility = Visibility.Collapsed;
                         P.TheCurrentLayout.ListCopy.Add(line);
                     }
                     else
@@ -2890,6 +2879,7 @@ namespace EnsureRisk
                             FromTop = item.FromTop,
                             IsRoot = item.IsRoot
                         };
+                        cmLine.TextPanel.Visibility = Visibility.Collapsed;
                         P.TheCurrentLayout.ListCopy.Add(cmLine);
                     }
                 }
@@ -3320,14 +3310,11 @@ namespace EnsureRisk
                         if (P.TheCurrentLayout.Ds.HasChanges())
                         {
                             TreeOperation.SetCMLineValues(P.TheCurrentLayout.Line_Selected, windowCM.CMRow);
-                            P.TheCurrentLayout.Line_Selected.StrokeThickness = 3;
-                            P.TheCurrentLayout.Line_Selected.StrokeThickness = 2;
-                            //P.TheCurrentLayout.LinesList[P.TheCurrentLayout.LinesList.FindIndex(rl => rl.ID == P.TheCurrentLayout.Line_Selected.ID)] = P.TheCurrentLayout.Line_Selected;
                             TextProbabilityChange(P.TheCurrentLayout.MainLine);
                             P.TheCurrentLayout.DrawNumbers();
-                            P.TheCurrentLayout.LoadLinesValues();
+                            P.TheCurrentLayout.UpdateLinesValues();
                             P.TheCurrentLayout.SetLinesThickness();
-                            CruzarTablaRisk(P.TheCurrentLayout.Ds);
+                            CruzarTablaRisk(P.TheCurrentLayout.Ds);                            
                             CruzarTablaCM(P.TheCurrentLayout.Ds);
                         }
                     }
@@ -3612,6 +3599,7 @@ namespace EnsureRisk
                         {
                             ID = (Int32)CMRow[DT_CounterM.ID],
                             IsCM = true,
+                            ShortName = "LineCreated",
                             Father = itemRisk,
                             IdRiskFather = itemRisk.ID
                         };

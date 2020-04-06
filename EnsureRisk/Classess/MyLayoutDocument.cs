@@ -21,7 +21,7 @@ using Xceed.Wpf.AvalonDock.Layout;
 
 namespace EnsureRisk.Classess
 {
-    public class MyLayoutDocument : LayoutDocument
+    public class MyLayoutDocument : LayoutDocument, INotifyPropertyChanged
     {
         public string LoginUser { get; set; }
         public double X { get; set; }
@@ -122,7 +122,6 @@ namespace EnsureRisk.Classess
                 TheTopGrid = new MyGrid() { ID_Diagram = this.ID_Diagram, Background = new SolidColorBrush(Colors.Red) };
                 TheTopGrid.Children.Add(TheMainGrid);
                 GridPaintLines = new GridPaint() { MyOwner = this };
-                GridPaintLines.SizeChanged += GridPaintLines_SizeChanged;
                 RowDefinition row0 = new RowDefinition() { };
                 RowDefinition row1 = new RowDefinition() { Height = new GridLength(50) };
                 TheMainGrid.RowDefinitions.Add(row0);
@@ -229,11 +228,11 @@ namespace EnsureRisk.Classess
                 RiskGroupSelected = new List<RiskPolyLine>();
                 CMGroupSelected = new List<RiskPolyLine>();
                 ListCopy = new List<RiskPolyLine>();
-                LinesListCMState = new Dictionary<Int32, Boolean>();
+                LinesListCMState = new Dictionary<int, bool>();
                 MainLine = new RiskPolyLine(GridPaintLines, MenuMainRisk, false);
                 ScrollGridPaint.ScrollToVerticalOffset(GridPaintLines.Height / 2);
                 ScrollGridPaint.ScrollToHorizontalOffset(GridPaintLines.Width);
-                TextChangeName = new LTextBox() { MyOwner = this, Name = "TextChangeName", MaxLength = 250, VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left, Width = 100, Visibility = Visibility.Hidden };
+                TextChangeName = new LTextBox() { MyOwner = this, Name = "TextChangeName",  VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left, Visibility = Visibility.Collapsed };
                 TextChangeName.KeyDown += TextChangeName_KeyDown;
                 TextChangeName.LostFocus += TextChangeName_LostFocus;
                 TextChangeName.IsVisibleChanged += TextChangeName_IsVisibleChanged;
@@ -261,12 +260,7 @@ namespace EnsureRisk.Classess
             {
                 new WindowMessageOK(ex.Message).ShowDialog();
             }
-        }
-
-        private void GridPaintLines_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            ((MainWindow)MyWindow).ViewInMiniMap();
-        }
+        }       
 
         public void Scope()
         {
@@ -363,7 +357,7 @@ namespace EnsureRisk.Classess
                                 }
                             }
                         }
-                        LoadLinesValues();
+                        UpdateLinesValues();
                         SetLinesThickness();
                     }
                 }
@@ -467,7 +461,10 @@ namespace EnsureRisk.Classess
                     Boolean? canUsePolyLineName = CanUseProposedPolyLineName(TextChangeName.Text);
                     if (!canUsePolyLineName.HasValue || canUsePolyLineName.HasValue && canUsePolyLineName.Value)
                     {
-                        UpdatePolyLineName(TextChangeName.Text);
+                        if (TextChangeName.Text != string.Empty)
+                        {
+                            UpdatePolyLineName(TextChangeName.Text);
+                        }
                     }
                     ManageTextChangeProperties(String.Empty, Visibility.Hidden);
                     if (Line_Selected != null)
@@ -496,14 +493,21 @@ namespace EnsureRisk.Classess
                         Boolean? canUsePolyLineName = CanUseProposedPolyLineName(TextChangeName.Text);
                         if (!canUsePolyLineName.HasValue || canUsePolyLineName.HasValue && canUsePolyLineName.Value)
                         {
-                            UpdatePolyLineName(TextChangeName.Text);
+                            if (TextChangeName.Text != string.Empty)
+                            {
+                                UpdatePolyLineName(TextChangeName.Text);
+                            }
                         }
-                        ManageTextChangeProperties(String.Empty, Visibility.Hidden);
+                        ManageTextChangeProperties(string.Empty, Visibility.Collapsed);
                         NameEditing = false;
+                        if (Line_Selected != null)
+                        {
+                            Line_Selected.ExtrasVisibility(Visibility.Visible);
+                        }
                     }
                     if (e.Key == Key.Escape)
                     {
-                        ManageTextChangeProperties(String.Empty, Visibility.Hidden);
+                        ManageTextChangeProperties(string.Empty, Visibility.Collapsed);
                         if (Line_Selected != null)
                         {
                             Line_Selected.ExtrasVisibility(Visibility.Visible);
@@ -548,7 +552,7 @@ namespace EnsureRisk.Classess
                 }
                 Line_Selected.ShortName = polyLineName;
                 ClearFilters();
-                DrawEntireDiagram();
+                //DrawEntireDiagram();
                 UpdateGridRiskAndGridCM();
             }
             catch (Exception ex)
@@ -765,7 +769,6 @@ namespace EnsureRisk.Classess
             }
         }
 
-
         public void AddMainLine(DataRow dr, System.Drawing.Color lnColor)
         {
             try
@@ -774,6 +777,7 @@ namespace EnsureRisk.Classess
                 {
                     //aca lo del color
                     Stroke = new SolidColorBrush(Color.FromArgb(lnColor.A, lnColor.R, lnColor.G, lnColor.B)),
+                    IsDiagonal = false,
                     IsRoot = true,
                     IsCM = false,
                     FromTop = false,
@@ -852,13 +856,15 @@ namespace EnsureRisk.Classess
                     foreach (SegmentPolyLine sg in item.Segments)
                     {
                         GridPaintLines.Children.Remove(sg);//removing the line
-                        item.TextPanel.Children.Clear();
+                        //item.TextPanel.Children.Clear();
+                        item.TextPanel.Child = null;
                         //GridPaintLines.Children.Remove(sg.ElStackPannel);
                     }
 
                     //in his cicle we remove any risk of previous risk tree drawing in the main form.
                     GridPaintLines.Children.Remove(item);//removing the line
-                    item.TextPanel.Children.Clear();
+                    //item.TextPanel.Children.Clear();
+                    item.TextPanel.Child = null;
                     GridPaintLines.Children.Remove(item.TextPanel);
                 }
                 LinesList.Clear();
@@ -994,7 +1000,7 @@ namespace EnsureRisk.Classess
                     TreeOperation.DrawEntireDiagramAsFishBone(MainLine);
                     //TreeOperation.FixMainLine(LinesList, MainLine);
                     FixDrawPanel();
-                    LoadLinesValues();
+                    UpdateLinesValues();
                 }
                 SetRightMenu(LinesList);
                 SetEventsToSegments();
@@ -1006,7 +1012,7 @@ namespace EnsureRisk.Classess
             }
         }
 
-        public void LoadLinesValues()
+        public void UpdateLinesValues()
         {
             foreach (var item in LinesList)
             {
@@ -1033,7 +1039,7 @@ namespace EnsureRisk.Classess
                                 {
                                     if (Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
                                     {
-                                        value = (Decimal)Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_CounterM_Damage.VALUE];
+                                        value = (decimal)Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_CounterM_Damage.VALUE];
                                     }
                                     AcumDamage += value;
                                 }
@@ -1042,7 +1048,7 @@ namespace EnsureRisk.Classess
                             {
                                 if (Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
                                 {
-                                    value = (Decimal)Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
+                                    value = (decimal)Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
                                 }
                                 AcumDamage += value * General.AcumulatedLikelihood(itemI);
                             }
@@ -1729,12 +1735,10 @@ namespace EnsureRisk.Classess
                 {
                     NameEditing = true;
                     Loose = true;
-                    Line_Selected.MyName.Visibility = Visibility.Hidden;
-                    TextChangeName.Margin = Line_Selected.TextPanel.Margin;
-                    TextChangeName.Width = 150;
-                    TextChangeName.MaxLength = 250;
+                    Line_Selected.ExtrasVisibility(Visibility.Hidden);
                     TextChangeName.Background = new SolidColorBrush(Colors.Black);
                     TextChangeName.Foreground = new SolidColorBrush(Colors.White);
+                    TextChangeName.Margin = Line_Selected.TextPanel.Margin;
                     ManageTextChangeProperties(Line_Selected.ShortName, Visibility.Visible);
                 }
             }
@@ -1753,9 +1757,9 @@ namespace EnsureRisk.Classess
                     NameEditing = true;
                     Loose = true;
                     Line_Selected.MyName.Visibility = Visibility.Hidden;
-                    TextChangeName.Margin = Line_Selected.TextPanel.Margin;
-                    TextChangeName.Width = 150;
-                    TextChangeName.MaxLength = 250;
+                    TextChangeName.Margin = Line_Selected.TextPanel.Margin;                    
+                    TextChangeName.AcceptsReturn = false;
+                    TextChangeName.Style = ((TextBox)((MainWindow)MyWindow).FindResource("TextName")).Style;
                     TextChangeName.Background = new SolidColorBrush(Colors.Black);
                     TextChangeName.Foreground = new SolidColorBrush(Colors.White);
                     ManageTextChangeProperties(Line_Selected.ShortName, Visibility.Visible);
@@ -2305,9 +2309,7 @@ namespace EnsureRisk.Classess
                 {
                     NameEditing = true;
                     Loose = true;
-                    Line_Selected.ExtrasVisibility(Visibility.Hidden);
-                    TextChangeName.Width = 150;
-                    TextChangeName.MaxLength = 250;
+                    Line_Selected.ExtrasVisibility(Visibility.Hidden);                    
                     TextChangeName.Background = new SolidColorBrush(Colors.Black);
                     TextChangeName.Foreground = new SolidColorBrush(Colors.White);
                     TextChangeName.Margin = Line_Selected.TextPanel.Margin;
@@ -2558,7 +2560,7 @@ namespace EnsureRisk.Classess
             {
                 pos = lastCounterMeasurePosition + 1;
             }
-
+            GridPaintLines.Children.Remove(LineInMoving);
             risk.Children.Insert(pos, Line_Selected);
             SetPolyLinePosition(risk.Children);
         }
@@ -3007,7 +3009,8 @@ namespace EnsureRisk.Classess
                                         LineInMoving = new RiskPolyLine(GridPaintLines, MenuRisk, false)
                                         {
                                             Stroke = new SolidColorBrush(System.Windows.Media.Color.FromArgb(lnColor.A, lnColor.R, lnColor.G, lnColor.B)),
-                                            StrokeThickness = 3
+                                            StrokeThickness = 3,
+                                            IsMoving = true
                                         };
                                         LineInMoving.NewDrawAtPoint(new Point(X, Y), "");
                                     }
@@ -3091,7 +3094,8 @@ namespace EnsureRisk.Classess
                 if (Creando)
                 {
                     GridPaintLines.Children.Remove(Line_Created);
-                    Line_Created.TextPanel.Children.Clear();
+                    //Line_Created.TextPanel.Children.Clear();
+                    Line_Created.TextPanel.Child = null;
                     GridPaintLines.Children.Remove(Line_Created.TextPanel);
                     Creando = false;
                 }

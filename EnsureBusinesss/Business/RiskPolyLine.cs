@@ -13,6 +13,7 @@ namespace EnsureBusinesss.Business
 {
     public class RiskPolyLine : ArrowPolyline
     {
+        #region Constatntes
         //private const int diagonalShiftX = 75;
         public const double diagonalShiftX = 0;
         //public const double diagonalShiftY = 175;
@@ -26,41 +27,178 @@ namespace EnsureBusinesss.Business
         public const double diagonalShiftLabelY = 185;
         public const double horizontalShiftLabelX = 180;
         public const double angle = 67.625;
-
-        public bool FullAccess { get; set; }        
-        public int ID { get; set; }
         public const double basicX = 3;
         public const double basicY = 7;
+        #endregion
+
+        #region Properties
+        #region Booleans
+        //public static readonly DependencyProperty IsActivatedProperty =
+        //   DependencyProperty.Register("IsActivated", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        //public static readonly DependencyProperty FromTopProperty =
+        //   DependencyProperty.Register("FromTop", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        //public static readonly DependencyProperty IsRootProperty =
+        //   DependencyProperty.Register("IsRoot", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        //public static readonly DependencyProperty OcultoProperty =
+        //   DependencyProperty.Register("Oculto", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        //public static readonly DependencyProperty IsCMProperty =
+        //   DependencyProperty.Register("IsCM", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        //public static readonly DependencyProperty CollapsedProperty =
+        //   DependencyProperty.Register("Collapsed", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        //public static readonly DependencyProperty FullAccessProperty =
+        //  DependencyProperty.Register("FullAccess", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        //public static readonly DependencyProperty IsDiagonalProperty =
+        //  DependencyProperty.Register("IsDiagonal", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        public bool IsActivated
+        {
+            set; /*{ SetValue(IsActivatedProperty, value); }*/
+            get; /*{ return (bool)GetValue(IsActivatedProperty); }*/
+        }
+        public bool FromTop
+        {
+            set; /*{ SetValue(FromTopProperty, value); }*/
+            get; /*{ return (bool)GetValue(FromTopProperty); }*/
+        }
+        public bool IsRoot
+        {
+            set;/* { SetValue(IsRootProperty, value); }*/
+            get; /*{ return (bool)GetValue(IsRootProperty); }*/
+        }
+        public bool Oculto
+        {
+            set; /*{ SetValue(OcultoProperty, value); }*/
+            get; /*{ return (bool)GetValue(OcultoProperty); }*/
+        }
+        public bool IsCM
+        {
+            set; /*{ SetValue(IsCMProperty, value); }*/
+            get; /*{ return (bool)GetValue(IsCMProperty); }*/
+        }
+        public bool Collapsed
+        {
+            set; /*{ SetValue(CollapsedProperty, value); }*/
+            get; /*{ return (bool)GetValue(CollapsedProperty); }*/
+        }
+        public bool FullAccess
+        {
+            set; /*{ SetValue(FullAccessProperty, value); }*/
+            get; /*{ return (bool)GetValue(FullAccessProperty); }*/
+        }
+        public bool IsDiagonal
+        {
+            set; /*{ SetValue(IsDiagonalProperty, value); }*/
+            get; /*{ return (bool)GetValue(IsDiagonalProperty); }*/
+        }
+        public bool IsMoving
+        {
+            set; /*{ SetValue(IsDiagonalProperty, value); }*/
+            get; /*{ return (bool)GetValue(IsDiagonalProperty); }*/
+        }
+        #endregion
+
+        #region Numeric
+
         public double XTreme { get; set; }
+
         public double YxTreme { get; set; }
-
-        public decimal RefMin { get; set; }
-        public decimal RefMax { get; set; }
-
-        public Point StartDrawPoint { get; set; }
-        public bool IsDiagonal { get; set; }
-        public RiskPolyLine Father { get; set; }
-        public double PxThickness { get; set; }
-        public bool IsActivated { get; set; }
-        public LineGroup Group { get; set; }
+       
         public int IdRiskFather { get; set; }
-        public string ShortName { get; set; }
-        public bool FromTop { get; set; }
-        public bool IsRoot { get; set; }
-        public int Size { get; set; }
-        public decimal AcValue { get; set; }
-        public decimal OwnValue { get; set; }
-        public decimal AcDamage { get; set; }
-        public decimal AcLike { get; set; }
-        public bool DescendentHide { get; set; }
-        public bool Oculto { get; set; }
-        public bool IsCM { get; set; }
-        public bool Collapsed { get; set; }
-        public decimal Probability { get; set; }
-        public int Position { get; set; }
+
         public int MyLevel { get; set; }
+        public int ID { get; set; }
+
+        public static readonly DependencyProperty MinProperty =
+          DependencyProperty.Register("Min", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public decimal Min
+        {
+            set { SetValue(MinProperty, value); }
+            get { return (decimal)GetValue(MinProperty); }
+        }
+
+        public static readonly DependencyProperty MaxProperty =
+          DependencyProperty.Register("Max", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public decimal Max
+        {
+            set { SetValue(MaxProperty, value); }
+            get { return (decimal)GetValue(MaxProperty); }
+        }
+
+        public static readonly DependencyProperty AcDamageProperty =
+          DependencyProperty.Register("AcDamage", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public decimal AcDamage
+        {
+            set { SetValue(AcDamageProperty, value); }
+            get { return (decimal)GetValue(AcDamageProperty); }
+        }
+
+        public static readonly DependencyProperty AcValueProperty =
+           DependencyProperty.Register("AcValue", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public decimal AcValue
+        {
+            set { SetValue(AcValueProperty, value); }
+            get { return (decimal)GetValue(AcValueProperty); }
+        }
+
+        public static readonly DependencyProperty OwnValueProperty =
+           DependencyProperty.Register("OwnValue", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public decimal OwnValue
+        {
+            set { SetValue(OwnValueProperty, value); }
+            get { return (decimal)GetValue(OwnValueProperty); }
+        }       
+
+        public static readonly DependencyProperty AcLikeProperty =
+           DependencyProperty.Register("AcLike", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public decimal AcLike
+        {
+            set { SetValue(AcLikeProperty, value); }
+            get { return (decimal)GetValue(AcLikeProperty); }
+        }
+
+        public static readonly DependencyProperty ProbabilityProperty =
+            DependencyProperty.Register("Probability", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public decimal Probability
+        {
+            set { SetValue(ProbabilityProperty, value); }
+            get { return (decimal)GetValue(ProbabilityProperty); }
+        }
+
+        public int Position { get; set; }
+
+        #endregion
+
+        #region Stringss
+        public static readonly DependencyProperty ShortNameProperty =
+            DependencyProperty.Register("ShortName", typeof(string), typeof(RiskPolyLine), new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public string ShortName
+        {
+            set { SetValue(ShortNameProperty, value); }
+            get { return (string)GetValue(ShortNameProperty); }
+        }
+        #endregion
+        #endregion
+        public Point StartDrawPoint { get; set; }
+        public RiskPolyLine Father { get; set; }
+        public LineGroup Group { get; set; }
         public LabelPolyLine MyName { get; set; }
-        public StackPanel TextPanel { get; set; }
+        public Border TextPanel { get; set; }
+
         public List<RiskPolyLine> Children { get; set; }
         public PictureBoxPolyLine Expand { get; set; }
         public Grid MyContainer { get; set; }
@@ -81,8 +219,6 @@ namespace EnsureBusinesss.Business
         }
         public RiskPolyLine(Grid Container, ContextMenu Menu, bool isCMI)
         {
-            Size = 1;
-            //Points.Add(new Point());
             Points.Add(new Point());
             Points.Add(new Point());
             IsCM = isCMI;
@@ -109,17 +245,28 @@ namespace EnsureBusinesss.Business
                 VerticalAlignment = VerticalAlignment.Center,
                 Visibility = Visibility.Visible
             };
-            TextPanel = new StackPanel()
+
+            StackPanel stkTextPanel = new StackPanel()
             {
                 Orientation = Orientation.Horizontal,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top
-
+                VerticalAlignment = VerticalAlignment.Top                
+               
             };
-            TextPanel.Children.Add(Expand);
-            TextPanel.Children.Add(MyName);
+
+            TextPanel = new Border
+            {
+                CornerRadius = new CornerRadius(1),
+                BorderBrush = this.Stroke,
+                BorderThickness = new Thickness(2),                
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+            stkTextPanel.Children.Add(Expand);
+            stkTextPanel.Children.Add(MyName);
+            TextPanel.Child = stkTextPanel;
             Container.Children.Add(TextPanel);
-            
+
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment = VerticalAlignment.Top;
             Children = new List<RiskPolyLine>();
@@ -190,31 +337,29 @@ namespace EnsureBusinesss.Business
                 if (FromTop)
                 {
                     double extra = (MyName.Text.Length > 26) ? 13 : -5;
-                    this.TextPanel.Margin = new Thickness(Points[1].X - diagonalShiftLabelX + extra, Points[1].Y - diagonalShiftLabelY - StrokeThickness, 0, 0);
-                    RotateTransform rotateTransform1 = new RotateTransform(angle);
-                    this.TextPanel.RenderTransform = rotateTransform1;
+                    this.TextPanel.Margin = new Thickness(Points[1].X - diagonalShiftLabelX + extra + StrokeThickness, Points[1].Y - diagonalShiftLabelY + 40, 0, 0);
+                    //RotateTransform rotateTransform1 = new RotateTransform(angle);
+                    //this.TextPanel.RenderTransform = rotateTransform1;
                 }
                 else
                 {
-                    double extra = (MyName.Text.Length > 26) ? -19 : -19;
-                    this.TextPanel.Margin = new Thickness(Points[1].X - diagonalShiftLabelX + extra, Points[1].Y + diagonalShiftLabelY - 10 + StrokeThickness, 0, 0);
-                    RotateTransform rotateTransform1 = new RotateTransform(-angle);
-                    this.TextPanel.RenderTransform = rotateTransform1;
+                    double extra = (MyName.Text.Length > 26) ? -0 : -0;
+                    this.TextPanel.Margin = new Thickness(Points[1].X - diagonalShiftLabelX + extra + StrokeThickness, Points[1].Y + diagonalShiftLabelY - 55, 0, 0);
+                    //RotateTransform rotateTransform1 = new RotateTransform(-angle);
+                    //this.TextPanel.RenderTransform = rotateTransform1;
                 }
             }
             else
             {
-                this.TextPanel.Margin = new Thickness(Points[1].X - horizontalShiftLabelX, Points[1].Y + 1 + StrokeThickness, 0, 0);
+                this.TextPanel.Margin = new Thickness(Points[1].X - horizontalShiftLabelX, Points[1].Y + StrokeThickness, 0, 0);
             }
         }
 
         private void DrawLabelLineName()
-        {            
+        {
             this.MyName.Line = this;
         }
-
-       
-
+               
         protected override Geometry DefiningGeometry
         {
             get
@@ -222,9 +367,9 @@ namespace EnsureBusinesss.Business
                 MyName.MaxWidth = 180;
                 TextPanel.RenderTransformOrigin = new Point(0, 0);
                 MyName.MaxHeight = 40;
-                if (IsRoot)
+                if (IsRoot || IsMoving)
                 {
-                    TextPanel.Visibility = Visibility.Collapsed;                    
+                    TextPanel.Visibility = Visibility.Collapsed;
                 }
                 if (Children.Count <= 0 || IsRoot || IsCM)
                 {
@@ -248,23 +393,38 @@ namespace EnsureBusinesss.Business
                 }
                 if (IsActivated)
                 {
-                    MyName.Text = ShortName;                   
+                    MyName.Text = ShortName;
                 }
                 else
                 {
                     MyName.Text = "(Disabled)" + ShortName;
                 }
+                if (ShortName == string.Empty)
+                {
+                    TextPanel.Visibility = Visibility.Collapsed;
+                }
                 DefinyTextPosition();
+                TextPanel.BorderBrush = Stroke;
+                if (!IsCM)
+                {
+                    TextPanel.Background = new SolidColorBrush(Color.FromArgb(50, ((SolidColorBrush)Stroke).Color.R, ((SolidColorBrush)Stroke).Color.G, ((SolidColorBrush)Stroke).Color.B));
+                }
                 if (Oculto)
                 {
-                    TextPanel.Visibility = Visibility.Hidden;
+                    TextPanel.Visibility = Visibility.Collapsed;
                     foreach (var itemseg in Segments)
                     {
-                        itemseg.Visibility = Visibility.Hidden;
+                        itemseg.Visibility = Visibility.Collapsed;
                     }
-                    Visibility = Visibility.Hidden;
+                    Visibility = Visibility.Collapsed;
                 }
-
+                if (IsCM)
+                {
+                    foreach (var itemseg in Segments)
+                    {
+                        itemseg.Visibility = Visibility.Collapsed;
+                    }
+                }
                 return base.DefiningGeometry;
             }
         }
@@ -287,6 +447,7 @@ namespace EnsureBusinesss.Business
                 item.Stroke = color;
             }
         }
+
         public void SetThickness(decimal cost, decimal min, decimal max)
         {
 
@@ -366,8 +527,7 @@ namespace EnsureBusinesss.Business
                     }
                 }
             }
-            PxThickness = StrokeThickness;
-        }        
+        }
 
         public double XTremee()
         {
@@ -433,11 +593,7 @@ namespace EnsureBusinesss.Business
         /// <param name="aVisibility"></param>
         public void ExtrasVisibility(System.Windows.Visibility aVisibility)
         {
-            MyName.Visibility = aVisibility;
-            if (Children.Count > 0)
-            {
-                Expand.Visibility = aVisibility;
-            }
+            TextPanel.Visibility = aVisibility;
         }
         /// <summary>
         /// Dado una rama busca el mayor extremo x de sus hijos horizontales
@@ -465,7 +621,7 @@ namespace EnsureBusinesss.Business
             }
             return xtremo;
         }
-        
+
         public void ExtendHorizontal(double FromX)
         {
             CreateSegmentAt(new Point(FromX - horizontalShiftX, Points[0].Y));
@@ -532,7 +688,7 @@ namespace EnsureBusinesss.Business
             }
             return segmentsToReturn;
         }
-        
+
         public Point MyMinXPoint()
         {
             if (Segments != null && Segments.Any())
@@ -702,7 +858,7 @@ namespace EnsureBusinesss.Business
         {
             double visualParentStrokeThickness;
             if (pos > 0 && Father.Segments.Count > 0)
-            {                
+            {
                 visualParentStrokeThickness = Father.Segments.ElementAt(pos - 1).StrokeThickness;
             }
             else

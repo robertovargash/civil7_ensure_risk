@@ -4,7 +4,7 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -13,24 +13,11 @@
         mc:Ignorable="d"
         Title="Window1" Height="561.975" Width="1223.574" Loaded="Window_Loaded">
     <Grid>
-        <StackPanel Orientation="Horizontal" Margin="299,196,221,274">
-            <Button Content="12" Click="Button_Click"/>
-            <Separator/>
-            <TextBox Name="Ele" Text="Esaaaa" VerticalAlignment="Center"/>
-            <TextBlock Text="     "/>
-            <Separator/>
-            <TextBlock Name="textooo"   VerticalAlignment="Center"/>
-        </StackPanel>
-        <md:PopupBox PlacementMode="LeftAndAlignMiddles" UnfurlOrientation="Horizontal" ToolTip="Manage items" Margin="0,0,728.8,171" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <StackPanel Orientation="Horizontal">
-                <Button ToolTip="Add an item" Command="{Binding AddCommand}">
-                    <Path Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" Stretch="Uniform" Width="15" Height="15" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
-                </Button>
-                <Button ToolTip="Remove selected item" Command="{Binding RemoveSelectedItemCommand}">
-                    <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" Stretch="Uniform" Width="15" Height="15" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
-                </Button>
-            </StackPanel>
-        </md:PopupBox>
+
+        <TextBox Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+    VerticalAlignment="Top" AcceptsReturn="True"
+    TextWrapping="Wrap" MaxWidth="400"
+    materialDesign:HintAssist.Hint="Floating hint in a box"/>
     </Grid>
 
 </Window>
