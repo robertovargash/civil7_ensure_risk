@@ -28,7 +28,6 @@ namespace EnsureBusinesss
                 foreach (RiskPolyLine item in lineList)
                 {
                     item.Move(x, y);
-                    //(item).DrawEntireLine(item.ShortName);
                 }
                 foreach (MyDamage item in Rectangles)
                 {
@@ -127,7 +126,6 @@ namespace EnsureBusinesss
                             Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Add(newRow);
                         }
                     }
-                    //Añadiendo los wbs y  los WBS con Daños del padre
                     foreach (DataRow item in Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + idFather))
                     {
                         if (!(Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Contains(new object[] { drCM[DT_CounterM.ID], item[DT_CM_WBS.ID_WBS] })))
@@ -520,10 +518,6 @@ namespace EnsureBusinesss
             {
                 newIdex = linea.Father.Children.FindIndex(l => l.ID == hermanoMenor.ID);
             }
-            //if (newIdex > oldindex)
-            //{
-            //    newIdex -= 1;
-            //}
             ShiftElement(linea.Father.Children, oldindex, newIdex);
             for (int i = 0; i < linea.Father.Children.Count; i++)
             {
@@ -591,54 +585,8 @@ namespace EnsureBusinesss
             }
         }
 
-        /// <summary>
-        /// Adiciona la cola a todas los Risk que lo requieren. 
-        /// Para ello calcula el valor de Y basado en la funcion y =m*-9+y0
-        /// m=2.5 (pendiente), -9 es el valor del desplazamiento en el eje x 
-        /// y y0 el un valor y por donde pasa el segmento
-        /// </summary>
-        /// <param name="lineas"></param>
-        /// <param name="MainLine"></param>
-        //public static void FixMainLine(List<RiskPolyLine> lineas, RiskPolyLine MainLine)
-        //{
-        //    //this function find the line with the minimal X size and asign this value to Main Line X.           
-        //    //AddTail(lineas);
-        //    if (MainLine.Segments.Any())
-        //    {
-        //        ReorderMainLineSegments(MainLine);
-        //    }
-
-        //    if (MainLine.Children.Count > 0)
-        //    {
-        //        if (MainLine.Children.Where(rl => rl.Collapsed == false).Any())
-        //        {
-        //            RiskPolyLine lineaMasX = MainLine.Children.Where(rl => rl.Collapsed == false).OrderBy(rl => rl.XTremee()).First();
-        //            //the X of the main line will be the minor X of their entire generation
-        //            if (MainLine.Segments != null && MainLine.Segments.Any())
-        //            {
-        //                //MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), lineas.Find(rl => rl.IsRoot == true).Points[0].Y);
-        //                //MainLine.AddTail();
-        //                if (MainLine.Segments.Count > 1)
-        //                {
-        //                    MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), MainLine.Points[0].Y);
-        //                    MainLine.Segments[MainLine.Segments.Count - 1].Points[1] = new Point(MainLine.Segments[MainLine.Segments.Count - 2].Points[0].X, MainLine.Segments[MainLine.Segments.Count - 2].Points[0].Y);
-        //                }
-        //                else
-        //                {
-        //                    MainLine.Segments[MainLine.Segments.Count - 1].Points[0] = new Point(lineaMasX.XTremee(), MainLine.Points[0].Y);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                lineas.Find(rl => rl.IsRoot == true).Points[0] = new Point(lineaMasX.XTremee(), lineas.Find(rl => rl.IsRoot == true).Points[0].Y);
-        //            }
-        //        }
-        //    }
-        //}
-
         private static void FixRisk(List<RiskPolyLine> lineas)
         {
-            //RiskPolyLine lastChild;
             foreach (RiskPolyLine item in lineas)
             {
                 if (!item.IsRoot && !(item.Collapsed) && (item.Children.Count > 0))
@@ -704,7 +652,7 @@ namespace EnsureBusinesss
             RiskPolyLine[] array = lines.ToArray();
             if (oldIndex == newIndex)
             {
-                return; // No-op
+                return;
             }
             RiskPolyLine tmp = array[oldIndex];
             if (newIndex < oldIndex)
@@ -725,10 +673,9 @@ namespace EnsureBusinesss
 
             if (oldIndex == newIndex)
             {
-                return; // No-op
+                return;
             }
             RiskPolyLine[] array = new RiskPolyLine[lines.Count];
-            //List<RiskPolyLine> other = new List<RiskPolyLine>();
             RiskPolyLine toMove = lines[oldIndex];
             MoveInList(lines, toMove, newIndex);
             int par = 0;
@@ -785,7 +732,6 @@ namespace EnsureBusinesss
 
         public static void Build_Tree(List<RiskPolyLine> data, RiskPolyLine root)
         {
-            //var root = data.FirstOrDefault(p => p.IdRiskFather == 0);
             if (data.Count > 0)
             {
                 root.Children = GetChildrenNodes(root, data);
@@ -793,7 +739,6 @@ namespace EnsureBusinesss
                 {
                     item.Father = root;
                 }
-                // add tree node children recursively
                 CalculateDepth(root, 0);
             }
         }
@@ -921,7 +866,6 @@ namespace EnsureBusinesss
         {
             try
             {
-                //SET PRIMARY DATA TO A CM
                 rl.ShortName = CMRow[DT_CounterM.NAMESHORT].ToString();
                 rl.Position = (int)CMRow[DT_CounterM.POSITION];
                 rl.Probability = (decimal)CMRow[DT_CounterM.PROBABILITY] / 100;
@@ -942,11 +886,7 @@ namespace EnsureBusinesss
             }
         }
 
-        //private static int Recursivo(RiskPolyLine line, bool IsDiagonal)
-        //{
-        //    return 1;
-        //}
-
+      
         private static int NivelesVerticalesTotal(RiskPolyLine line, bool IsDiagonal)
         {
             int result = 0;
@@ -981,7 +921,7 @@ namespace EnsureBusinesss
             int countChild = 0;
             foreach (var child in Lines.OrderBy(x => x.Position))
             {
-                if (countChild % 2 == 0)//the first insertion wil be always from top
+                if (countChild % 2 == 0)
                 {
                     LinesUp.Add(child);
                     child.FromTop = true;
@@ -1027,41 +967,24 @@ namespace EnsureBusinesss
                     {
                         if (line.IsDiagonal)
                         {
-                            //Si la linea es diagonal el padre es horizontal por lo tanto el padre se extiende a la izquierda en el eje de las X
-                            //line.Father.Points[0] = new Point(orderedLines.ElementAt(i - 1).XTremee() - RiskPolyLine.horizontalShiftX, line.Father.Points[0].Y);
-                            //if (line.Father.Father != null)
-                            //{
-                            //    line.Father.ExtendHorizontal(orderedLines.ElementAt(i - 1).XTremee());
-                            //}
                             line.Father.ExtendHorizontal(orderedLines.ElementAt(i - 1).XTremee());
-
-                            //Se dibuja el hijo al final del padre
-                            //line.NewDrawAtPoint(new Point(line.Father.Points[0].X, line.Father.Points[0].Y), line.ShortName);
                             line.NewDrawAtPoint(new Point(line.Father.XTreme, line.Father.YxTreme), line.ShortName);
                         }
                         else
                         {
-                            //Si la linea es horizontal el padre es diagonal por lo tanto el padre se extiende aumentando en el eje de las Y
-                            //line.Father.Points[0] = new Point(line.Father.Points[0].X, orderedLines.ElementAt(i - 1).AbsoluteYxTremee() - RiskPolyLine.diagonalShiftY);
                             line.Father.ExtendVertical(orderedLines.ElementAt(i - 1).AbsoluteYxTremee());
-                            //Se dibuja el hijo al final del padre
-                            //line.NewDrawAtPoint(new Point(line.Father.Points[0].X, line.Father.Points[0].Y), line.ShortName);
                             line.NewDrawAtPoint(new Point(line.Father.XTreme, line.Father.YxTreme), line.ShortName);
                         }
                     }
-                    //}
                     if (!(line.Collapsed) && line.Children.Count > 0)
                     {
                         DrawDiagramAsFishBone(line.Children, new Point(line.Points[0].X, line.Points[0].Y));
                     }
 
                     //TODO hmax = 101, altura que el diagrama nunca alcanza
-                    //TODO: ROBERTO: QUITE EL DESPLAZAR A LA DERECHA PUES NO FUNCIONA CON L POSICIONAMIENTO
-                    //A CONTACTAR CON LUCAS A VER QUE DESEA, O LO UNO O LO OTRO
-                    //Este fragmento es el correcto
+                    
                     if (line.Father.Father == null)
                     {
-                        //if (i > 0 && line.FromTop == true)
                         if (i > 0)
                         {
                             MoveRight(Lines, line, hmax);
@@ -1105,27 +1028,7 @@ namespace EnsureBusinesss
             }
         }
 
-        /// <summary>
-        /// Dado una rama y el arbol busca si es posible mover a la derecha la rama.
-        /// </summary>
-        /// <param name="Lines"></param>
-        /// <param name="line"></param>
-        //private static Point? GetPointMoveRight(List<RiskPolyLine> Lines, RiskPolyLine pLine)
-        //{
-        //    try
-        //    {
-        //        Point p = GetMaxPointBrothers(Lines, pLine);
-        //        if (p.Y < pLine.YxTremee())
-        //        {
-        //            return p;
-        //        }
-        //        return null;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw new Exception("TreeOperation.GetPointMoveRight: " + e.Message);
-        //    }
-        //}
+        
 
         private static PointToMoveRight GetPointMoveRight(List<RiskPolyLine> Lines, RiskPolyLine pLine, double altura)
         {
@@ -1256,8 +1159,6 @@ namespace EnsureBusinesss
             foreach (var line in Lines)
             {
                 double XOffSet = (SkewAxesY - line.Points[1].Y) * Math.Tan(AngleX);
-                //line.Points[0] = new Point(line.Points[0].X - XOffSet, line.Points[0].Y);
-                //line.Points[1] = new Point(line.Points[1].X - XOffSet, line.Points[1].Y);
                 line.Move(-(int)XOffSet, 0);
                 if (!(line.Collapsed) && line.Children.Count > 0)
                 {
@@ -1275,14 +1176,10 @@ namespace EnsureBusinesss
         private static void TranslateDirectChildrenTemporal(RiskPolyLine Line, Point referencePoint)
         {
             double XOffSet = Line.Points[1].X - referencePoint.X;
-            //Line.Points[0] = new Point(Line.Points[0].X - XOffSet, Line.Points[0].Y);
-            //Line.Points[1] = new Point(Line.Points[1].X - XOffSet, Line.Points[1].Y);
             Line.Move((int)-XOffSet, 0);
 
             foreach (var line in Line.Children)
             {
-                //line.Points[0] = new Point(line.Points[0].X - XOffSet, line.Points[0].Y);
-                //line.Points[1] = new Point(line.Points[1].X - XOffSet, line.Points[1].Y);
                 line.Move((int)-XOffSet, 0);
                 if (!(line.Collapsed) && line.Children.Count > 0)
                 {
@@ -1379,7 +1276,6 @@ namespace EnsureBusinesss
                 }
                 if (!(line.Collapsed) && line.Children != null && line.Children.Count > 0)
                 {
-                    //Se repite el proceso para sus hijos
                     SkewLines(line.Children, AngleX, line.Points[1].Y);
                 }
                 //}
@@ -1501,7 +1397,6 @@ namespace EnsureBusinesss
                     rLine = lLine;
                     i++;
                 }
-                //RiskPolyLine lineaMasX = MainLine.Children.Where(rl => rl.Collapsed == false).OrderBy(rl => rl.XTremee()).First();
                 double XMax = Line.XTremee();
                 Line.ExtendHorizontal(XMax);
                 segment = Line.Segments[i];
@@ -1513,14 +1408,12 @@ namespace EnsureBusinesss
         public static List<RiskPolyLine> LoadLines(DataSet ds, int IdTreeRisk)
         {
             List<RiskPolyLine> lista = new List<RiskPolyLine>();
-            //System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(ds.Tables[DT_RiskTree_Damages.TABLENAME].Select(DT_RiskTree_Damages.ID_RISKTREE + " = " + IdTreeRisk)[0][DT_RiskTree_Damages.COLOR].ToString()));
             foreach (DataRow item in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + IdTreeRisk))
             {
                 if ((bool)item[DT_Risk.IS_ROOT])
                 {
                     RiskPolyLine MainLine = new RiskPolyLine()
                     {
-                        //Stroke = new SolidColorBrush(Color.FromArgb(lnColor.A, lnColor.R, lnColor.G, lnColor.B)),
                         IsRoot = true,
                         IsCM = false,
                         FromTop = (bool)item[DT_Risk.FROM_TOP],

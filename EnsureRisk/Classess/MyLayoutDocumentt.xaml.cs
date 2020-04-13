@@ -11,17 +11,26 @@ using System.ComponentModel;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using Xceed.Wpf.AvalonDock.Layout;
 
 namespace EnsureRisk.Classess
 {
-    public class MyLayoutDocument : LayoutDocument, INotifyPropertyChanged
+    /// <summary>
+    /// Interaction logic for MyLayoutDocumentt.xaml
+    /// </summary>
+    public partial class MyLayoutDocumentt : LayoutDocument
     {
         public string LoginUser { get; set; }
         public double X { get; set; }
@@ -81,179 +90,72 @@ namespace EnsureRisk.Classess
         public RiskPolyLine Line_Created { get; set; }
         public RiskPolyLine LineInMoving { get; set; }
         #endregion
+        public MyLayoutDocumentt():base()
+        {
+            InitializeComponent();
+            MIdPoint = new Point(GridPaintLines.Width - 180, GridPaintLines.Height / 2);
+            Ds = new UserDataSet();
+            LinesList = new List<RiskPolyLine>();
+            LinesMoving = new List<RiskPolyLine>();
+            Rectangles = new List<MyDamage>();
+            RiskGroupSelected = new List<RiskPolyLine>();
+            CMGroupSelected = new List<RiskPolyLine>();
+            ListCopy = new List<RiskPolyLine>();
+            LinesListCMState = new Dictionary<int, bool>();
+            MainLine = new RiskPolyLine(GridPaintLines, MenuMainRisk, false);
+            IsSelected = true;
+            Loose = true;
+            MoviendoRisk = MoviendoCM = NameEditing = ChoosingCM = ChoosingRisk = IsRootSelected = SelectingToGroup = Creando = Copiando = false;
+            Binding myBinding = new Binding
+            {
+                Source = SliderZoom,
+                Path = new PropertyPath("Value"),
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            };
+            BindingOperations.SetBinding(TheZoomComboBox, ComboBox.TextProperty, myBinding);
+            TheZoomComboBox.Text = "100";
+            EnterWorking();
+            exportToExcelWorker.WorkerReportsProgress = true;
+            exportToExcelWorker.WorkerSupportsCancellation = true;
+            exportToExcelWorker.DoWork += ExportToExcelWorker_DoWork;
+            exportToExcelWorker.ProgressChanged += ExportToExcelWorker_ProgressChanged;
+            exportToExcelWorker.RunWorkerCompleted += ExportToExcelWorker_RunWorkerCompleted;
+            this.Closing += MyLayoutDocument_Closed;
+        }
 
-        #region Componentes
-        public ScrollViewerDiagram ScrollGridPaint { get; set; }       
-        public GridPaint GridPaintLines { get; set; }
-        public LGrid CanvasMain { get; set; }
-        public MyGrid TheMainGrid { get; set; }
-        public MyGrid TheTopGrid { get; set; }
-
-        public GridToolBar TheGridToolbar { get; set; }
-        public ProgressBar TheProgressBar { get; set; }
-        public ComboBox TheZoomComboBox { get; set; }
-        public LTextBox TextChangeName { get; set; }
-        public ComboBox CbFilterTopR { get; set; }
-        public TextBlock TBPercentage { get; set; }
-        public Button BtMinus { get; set; }
-        public Button BtMPlus { get; set; }
-        public Slider SliderZoom { get; set; }
-
-        #endregion       
-
-        
-        public MyLayoutDocument() : base()
+        private void MyLayoutDocument_Closed(object sender, EventArgs e)
         {
             try
             {
-                this.CanClose = true;
-                this.CanFloat = true;
-                this.CanMove = true;
-                CanvasMain = new LGrid() { MyOwner = this };
-                CbFilterTopR = new LComboBox() { MyOwner = this, IsEditable = false, HorizontalContentAlignment = HorizontalAlignment.Right };
-
-                TheMainGrid = new MyGrid() { ID_Diagram = this.ID_Diagram, Background = new SolidColorBrush(Colors.White) };
-                TheTopGrid = new MyGrid() { ID_Diagram = this.ID_Diagram, Background = new SolidColorBrush(Colors.Red) };
-                TheTopGrid.Children.Add(TheMainGrid);
-                GridPaintLines = new GridPaint() { MyOwner = this };
-                RowDefinition row0 = new RowDefinition() { };
-                RowDefinition row1 = new RowDefinition() { Height = new GridLength(50) };
-                TheMainGrid.RowDefinitions.Add(row0);
-                TheMainGrid.RowDefinitions.Add(row1);
-                MIdPoint = new Point(GridPaintLines.Width - 180, GridPaintLines.Height / 2);
-                ScrollGridPaint = new ScrollViewerDiagram() { MyOwner = this, ID_Diagram = this.ID_Diagram, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-                ScrollGridPaint.AddHijo(CanvasMain);
-
-                CanvasMain.Children.Add(GridPaintLines);
-                TheMainGrid.Children.Add(ScrollGridPaint);
-                TheMainGrid.SetTheRow(ScrollGridPaint, 0);
-
-                TheGridToolbar = new GridToolBar() { ID_Diagram = this.ID_Diagram };
-
-                TheMainGrid.Children.Add(TheGridToolbar);
-                TheMainGrid.SetTheRow(TheGridToolbar, 1);
-                Content = TheTopGrid;
-
-                TheProgressBar = new ProgressBar() { VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Stretch, IsIndeterminate = true, Visibility = Visibility.Hidden };
-                StackPanel stk = new StackPanel() { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Left };
-                stk.Children.Add(new TextBlock() { Text = "Damages: ", VerticalAlignment = VerticalAlignment.Center });
-                stk.Children.Add(CbFilterTopR);
-                CbFilterTopR.DropDownClosed += CbFilterTopR_DropDownClosed;
-                TheGridToolbar.Children.Add(stk);
-                TheGridToolbar.SetTheColumn(stk, 0);
-
-                TheGridToolbar.Children.Add(TheProgressBar);
-                TheGridToolbar.SetTheColumn(TheProgressBar, 1);
-
-                TheZoomComboBox = new LComboBox() { Name = "Zoom" + this.ID_Diagram, MyOwner = this, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Right, HorizontalContentAlignment = HorizontalAlignment.Right, IsEditable = true };
-                TheZoomComboBox.Items.Add(new ComboBoxItem() { Content = "10" });
-                TheZoomComboBox.Items.Add(new ComboBoxItem() { Content = "25" });
-                TheZoomComboBox.Items.Add(new ComboBoxItem() { Content = "50" });
-                TheZoomComboBox.Items.Add(new ComboBoxItem() { Content = "75" });
-                TheZoomComboBox.Items.Add(new ComboBoxItem() { Content = "80" });
-                TheZoomComboBox.Items.Add(new ComboBoxItem() { Content = "100" });
-                TheZoomComboBox.Items.Add(new ComboBoxItem() { Content = "150" });
-                TheZoomComboBox.Items.Add(new ComboBoxItem() { Content = "200" });
-                TheZoomComboBox.Text = "100";
-                TheGridToolbar.Children.Add(TheZoomComboBox);
-                TheGridToolbar.SetTheColumn(TheZoomComboBox, 2);
-
-                TBPercentage = new TextBlock() { VerticalAlignment = VerticalAlignment.Center, Text = "%" };
-                TheGridToolbar.Children.Add(TBPercentage);
-                TheGridToolbar.SetTheColumn(TBPercentage, 3);
-
-                BtMinus = new LButton()
+                if (exportToExcelWorker.IsBusy && exportToExcelWorker.WorkerSupportsCancellation)
                 {
-                    VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Right,
-                    Content = new MaterialDesignThemes.Wpf.PackIcon()
+                    exportToExcelWorker.CancelAsync();
+                }
+                if (SaveAsClosing)
+                {
+                    if (Ds.HasChanges())
                     {
-                        Kind = MaterialDesignThemes.Wpf.PackIconKind.MinusCircleOutline
-                    },
-                    MyOwner = this
-                };
-                BtMinus.Click += BtnMinusZoom_Click;
-                TheGridToolbar.Children.Add(BtMinus);
-                TheGridToolbar.SetTheColumn(BtMinus, 4);
+                        if (new WindowMessageYesNo("Do you want to save the changes on [" + this.Title + "]").ShowDialog() == true)
+                        {
+                            ((MainWindow)MyWindow).SaveData(Ds, true);
+                        }
+                        else
+                        {
+                            Ds.RejectChanges();
+                        }
+                    }
 
-                SliderZoom = new LSlider()
-                {
-                    Name = "Slider" + ID_Diagram,
-                    MyOwner = this,
-                    Minimum = 10,
-                    Maximum = 200,
-                    LargeChange = 20,
-                    TickFrequency = 10,
-                    Value = 100,
-                    SmallChange = 10,
-                    TickPlacement = System.Windows.Controls.Primitives.TickPlacement.TopLeft
-                };
-                SliderZoom.ValueChanged += SliderZoom_ValueChanged;
-                SliderZoom.MouseWheel += SliderZoom_MouseWheel;
-                TheGridToolbar.Children.Add(SliderZoom);
-                TheGridToolbar.SetTheColumn(SliderZoom, 5);
-
-                BtMPlus = new LButton()
-                {
-                    VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Right,
-                    Content = new MaterialDesignThemes.Wpf.PackIcon()
-                    {
-                        Kind = MaterialDesignThemes.Wpf.PackIconKind.PlusCircleOutline
-                    },
-                    MyOwner = this
-                };
-                BtMPlus.Click += BtnPlusZoom_Click;
-                TheGridToolbar.Children.Add(BtMPlus);
-                TheGridToolbar.SetTheColumn(BtMPlus, 6);
-                GridPaintLines.Width = 200;
-                GridPaintLines.Height = 200;
-                GridPaintLines.MouseMove += GridPaintLines_MouseMove;
-                GridPaintLines.MouseDown += GridPaintLines_MouseDown;
-                GridPaintLines.MouseUp += GridPaintLines_MouseUp;
-                GridPaintLines.MouseWheel += GridPaintLines_MouseWheel;
-                this.Closing += MyLayoutDocument_Closed;
-                MIdPoint = new Point(GridPaintLines.Width - 180, GridPaintLines.Height / 2);
-                Ds = new UserDataSet();
-                LinesList = new List<RiskPolyLine>();
-                LinesMoving = new List<RiskPolyLine>();
-                Rectangles = new List<MyDamage>();
-                RiskGroupSelected = new List<RiskPolyLine>();
-                CMGroupSelected = new List<RiskPolyLine>();
-                ListCopy = new List<RiskPolyLine>();
-                LinesListCMState = new Dictionary<int, bool>();
-                MainLine = new RiskPolyLine(GridPaintLines, MenuMainRisk, false);
-                ScrollGridPaint.ScrollToVerticalOffset(GridPaintLines.Height / 2);
-                ScrollGridPaint.ScrollToHorizontalOffset(GridPaintLines.Width);
-                TextChangeName = new LTextBox() { MyOwner = this, Name = "TextChangeName",  VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left, Visibility = Visibility.Collapsed };
-                TextChangeName.KeyDown += TextChangeName_KeyDown;
-                TextChangeName.LostFocus += TextChangeName_LostFocus;
-                TextChangeName.IsVisibleChanged += TextChangeName_IsVisibleChanged;
-                GridPaintLines.Children.Add(TextChangeName);
-                IsSelected = true;
-                Loose = true;
-                MoviendoRisk = MoviendoCM = NameEditing = ChoosingCM = ChoosingRisk = IsRootSelected = SelectingToGroup = Creando = Copiando = false;
-                Binding myBinding = new Binding
-                {
-                    Source = SliderZoom,
-                    Path = new PropertyPath("Value"),
-                    Mode = BindingMode.TwoWay,
-                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                };
-                BindingOperations.SetBinding(TheZoomComboBox, LComboBox.TextProperty, myBinding);
-                EnterWorking();
-
-                exportToExcelWorker.WorkerReportsProgress = true;
-                exportToExcelWorker.WorkerSupportsCancellation = true;
-                exportToExcelWorker.DoWork += ExportToExcelWorker_DoWork;
-                exportToExcelWorker.ProgressChanged += ExportToExcelWorker_ProgressChanged;
-                exportToExcelWorker.RunWorkerCompleted += ExportToExcelWorker_RunWorkerCompleted;
+                }
+                //((MainWindow)MyWindow).OpenedDocuments.Remove(this);
+                ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear();
+                ((MainWindow)MyWindow).DV_Cross_CM.Table.Clear();
             }
             catch (Exception ex)
             {
                 new WindowMessageOK(ex.Message).ShowDialog();
             }
-        }       
+        }
 
         public void Scope()
         {
@@ -307,96 +209,6 @@ namespace EnsureRisk.Classess
             TheMainGrid.Margin = new Thickness(0);
         }
 
-        public void MoveVisualToFishHead()
-        {
-            ScrollGridPaint.ScrollToRightEnd();
-            ScrollGridPaint.ScrollToVerticalOffset(MainLine.Points[1].Y - 200);
-        }
-
-        private void CbFilterTopR_DropDownClosed(object sender, EventArgs e)
-        {
-            try
-            {
-                if (LinesList.Count > 0)
-                {
-
-                    if (!(CbFilterTopR.SelectedValue is null))
-                    {
-                        IdDamageSelected = (Int32)CbFilterTopR.SelectedValue;
-                        System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (Int32)CbFilterTopR.SelectedValue).First()[DT_Risk_Damages.COLOR].ToString()));
-
-                        foreach (RiskPolyLine item in LinesList)
-                        {
-                            if (Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (Int32)CbFilterTopR.SelectedValue).Any())
-                            {
-                                if (!(item.IsCM))
-                                {
-                                    if (item.IsActivated)
-                                    {
-                                        if (item.IsRoot)
-                                        {
-                                            item.SetColor(new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B)));
-                                        }
-                                        else
-                                        {
-                                            if (TengoPermiso(item))
-                                            {
-                                                item.SetColor(new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B)));
-                                            }
-                                            else
-                                            {
-                                                item.SetColor(new SolidColorBrush(Color.FromArgb(80, drawColor.R, drawColor.G, drawColor.B)));
-                                            }
-                                        }
-                                        item.UpdateSegmentsStroke();
-                                    }
-                                }
-                            }
-                        }
-                        UpdateLinesValues();
-                        SetLinesThickness();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                new WindowMessageOK(ex.Message).ShowDialog();
-            }
-        }
-
-        private void MyLayoutDocument_Closed(object sender, EventArgs e)
-        {
-            try
-            {
-                if (exportToExcelWorker.IsBusy && exportToExcelWorker.WorkerSupportsCancellation)
-                {
-                    exportToExcelWorker.CancelAsync();
-                }
-                if (SaveAsClosing)
-                {
-                    if (Ds.HasChanges())
-                    {
-                        if (new WindowMessageYesNo("Do you want to save the changes on [" + this.Title + "]").ShowDialog() == true)
-                        {
-                            ((MainWindow)MyWindow).SaveData(Ds, true);
-                        }
-                        else
-                        {
-                            Ds.RejectChanges();
-                        }
-                    }
-
-                }
-                //((MainWindow)MyWindow).OpenedDocuments.Remove(this);
-                ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear();
-                ((MainWindow)MyWindow).DV_Cross_CM.Table.Clear();
-            }
-            catch (Exception ex)
-            {
-                new WindowMessageOK(ex.Message).ShowDialog();
-            }
-        }
-
         private bool TengoPermiso(RiskPolyLine linea)
         {
             try
@@ -435,172 +247,6 @@ namespace EnsureRisk.Classess
                 throw ex;
             }
         }
-
-        #region TextChangeName
-        private void TextChangeName_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (((LTextBox)sender).Visibility == Visibility.Visible)
-            {
-                Dispatcher.BeginInvoke((Action)delegate
-                {
-                    Keyboard.Focus(TextChangeName);
-                }, DispatcherPriority.Render);
-            }
-        }
-
-        private void TextChangeName_LostFocus(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (NameEditing)
-                {
-                    Boolean? canUsePolyLineName = CanUseProposedPolyLineName(TextChangeName.Text);
-                    if (!canUsePolyLineName.HasValue || canUsePolyLineName.HasValue && canUsePolyLineName.Value)
-                    {
-                        if (TextChangeName.Text != string.Empty)
-                        {
-                            UpdatePolyLineName(TextChangeName.Text);
-                        }
-                    }
-                    ManageTextChangeProperties(String.Empty, Visibility.Hidden);
-                    if (Line_Selected != null)
-                    {
-                        Line_Selected.ExtrasVisibility(Visibility.Visible);
-                    }
-                }
-                NameEditing = false;
-            }
-            catch (Exception ex)
-            {
-                NameEditing = false;
-                new WindowMessageOK(ex.Message).ShowDialog();
-            }
-        }
-
-        private void TextChangeName_KeyDown(object sender, KeyEventArgs e)
-        {
-            try
-            {
-                if (NameEditing)
-                {
-                    if (e.Key == Key.Enter)
-                    {
-                        Boolean? canUsePolyLineName = CanUseProposedPolyLineName(TextChangeName.Text);
-                        if (!canUsePolyLineName.HasValue || canUsePolyLineName.HasValue && canUsePolyLineName.Value)
-                        {
-                            if (TextChangeName.Text != string.Empty)
-                            {
-                                UpdatePolyLineName(TextChangeName.Text);
-                            }
-                        }
-                        ManageTextChangeProperties(string.Empty, Visibility.Collapsed);
-                        NameEditing = false;
-                        if (Line_Selected != null)
-                        {
-                            Line_Selected.ExtrasVisibility(Visibility.Visible);
-                        }
-                    }
-                    if (e.Key == Key.Escape)
-                    {
-                        ManageTextChangeProperties(string.Empty, Visibility.Collapsed);
-                        if (Line_Selected != null)
-                        {
-                            Line_Selected.ExtrasVisibility(Visibility.Visible);
-                        }
-                        NameEditing = false;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                NameEditing = false;
-                new WindowMessageOK(ex.Message).ShowDialog();
-            }
-        }
-
-        private void ManageTextChangeProperties(String valueTextProperty, Visibility aVisibility)
-        {
-            TextChangeName.Text = valueTextProperty;
-            TextChangeName.Visibility = aVisibility;
-        }
-
-        private void UpdatePolyLineName(String polyLineName)
-        {
-            try
-            {
-                if (Line_Selected.IsCM)
-                {
-                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_CounterM.NAMESHORT] = polyLineName;
-                    foreach (DataRow item in Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + Line_Selected.ID))
-                    {
-                        item[DT_CounterM_Damage.COUNTERM_NAMESHORT] = polyLineName;
-                    }
-                }
-                else
-                {
-                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.NAMESHORT] = polyLineName;
-                    foreach (DataRow item in Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + Line_Selected.ID))
-                    {
-                        item[DT_Risk_Damages.RISK_NAMESHORT] = polyLineName;
-                    }
-
-                }
-                Line_Selected.ShortName = polyLineName;
-                ClearFilters();
-                UpdateGridRiskAndGridCM();
-            }
-            catch (Exception ex)
-            {
-                new WindowMessageOK(ex.Message).ShowDialog();
-            }
-        }
-
-        public void ClearFilters()
-        {
-            ((MainWindow)MyWindow).txtFilterCM.Clear();
-            ((MainWindow)MyWindow).txtFilterRisk.Clear();
-        }
-
-        private bool? CanUseProposedPolyLineName(String proposedPolyLineName)
-        {
-            try
-            {
-                bool? result = null;
-                WindowMessageYesNo yesNo = null;
-                if (!(Line_Selected.IsCM))
-                {
-                    int RiskTreeID = (Int32)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.ID_DIAGRAM];
-
-                    if (Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + RiskTreeID + " and "
-                        + DT_Risk.NAMESHORT + " = '" + proposedPolyLineName + "' and " + DT_Risk.ID + " <> " + Line_Selected.ID).Any())
-                    {
-                        yesNo = new WindowMessageYesNo("The name [" + proposedPolyLineName + "] Already exists in this diagram. Do you want to use it again?");
-                        yesNo.ShowDialog();
-                    }
-                }
-                else
-                {
-                    int RiskTreeID = (Int32)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.IdRiskFather)[DT_Risk.ID_DIAGRAM];
-
-                    if (Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + RiskTreeID + " and "
-                        + DT_CounterM.NAMESHORT + " = '" + proposedPolyLineName + "' and " + DT_CounterM.ID + " <> " + Line_Selected.ID).Any())
-                    {
-                        yesNo = new WindowMessageYesNo("The name [" + proposedPolyLineName + "] Already exists in this diagram. Do you want to use it again?");
-                        yesNo.ShowDialog();
-                    }
-                }
-                if (yesNo != null)
-                {
-                    result = yesNo.DialogResult;
-                }
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-        #endregion
 
         #region FuncionesDibujo
         public void LoadComboDamage()
@@ -754,7 +400,7 @@ namespace EnsureRisk.Classess
                 {
                     IdDamageSelected = (int)CbFilterTopR.SelectedValue;
                     if (IdDamageSelected != 0)
-                    {                        
+                    {
                         General.UpdateThickness(LinesList);
                         foreach (RiskPolyLine polyLine in LinesList)
                         {
@@ -1726,7 +1372,7 @@ namespace EnsureRisk.Classess
                     NameEditing = true;
                     Loose = true;
                     Line_Selected.MyName.Visibility = Visibility.Hidden;
-                    TextChangeName.Margin = Line_Selected.TextPanel.Margin;                    
+                    TextChangeName.Margin = Line_Selected.TextPanel.Margin;
                     TextChangeName.AcceptsReturn = false;
                     //TextChangeName.Style = ((TextBox)((MainWindow)MyWindow).FindResource("TextName")).Style;
                     TextChangeName.Background = new SolidColorBrush(Colors.Black);
@@ -1935,7 +1581,7 @@ namespace EnsureRisk.Classess
             else
             {
                 if (MoviendoRisk)
-                {                   
+                {
                     if (Line_Selected.IdRiskFather != ID_Sender && Line_Selected.ID != ID_Sender)
                     {
                         MoviendoRisk = false;
@@ -2254,7 +1900,7 @@ namespace EnsureRisk.Classess
                 {
                     NameEditing = true;
                     Loose = true;
-                    Line_Selected.ExtrasVisibility(Visibility.Hidden);                    
+                    Line_Selected.ExtrasVisibility(Visibility.Hidden);
                     TextChangeName.Background = new SolidColorBrush(Colors.Black);
                     TextChangeName.Foreground = new SolidColorBrush(Colors.White);
                     TextChangeName.Margin = Line_Selected.TextPanel.Margin;
@@ -2871,6 +2517,336 @@ namespace EnsureRisk.Classess
         }
         #endregion
 
+        #region  Slider&Zoom
+        private void SliderZoom_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            try
+            {
+                SliderZoom.Value = Convert.ToDouble(General.MyRound(Convert.ToDecimal(SliderZoom.Value), 0));
+
+                if (!(CanvasMain.LayoutTransform is ScaleTransform st))
+                {
+                    st = new ScaleTransform();
+                    CanvasMain.LayoutTransform = st;
+                }
+                st.ScaleX = st.ScaleY = SliderZoom.Value / 100;
+                e.Handled = true;
+            }
+            catch (Exception ex)
+            {
+                new WindowMessageOK(ex.Message).ShowDialog();
+            }
+        }
+
+        private void BtnPlusZoom_Click(object sender, RoutedEventArgs e)
+        {
+            if (SliderZoom.Value < 200)
+            {
+                SliderZoom.Value += 10;
+            }
+        }
+
+        private void BtnMinusZoom_Click(object sender, RoutedEventArgs e)
+        {
+            if (SliderZoom.Value > 10)
+            {
+                SliderZoom.Value -= 10;
+            }
+        }
+
+        private void SliderZoom_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.Delta > 0 && SliderZoom.Value < 200)
+            {
+                SliderZoom.Value += 10;
+            }
+
+            if (e.Delta < 0 && SliderZoom.Value > 10)
+            {
+                SliderZoom.Value -= 10;
+            }
+        }
+
+        public void BrigIntoViewSelectedRiskPolyline(RiskPolyLine line)
+        {
+            double midHeight = ScrollGridPaint.ActualHeight / 3;
+            double midWith = ScrollGridPaint.ActualWidth / 3;
+            if (line != null)
+            {
+                double x0;
+                double x1;
+
+                double y0;
+                double y1;
+                if (line.FromTop)
+                {
+                    y0 = line.Points[1].Y + midHeight;
+                    if (line.ActualHeight > ScrollGridPaint.ActualHeight)
+                    {
+                        y1 = line.Points[1].Y - midHeight;
+                    }
+                    else
+                    {
+                        y1 = line.Points[0].Y - midHeight;
+                    }
+                    x0 = line.Points[1].X + midWith;
+                    if (line.ActualWidth > ScrollGridPaint.ActualWidth)
+                    {
+                        x1 = line.Points[1].X - midWith;
+                    }
+                    else
+                    {
+                        x1 = line.Points[0].X - midWith;
+                    }
+                }
+                else
+                {
+                    y0 = line.Points[1].Y - midHeight;
+                    if (line.ActualHeight > ScrollGridPaint.ActualHeight)
+                    {
+                        y1 = line.Points[1].Y + midHeight;
+                    }
+                    else
+                    {
+                        y1 = line.Points[0].Y + midHeight;
+                    }
+                    x0 = line.Points[1].X + midWith;
+                    if (line.ActualWidth > ScrollGridPaint.ActualWidth)
+                    {
+                        x1 = line.Points[1].X - midWith;
+                    }
+                    else
+                    {
+                        x1 = line.Points[0].X - midWith;
+                    }
+                }
+
+                Rect rectangleRPL = new Rect(new Point(x0, y0), new Point(x1, y1));
+                line.BringIntoView(rectangleRPL);
+            }
+        }
+
+
+        #endregion
+
+
+        private void CbFilterTopR_DropDownClosed(object sender, EventArgs e)
+        {
+            try
+            {
+                if (LinesList.Count > 0)
+                {
+
+                    if (!(CbFilterTopR.SelectedValue is null))
+                    {
+                        IdDamageSelected = (Int32)CbFilterTopR.SelectedValue;
+                        System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (Int32)CbFilterTopR.SelectedValue).First()[DT_Risk_Damages.COLOR].ToString()));
+
+                        foreach (RiskPolyLine item in LinesList)
+                        {
+                            if (Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (Int32)CbFilterTopR.SelectedValue).Any())
+                            {
+                                if (!(item.IsCM))
+                                {
+                                    if (item.IsActivated)
+                                    {
+                                        if (item.IsRoot)
+                                        {
+                                            item.SetColor(new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B)));
+                                        }
+                                        else
+                                        {
+                                            if (TengoPermiso(item))
+                                            {
+                                                item.SetColor(new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B)));
+                                            }
+                                            else
+                                            {
+                                                item.SetColor(new SolidColorBrush(Color.FromArgb(80, drawColor.R, drawColor.G, drawColor.B)));
+                                            }
+                                        }
+                                        item.UpdateSegmentsStroke();
+                                    }
+                                }
+                            }
+                        }
+                        UpdateLinesValues();
+                        SetLinesThickness();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                new WindowMessageOK(ex.Message).ShowDialog();
+            }
+        }
+
+        #region TextChangeName
+        private void TextChangeName_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (((LTextBox)sender).Visibility == Visibility.Visible)
+            {
+                Dispatcher.BeginInvoke((Action)delegate
+                {
+                    Keyboard.Focus(TextChangeName);
+                }, DispatcherPriority.Render);
+            }
+        }
+
+        private void TextChangeName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (NameEditing)
+                {
+                    Boolean? canUsePolyLineName = CanUseProposedPolyLineName(TextChangeName.Text);
+                    if (!canUsePolyLineName.HasValue || canUsePolyLineName.HasValue && canUsePolyLineName.Value)
+                    {
+                        if (TextChangeName.Text != string.Empty)
+                        {
+                            UpdatePolyLineName(TextChangeName.Text);
+                        }
+                    }
+                    ManageTextChangeProperties(String.Empty, Visibility.Hidden);
+                    if (Line_Selected != null)
+                    {
+                        Line_Selected.ExtrasVisibility(Visibility.Visible);
+                    }
+                }
+                NameEditing = false;
+            }
+            catch (Exception ex)
+            {
+                NameEditing = false;
+                new WindowMessageOK(ex.Message).ShowDialog();
+            }
+        }
+
+        private void TextChangeName_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (NameEditing)
+                {
+                    if (e.Key == Key.Enter)
+                    {
+                        Boolean? canUsePolyLineName = CanUseProposedPolyLineName(TextChangeName.Text);
+                        if (!canUsePolyLineName.HasValue || canUsePolyLineName.HasValue && canUsePolyLineName.Value)
+                        {
+                            if (TextChangeName.Text != string.Empty)
+                            {
+                                UpdatePolyLineName(TextChangeName.Text);
+                            }
+                        }
+                        ManageTextChangeProperties(string.Empty, Visibility.Collapsed);
+                        NameEditing = false;
+                        if (Line_Selected != null)
+                        {
+                            Line_Selected.ExtrasVisibility(Visibility.Visible);
+                        }
+                    }
+                    if (e.Key == Key.Escape)
+                    {
+                        ManageTextChangeProperties(string.Empty, Visibility.Collapsed);
+                        if (Line_Selected != null)
+                        {
+                            Line_Selected.ExtrasVisibility(Visibility.Visible);
+                        }
+                        NameEditing = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                NameEditing = false;
+                new WindowMessageOK(ex.Message).ShowDialog();
+            }
+        }
+
+        private void ManageTextChangeProperties(String valueTextProperty, Visibility aVisibility)
+        {
+            TextChangeName.Text = valueTextProperty;
+            TextChangeName.Visibility = aVisibility;
+        }
+
+        private void UpdatePolyLineName(String polyLineName)
+        {
+            try
+            {
+                if (Line_Selected.IsCM)
+                {
+                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_CounterM.NAMESHORT] = polyLineName;
+                    foreach (DataRow item in Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + Line_Selected.ID))
+                    {
+                        item[DT_CounterM_Damage.COUNTERM_NAMESHORT] = polyLineName;
+                    }
+                }
+                else
+                {
+                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.NAMESHORT] = polyLineName;
+                    foreach (DataRow item in Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + Line_Selected.ID))
+                    {
+                        item[DT_Risk_Damages.RISK_NAMESHORT] = polyLineName;
+                    }
+
+                }
+                Line_Selected.ShortName = polyLineName;
+                ClearFilters();
+                UpdateGridRiskAndGridCM();
+            }
+            catch (Exception ex)
+            {
+                new WindowMessageOK(ex.Message).ShowDialog();
+            }
+        }
+
+        public void ClearFilters()
+        {
+            ((MainWindow)MyWindow).txtFilterCM.Clear();
+            ((MainWindow)MyWindow).txtFilterRisk.Clear();
+        }
+
+        private bool? CanUseProposedPolyLineName(String proposedPolyLineName)
+        {
+            try
+            {
+                bool? result = null;
+                WindowMessageYesNo yesNo = null;
+                if (!(Line_Selected.IsCM))
+                {
+                    int RiskTreeID = (Int32)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.ID_DIAGRAM];
+
+                    if (Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + RiskTreeID + " and "
+                        + DT_Risk.NAMESHORT + " = '" + proposedPolyLineName + "' and " + DT_Risk.ID + " <> " + Line_Selected.ID).Any())
+                    {
+                        yesNo = new WindowMessageYesNo("The name [" + proposedPolyLineName + "] Already exists in this diagram. Do you want to use it again?");
+                        yesNo.ShowDialog();
+                    }
+                }
+                else
+                {
+                    int RiskTreeID = (Int32)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.IdRiskFather)[DT_Risk.ID_DIAGRAM];
+
+                    if (Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + RiskTreeID + " and "
+                        + DT_CounterM.NAMESHORT + " = '" + proposedPolyLineName + "' and " + DT_CounterM.ID + " <> " + Line_Selected.ID).Any())
+                    {
+                        yesNo = new WindowMessageYesNo("The name [" + proposedPolyLineName + "] Already exists in this diagram. Do you want to use it again?");
+                        yesNo.ShowDialog();
+                    }
+                }
+                if (yesNo != null)
+                {
+                    result = yesNo.DialogResult;
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
         #region GridEvents
 
         /// <summary>
@@ -2883,7 +2859,7 @@ namespace EnsureRisk.Classess
 
                 if (((MainWindow)MyWindow).TheCurrentLayout.ID_Diagram != ID_Diagram)
                 {
-                    //((MainWindow)MyWindow).TheCurrentLayout = this;                  
+                    ((MainWindow)MyWindow).TheCurrentLayout = this;
                 }
                 ((MainWindow)MyWindow).UpdateMiniMapSource();
                 foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
@@ -2963,7 +2939,7 @@ namespace EnsureRisk.Classess
                                 Y = e.GetPosition(GridPaintLines).Y;
                                 Main_Y = MainLine.Points[0].Y;
                             }
-                           
+
                         }
                         else
                         {
@@ -2994,7 +2970,7 @@ namespace EnsureRisk.Classess
             {
                 if (((MainWindow)MyWindow).TheCurrentLayout.ID_Diagram != ID_Diagram)
                 {
-                    //((MainWindow)MyWindow).TheCurrentLayout = this;
+                    ((MainWindow)MyWindow).TheCurrentLayout = this;
                     CleanFishBone();
                     LoadFishBone();
                     DrawNumbersAndLineThickness();
@@ -3146,118 +3122,6 @@ namespace EnsureRisk.Classess
 
         #endregion
 
-        #region  Slider&Zoom
-        private void SliderZoom_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            try
-            {
-                SliderZoom.Value = Convert.ToDouble(General.MyRound(Convert.ToDecimal(SliderZoom.Value), 0));
-
-                if (!(CanvasMain.LayoutTransform is ScaleTransform st))
-                {
-                    st = new ScaleTransform();
-                    CanvasMain.LayoutTransform = st;
-                }
-                st.ScaleX = st.ScaleY = SliderZoom.Value / 100;
-                e.Handled = true;
-            }
-            catch (Exception ex)
-            {
-                new WindowMessageOK(ex.Message).ShowDialog();
-            }
-        }
-
-        private void BtnPlusZoom_Click(object sender, RoutedEventArgs e)
-        {
-            if (SliderZoom.Value < 200)
-            {
-                SliderZoom.Value += 10;
-            }
-        }
-
-        private void BtnMinusZoom_Click(object sender, RoutedEventArgs e)
-        {
-            if (SliderZoom.Value > 10)
-            {
-                SliderZoom.Value -= 10;
-            }
-        }
-
-        private void SliderZoom_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (e.Delta > 0 && SliderZoom.Value < 200)
-            {
-                SliderZoom.Value += 10;
-            }
-
-            if (e.Delta < 0 && SliderZoom.Value > 10)
-            {
-                SliderZoom.Value -= 10;
-            }
-        }
-
-        public void BrigIntoViewSelectedRiskPolyline(RiskPolyLine line)
-        {
-            double midHeight = ScrollGridPaint.ActualHeight / 3;
-            double midWith = ScrollGridPaint.ActualWidth / 3;
-            if (line != null)
-            {
-                double x0;
-                double x1;
-
-                double y0;
-                double y1;
-                if (line.FromTop)
-                {
-                    y0 = line.Points[1].Y + midHeight;
-                    if (line.ActualHeight > ScrollGridPaint.ActualHeight)
-                    {
-                        y1 = line.Points[1].Y - midHeight;
-                    }
-                    else
-                    {
-                        y1 = line.Points[0].Y - midHeight;
-                    }
-                    x0 = line.Points[1].X + midWith;
-                    if (line.ActualWidth > ScrollGridPaint.ActualWidth)
-                    {
-                        x1 = line.Points[1].X - midWith;
-                    }
-                    else
-                    {
-                        x1 = line.Points[0].X - midWith;
-                    }
-                }
-                else
-                {
-                    y0 = line.Points[1].Y - midHeight;
-                    if (line.ActualHeight > ScrollGridPaint.ActualHeight)
-                    {
-                        y1 = line.Points[1].Y + midHeight;
-                    }
-                    else
-                    {
-                        y1 = line.Points[0].Y + midHeight;
-                    }
-                    x0 = line.Points[1].X + midWith;
-                    if (line.ActualWidth > ScrollGridPaint.ActualWidth)
-                    {
-                        x1 = line.Points[1].X - midWith;
-                    }
-                    else
-                    {
-                        x1 = line.Points[0].X - midWith;
-                    }
-                }
-
-                Rect rectangleRPL = new Rect(new Point(x0, y0), new Point(x1, y1));
-                line.BringIntoView(rectangleRPL);
-            }
-        }
-
-
-        #endregion
-
         #region Export to Excel
 
         public void ExportToExcel(string fileName)
@@ -3290,13 +3154,14 @@ namespace EnsureRisk.Classess
         {
             this.TheProgressBar.Value = 100;
             IFormatProvider formatProvider = CultureInfo.CurrentUICulture;
-            new WindowMessageInformation(String.Format(formatProvider, "Diagram {0} was saved as excel file!", this.Title)).ShowDialog();
+            new WindowMessageInformation(string.Format(formatProvider, "Diagram {0} was saved as excel file!", this.Title)).ShowDialog();
             this.TheProgressBar.Visibility = Visibility.Hidden;
             this.TheProgressBar.Value = 0;
             this.TheProgressBar.IsIndeterminate = true;
 
             this.IsExportingToExcel = false;
         }
+
         #endregion
     }
 }

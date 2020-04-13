@@ -47,7 +47,6 @@ namespace EnsureBusinesss
         public static DataTable CrossTable(ref DataTable dtSource, string Pivot, string[] ColValue, DataColumn[] PK_Col)
         {
             string filter = string.Empty;
-
             //Buscar todos los posibles valores de la columna pivote
             IEnumerable<string> PivotValues = from aDataRow in dtSource.AsEnumerable()
                                               group aDataRow by (aDataRow.Field<string>(Pivot)) into aPivotValues
@@ -62,13 +61,13 @@ namespace EnsureBusinesss
             if (PivotValues.Count() > 0)
             {
                 DataColumn dc = dtSource.Columns[Pivot];
-                if (dc.DataType.Equals(typeof(System.Int32)) || dc.DataType.Equals(typeof(System.Int16)) || dc.DataType.Equals(typeof(System.Byte)))
+                if (dc.DataType.Equals(typeof(int)) || dc.DataType.Equals(typeof(short)) || dc.DataType.Equals(typeof(byte)))
                 {
                     filter = Pivot + " <> " + Convert.ToString(PivotValues.ElementAtOrDefault(0));
                 }
                 else
                 {
-                    if (dc.DataType.Equals(typeof(System.String)))
+                    if (dc.DataType.Equals(typeof(string)))
                     {
                         filter = Pivot + " <> " + "'" + Convert.ToString(PivotValues.ElementAtOrDefault(0)) + "'";
                     }
@@ -98,7 +97,6 @@ namespace EnsureBusinesss
                 foreach (string pivotValue in PivotValues)
                 {
                     string colName = colValue.Trim() + "_" + pivotValue.Trim();
-                    //colName = UsaNombreColumnaCompuesto ? colValor.Trim() + "_" + valorPivote.Trim() : valorPivote.Trim();
                     colName = pivotValue.Trim();
                     DataColumn newColumn = new DataColumn(colName, dtSource.Columns[colValue].DataType);
                     switch (dtSource.Columns[colValue].DataType.ToString().ToUpper())
@@ -124,19 +122,19 @@ namespace EnsureBusinesss
                 {
                     if (dcPK.ColumnName != Pivot)
                     {
-                        if (dcPK.DataType.Equals(typeof(System.Int32)) || dcPK.DataType.Equals(typeof(System.Int16)) || dcPK.DataType.Equals(typeof(System.Byte)))
+                        if (dcPK.DataType.Equals(typeof(int)) || dcPK.DataType.Equals(typeof(short)) || dcPK.DataType.Equals(typeof(byte)))
                         {
                             filter = filter + dcPK.ColumnName + " = " + Convert.ToString(drResult[dcPK.ColumnName]) + " AND ";
                         }
                         else
                         {
-                            if (dcPK.DataType.Equals(typeof(System.String)))
+                            if (dcPK.DataType.Equals(typeof(string)))
                             {
                                 filter = filter + dcPK.ColumnName + " = " + "'" + Convert.ToString(drResult[dcPK.ColumnName]) + "'" + " AND ";
                             }
                             else
                             {
-                                if (dcPK.DataType.Equals(typeof(System.Decimal)))
+                                if (dcPK.DataType.Equals(typeof(decimal)))
                                 {
                                     filter = filter + dcPK.ColumnName + " = " + Convert.ToString(drResult[dcPK.ColumnName], System.Globalization.CultureInfo.InvariantCulture) + " AND ";
                                 }
@@ -156,7 +154,6 @@ namespace EnsureBusinesss
                 {
                     foreach (string col_value in ColValue)
                     {
-                        //colName = UsaNombreColumnaCompuesto ? col_value.Trim() + "_" + Convert.ToString(drFilter[Pivot]) : Convert.ToString(drFilter[Pivot]);
                         colName = Convert.ToString(drFilter[Pivot]);
                         drResult[colName] = drFilter[col_value];
                     }
@@ -285,7 +282,7 @@ namespace EnsureBusinesss
         {
             try
             {
-                if ((Boolean)risk[DT_Risk.ENABLED])
+                if ((bool)risk[DT_Risk.ENABLED])
                 {
                     if (!(Risk_TopRisk.Select(DT_Risk_Damages.ID_RISK + " = " + risk[DT_Risk.ID] + " AND " +
                                 DT_Risk_Damages.ID_DAMAGE + " = " + idToprisk).Any()))
@@ -294,7 +291,7 @@ namespace EnsureBusinesss
                     }
                     else
                     {
-                        return (Decimal)Risk_TopRisk.Select(DT_Risk_Damages.ID_RISK + " = " + risk[DT_Risk.ID] + " AND " +
+                        return (decimal)Risk_TopRisk.Select(DT_Risk_Damages.ID_RISK + " = " + risk[DT_Risk.ID] + " AND " +
                             DT_Risk_Damages.ID_DAMAGE + " = " + idToprisk).First()[DT_Risk_Damages.VALUE];
                     }
                 }
@@ -320,7 +317,7 @@ namespace EnsureBusinesss
             }
             else
             {
-                return (Decimal)CM_TopRisk.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CM[DT_CounterM.ID] + " AND " +
+                return (decimal)CM_TopRisk.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CM[DT_CounterM.ID] + " AND " +
                     DT_CounterM_Damage.ID_DAMAGE + " = " + idToprisk).First()[DT_CounterM_Damage.VALUE];
             }
         }
@@ -438,40 +435,7 @@ namespace EnsureBusinesss
                 return ValueToReturn;
             }
         }
-
-        /// <summary>
-        /// Calculate the value depending of the count of number of elements in the "p" List
-        /// </summary>
-        /// <param name="p">List of probabilities</param>
-        /// <returns>Decimal probability</returns>
-        //public static decimal EL_Inclusion_Exclusion(List<decimal> p)
-        //{
-        //    decimal sum = 0;
-        //    for (int msk = 1; msk < (1 << p.Count); ++msk)//A^n
-        //    {
-        //        decimal mult = 1;
-        //        int bits = 0;
-        //        for (int i = 0; i < p.Count; ++i)
-        //        {
-        //            if ((msk & (1 << i)) != 0)//B^n-1
-        //            {
-        //                ++bits;
-        //                mult *= p[i];
-        //            }
-        //        }
-        //        if (bits % 2 == 1)//heare alterns + or - values
-        //        {
-        //            sum += mult;
-        //        }
-        //        else
-        //        {
-        //            sum -= mult;
-        //        }
-        //    }
-
-        //    return sum;
-        //}
-
+        
         /// <summary>
         /// Calculating Inclusion_Exclusion likelihood 
         /// </summary>
@@ -501,25 +465,7 @@ namespace EnsureBusinesss
             return (A + B) - (A * B);
         }
 
-        private static void SetMargin(RiskPolyLine line)
-        {
-            if (line.IsDiagonal)
-            {
-                if (line.FromTop)
-                {
-                    line.TextPanel.Margin = new System.Windows.Thickness(line.TextPanel.Margin.Left, line.TextPanel.Margin.Top - line.StrokeThickness, 0, 0);
-                }
-                else
-                {
-                    line.TextPanel.Margin = new System.Windows.Thickness(line.TextPanel.Margin.Left, line.TextPanel.Margin.Top + line.StrokeThickness, 0, 0);
-                }
-            }
-            else
-            {
-                line.TextPanel.Margin = new System.Windows.Thickness(line.TextPanel.Margin.Left, line.TextPanel.Margin.Top + line.StrokeThickness, 0, 0);
-            }
-        }
-
+        
         public static void UpdateThickness(List<RiskPolyLine> linesList)
         {           
             decimal min = 0;
@@ -550,7 +496,6 @@ namespace EnsureBusinesss
             //{
             //    UpdateSegmentsStrokeThickness(polyLine);
             //}
-
         }
 
 

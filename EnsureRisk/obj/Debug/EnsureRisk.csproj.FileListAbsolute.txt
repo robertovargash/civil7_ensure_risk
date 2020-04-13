@@ -1326,3 +1326,5 @@ C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\En
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\EnsureRisk.pdb
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Classess\MiniMapControl.baml
 C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Classess\MiniMapControl.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Classess\MyLayoutDocumentt.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\VisualDragDrop\EnsureRisk\obj\Debug\Classess\MyLayoutDocumentt.baml

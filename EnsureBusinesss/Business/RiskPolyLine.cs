@@ -197,7 +197,7 @@ namespace EnsureBusinesss.Business
         public RiskPolyLine Father { get; set; }
         public LineGroup Group { get; set; }
         public LabelPolyLine MyName { get; set; }
-        public Border TextPanel { get; set; }
+        public LBorder TextPanel { get; set; }
 
         public List<RiskPolyLine> Children { get; set; }
         public PictureBoxPolyLine Expand { get; set; }
@@ -254,7 +254,7 @@ namespace EnsureBusinesss.Business
                
             };
 
-            TextPanel = new Border
+            TextPanel = new LBorder
             {
                 CornerRadius = new CornerRadius(1),
                 BorderBrush = this.Stroke,
@@ -366,6 +366,7 @@ namespace EnsureBusinesss.Business
             {
                 MyName.MaxWidth = 180;
                 TextPanel.RenderTransformOrigin = new Point(0, 0);
+                
                 MyName.MaxHeight = 40;
                 if (IsRoot || IsMoving)
                 {
@@ -425,6 +426,8 @@ namespace EnsureBusinesss.Business
                         itemseg.Visibility = Visibility.Collapsed;
                     }
                 }
+                TextPanel.IDRisk = ID;
+                TextPanel.Risk = ShortName;
                 return base.DefiningGeometry;
             }
         }
@@ -765,7 +768,6 @@ namespace EnsureBusinesss.Business
             if (Segments.Any())
             {
                 IEnumerable<RiskPolyLine> orderedChild = Children.OrderBy(pl => pl.Points[1].X);
-                //int i = 0;
                 int segmentIndex = Segments.Count - 1;
                 SegmentPolyLine segment;
                 SegmentPolyLine lastSegment = Segments[segmentIndex];
@@ -857,7 +859,7 @@ namespace EnsureBusinesss.Business
         public double GetStrokeThicknessInPosition(int pos)
         {
             double visualParentStrokeThickness;
-            if (pos > 0 && Father.Segments.Count > 0)
+            if (pos > 0 && Father.Segments.Count > 0 && Father.Segments.Count > pos)
             {
                 visualParentStrokeThickness = Father.Segments.ElementAt(pos - 1).StrokeThickness;
             }

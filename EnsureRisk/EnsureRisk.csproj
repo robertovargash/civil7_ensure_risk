@@ -74,7 +74,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Referencias\MaterialDesignColors.dll</HintPath>
     </Reference>
-    <Reference Include="MaterialDesignThemes.Wpf, Version=2.5.1.1345, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MaterialDesignThemes.Wpf, Version=1.2.0.39448, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Referencias\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
@@ -140,6 +140,9 @@
     <Compile Include="Classess\MRLimited.cs" />
     <Compile Include="Classess\MyGrid.cs" />
     <Compile Include="Classess\MyLayoutDocument.cs" />
+    <Compile Include="Classess\MyLayoutDocumentt.xaml.cs">
+      <DependentUpon>MyLayoutDocumentt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Classess\MyRadioButton.cs" />
     <Compile Include="Classess\MyTreeItem.cs" />
     <Compile Include="Classess\PannelWBS.cs" />
@@ -333,6 +336,10 @@
       <DependentUpon>WindowWBSList.xaml</DependentUpon>
     </Compile>
     <Page Include="Classess\MiniMapControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Classess\MyLayoutDocumentt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

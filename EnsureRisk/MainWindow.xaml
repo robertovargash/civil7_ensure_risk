@@ -119,7 +119,6 @@
                     </MenuItem.Header>
                 </MenuItem>
             </ContextMenu>
-
             <ContextMenu x:Key="MenuCM" Visibility="Hidden" Background="Transparent">
                 <MenuItem Height="35" x:Name="MenuEditCM">
                     <MenuItem.Header>
@@ -196,7 +195,7 @@
             <md:PackIcon Kind="Lan" x:Key="Tree"/>
             <md:PackIcon Kind="Fish" x:Key="Fish"/>
             <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Key="DeleteRow" Content="{md:PackIcon Kind=Delete}" ToolTip="Remove this group"/>
-            <TextBox Style="{StaticResource MaterialDesignFilledTextFieldTextBox}" x:Key="TextName"/>
+            <!--<TextBox Style="{StaticResource MaterialDesignFilledTextFieldTextBox}" x:Key="TextName"/>-->
             <Slider x:Key="CommonSlider"/>
             <ComboBox x:Key="CommonCB"/>
             <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Key="Delete" Content="{md:PackIcon Kind=Delete}" ToolTip="Remove this group"/>
@@ -254,9 +253,9 @@
             <xcad:LayoutRoot x:Name="_layoutRoot">
                 <xcad:LayoutPanel Orientation="Horizontal">
                     <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200">
-                        <xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="MiniMap" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300">
+                        <xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="Mini Map" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300">
                             <Grid Name="gridMiniMap" Background="#FF918080">
-                                <classess:MiniMapControl x:Name="MiniMap" />
+                                <classess:MiniMapControl x:Name="MiniMap"  MapSource="{Binding ScrollGridPaint, UpdateSourceTrigger=PropertyChanged}"/>
                             </Grid>
                         </xcad:LayoutAnchorable>
                         <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" IsVisibleChanged="AnchorWBSList_IsVisibleChanged" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">

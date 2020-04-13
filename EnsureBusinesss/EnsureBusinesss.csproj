@@ -68,6 +68,7 @@
     <Compile Include="Business\ArrowLineBase.cs" />
     <Compile Include="Business\ArrowPolyline.cs" />
     <Compile Include="Business\LabelPolyLine.cs" />
+    <Compile Include="Business\LBorder.cs" />
     <Compile Include="Business\LineGroup.cs" />
     <Compile Include="Business\MyGroupButton.cs" />
     <Compile Include="Business\MyDamage.xaml.cs">

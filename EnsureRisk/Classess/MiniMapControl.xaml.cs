@@ -260,8 +260,8 @@ namespace EnsureRisk.Classess
                     //calculate view's size and set initial position
                     this.lookupWindow.Unselect();
                     this.CalculateLookupWindowSize();
-                    this.lookupWindow.SetPosition(0.0, 0.0);
-                    CalculateMapPosition(this.lookupWindow.Width, this.lookupWindow.Height);
+                    this.lookupWindow.SetPosition(MapWidth, MapHeight / 2);
+                    CalculateMapPosition(this.lookupWindow.Left, this.lookupWindow.Top);
                     this.UpdateContentGrid();
 
                     if (null != this.mapSource && null != this.mapSource.Content && this.mapSource.Content is FrameworkElement)
