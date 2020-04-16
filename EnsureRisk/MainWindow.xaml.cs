@@ -314,7 +314,14 @@ namespace EnsureRisk
             catch (Exception ex)
             {
                 new WindowMessageOK(ex.Message).ShowDialog();
+                //MostarDialog(ex.Message);
             }            
+        }
+
+        public void MostarDialog(string text)
+        {
+            MessageDialog.IsOpen = true;
+            TextMessage.Text = text;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -861,18 +868,18 @@ namespace EnsureRisk
         {
             foreach (DataRow item in originalLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + originalLayout.ID_Diagram))
             {
-                int myPosition = item[DT_Risk.POSITION] == DBNull.Value ? 0 : (Int32)item[DT_Risk.POSITION];
+                int myPosition = item[DT_Risk.POSITION] == DBNull.Value ? 0 : (int)item[DT_Risk.POSITION];
                 RiskPolyLine riskLine;
-                if ((Boolean)item[DT_Risk.IS_ROOT])
+                if ((bool)item[DT_Risk.IS_ROOT])
                 {
                     riskLine = new RiskPolyLine(destinyLayout.GridPaintLines, MenuMainRisk, false)
                     {
                         ShortName = item[DT_Risk.NAMESHORT].ToString(),
-                        ID = (Int32)item[DT_Risk.ID],
+                        ID = (int)item[DT_Risk.ID],
                         Position = myPosition,
-                        IsRoot = (Boolean)item[DT_Risk.IS_ROOT],
-                        Collapsed = (Boolean)item[DT_Risk.ISCOLLAPSED],
-                        Probability = (Decimal)item[DT_Risk.PROBABILITY],
+                        IsRoot = (bool)item[DT_Risk.IS_ROOT],
+                        Collapsed = (bool)item[DT_Risk.ISCOLLAPSED],
+                        Probability = (decimal)item[DT_Risk.PROBABILITY],
                         IsCM = false
                     };
                 }
@@ -881,19 +888,19 @@ namespace EnsureRisk
                     riskLine = new RiskPolyLine(destinyLayout.GridPaintLines, MenuRisk, false)
                     {
                         ShortName = item[DT_Risk.NAMESHORT].ToString(),
-                        ID = (Int32)item[DT_Risk.ID],
+                        ID = (int)item[DT_Risk.ID],
                         Position = myPosition,
-                        IsRoot = (Boolean)item[DT_Risk.IS_ROOT],
-                        Collapsed = (Boolean)item[DT_Risk.ISCOLLAPSED],
-                        Probability = (Decimal)item[DT_Risk.PROBABILITY],
+                        IsRoot = (bool)item[DT_Risk.IS_ROOT],
+                        Collapsed = (bool)item[DT_Risk.ISCOLLAPSED],
+                        Probability = (decimal)item[DT_Risk.PROBABILITY],
                         IsCM = false
                     };
                 }
-                if (originalLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains((Int32)item[DT_Risk.ID]))
+                if (originalLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains((int)item[DT_Risk.ID]))
                 {
-                    if (originalLayout.Ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + (Int32)item[DT_Risk.ID]).Any())
+                    if (originalLayout.Ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + (int)item[DT_Risk.ID]).Any())
                     {
-                        riskLine.IdRiskFather = (Int32)originalLayout.Ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + (Int32)item[DT_Risk.ID]).First()[DT_RiskStructure.IDRISK_FATHER];
+                        riskLine.IdRiskFather = (int)originalLayout.Ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + (int)item[DT_Risk.ID]).First()[DT_RiskStructure.IDRISK_FATHER];
                     }
                     else
                     {
@@ -1497,11 +1504,11 @@ namespace EnsureRisk
                     {
                         int id = (Int32)DVRisk_Tree[dgTreeDiagrams.SelectedIndex].Row[DT_Diagram.ID_DIAGRAM];
 
-                        var ele = from layout in LayoutDocumentPanel.Children where ((MyLayoutDocument)layout).ID_Diagram == id select layout;
+                        var ele = from layout in LayoutDocumentPanel.Children where ((MyLayoutDocumentt)layout).ID_Diagram == id select layout;
                         if (ele.Count() > 0)
                         {
-                            ((MyLayoutDocument)ele.First()).SaveAsClosing = false;
-                            ((MyLayoutDocument)ele.First()).Close();
+                            ((MyLayoutDocumentt)ele.First()).SaveAsClosing = false;
+                            ((MyLayoutDocumentt)ele.First()).Close();
                         }
                         //foreach (var item in ele)
                         //{
@@ -2556,7 +2563,7 @@ namespace EnsureRisk
                     TheCurrentLayout.Ds.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
                     RiskPolyLine Line_Created = new RiskPolyLine
                     {
-                        ID = (Int32)wrisk.RiskRow[DT_Risk.ID],
+                        ID = (int)wrisk.RiskRow[DT_Risk.ID],
                         IsCM = false,
                         ShortName = "LineCreated",
                         Father = TheCurrentLayout.Line_Selected,
@@ -4955,21 +4962,20 @@ namespace EnsureRisk
             cbDiagramValues.Header = StringResources.DiagramValuesGroupB;
             cbFilterTR.Header = StringResources.FilterTRGroupB;
             //cbScale.Header = StringResources.ScaleGroupB;
-            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.AddRisk]).ToolTip = StringResources.AddRiskMenu;
-            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.EditRisk]).ToolTip = StringResources.EditRiskMenu;
-            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.DelRisk]).ToolTip = StringResources.DeleteRiskMenu;
-            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.MRisk]).ToolTip = StringResources.MoveRiskMenu;
-            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.AddCM]).ToolTip = StringResources.AddCMMenu;
-            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.Scope]).ToolTip = StringResources.MENU_SCOPE;
-            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.Copy]).ToolTip = StringResources.COPY_MENU;
-            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.Paste]).ToolTip = StringResources.PASTE_MENU;
-            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.Import]).ToolTip = StringResources.MENU_IMPORT;
-            ((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
+            ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.AddRisk]).ToolTip = StringResources.AddRiskMenu;
+            //((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.EditRisk]).ToolTip = StringResources.EditRiskMenu;
+            //((MenuItem)MenuRisk.Items[(Int32)MenuRiskItems.DelRisk]).ToolTip = StringResources.DeleteRiskMenu;
+            ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.AddCM]).ToolTip = StringResources.AddCMMenu;
+            ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Scope]).ToolTip = StringResources.MENU_SCOPE;
+            ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Copy]).ToolTip = StringResources.COPY_MENU;
+            ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Paste]).ToolTip = StringResources.PASTE_MENU;
+            ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Import]).ToolTip = StringResources.MENU_IMPORT;
+            ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
 
-            ((MenuItem)MenuRiskLimited.Items[(Int32)MRLimited.EditRisk]).ToolTip = StringResources.EditRiskMenu;
-            ((MenuItem)MenuRiskLimited.Items[(Int32)MRLimited.Scope]).ToolTip = StringResources.MENU_SCOPE;
-            ((MenuItem)MenuRiskLimited.Items[(Int32)MRLimited.Copy]).ToolTip = StringResources.COPY_MENU;
-            ((MenuItem)MenuRiskLimited.Items[(Int32)MRLimited.Enable]).ToolTip = StringResources.DisableValue;
+            ((MenuItem)MenuRiskLimited.Items[(int)MRLimited.EditRisk]).ToolTip = StringResources.EditRiskMenu;
+            ((MenuItem)MenuRiskLimited.Items[(int)MRLimited.Scope]).ToolTip = StringResources.MENU_SCOPE;
+            ((MenuItem)MenuRiskLimited.Items[(int)MRLimited.Copy]).ToolTip = StringResources.COPY_MENU;
+            ((MenuItem)MenuRiskLimited.Items[(int)MRLimited.Enable]).ToolTip = StringResources.DisableValue;
 
             ((MenuItem)MenuCM.Items[0]).ToolTip = StringResources.EditCMMenu;
             ((MenuItem)MenuCM.Items[1]).ToolTip = StringResources.DeleteCMMenu;

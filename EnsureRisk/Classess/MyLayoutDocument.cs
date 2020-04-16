@@ -902,7 +902,7 @@ namespace EnsureRisk.Classess
                             riskLine.Collapsed = (bool)item[DT_Risk.ISCOLLAPSED];
                             if (((bool)item[DT_Risk.ENABLED]))
                             {
-                                ((MenuItem)MenuRisk.Items[9]).ToolTip = StringResources.DisableValue;
+                                ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
 
                                 riskLine.ShortName = item[DT_Risk.NAMESHORT].ToString();
                                 if (haspermission)
@@ -916,7 +916,7 @@ namespace EnsureRisk.Classess
                             }
                             else
                             {
-                                ((MenuItem)MenuRisk.Items[9]).ToolTip = StringResources.EnableValue;
+                                ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.EnableValue;
                                 riskLine.ShortName = item[DT_Risk.NAMESHORT].ToString();
                                 riskLine.SetColor(new SolidColorBrush(Colors.Gray));
                             }

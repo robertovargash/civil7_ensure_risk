@@ -9,7 +9,7 @@ namespace EnsureRisk.Classess
 {
     public class LTextBox: TextBox
     {
-        public MyLayoutDocument MyOwner { get; set; }
+        public MyLayoutDocumentt MyOwner { get; set; }
 
         public LTextBox():base()
         {

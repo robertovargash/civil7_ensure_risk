@@ -124,7 +124,7 @@
     <value>Adicionar contramedida</value>
   </data>
   <data name="AddRiskMenu" xml:space="preserve">
-    <value>Adicionar Riesgo</value>
+    <value>Gestionar Riesgo</value>
   </data>
   <data name="CancelButton" xml:space="preserve">
     <value>Cancelar</value>

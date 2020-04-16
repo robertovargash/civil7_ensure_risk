@@ -147,7 +147,10 @@ namespace EnsureRisk.Classess
                     }
 
                 }
-                //((MainWindow)MyWindow).OpenedDocuments.Remove(this);
+                if (((MainWindow)MyWindow).OpenedDocuments.Contains(this))
+                {
+                    ((MainWindow)MyWindow).OpenedDocuments.Remove(this);
+                }                
                 ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear();
                 ((MainWindow)MyWindow).DV_Cross_CM.Table.Clear();
             }
@@ -431,8 +434,8 @@ namespace EnsureRisk.Classess
                     IsCM = false,
                     FromTop = false,
                     StrokeThickness = General.MaxThickness,
-                    ID = (Int32)dr[DT_Risk.ID],
-                    Probability = (Decimal)dr[DT_Risk.PROBABILITY] / 100,
+                    ID = (int)dr[DT_Risk.ID],
+                    Probability = (decimal)dr[DT_Risk.PROBABILITY] / 100,
                     ShortName = "Total Risk",
                     MyLevel = 0
                 };
@@ -441,6 +444,7 @@ namespace EnsureRisk.Classess
                     IdGroup = 0,
                     GroupName = "None"
                 };
+                
                 //adding the 3 points of the risk. The Main line the angle = 180º
                 MainLine.Points[0] = (new Point(MIdPoint.X - 500, MIdPoint.Y));
                 MainLine.Points[1] = (new Point(MainLine.Points[0].X + 200, MainLine.Points[0].Y));
@@ -548,7 +552,7 @@ namespace EnsureRisk.Classess
                             riskLine.Collapsed = (bool)item[DT_Risk.ISCOLLAPSED];
                             if (((bool)item[DT_Risk.ENABLED]))
                             {
-                                ((MenuItem)MenuRisk.Items[9]).ToolTip = StringResources.DisableValue;
+                                ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
 
                                 riskLine.ShortName = item[DT_Risk.NAMESHORT].ToString();
                                 if (haspermission)
@@ -562,7 +566,7 @@ namespace EnsureRisk.Classess
                             }
                             else
                             {
-                                ((MenuItem)MenuRisk.Items[9]).ToolTip = StringResources.EnableValue;
+                                ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.EnableValue;
                                 riskLine.ShortName = item[DT_Risk.NAMESHORT].ToString();
                                 riskLine.SetColor(new SolidColorBrush(Colors.Gray));
                             }
@@ -644,6 +648,10 @@ namespace EnsureRisk.Classess
                     UpdateLinesValues();
                 }
                 SetRightMenu(LinesList);
+                foreach (var item in MainLine.Segments)
+                {
+                    item.ContextMenu = MenuMainRisk;
+                }
                 SetEventsToSegments();
                 Scope();
             }
@@ -836,15 +844,20 @@ namespace EnsureRisk.Classess
         {
             foreach (var item in LinesList)
             {
-                if (!item.IsRoot)
+                foreach (var segmentLine in item.Segments)
                 {
-                    foreach (var segmentLine in item.Segments)
+                    if (!item.IsRoot)
                     {
                         segmentLine.MouseLeave += Risk_MouseLeave;
                         segmentLine.MouseEnter += Segment_MouseHover;
 
                         segmentLine.MouseDown += MouseDown_Event; //click en el segmento
                         segmentLine.MouseUp += RiskLine_MouseUp;
+                    }
+                    else
+                    {
+                        segmentLine.MouseDown += PrincipalLine_MouseDown; //click en el segmento
+                        segmentLine.MouseUp += MainLine_MouseUp;
                     }
                 }
             }
@@ -1876,11 +1889,11 @@ namespace EnsureRisk.Classess
                         };
                         if ((bool)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheLine.ID)[DT_Risk.ENABLED])
                         {
-                            ((MenuItem)MenuRisk.Items[9]).ToolTip = StringResources.DisableValue;
+                            ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
                         }
                         else
                         {
-                            ((MenuItem)MenuRisk.Items[9]).ToolTip = StringResources.EnableValue;
+                            ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.EnableValue;
                         }
                     }
                 }
@@ -2262,15 +2275,18 @@ namespace EnsureRisk.Classess
                     MenuRisk.IsEnabled = true;
                     int ID_Sender;
                     bool IsRoot_Sender;
+                    RiskPolyLine TheLine;
                     if (sender is RiskPolyLine)
                     {
                         ID_Sender = ((RiskPolyLine)sender).ID;
                         IsRoot_Sender = ((RiskPolyLine)sender).IsRoot;
+                        TheLine = (RiskPolyLine)sender;
                     }
                     else
                     {
-                        ID_Sender = ((LabelPolyLine)sender).Line.ID;
-                        IsRoot_Sender = ((LabelPolyLine)sender).Line.IsRoot;
+                        ID_Sender = ((SegmentPolyLine)sender).Father.ID;
+                        IsRoot_Sender = ((SegmentPolyLine)sender).Father.IsRoot;
+                        TheLine = ((SegmentPolyLine)sender).Father;
                     }
                     if (Creando)
                     {
@@ -2283,7 +2299,7 @@ namespace EnsureRisk.Classess
                                 RiskRow = Ds.Tables[DT_Risk.TABLE_NAME].NewRow(),
                                 Ds = Ds,
                                 LOGIN_USER = LoginUser,
-                                ID_PROJECT = (Int32)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT],
+                                ID_PROJECT = (int)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT],
                                 Risk_RoleTable = Ds.Tables[DT_Role_Risk.TABLENAME],
                                 WBS_RISK_Damage = Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME],
                                 WBS_CM_Damage = Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME],
@@ -2296,25 +2312,32 @@ namespace EnsureRisk.Classess
                                 RiskSelected = Line_Selected,
                                 MyRisks = Ds.Tables[DT_Risk.TABLE_NAME].Copy()
                             };
+                            wrisk.Pi.HasAccess = true;
                             if (wrisk.ShowDialog() == true)
                             {
-                                if (LinesList.FindAll(rl => rl.IdRiskFather == Line_Selected.ID).Any())
-                                {
-                                    wrisk.RiskRow[DT_Risk.POSITION] = Line_Selected.Children.Count;
-                                }
-                                else
-                                {
-                                    wrisk.RiskRow[DT_Risk.POSITION] = 0;
-                                }
                                 Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(wrisk.RiskRow);
                                 DataRow rowstructure = Ds.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
                                 rowstructure[DT_RiskStructure.IDRISK] = wrisk.RiskRow[DT_Risk.ID];
                                 rowstructure[DT_RiskStructure.IDRISK_FATHER] = wrisk.RowFather[DT_Risk.ID];
                                 Ds.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
-                                Ds.Tables[DT_Risk_Damages.TABLENAME].Merge(wrisk.Risk_DamageTable);
-                                Ds.Tables[DT_RISK_WBS.TABLENAME].Merge(wrisk.Risk_WBS_Table);
-                                Ds.Tables[DT_Role_Risk.TABLENAME].Merge(wrisk.Risk_RoleTable);
-                                DrawFishBone();
+                                RiskPolyLine Line_Created = new RiskPolyLine
+                                {
+                                    ID = (int)wrisk.RiskRow[DT_Risk.ID],
+                                    IsCM = false,
+                                    ShortName = "LineCreated",
+                                    Father = Line_Selected,
+                                    IdRiskFather = Line_Selected.ID
+                                };
+                                InsertRisk(Line_Created, Line_Selected, PointSelected);
+
+                                DropLines();
+                                DropRectangles();
+                                LoadLines();
+                                LoadRectangles();
+                                DrawNumbers();
+                                SetLinesThickness();
+                                ((MainWindow)MyWindow).TextProbabilityChange(MainLine);
+                                ((MainWindow)MyWindow).CruzarTablaRisk(Ds);
                             }
                         }
                         GridPaintLines.Children.Remove(Line_Created);
@@ -2391,9 +2414,20 @@ namespace EnsureRisk.Classess
                             {
                                 if (Line_Selected.IdRiskFather == ((RiskPolyLine)sender).ID)
                                 {
+                                    //MoviendoRisk = false;
+                                    //TreeOperation.DetectarMiPosicionActual(Line_Selected, e.GetPosition(GridPaintLines), Ds);
+                                    //DrawFishBone();
+                                    GridPaintLines.Children.Remove(LineInMoving);
                                     MoviendoRisk = false;
-                                    TreeOperation.DetectarMiPosicionActual(Line_Selected, e.GetPosition(GridPaintLines), Ds);
-                                    DrawFishBone();
+                                    Creando = false;
+                                    Line_Created = null;
+                                    MoviendoCM = false;
+                                    LineInMoving = null;
+                                    CleanFishBone();
+                                    LoadFishBone();
+                                    DrawNumbersAndLineThickness();
+                                    FixDrawPanel();
+                                    UpdateGridRiskAndGridCM();
                                 }
                                 else
                                 {
@@ -2434,9 +2468,9 @@ namespace EnsureRisk.Classess
                 else
                 {
                     //MainLine = ((LabelPolyLine)sender).Line;
-                    ID_Sender = ((LabelPolyLine)sender).Line.ID;
-                    IsRoot_Sender = ((LabelPolyLine)sender).Line.IsRoot;
-                    TheLine = ((LabelPolyLine)sender).Line;
+                    ID_Sender = ((SegmentPolyLine)sender).Father.ID;
+                    IsRoot_Sender = ((SegmentPolyLine)sender).Father.IsRoot;
+                    TheLine = ((SegmentPolyLine)sender).Father;
                 }
                 if (MoviendoRisk)
                 {
@@ -2483,19 +2517,31 @@ namespace EnsureRisk.Classess
                             }
                         }
                         DrawFishBone();
+                        GridPaintLines.Children.Remove(LineInMoving);
+                        LineInMoving = null;
                     }
                     else
                     {
                         if (Line_Selected.IdRiskFather == ID_Sender)
                         {
-                            MoviendoRisk = false;
+                            //MoviendoRisk = false;
                             //Cursor = Cursors.Arrow;
-                            if (!(TheLine.Children.Count == 1 && Line_Selected == TheLine.Children[0]))
-                            {
-                                TreeOperation.DetectarMiPosicionActual(Line_Selected, e.GetPosition(GridPaintLines), Ds);
-                                //DrawFishBone();
-                            }
-                            DrawFishBone();
+                            //if (!(TheLine.Children.Count == 1 && Line_Selected == TheLine.Children[0]))
+                            //{
+                            //    TreeOperation.DetectarMiPosicionActual(Line_Selected, e.GetPosition(GridPaintLines), Ds);
+                            //}
+                            //DrawFishBone();
+                            GridPaintLines.Children.Remove(LineInMoving);
+                            MoviendoRisk = false;
+                            Creando = false;
+                            Line_Created = null;
+                            MoviendoCM = false;
+                            LineInMoving = null;
+                            CleanFishBone();
+                            LoadFishBone();
+                            DrawNumbersAndLineThickness();
+                            FixDrawPanel();
+                            UpdateGridRiskAndGridCM();
                         }
                         else
                         {
@@ -3129,7 +3175,7 @@ namespace EnsureRisk.Classess
             this.TheProgressBar.IsIndeterminate = false;
             this.TheProgressBar.Minimum = 0;
             this.TheProgressBar.Maximum = 100;
-            this.TheProgressBar.Visibility = Visibility.Visible;
+            //this.TheProgressBar.Visibility = Visibility.Visible;
 
             using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(this.Ds, this.ID_Diagram))
             {

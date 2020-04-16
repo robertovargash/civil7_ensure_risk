@@ -6,7 +6,7 @@ namespace EnsureRisk.Classess
 {
     public class GridPaint : MyGrid
     {
-        public MyLayoutDocument MyOwner { get; set; }
+        public MyLayoutDocumentt MyOwner { get; set; }
         public GridPaint(): base()
         {
             Background = new SolidColorBrush(Colors.LightGoldenrodYellow);

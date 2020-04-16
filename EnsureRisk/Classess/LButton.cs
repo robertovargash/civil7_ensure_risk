@@ -9,7 +9,7 @@ namespace EnsureRisk.Classess
 {
     public class LButton: Button
     {
-        public MyLayoutDocument MyOwner { get; set; }
+        public MyLayoutDocumentt MyOwner { get; set; }
         public LButton():base()
         {
 

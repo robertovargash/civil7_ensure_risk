@@ -17,7 +17,7 @@
                 <local:ScrollViewerDiagram x:Name="ScrollGridPaint" Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                     <local:LGrid x:Name="CanvasMain">
                         <local:GridPaint Width="200" Height="200" x:Name="GridPaintLines" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel">
-                            <local:LTextBox x:Name="TextChangeName" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>
+                            <local:LTextBox x:Name="TextChangeName" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>
                         </local:GridPaint>
                     </local:LGrid>
                 </local:ScrollViewerDiagram>
@@ -31,7 +31,7 @@
                         <ColumnDefinition Width="150"/>
                         <ColumnDefinition Width="25"/>
                     </Grid.ColumnDefinitions>
-                    <ProgressBar Grid.Column="0" x:Name="TheProgressBar" VerticalAlignment="Center" HorizontalAlignment="Stretch" IsIndeterminate="True"/>
+                    <ProgressBar Grid.Column="0" x:Name="TheProgressBar" VerticalAlignment="Center" Visibility="Collapsed" HorizontalAlignment="Stretch" IsIndeterminate="True"/>
                     <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left">
                         <ComboBox x:Name="CbFilterTopR" IsEditable="False" HorizontalContentAlignment="Center"  Style="{StaticResource MaterialDesignFloatingHintComboBox}"  DropDownClosed="CbFilterTopR_DropDownClosed">
                             <md:HintAssist.Hint>

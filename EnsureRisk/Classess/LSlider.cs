@@ -9,7 +9,7 @@ namespace EnsureRisk.Classess
 {
     public class LSlider:Slider
     {
-        public MyLayoutDocument MyOwner { get; set; }
+        public MyLayoutDocumentt MyOwner { get; set; }
         public LSlider():base()
         {
 

@@ -9,14 +9,13 @@ namespace EnsureRisk.Classess
     public enum MenuRiskItems
     {
         AddRisk=0,
-        EditRisk=1,
-        DelRisk=2,
-        MRisk=3,
-        AddCM=4,
-        Scope=5,
-        Copy=6,
-        Paste=7,
-        Import=8,
-        Enable=9
+        //EditRisk=1,
+        //DelRisk=2,
+        AddCM=1,
+        Scope=2,
+        Copy=3,
+        Paste=4,
+        Import=5,
+        Enable=6
     }
 }

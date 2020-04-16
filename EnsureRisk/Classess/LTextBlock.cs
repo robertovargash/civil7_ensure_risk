@@ -9,7 +9,7 @@ namespace EnsureRisk.Classess
 {
     public class LTextBlock:TextBlock
     {
-        public MyLayoutDocument MyOwner { get; set; }
+        public MyLayoutDocumentt MyOwner { get; set; }
         public LTextBlock():base()
         {
 

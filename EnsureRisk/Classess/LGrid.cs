@@ -9,7 +9,7 @@ namespace EnsureRisk.Classess
 {
     public class LGrid:Grid
     {
-        public MyLayoutDocument MyOwner { get; set; }
+        public MyLayoutDocumentt MyOwner { get; set; }
         public LGrid():base()
         {
 

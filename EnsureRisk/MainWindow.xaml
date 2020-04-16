@@ -21,30 +21,24 @@
         Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown"  MouseMove="Window_MouseMove" Closing="Window_Closing">
     <Window.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
             <ContextMenu x:Key="MenuRisk" Visibility="Hidden" Background="Transparent">
                 <MenuItem Height="35" x:Name="MenuAddRisk">
                     <MenuItem.Header>
-                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="AddButton" Click="MenuAddRisk_Click" Content="{md:PackIcon Kind=Plus}" Width="32" Height="32"/>
-                    </MenuItem.Header>
-                </MenuItem>
+                        <md:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}" PlacementMode="RightAndAlignMiddles" HorizontalAlignment="Right" VerticalAlignment="Bottom" UnfurlOrientation="Horizontal" Width="32" Height="32">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="AddButton" Click="MenuAddRisk_Click" Content="{md:PackIcon Kind=Plus}" Width="32" Height="32"/>
+                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EditButton" Click="MenuEditRisk_Click" Content="{md:PackIcon Kind=Pencil}" Width="32" Height="32"/>
+                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="DeleteButton" Click="MenuDeleteRisk_Click" Content="{md:PackIcon Kind=Delete}" Width="32" Height="32"/>
+                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="MoveButton" Click="MenuMoveRisk_Click" Content="{md:PackIcon Kind=ArrowAll}" Width="32" Height="32"/>
 
-                <MenuItem Height="35" x:Name="MenuEditRisk">
-                    <MenuItem.Header>
-                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EditButton" Click="MenuEditRisk_Click" Content="{md:PackIcon Kind=Pencil}" Width="32" Height="32"/>
+                            </StackPanel>
+                        </md:PopupBox>
                     </MenuItem.Header>
-                </MenuItem>
-
-                <MenuItem Height="35" x:Name="MenuDeleteRisk">
-                    <MenuItem.Header>
-                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="DeleteButton" Click="MenuDeleteRisk_Click" Content="{md:PackIcon Kind=Delete}" Width="32" Height="32"/>
-                    </MenuItem.Header>
-                </MenuItem>
-                <MenuItem Height="35" x:Name="MenuMoveRisk">
-                    <MenuItem.Header>
-                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="MoveButton" Click="MenuMoveRisk_Click" Content="{md:PackIcon Kind=ArrowAll}" Width="32" Height="32"/>
-                    </MenuItem.Header>
-                </MenuItem>
+                </MenuItem>               
                 <MenuItem Height="35" x:Name="MenuCM">
                     <MenuItem.Header>
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonCM" Click="MenuCM_Click" Content="{md:PackIcon Kind=Minus}" Width="32" Height="32"/>
@@ -199,6 +193,7 @@
             <Slider x:Key="CommonSlider"/>
             <ComboBox x:Key="CommonCB"/>
             <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Key="Delete" Content="{md:PackIcon Kind=Delete}" ToolTip="Remove this group"/>
+            
         </ResourceDictionary>
     </Window.Resources>
     <Window.CommandBindings>
@@ -235,7 +230,7 @@
         <KeyBinding Key="S" Modifiers="Control" Command="Save"/>
         <KeyBinding Key="P" Modifiers="Control" Command="Print"/>
     </Window.InputBindings>
-    <Grid x:Name="Supergrid">
+    <Grid x:Name="Supergrid">        
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
@@ -477,5 +472,15 @@
         <Grid Grid.Row="2">
             <ProgressBar Name="TheProgress" IsIndeterminate="True" Visibility="Hidden"/>
         </Grid>
+        <md:DialogHost IsOpen="False" x:Name="MessageDialog" Grid.RowSpan="3">
+            <md:DialogHost.DialogContent>
+                <StackPanel Margin="15">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="TextMessage" MaxWidth="300"  TextWrapping="Wrap" Text="Mensdasdas nasnsdnasdasdkkasjdaskjdkas jasklasaldkjjlasdasjdkasdlasjadkjsadjasd;lasdas asdkjsfjdasadsfkfdaskfsfjafdsfkafa"  Margin="0 0 0 10" VerticalAlignment="Center" TextAlignment="Justify"/>
+                    </StackPanel>
+                    <Button Content="OK" Style="{DynamicResource MaterialDesignFlatButton}" Command="{x:Static md:DialogHost.CloseDialogCommand}" CommandTarget="{Binding ElementName=MessageDialog}"/>
+                </StackPanel>
+            </md:DialogHost.DialogContent>
+        </md:DialogHost>
     </Grid>
 </Window>

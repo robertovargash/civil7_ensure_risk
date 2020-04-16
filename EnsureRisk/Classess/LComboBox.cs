@@ -9,7 +9,7 @@ namespace EnsureRisk.Classess
 {
     public class LComboBox:ComboBox
     {
-        public MyLayoutDocument MyOwner { get; set; }
+        public MyLayoutDocumentt MyOwner { get; set; }
         public LComboBox():base()
         {
 

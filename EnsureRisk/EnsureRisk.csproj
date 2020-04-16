@@ -139,7 +139,6 @@
     </Compile>
     <Compile Include="Classess\MRLimited.cs" />
     <Compile Include="Classess\MyGrid.cs" />
-    <Compile Include="Classess\MyLayoutDocument.cs" />
     <Compile Include="Classess\MyLayoutDocumentt.xaml.cs">
       <DependentUpon>MyLayoutDocumentt.xaml</DependentUpon>
     </Compile>
@@ -341,7 +340,7 @@
     </Page>
     <Page Include="Classess\MyLayoutDocumentt.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -124,7 +124,7 @@
     <value>Add Countermeasure</value>
   </data>
   <data name="AddRiskMenu" xml:space="preserve">
-    <value>Add Risk</value>
+    <value>Manage Risk</value>
   </data>
   <data name="CancelButton" xml:space="preserve">
     <value>Cancel</value>

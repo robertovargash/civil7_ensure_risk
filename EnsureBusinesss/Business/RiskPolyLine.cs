@@ -361,12 +361,12 @@ namespace EnsureBusinesss.Business
         }
                
         protected override Geometry DefiningGeometry
-        {
+        {            
             get
             {
                 MyName.MaxWidth = 180;
                 TextPanel.RenderTransformOrigin = new Point(0, 0);
-                
+
                 MyName.MaxHeight = 40;
                 if (IsRoot || IsMoving)
                 {
@@ -707,13 +707,13 @@ namespace EnsureBusinesss.Business
         {
             if (Segments != null && Segments.Any())
             {
-                Segments.Clear();
-                if (Children != null && Children.Any())
+                Segments.Clear();                
+            }
+            if (Children != null && Children.Any())
+            {
+                foreach (RiskPolyLine line in Children)
                 {
-                    foreach (RiskPolyLine line in Children)
-                    {
-                        line.AllSegmentClear();
-                    }
+                    line.AllSegmentClear();
                 }
             }
         }

@@ -12,10 +12,21 @@
         xmlns:local="clr-namespace:EnsureRisk.Windows"
         mc:Ignorable="d"
         Title="Window1" Height="561.975" Width="1223.574" Loaded="Window_Loaded">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
-        <!--<materialDesign:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
-    PlacementMode="LeftAndAlignMiddles" UnfurlOrientation="Horizontal" ToolTip="Manage items"
+        <materialDesign:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}" 
+    PlacementMode="RightAndAlignMiddles" UnfurlOrientation="Horizontal" ToolTip="Manage items"
     Margin="0,0,712.8,99" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <materialDesign:PopupBox.ToggleCheckedContent>
+                <materialDesign:PackIcon Kind="Pencil" Width="24" Height="24" />
+            </materialDesign:PopupBox.ToggleCheckedContent>
+           
             <StackPanel Orientation="Horizontal">
                 <Button ToolTip="Add an item" Command="{Binding AddCommand}">
                     <Path Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" Stretch="Uniform" Width="15" Height="15"
@@ -26,7 +37,7 @@
           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
                 </Button>
             </StackPanel>
-        </materialDesign:PopupBox>-->
+        </materialDesign:PopupBox>
     </Grid>
 
 </Window>
