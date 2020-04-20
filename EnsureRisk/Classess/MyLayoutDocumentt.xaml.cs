@@ -883,7 +883,7 @@ namespace EnsureRisk.Classess
             }
         }
 
-        private RiskPolyLine CreateCounterMeasureShape(GridPaint gridPaint, ContextMenu contextMenu, bool isCMI, DataRow itemDataRow)
+        private RiskPolyLine CreateCounterMeasureShape(Grid gridPaint, ContextMenu contextMenu, bool isCMI, DataRow itemDataRow)
         {
             return new RiskPolyLine(gridPaint, contextMenu, isCMI)
             {
@@ -897,7 +897,7 @@ namespace EnsureRisk.Classess
             };
         }
 
-        private RiskPolyLine CreateRiskShape(GridPaint gridPaint, ContextMenu contextMenu, bool isCMI, DataRow itemDataRow)
+        private RiskPolyLine CreateRiskShape(Grid gridPaint, ContextMenu contextMenu, bool isCMI, DataRow itemDataRow)
         {
             return new RiskPolyLine(gridPaint, contextMenu, isCMI)
             {
@@ -2730,7 +2730,7 @@ namespace EnsureRisk.Classess
         #region TextChangeName
         private void TextChangeName_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (((LTextBox)sender).Visibility == Visibility.Visible)
+            if (((TextBox)sender).Visibility == Visibility.Visible)
             {
                 Dispatcher.BeginInvoke((Action)delegate
                 {

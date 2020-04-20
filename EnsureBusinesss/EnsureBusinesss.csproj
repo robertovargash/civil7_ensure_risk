@@ -80,7 +80,6 @@
     <Compile Include="Business\RiskPolyLine.cs" />
     <Compile Include="Business\SegmentPolyLine.cs" />
     <Compile Include="PointToMoveRight.cs" />
-    <Compile Include="ThicknessProvider.cs" />
     <Compile Include="TreeOperation.cs" />
     <Compile Include="General.cs" />
   </ItemGroup>
@@ -125,13 +124,13 @@
     <Resource Include="Images\Expandido.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Referencias\Arrowheads.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="Business\MyDamage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Referencias\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

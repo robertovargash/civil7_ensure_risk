@@ -124,32 +124,21 @@
     </ApplicationDefinition>
     <Compile Include="AllValidations.cs" />
     <Compile Include="Classess\ButtonWBS.cs" />
-    <Compile Include="Classess\GridPaint.cs" />
-    <Compile Include="Classess\GridToolBar.cs" />
     <Compile Include="Classess\HeaderExcelContent.cs" />
-    <Compile Include="Classess\LButton.cs" />
-    <Compile Include="Classess\LComboBox.cs" />
-    <Compile Include="Classess\LGrid.cs" />
-    <Compile Include="Classess\LSlider.cs" />
-    <Compile Include="Classess\LTextBlock.cs" />
-    <Compile Include="Classess\LTextBox.cs" />
     <Compile Include="Classess\MenuRiskItems.cs" />
     <Compile Include="Classess\MiniMapControl.xaml.cs">
       <DependentUpon>MiniMapControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classess\MRLimited.cs" />
-    <Compile Include="Classess\MyGrid.cs" />
     <Compile Include="Classess\MyLayoutDocumentt.xaml.cs">
       <DependentUpon>MyLayoutDocumentt.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classess\MyRadioButton.cs" />
     <Compile Include="Classess\MyTreeItem.cs" />
     <Compile Include="Classess\PannelWBS.cs" />
-    <Compile Include="Classess\ScrollViewerDiagram.cs" />
     <Compile Include="CursorHelper.cs" />
     <Compile Include="CustomCommands.cs" />
     <Compile Include="DecimalUIConverter.cs" />
-    <Compile Include="Export\Contract\IRiskTreeExportable.cs" />
     <Compile Include="Export\ExportRiskTree.cs" />
     <Compile Include="Export\Trader\DataSetTrader.cs" />
     <Compile Include="Export\Trader\RiskTreeDataSetTrader.cs" />
@@ -778,6 +767,8 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Export\Contract\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

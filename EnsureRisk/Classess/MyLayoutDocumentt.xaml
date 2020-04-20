@@ -7,20 +7,20 @@
              xmlns:local="clr-namespace:EnsureRisk.Classess"
              xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
              mc:Ignorable="d" CanMove="True" CanClose="True" CanFloat="True">
-    <local:LGrid>
-        <local:MyGrid x:Name="TheTopGrid" Background="Red">
-            <local:MyGrid x:Name="TheMainGrid" Background="White">
-                <local:MyGrid.RowDefinitions>
+    <Grid>
+        <Grid x:Name="TheTopGrid" Background="Red">
+            <Grid x:Name="TheMainGrid" Background="White">
+                <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="50"/>                    
-                </local:MyGrid.RowDefinitions>
-                <local:ScrollViewerDiagram x:Name="ScrollGridPaint" Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                    <local:LGrid x:Name="CanvasMain">
-                        <local:GridPaint Width="200" Height="200" x:Name="GridPaintLines" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel">
-                            <local:LTextBox x:Name="TextChangeName" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>
-                        </local:GridPaint>
-                    </local:LGrid>
-                </local:ScrollViewerDiagram>
+                </Grid.RowDefinitions>
+                <ScrollViewer x:Name="ScrollGridPaint" Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <Grid x:Name="CanvasMain">
+                        <Grid Width="200" Height="200" Background="LightGoldenrodYellow" x:Name="GridPaintLines" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel">
+                            <TextBox x:Name="TextChangeName" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -54,11 +54,11 @@
                         <ComboBoxItem Content="200"/>                   
                     </ComboBox>
                     <TextBlock Text="%" Grid.Column="3" VerticalAlignment="Center"/>
-                    <local:LButton Content="{md:PackIcon Kind=MinusCircleOutline}" x:Name="BtnMinus" Grid.Column="4" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignToolButton}" HorizontalAlignment="Right" Click="BtnMinusZoom_Click"/>
-                    <local:LSlider Style="{DynamicResource MaterialDesignSlider}" x:Name="SliderZoom" Value="100" ValueChanged="SliderZoom_ValueChanged" MouseWheel="SliderZoom_MouseWheel"  Grid.Column="5" Minimum="10" Maximum="200" VerticalAlignment="Center" TickPlacement="TopLeft" SmallChange="10" LargeChange="20" TickFrequency="10"/>
-                    <local:LButton Content="{md:PackIcon Kind=PlusCircleOutline}" x:Name="BtnPlus" Grid.Column="6" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignToolButton}" HorizontalAlignment="Right" Click="BtnPlusZoom_Click"/>
+                    <Button Content="{md:PackIcon Kind=MinusCircleOutline}" x:Name="BtnMinus" Grid.Column="4" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignToolButton}" HorizontalAlignment="Right" Click="BtnMinusZoom_Click"/>
+                    <Slider Style="{DynamicResource MaterialDesignSlider}" x:Name="SliderZoom" Value="100" ValueChanged="SliderZoom_ValueChanged" MouseWheel="SliderZoom_MouseWheel"  Grid.Column="5" Minimum="10" Maximum="200" VerticalAlignment="Center" TickPlacement="TopLeft" SmallChange="10" LargeChange="20" TickFrequency="10"/>
+                    <Button Content="{md:PackIcon Kind=PlusCircleOutline}" x:Name="BtnPlus" Grid.Column="6" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignToolButton}" HorizontalAlignment="Right" Click="BtnPlusZoom_Click"/>
                 </Grid>
-            </local:MyGrid>
-        </local:MyGrid>
-    </local:LGrid>
+            </Grid>
+        </Grid>
+    </Grid>
 </xcad:LayoutDocument>
