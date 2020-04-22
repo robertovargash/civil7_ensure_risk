@@ -136,6 +136,9 @@
     <Compile Include="Classess\MyRadioButton.cs" />
     <Compile Include="Classess\MyTreeItem.cs" />
     <Compile Include="Classess\PannelWBS.cs" />
+    <Compile Include="Classess\PopWindow.xaml.cs">
+      <DependentUpon>PopWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CursorHelper.cs" />
     <Compile Include="CustomCommands.cs" />
     <Compile Include="DecimalUIConverter.cs" />
@@ -330,6 +333,10 @@
     <Page Include="Classess\MyLayoutDocumentt.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="Classess\PopWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

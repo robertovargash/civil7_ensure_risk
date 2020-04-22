@@ -546,7 +546,7 @@ namespace EnsureRisk.Classess
                                     break;
                                 }
                             }
-                            RiskPolyLine riskLine = haspermission ? CreateRiskShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, MenuRisk, false, item) : CreateRiskShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, null, false, item);
+                            RiskPolyLine riskLine = haspermission ? CreateRiskShape(((MainWindow)MyWindow).P.TheCurrentLayout.GridPaintLines, MenuRisk, false, item) : CreateRiskShape(((MainWindow)MyWindow).P.TheCurrentLayout.GridPaintLines, null, false, item);
                             SetPolyLineGroup(riskLine, item);
 
                             riskLine.Collapsed = (bool)item[DT_Risk.ISCOLLAPSED];
@@ -605,7 +605,7 @@ namespace EnsureRisk.Classess
                                 break;
                             }
                         }
-                        RiskPolyLine cmline = haspermission ? CreateCounterMeasureShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, MenuCM, true, item) : CreateCounterMeasureShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, null, true, item);
+                        RiskPolyLine cmline = haspermission ? CreateCounterMeasureShape(((MainWindow)MyWindow).P.TheCurrentLayout.GridPaintLines, MenuCM, true, item) : CreateCounterMeasureShape(((MainWindow)MyWindow).P.TheCurrentLayout.GridPaintLines, null, true, item);
                         SetPolyLineGroup(cmline, item);
 
                         if (((bool)item[DT_CounterM.ENABLED]))
@@ -2903,9 +2903,9 @@ namespace EnsureRisk.Classess
             try
             {
 
-                if (((MainWindow)MyWindow).TheCurrentLayout.ID_Diagram != ID_Diagram)
+                if (((MainWindow)MyWindow).P.TheCurrentLayout.ID_Diagram != ID_Diagram)
                 {
-                    ((MainWindow)MyWindow).TheCurrentLayout = this;
+                    ((MainWindow)MyWindow).P.TheCurrentLayout = this;
                 }
                 ((MainWindow)MyWindow).UpdateMiniMapSource();
                 foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
@@ -3014,9 +3014,9 @@ namespace EnsureRisk.Classess
         {
             try
             {
-                if (((MainWindow)MyWindow).TheCurrentLayout.ID_Diagram != ID_Diagram)
+                if (((MainWindow)MyWindow).P.TheCurrentLayout.ID_Diagram != ID_Diagram)
                 {
-                    ((MainWindow)MyWindow).TheCurrentLayout = this;
+                    ((MainWindow)MyWindow).P.TheCurrentLayout = this;
                     CleanFishBone();
                     LoadFishBone();
                     DrawNumbersAndLineThickness();
