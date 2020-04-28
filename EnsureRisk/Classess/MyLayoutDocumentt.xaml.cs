@@ -160,6 +160,38 @@ namespace EnsureRisk.Classess
             }
         }
 
+        public void MostrarPopWindow(Point pointToShow, string lineName, string probability, string value, string acumDamage, string acumValue, string EL)
+        {
+            MyPopWindow.Visibility = Visibility.Visible;
+            MyPopWindow.Margin = new Thickness(pointToShow.X, pointToShow.Y, 0, 0);
+            MyPopWindow.TextRiskName.Text = lineName;
+            MyPopWindow.TextProb.Text = probability;
+            MyPopWindow.TextValue.Text = value;
+            MyPopWindow.TextAcumDamage.Text = acumDamage;
+            MyPopWindow.TextAcumValue.Text = acumValue;
+            MyPopWindow.TextEL.Text = EL;
+        }
+
+
+        public void OcultarPopWindow()
+        {
+            MyPopWindow.Visibility = Visibility.Collapsed;
+        }
+
+        public void MostrarPopCMWindow(Point pointToShow, string lineName, string probability, string value)
+        {
+            MyPopCMWindow.Visibility = Visibility.Visible;
+            MyPopCMWindow.Margin = new Thickness(pointToShow.X, pointToShow.Y, 0, 0);
+            MyPopCMWindow.TextRiskName.Text = lineName;
+            MyPopCMWindow.TextProb.Text = probability;
+            MyPopCMWindow.TextValue.Text = value;
+        }
+
+        public void OcultarPopCMWindow()
+        {
+            MyPopCMWindow.Visibility = Visibility.Collapsed;
+        }
+
         public void Scope()
         {
             if (IsScoping)
@@ -610,7 +642,7 @@ namespace EnsureRisk.Classess
 
                         if (((bool)item[DT_CounterM.ENABLED]))
                         {
-                            ((MenuItem)MenuCM.Items[3]).ToolTip = StringResources.DisableValue;
+                            ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.DisableValue;
                             cmline.ShortName = item[DT_CounterM.NAMESHORT].ToString();
 
                             if (!(haspermission))
@@ -620,7 +652,7 @@ namespace EnsureRisk.Classess
                         }
                         else
                         {
-                            ((MenuItem)MenuCM.Items[3]).ToolTip = StringResources.EnableValue;
+                            ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.EnableValue;
 
                             cmline.ShortName = item[DT_CounterM.NAMESHORT].ToString();
                             cmline.SetColor(new SolidColorBrush(Colors.Gray));
@@ -1128,11 +1160,11 @@ namespace EnsureRisk.Classess
                 };
                 if ((Boolean)Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(CMLine.ID)[DT_CounterM.ENABLED])
                 {
-                    ((MenuItem)MenuCM.Items[3]).ToolTip = StringResources.DisableValue;
+                    ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.DisableValue;
                 }
                 else
                 {
-                    ((MenuItem)MenuCM.Items[3]).ToolTip = StringResources.EnableValue;
+                    ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.EnableValue;
                 }
             }
             catch (Exception ex)
@@ -1300,11 +1332,11 @@ namespace EnsureRisk.Classess
                                                 if (result.Count > 0 || resultCM.Count > 0)
                                                 {
                                                     // si hay al menos una "Enabled" envio true, para desactivarlas todas
-                                                    ((MenuItem)MenuGroupMixed.Items[0]).ToolTip = StringResources.DisableValue;
+                                                    ((MenuItem)MenuGroupMixed.Items[(int)MenuGroupCMR.Enable]).ToolTip = StringResources.DisableValue;
                                                 }
                                                 else
                                                 {
-                                                    ((MenuItem)MenuGroupMixed.Items[0]).ToolTip = StringResources.EnableValue;
+                                                    ((MenuItem)MenuGroupMixed.Items[(int)MenuGroupCMR.Enable]).ToolTip = StringResources.EnableValue;
                                                 }
                                             }
 
@@ -1325,11 +1357,11 @@ namespace EnsureRisk.Classess
                                                 if (result.Count > 0)
                                                 {
                                                     // si hay al menos una "Enabled" envio true, para desactivarlas todas
-                                                    ((MenuItem)MenuGroupCM.Items[0]).ToolTip = StringResources.DisableValue;
+                                                    ((MenuItem)MenuGroupCM.Items[(int)MenuGroupCMm.Enable]).ToolTip = StringResources.DisableValue;
                                                 }
                                                 else
                                                 {
-                                                    ((MenuItem)MenuGroupCM.Items[0]).ToolTip = StringResources.EnableValue;
+                                                    ((MenuItem)MenuGroupCM.Items[(int)MenuGroupCMm.Enable]).ToolTip = StringResources.EnableValue;
                                                 }
                                             }
                                         }
@@ -1752,11 +1784,11 @@ namespace EnsureRisk.Classess
                     if (result.Count > 0 || resultCM.Count > 0)
                     {
                         // si hay al menos una "Enabled" envio true, para desactivarlas todas
-                        ((MenuItem)MenuGroupMixed.Items[0]).ToolTip = StringResources.DisableValue;
+                        ((MenuItem)MenuGroupMixed.Items[(int)MenuGroupCMR.Enable]).ToolTip = StringResources.DisableValue;
                     }
                     else
                     {
-                        ((MenuItem)MenuGroupMixed.Items[0]).ToolTip = StringResources.EnableValue;
+                        ((MenuItem)MenuGroupMixed.Items[(int)MenuGroupCMR.Enable]).ToolTip = StringResources.EnableValue;
                     }
                 }
             }
@@ -1781,11 +1813,11 @@ namespace EnsureRisk.Classess
                     if (result.Count > 0)
                     {
                         // si hay al menos una "Enabled" envio true, para desactivarlas todas
-                        ((MenuItem)MenuGroupRisk.Items[0]).ToolTip = StringResources.DisableValue;
+                        ((MenuItem)MenuGroupRisk.Items[(int)MenuGroupR.Enable]).ToolTip = StringResources.DisableValue;
                     }
                     else
                     {
-                        ((MenuItem)MenuGroupRisk.Items[0]).ToolTip = StringResources.EnableValue;
+                        ((MenuItem)MenuGroupRisk.Items[(int)MenuGroupR.Enable]).ToolTip = StringResources.EnableValue;
                     }
                 }
             }
@@ -1886,7 +1918,7 @@ namespace EnsureRisk.Classess
                         Popin = new Popin(GridPaintLines, pointToShowPopup, "Risk: " + TheLine.ShortName, probability, EL, Valuee, AcumValue, ED)
                         {
                             Visibility = Visibility.Visible
-                        };
+                        };                        
                         if ((bool)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheLine.ID)[DT_Risk.ENABLED])
                         {
                             ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;

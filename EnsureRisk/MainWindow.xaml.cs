@@ -5010,14 +5010,14 @@ namespace EnsureRisk
             ((MenuItem)MenuRiskLimited.Items[(int)MRLimited.Copy]).ToolTip = StringResources.COPY_MENU;
             ((MenuItem)MenuRiskLimited.Items[(int)MRLimited.Enable]).ToolTip = StringResources.DisableValue;
 
-            ((MenuItem)MenuCM.Items[0]).ToolTip = StringResources.EditCMMenu;
-            ((MenuItem)MenuCM.Items[1]).ToolTip = StringResources.DeleteCMMenu;
-            ((MenuItem)MenuCM.Items[2]).ToolTip = StringResources.MoveCMMenu;
-            ((MenuItem)MenuCM.Items[3]).ToolTip = StringResources.DisableValue;
+            ((MenuItem)MenuCM.Items[(int)MenuCMm.Edit]).ToolTip = StringResources.EditCMMenu;
+            ((MenuItem)MenuCM.Items[(int)MenuCMm.Delete]).ToolTip = StringResources.DeleteCMMenu;
+            ((MenuItem)MenuCM.Items[(int)MenuCMm.Move]).ToolTip = StringResources.MoveCMMenu;
+            ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.DisableValue;
 
-            ((MenuItem)MenuMainRisk.Items[0]).ToolTip = StringResources.AddRiskMenu;
-            ((MenuItem)MenuMainRisk.Items[1]).ToolTip = StringResources.PASTE_MENU;
-            ((MenuItem)MenuMainRisk.Items[2]).ToolTip = StringResources.MENU_IMPORT;
+            ((MenuItem)MenuMainRisk.Items[(int)MenuMain.AddRisk]).ToolTip = StringResources.AddRiskMenu;
+            ((MenuItem)MenuMainRisk.Items[(int)MenuMain.Paste]).ToolTip = StringResources.PASTE_MENU;
+            ((MenuItem)MenuMainRisk.Items[(int)MenuMain.Import]).ToolTip = StringResources.MENU_IMPORT;
             BtnBackward.ToolTip = StringResources.GoBackTooltip;
             StartMenu.ToolTip = StringResources.StartTooltip;
             MenuItemFish_Tree.ToolTip = StringResources.FISH_MENU_TOOLTIP;

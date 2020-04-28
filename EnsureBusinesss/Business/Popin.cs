@@ -37,23 +37,23 @@ namespace EnsureBusinesss.Business
             };
             RowDefinition row2 = new RowDefinition
             {
-                Height = new GridLength(35)
+                //Height = new GridLength(35)
             };
             RowDefinition row3 = new RowDefinition
             {
-                Height = new GridLength(35)
+                //Height = new GridLength(35)
             };
             RowDefinition row4 = new RowDefinition
             {
-                Height = new GridLength(35)
+                //Height = new GridLength(35)
             };
             RowDefinition row5 = new RowDefinition
             {
-                Height = new GridLength(35)
+                //Height = new GridLength(35)
             };
             RowDefinition row6 = new RowDefinition
             {
-                Height = new GridLength(35)
+                //Height = new GridLength(35)
             };
 
             gridBorder.RowDefinitions.Add(row);
@@ -70,7 +70,7 @@ namespace EnsureBusinesss.Business
             Grid gridAcum = new Grid();
             Grid gridED = new Grid();
 
-            var margin = new Thickness(10, 0, 10, 0);
+            var margin = new Thickness(10, 5, 10, 0);
             
             RiskName = new TextBlock() { Text = Risk + "  ", TextWrapping = TextWrapping.Wrap, VerticalAlignment = VerticalAlignment.Center, Margin = margin, Foreground = new SolidColorBrush(Colors.Black) };
             Probability = new TextBlock() { Text = Prob, VerticalAlignment = VerticalAlignment.Center, Margin = margin, Foreground = new SolidColorBrush(Colors.Black) };

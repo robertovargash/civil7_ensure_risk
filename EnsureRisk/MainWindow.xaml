@@ -9,8 +9,8 @@
         xmlns:resx="clr-namespace:EnsureRisk.Resources"
         xmlns:Business="clr-namespace:EnsureBusinesss.Business;assembly=EnsureBusinesss"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
-    xmlns:classess="clr-namespace:EnsureRisk.Classess"
-    Background="{DynamicResource MaterialDesignPaper}"
+        xmlns:classess="clr-namespace:EnsureRisk.Classess"
+        Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
@@ -100,8 +100,7 @@
                     <MenuItem.Header>
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="AddMainButton" Click="MenuAddRisk_Click" Content="{md:PackIcon Kind=Plus}" Width="32" Height="32"/>
                     </MenuItem.Header>
-                </MenuItem>              
-
+                </MenuItem>
                 <MenuItem Height="35" x:Name="MenuMainPaste">
                     <MenuItem.Header>
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonMainPaste" Click="ButtonPaste_Click" Content="{md:PackIcon Kind=ContentPaste}" Width="32" Height="32"/>

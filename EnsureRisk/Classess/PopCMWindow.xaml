@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="EnsureRisk.Classess.PopWindow"
+﻿<UserControl x:Class="EnsureRisk.Classess.PopCMWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -14,43 +14,22 @@
                     <Grid x:Name="GridRisk" MaxHeight="200" >
                         <StackPanel Orientation="Horizontal" Margin="10 5 10 0">
                             <md:PackIcon Kind="RenameBox"/>
-                            <TextBlock Text="Risk Name: " TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
+                            <TextBlock Text="CM Name: " TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="TextRiskName" Text="(Risk Name)" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
-                        </StackPanel>                       
+                        </StackPanel>
                     </Grid>
                     <Grid x:Name="GridProbability" >
                         <StackPanel Orientation="Horizontal" Margin="10 5 10 0">
                             <md:PackIcon Kind="WarningDecagram"/>
-                            <TextBlock Text="Risk Prob: " TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
+                            <TextBlock Text="Risk Red.: " TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="TextProb" Text="(Prob)" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
-                        </StackPanel>                        
+                        </StackPanel>
                     </Grid>
                     <Grid x:Name="GridValue" >
                         <StackPanel Orientation="Horizontal" Margin="10 5 10 0">
                             <md:PackIcon Kind="Variable"/>
                             <TextBlock Text="Value: " TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="TextValue" Text="(Value)" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid x:Name="GridEL" >
-                        <StackPanel Orientation="Horizontal" Margin="10 5 10 0">
-                            <md:PackIcon Kind="WarningBox"/>
-                            <TextBlock Text="Acum. Lik.: " TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
-                            <TextBlock x:Name="TextEL" Text="(EL)" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid x:Name="GridAcum" >
-                        <StackPanel Orientation="Horizontal" Margin="10 5 10 0">
-                            <md:PackIcon Kind="Dangerous"/>
-                            <TextBlock Text="Acum. Value: " TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
-                            <TextBlock x:Name="TextAcumValue" Text="(AD)" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid x:Name="GridED" >
-                        <StackPanel Orientation="Horizontal" Margin="10 5 10 0" >
-                            <md:PackIcon Kind="WarningOctagram"/>
-                            <TextBlock Text="Acum. Dam: " TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
-                            <TextBlock x:Name="TextAcumDamage" Text="(ED)" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>

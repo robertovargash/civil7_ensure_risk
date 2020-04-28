@@ -18,4 +18,34 @@ namespace EnsureRisk.Classess
         Import=5,
         Enable=6
     }
+    public enum MenuMain
+    {
+        AddRisk = 0,        
+        Paste = 1,
+        Import = 2
+    }
+    public enum MenuCMm
+    {
+        Edit = 0,
+        Delete = 1,
+        Move = 2,
+        Enable = 3
+    }
+    public enum MenuGroupR
+    {
+        Enable = 0,
+        AddCM = 1,
+        Group = 2        
+    }
+    public enum MenuGroupCMm
+    {
+        Enable = 0,
+        Delete = 1,
+        Group = 2
+    }
+    public enum MenuGroupCMR
+    {
+        Enable = 0,
+        Group = 1
+    }
 }

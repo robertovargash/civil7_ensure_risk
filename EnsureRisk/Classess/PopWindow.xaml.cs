@@ -33,8 +33,7 @@ namespace EnsureRisk.Classess
         }
         public PopWindow()
         {
-            InitializeComponent();
-            Margin = new Thickness(Point.X, Point.Y, 0, 0);
+            InitializeComponent();            
         }
     }
 }

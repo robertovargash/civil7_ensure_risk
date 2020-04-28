@@ -26,14 +26,17 @@
     <Grid>
         <Button Name="BtnOK" Content="OK" Height="25" Margin="0,0,143,19" Click="BtnOK_Click" IsDefault="True" materialDesign:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
         <Button Name="BtnCancel" Content="Cancel" Height="25" Margin="0,0,39,17" Click="BtnCancel_Click" IsCancel="True" materialDesign:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
-        <TextBox TabIndex="1" IsEnabled="{Binding Path = HasAccess}" KeyUp="TextName_KeyUp" materialDesign:HintAssist.Hint="Short Name" materialDesign:HintAssist.IsFloating="True" Name="TextName" MaxLength="250" Margin="34,7,347,0" TextWrapping="Wrap"  VerticalAlignment="Top" LostFocus="TextName_LostFocus" MaxLines="1" TextOptions.TextHintingMode="Animated"/>
-        <Border Width="291" Height="61" BorderBrush="Black"  BorderThickness="0" HorizontalAlignment="Left" Margin="31,45,0,0" VerticalAlignment="Top">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel Name="resultStack"></StackPanel>
-            </ScrollViewer>
-        </Border>
+        <StackPanel Orientation="Vertical" Margin="34,7,347,0">
+            <TextBox TabIndex="1" IsEnabled="{Binding Path = HasAccess}" KeyUp="TextName_KeyUp" materialDesign:HintAssist.Hint="Short Name" materialDesign:HintAssist.IsFloating="True" Name="TextName" MaxLength="250"  TextWrapping="Wrap"  VerticalAlignment="Top" LostFocus="TextName_LostFocus" MaxLines="1" TextOptions.TextHintingMode="Animated"/>
+            <Border Width="291" Height="61" BorderBrush="Black"  BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Name="resultStack"></StackPanel>
+                </ScrollViewer>
+            </Border>
+        </StackPanel>
+        
         <TextBox materialDesign:HintAssist.Hint="Father" materialDesign:HintAssist.IsFloating="True" x:Name="TextFather" Margin="0,7,15,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" IsReadOnly="True" IsEnabled="False" HorizontalAlignment="Right" Width="246"/>
-        <TextBox TabIndex="2" IsEnabled="{Binding Path = HasAccess}" materialDesign:HintAssist.Hint="Comments" materialDesign:HintAssist.IsFloating="True" Name="TextDetail" Height="71" Margin="34,119,13,0" TextWrapping="Wrap"  VerticalAlignment="Top" TextAlignment="Justify" MaxLength="250"/>
+        <TextBox Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" TabIndex="2" IsEnabled="{Binding Path = HasAccess}" materialDesign:HintAssist.Hint="Comments" materialDesign:HintAssist.IsFloating="True" Name="TextDetail" Height="71" Margin="34,119,13,0" TextWrapping="Wrap"  VerticalAlignment="Top" TextAlignment="Justify" MaxLength="250" VerticalScrollBarVisibility="Auto"/>
         <TabControl Margin="37,269,28,71">
             <TabItem Header="Values" Name="tabValues" >
                 <Grid Background="#FFE5E5E5">
