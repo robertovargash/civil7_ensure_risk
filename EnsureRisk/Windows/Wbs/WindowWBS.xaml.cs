@@ -12,6 +12,7 @@ namespace EnsureRisk.Windows
     /// </summary>
     public partial class WindowWBS : Window
     {
+        public bool IS_DELETING { get; set; } = false;
         public string Operation { get; set; }
         public DataRow DrWBS { get; set; }
         public int IdProject { get; set; }
@@ -21,6 +22,12 @@ namespace EnsureRisk.Windows
         public WindowWBS()
         {
             InitializeComponent();
+        }
+
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -49,7 +56,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -79,7 +86,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -110,19 +117,56 @@ namespace EnsureRisk.Windows
             //}
         }
 
+        private void Delete()
+        {
+            try
+            {
+                if (dgWBS.SelectedIndex > 0)
+                    WBS_Structure.Rows[dgWBS.SelectedIndex].Delete();
+                IS_DELETING = false;
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+                IS_DELETING = false;
+            }           
+        }
+
+        public void MostrarDialogYesNo(string textAlert)
+        {
+            YesNoDialog.IsOpen = true;
+            TextYesNoMessage.Text = textAlert;
+        }
+
         private void BtnDel_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 if (dgWBS.SelectedIndex > 0)
                 {
-                    if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + WBS_Structure.Rows[dgWBS.SelectedIndex][DT_WBS_STRUCTURE.CHILD] + "]?").ShowDialog() == true)
-                        WBS_Structure.Rows[dgWBS.SelectedIndex].Delete();
+                    IS_DELETING = true;
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + WBS_Structure.Rows[dgWBS.SelectedIndex][DT_WBS_STRUCTURE.CHILD] + "]?");
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true))
+            {
+                return;
+            }
+            if (Equals(eventArgs.Parameter, true))
+            {
+                if (IS_DELETING)
+                {
+                    Delete();
+                }
             }
         }
 
@@ -141,7 +185,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
     }

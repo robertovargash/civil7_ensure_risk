@@ -124,6 +124,11 @@ namespace EnsureRisk.Classess
             this.Closing += MyLayoutDocument_Closed;
         }
 
+        public void MostrarYesNo(string text)
+        {
+            ((MainWindow)MyWindow).MostrarDialogYesNo(text);
+        }
+
         private void MyLayoutDocument_Closed(object sender, EventArgs e)
         {
             try
@@ -136,16 +141,9 @@ namespace EnsureRisk.Classess
                 {
                     if (Ds.HasChanges())
                     {
-                        if (new WindowMessageYesNo("Do you want to save the changes on [" + this.Title + "]").ShowDialog() == true)
-                        {
-                            ((MainWindow)MyWindow).SaveData(Ds, true);
-                        }
-                        else
-                        {
-                            Ds.RejectChanges();
-                        }
+                        ((MainWindow)MyWindow).IS_SAVING_DATA = true;
+                        MostrarYesNo("Do you want to save the changes on [" + this.Title + "] ?");
                     }
-
                 }
                 if (((MainWindow)MyWindow).OpenedDocuments.Contains(this))
                 {
@@ -156,7 +154,8 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                ((MainWindow)MyWindow).IS_SAVING_DATA = false;
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -171,7 +170,6 @@ namespace EnsureRisk.Classess
             MyPopWindow.TextAcumValue.Text = acumValue;
             MyPopWindow.TextEL.Text = EL;
         }
-
 
         public void OcultarPopWindow()
         {
@@ -225,14 +223,17 @@ namespace EnsureRisk.Classess
                     LinesList.Find(x => x.ID == ScopeLine.ID).ExtrasVisibility(Visibility.Hidden);
 
                     ((MainWindow)MyWindow).BtnBackward.Visibility = Visibility.Visible;
-
-
                 }
                 catch (Exception ex)
                 {
-                    new WindowMessageOK(ex.Message).ShowDialog();
+                    MostrarDialog(ex.Message);
                 }
             }
+        }
+
+        private void MostrarDialog(string message)
+        {
+            ((MainWindow)MyWindow).MostrarErrorDialog(message);
         }
 
         public void EnterWorking()
@@ -299,7 +300,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -339,7 +340,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -369,7 +370,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -423,7 +424,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -450,7 +451,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -495,7 +496,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -519,7 +520,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
 
         }
@@ -550,7 +551,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -689,7 +690,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -962,7 +963,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -992,7 +993,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
         public void ResetGroupRiksSelection()
@@ -1018,7 +1019,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
         private void ResetLinesColor(List<RiskPolyLine> linesSelected)
@@ -1061,7 +1062,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
         public void ResetLinesMenu(List<RiskPolyLine> lista, ContextMenu menuParam)
@@ -1075,7 +1076,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -1115,7 +1116,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -1169,7 +1170,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
 
         }
@@ -1192,7 +1193,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -1383,7 +1384,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -1404,7 +1405,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -1427,7 +1428,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
         #endregion
@@ -1473,7 +1474,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -1575,7 +1576,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK("S_MouseDown_Event: " + ex.Message).ShowDialog();
+                MostrarDialog("S_MouseDown_Event: " + ex.Message);
             }
         }
         private void R_MouseDown_Event(object sender, MouseButtonEventArgs e)
@@ -1602,7 +1603,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -1615,7 +1616,10 @@ namespace EnsureRisk.Classess
                 {
                     CreateRisk();
                 }
-                else { new WindowMessageOK("No Access Granted to do this Operation").ShowDialog(); }
+                else 
+                { 
+                    MostrarDialog("No Access Granted to do this Operation");
+                }
 
 
                 GridPaintLines.Children.Remove(Line_Created);
@@ -1836,7 +1840,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -1932,7 +1936,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
 
         }
@@ -1954,7 +1958,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -2020,7 +2024,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -2291,7 +2295,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -2478,7 +2482,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -2590,7 +2594,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
         #endregion
@@ -2612,7 +2616,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -2755,7 +2759,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -2796,7 +2800,7 @@ namespace EnsureRisk.Classess
             catch (Exception ex)
             {
                 NameEditing = false;
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -2837,7 +2841,7 @@ namespace EnsureRisk.Classess
             catch (Exception ex)
             {
                 NameEditing = false;
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -2874,7 +2878,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -2884,7 +2888,7 @@ namespace EnsureRisk.Classess
             ((MainWindow)MyWindow).txtFilterRisk.Clear();
         }
 
-        private bool? CanUseProposedPolyLineName(String proposedPolyLineName)
+        private bool? CanUseProposedPolyLineName(string proposedPolyLineName)
         {
             try
             {
@@ -2892,7 +2896,7 @@ namespace EnsureRisk.Classess
                 WindowMessageYesNo yesNo = null;
                 if (!(Line_Selected.IsCM))
                 {
-                    int RiskTreeID = (Int32)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.ID_DIAGRAM];
+                    int RiskTreeID = (int)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.ID_DIAGRAM];
 
                     if (Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + RiskTreeID + " and "
                         + DT_Risk.NAMESHORT + " = '" + proposedPolyLineName + "' and " + DT_Risk.ID + " <> " + Line_Selected.ID).Any())
@@ -2903,7 +2907,7 @@ namespace EnsureRisk.Classess
                 }
                 else
                 {
-                    int RiskTreeID = (Int32)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.IdRiskFather)[DT_Risk.ID_DIAGRAM];
+                    int RiskTreeID = (int)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.IdRiskFather)[DT_Risk.ID_DIAGRAM];
 
                     if (Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + RiskTreeID + " and "
                         + DT_CounterM.NAMESHORT + " = '" + proposedPolyLineName + "' and " + DT_CounterM.ID + " <> " + Line_Selected.ID).Any())
@@ -3035,7 +3039,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -3116,7 +3120,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -3139,7 +3143,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -3194,7 +3198,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -3232,11 +3236,10 @@ namespace EnsureRisk.Classess
         {
             this.TheProgressBar.Value = 100;
             IFormatProvider formatProvider = CultureInfo.CurrentUICulture;
-            new WindowMessageInformation(string.Format(formatProvider, "Diagram {0} was saved as excel file!", this.Title)).ShowDialog();
+            ((MainWindow)MyWindow).MostrarInfoDialog(string.Format(formatProvider, "Diagram {0} was saved as excel file!", this.Title));
             this.TheProgressBar.Visibility = Visibility.Hidden;
             this.TheProgressBar.Value = 0;
             this.TheProgressBar.IsIndeterminate = true;
-
             this.IsExportingToExcel = false;
         }
 

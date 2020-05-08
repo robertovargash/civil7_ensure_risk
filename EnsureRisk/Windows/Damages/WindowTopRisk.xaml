@@ -3,7 +3,7 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         x:Class="EnsureRisk.Windows.WindowTopRisk"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -14,10 +14,33 @@
         mc:Ignorable="d"
         Title="Damage" Height="285.763" Width="310.334" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" >
     <Grid>
-        <TextBox materialDesign:HintAssist.Hint="Damage Definition" materialDesign:HintAssist.IsFloating="True" Name="TextTopRisk" HorizontalAlignment="Left" Height="56" Margin="38,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="233" TabIndex="1"/>
-        <Button Name="BtnOK" Content="OK" HorizontalAlignment="Left" Height="35" Margin="47,0,0,10" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
-        <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Left" Height="35" Margin="160,0,0,10" VerticalAlignment="Bottom" Width="90" Click="BtnCancel_Click" IsCancel="True" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
+        <TextBox md:HintAssist.Hint="Damage Definition" md:HintAssist.IsFloating="True" Name="TextTopRisk" HorizontalAlignment="Left" Height="56" Margin="38,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="233" TabIndex="1"/>
+        <Button Name="BtnOK" Content="OK" HorizontalAlignment="Left" Height="35" Margin="47,0,0,10" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5"/>
+        <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Left" Height="35" Margin="160,0,0,10" VerticalAlignment="Bottom" Width="90" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5"/>
         <TextBlock Text="Select a color below:" Margin="38,86,-14,148"/>
         <xctk:ColorPicker x:Name="colorPiker" VerticalAlignment="Top" HorizontalAlignment="Left" Height="44" Margin="38,114,0,0" Width="233" />
+        <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">
+            <md:DialogHost.DialogContent >
+                <StackPanel Margin="15">
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="ErrorOutline" Width="30" Height="50"/>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="ERROR!!!" TextAlignment="Justify"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Expander HorizontalAlignment="Stretch" Header="Expand for details" IsExpanded="True">
+                            <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                                <TextBlock x:Name="TextMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                            CLOSE
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </md:DialogHost.DialogContent>
+        </md:DialogHost>
+
     </Grid>
 </Window>

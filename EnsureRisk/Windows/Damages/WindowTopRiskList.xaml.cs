@@ -23,14 +23,42 @@ namespace EnsureRisk.Windows
     /// </summary>
     public partial class WindowTopRiskList : Window
     {
-        public DataView dv { get; set; }
-        public DataSet ds { get; set; }
+        public bool IS_DELETING { get; set; } = false;
+        public DataRow Selected_DR { get; set; }
+        public DataView Dv { get; set; }
+        public DataSet Ds { get; set; }
         public string Operation { get; set; }
         public WindowTopRiskList()
         {
             InitializeComponent();
             ChangeLanguage();
             this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
+        }
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
+        public void MostrarDialogYesNo(string textAlert)
+        {
+            YesNoDialog.IsOpen = true;
+            TextYesNoMessage.Text = textAlert;
+        }
+
+        private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true))
+            {
+                return;
+            }
+            if (Equals(eventArgs.Parameter, true))
+            {
+                if (IS_DELETING)
+                {
+                    Delete(Selected_DR);
+                }
+            }
         }
 
         private void HandleEsc(object sender, KeyEventArgs e)
@@ -57,20 +85,15 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                ds = new UserDataSet();
+                Ds = new UserDataSet();
                 ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
-                ds.Merge(ws.GetAllTopRisk());
-                dv = ds.Tables[DT_Damage.TopRisk_TABLA].DefaultView;
-                dgTopRisk.ItemsSource = dv;
-                //for (int i = 0; i < dgTopRisk.Items.Count; i++)
-                //{
-                //    Color colorcito = Color.FromArgb(int.Parse(ds.Tables[TopRiskDatos.TopRisk_TABLA].Rows[i][TopRiskDatos.COLORID_COLUMNA].ToString()));
-                //    dgTopRisk.Items[i]
-                //}
+                Ds.Merge(ws.GetAllTopRisk());
+                Dv = Ds.Tables[DT_Damage.TopRisk_TABLA].DefaultView;
+                dgTopRisk.ItemsSource = Dv;
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();;
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -81,28 +104,28 @@ namespace EnsureRisk.Windows
             {
                 WindowTopRisk formTop = new WindowTopRisk
                 {
-                    Drow = ds.Tables[DT_Damage.TopRisk_TABLA].NewRow(),
+                    Drow = Ds.Tables[DT_Damage.TopRisk_TABLA].NewRow(),
                     Operation = General.INSERT,
                     Icon = Icon
                 };
                 if (formTop.ShowDialog() == true)
                 {
-                    ds.Tables[DT_Damage.TopRisk_TABLA].Rows.Add(formTop.Drow);
-                    if (ds.HasChanges())
+                    Ds.Tables[DT_Damage.TopRisk_TABLA].Rows.Add(formTop.Drow);
+                    if (Ds.HasChanges())
                     {
                         DataSet temp = new DataSet();
                         ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
-                        temp = ds.GetChanges();
+                        temp = Ds.GetChanges();
                         temp = ws.SaveTopRisk(temp);
-                        ds.Merge(temp);
-                        ds.AcceptChanges();
+                        Ds.Merge(temp);
+                        Ds.AcceptChanges();
                         RefreshData();
                     }
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();;
+                MostrarErrorDialog(ex.Message);
             }
 
         }
@@ -113,7 +136,7 @@ namespace EnsureRisk.Windows
             {
                 if (dgTopRisk.SelectedIndex >= 0)
                 {
-                    DataRow dr = dv[dgTopRisk.SelectedIndex].Row;
+                    DataRow dr = Dv[dgTopRisk.SelectedIndex].Row;
                     WindowTopRisk windowTop = new WindowTopRisk
                     {
                         Drow = dr,
@@ -122,14 +145,14 @@ namespace EnsureRisk.Windows
                     };
                     if (windowTop.ShowDialog() == true)
                     {
-                        if (ds.HasChanges())
+                        if (Ds.HasChanges())
                         {
                             DataSet temp = new DataSet();
                             ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
-                            temp = ds.GetChanges();
+                            temp = Ds.GetChanges();
                             temp = ws.SaveTopRisk(temp);
-                            ds.Merge(temp);
-                            ds.AcceptChanges();
+                            Ds.Merge(temp);
+                            Ds.AcceptChanges();
                             RefreshData();
                         }
                     }
@@ -137,36 +160,51 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();;
+                MostrarErrorDialog(ex.Message);
             }
 
+        }
+
+        private void Delete(DataRow fila)
+        {
+            try
+            {
+                fila.Delete();
+                if (Ds.HasChanges())
+                {
+                    using (ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk())
+                    {
+                        DataSet temp = Ds.GetChanges();
+                        temp = ws.SaveTopRisk(temp);
+                        Ds.Merge(temp);
+                        Ds.AcceptChanges();
+                        RefreshData();
+                    }
+                }
+                IS_DELETING = false;
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
+            }
         }
 
         private void BtnDel_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                DataRow fila = dv[dgTopRisk.SelectedIndex].Row;
-                //if (MessageBox.Show(StringResources.DELETE_MESSAGE, General.DELETE_HEADER, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                //    .Equals(DialogResult.Yes))
-                 if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + fila[DT_Damage.TOP_RISK_COLUMN] + "]?").ShowDialog() == true)
+                if (dgTopRisk.SelectedIndex >= 0)
                 {
-                    fila.Delete();
-                    if (ds.HasChanges())
-                    {
-                        DataSet temp = new DataSet();
-                        ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
-                        temp = ds.GetChanges();
-                        temp = ws.SaveTopRisk(temp);
-                        ds.Merge(temp);
-                        ds.AcceptChanges();
-                        RefreshData();
-                    }
-                }
+                    Selected_DR = Dv[dgTopRisk.SelectedIndex].Row;
+                    IS_DELETING = true;
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_DR[DT_Damage.TOP_RISK_COLUMN] + "]?");
+                }                
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();;
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
             }
 
         }

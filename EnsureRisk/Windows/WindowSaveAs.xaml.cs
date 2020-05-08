@@ -25,6 +25,12 @@ namespace EnsureRisk.Windows
             InitializeComponent();
         }
 
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
@@ -33,7 +39,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 

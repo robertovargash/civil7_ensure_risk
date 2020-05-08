@@ -17,12 +17,25 @@ namespace EnsureRisk.Windows
     /// </summary>
     public partial class WindowProjectList : Window
     {
+        public bool IS_DELETING { get; set; } = false;
         public DataSet Ds { get; set; }
 
         public WindowProjectList()
         {
             InitializeComponent();
             this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
+        }
+
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
+        public void MostrarDialogYesNo(string textAlert)
+        {
+            YesNoDialog.IsOpen = true;
+            TextYesNoMessage.Text = textAlert;
         }
 
         private void HandleEsc(object sender, KeyEventArgs e)
@@ -57,7 +70,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -92,7 +105,34 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void Delete()
+        {
+            try
+            {
+                if (dgProject.SelectedIndex >= 0)
+                {
+                    Ds.Tables[DT_Project.TABLE_NAME].Rows[dgProject.SelectedIndex].Delete();
+                    if (Ds.HasChanges())
+                    {
+                        using (ServiceProject.WebServiceProject ws = new ServiceProject.WebServiceProject())
+                        {
+                            DataSet temp = Ds.GetChanges();
+                            temp = ws.SaveProject(temp);
+                            Ds.Merge(temp);
+                            Ds.AcceptChanges();
+                        }
+                    }
+                }
+                IS_DELETING = false;
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -100,27 +140,31 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                int intcell = dgProject.SelectedIndex;
-                if (intcell >= 0)
+                if (dgProject.SelectedIndex >= 0)
                 {
-                    if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + Ds.Tables[DT_Project.TABLE_NAME].Rows[intcell][DT_Project.PROJECT_NAME] + "]?").ShowDialog() == true)
-                    {
-                        Ds.Tables[DT_Project.TABLE_NAME].Rows[intcell].Delete();
-                        DataSet temp = new DataSet();
-                        if (Ds.HasChanges())
-                        {
-                            ServiceProject.WebServiceProject ws = new ServiceProject.WebServiceProject();
-                            temp = Ds.GetChanges();
-                            temp = ws.SaveProject(temp);
-                            Ds.Merge(temp);
-                            Ds.AcceptChanges();
-                        }
-                    }
+                    IS_DELETING = true;
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Ds.Tables[DT_Project.TABLE_NAME].Rows[dgProject.SelectedIndex][DT_Project.PROJECT_NAME] + "]?");
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true))
+            {
+                return;
+            }
+            if (Equals(eventArgs.Parameter, true))
+            {
+                if (IS_DELETING)
+                {
+                    Delete();
+                }
             }
         }
 
@@ -135,7 +179,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 

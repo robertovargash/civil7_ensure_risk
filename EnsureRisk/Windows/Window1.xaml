@@ -4,7 +4,7 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -20,12 +20,12 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <materialDesign:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}" 
+        <md:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}" 
     PlacementMode="RightAndAlignMiddles" UnfurlOrientation="Horizontal" ToolTip="Manage items"
     Margin="0,0,712.8,99" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <materialDesign:PopupBox.ToggleCheckedContent>
-                <materialDesign:PackIcon Kind="Pencil" Width="24" Height="24" />
-            </materialDesign:PopupBox.ToggleCheckedContent>
+            <md:PopupBox.ToggleCheckedContent>
+                <md:PackIcon Kind="Pencil" Width="24" Height="24" />
+            </md:PopupBox.ToggleCheckedContent>
            
             <StackPanel Orientation="Horizontal">
                 <Button ToolTip="Add an item" Command="{Binding AddCommand}">
@@ -37,7 +37,7 @@
           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
                 </Button>
             </StackPanel>
-        </materialDesign:PopupBox>
+        </md:PopupBox>
     </Grid>
 
 </Window>

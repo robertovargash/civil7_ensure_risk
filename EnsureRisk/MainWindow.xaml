@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:EnsureRisk"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:classess="clr-namespace:EnsureRisk.Classess"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Medium"
@@ -468,14 +469,108 @@
         <Grid Grid.Row="2">
             <ProgressBar Name="TheProgress" IsIndeterminate="True" Visibility="Hidden"/>
         </Grid>
-        <md:DialogHost IsOpen="False" x:Name="MessageDialog" Grid.RowSpan="3">
+        <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog" Grid.RowSpan="3" >
+            <md:DialogHost.DialogContent >
+                <StackPanel Margin="15">
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="ErrorOutline" Width="30" Height="50"/>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="ERROR!!!" TextAlignment="Justify"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">                       
+                        <Expander HorizontalAlignment="Stretch" Header="Expand for details" IsExpanded="True">
+                            <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                                <TextBlock x:Name="TextMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                            CLOSE
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </md:DialogHost.DialogContent>
+        </md:DialogHost>
+        <md:DialogHost IsOpen="False" x:Name="YesNoDialog" Grid.RowSpan="3" DialogClosing="YesNoDialog_DialogClosing">
             <md:DialogHost.DialogContent>
                 <StackPanel Margin="15">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Name="TextMessage" MaxWidth="300"  TextWrapping="Wrap" Text="Mensdasdas nasnsdnasdasdkkasjdaskjdkas jasklasaldkjjlasdasjdkasdlasjadkjsadjasd;lasdas asdkjsfjdasadsfkfdaskfsfjafdsfkafa"  Margin="0 0 0 10" VerticalAlignment="Center" TextAlignment="Justify"/>
+                        <md:PackIcon Kind="WarningCircleOutline" Width="30" Height="50"/>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="WARNING!!!" TextAlignment="Justify"/>
                     </StackPanel>
-                    <Button Content="OK" Style="{DynamicResource MaterialDesignFlatButton}" Command="{x:Static md:DialogHost.CloseDialogCommand}" CommandTarget="{Binding ElementName=MessageDialog}"/>
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                        <TextBlock x:Name="TextYesNoMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="mY TEXT" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                            <Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Button.CommandParameter>
+                            ACCEPT
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                            <Button.CommandParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </Button.CommandParameter>
+                            CANCEL
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
+            </md:DialogHost.DialogContent>
+        </md:DialogHost>
+        <md:DialogHost IsOpen="False" x:Name="InformationMessageDialog" Grid.RowSpan="3">
+            <md:DialogHost.DialogContent>
+                <StackPanel Margin="15">
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="InformationOutline" Width="30" Height="50"/>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="INFORMATION!!!" TextAlignment="Justify"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                        <TextBlock x:Name="TextInformationMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="DEFAULT TEXT" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                            <Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Button.CommandParameter>
+                            ACCEPT
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </md:DialogHost.DialogContent>
+        </md:DialogHost>
+        <md:DialogHost IsOpen="False" Grid.RowSpan="3" x:Name="LoginDialog" DialogOpened="LoginDialog_DialogOpened" DialogClosing="LoginDialog_DialogClosing">
+            <md:DialogHost.DialogContent >
+                <StackPanel Orientation="Vertical" Margin="10">
+                    <StackPanel Orientation="Horizontal">
+                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" >
+                            <md:PackIcon Name="IconUser" Kind="AccountCircle" Height="161" Width="152" />
+                        </Grid>
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                            <TextBox md:HintAssist.Hint="User" Width="200" Margin="15" md:HintAssist.IsFloating="True" GotFocus="TextUser_GotFocus" x:Name="TextUser" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" TabIndex="1"/>
+                            <PasswordBox md:HintAssist.Hint="Password"  Margin="15" Width="200" GotFocus="TextPasword_GotFocus" md:HintAssist.IsFloating="True" x:Name="TextPasword" HorizontalAlignment="Left"  VerticalAlignment="Top" TabIndex="2"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                            <Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Button.CommandParameter>
+                            LOGIN
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                            <Button.CommandParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </Button.CommandParameter>
+                            CLOSE
+                        </Button>
+                    </StackPanel>
+                    <!--<StackPanel Orientation="Horizontal">
+                            <Button Name="BtnLogin" Content="Login"  VerticalAlignment="Bottom" Click="Button_Click_1" HorizontalAlignment="Right"  IsDefault="True" TabIndex="3" md:ShadowAssist.ShadowDepth="Depth5"/>
+                            <Button Name="BtnClose" Content="Close" VerticalAlignment="Bottom" Click="Button_Click" HorizontalAlignment="Right"  IsCancel="True" TabIndex="4" md:ShadowAssist.ShadowDepth="Depth5"/>
+                        </StackPanel>-->
+                </StackPanel>
+
             </md:DialogHost.DialogContent>
         </md:DialogHost>
     </Grid>

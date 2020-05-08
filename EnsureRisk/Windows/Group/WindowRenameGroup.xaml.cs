@@ -28,6 +28,12 @@ namespace EnsureRisk.Windows
             InitializeComponent();
         }
 
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
             DrGroup[DT_Groupe.GROUPE_NAME] = txtGroup.Text;
@@ -48,7 +54,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
     }

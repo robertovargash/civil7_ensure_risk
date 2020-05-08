@@ -11,26 +11,20 @@ namespace EnsureRisk.DataBinding
 {
     public struct DecimalUIConverterParams
     {
-        private String stringFormat;
+        private string stringFormat;
 
-        public String StringFormat
+        public string StringFormat
         {
             get { return stringFormat; }
             set { stringFormat = value; }
         }
 
-        private int decimals;
-
-        public int Decimals
-        {
-            get { return decimals; }
-            set { decimals = value; }
-        }
+        public int Decimals { get; set; }
 
         public DecimalUIConverterParams(String format, int fractionalDigits)
         {
             stringFormat = format;
-            decimals = fractionalDigits;
+            Decimals = fractionalDigits;
         }
     }
 
@@ -40,13 +34,13 @@ namespace EnsureRisk.DataBinding
         {
         }
 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
                 if (parameter is DecimalUIConverterParams paramValue)
                 {
-                    return String.Format(CultureInfo.CurrentUICulture, paramValue.StringFormat, Math.Round((Decimal)value, paramValue.Decimals, MidpointRounding.AwayFromZero));
+                    return String.Format(CultureInfo.CurrentUICulture, paramValue.StringFormat, Math.Round((decimal)value, paramValue.Decimals, MidpointRounding.AwayFromZero));
                 }
                 else
                 {
@@ -55,17 +49,17 @@ namespace EnsureRisk.DataBinding
             }
             catch (Exception ex)
             {
-               return  new WindowMessageOK(ex.Message).ShowDialog();
+                throw ex;
             }
             
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
-                Decimal valueResult;
-                if (Decimal.TryParse(value.ToString(), NumberStyles.Number, CultureInfo.CurrentUICulture, out valueResult))
+                decimal valueResult;
+                if (decimal.TryParse(value.ToString(), NumberStyles.Number, CultureInfo.CurrentUICulture, out valueResult))
                     return valueResult;
                 else
                     return 0;

@@ -31,6 +31,11 @@ namespace EnsureRisk.Windows
             ChangeLanguage();
         }
 
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
         public void ChangeLanguage()
         {
             MaterialDesignThemes.Wpf.HintAssist.SetHint(TextTopRisk, StringResources.TopRiskText);
@@ -83,7 +88,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
 
         }
@@ -100,12 +105,12 @@ namespace EnsureRisk.Windows
                 }
                 else
                 {
-                    new WindowMessageOK("Please, select a Top Risk!!!").ShowDialog();
+                    MostrarErrorDialog("Please, select a Top Risk!!!");
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
 
         }

@@ -35,5 +35,28 @@
             <Button Name="BtnSelect" Content="Select" Margin="0,0,152,18" Height="33" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="110" Click="BtnSelect_Click" IsDefault="True" />
             <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Right" Height="33" Margin="0,0,21,18" VerticalAlignment="Bottom" Width="110" Click="BtnCancel_Click" IsCancel="True"/>
         </Grid>
+        <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog" Grid.RowSpan="2">
+            <md:DialogHost.DialogContent >
+                <StackPanel Margin="15">
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="ErrorOutline" Width="30" Height="50"/>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="ERROR!!!" TextAlignment="Justify"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Expander HorizontalAlignment="Stretch" Header="Expand for details" IsExpanded="True">
+                            <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                                <TextBlock x:Name="TextMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                            CLOSE
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </md:DialogHost.DialogContent>
+        </md:DialogHost>
+
     </Grid>
 </Window>

@@ -20,6 +20,7 @@ namespace EnsureRisk.Windows
     /// </summary>
     public partial class WindowUser : Window
     {
+        public bool IS_DELETING { get; set; } = false;
         public DataRow User { get; set; }
         public string Operation { get; set; }
         public DataTable RoleTable { get; set; }
@@ -31,6 +32,12 @@ namespace EnsureRisk.Windows
         {
             InitializeComponent();
             ChangeLanguage();
+        }
+
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
         }
 
         public void ChangeLanguage()
@@ -58,7 +65,7 @@ namespace EnsureRisk.Windows
                     }
                     else
                     {
-                        new WindowMessageOK(StringResources.PASSWORD_MATCH).ShowDialog();
+                        MostrarErrorDialog(StringResources.PASSWORD_MATCH);
                     }
                 }
                 else
@@ -85,7 +92,7 @@ namespace EnsureRisk.Windows
                 }
                 else
                 {
-                    new WindowMessageOK(StringResources.PASSWORD_MATCH).ShowDialog();
+                    MostrarErrorDialog(StringResources.PASSWORD_MATCH);
                 }
             }
 
@@ -127,8 +134,14 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog(); ;
+                MostrarErrorDialog(ex.Message);
             }
+        }
+
+        public void MostrarDialogYesNo(string textAlert)
+        {
+            YesNoDialog.IsOpen = true;
+            TextYesNoMessage.Text = textAlert;
         }
 
         private void BtnDelRole_Click(object sender, RoutedEventArgs e)
@@ -137,13 +150,46 @@ namespace EnsureRisk.Windows
             {
                 if (dgRoles.SelectedIndex > 0)
                 {
-                    if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + RoleTable.Rows[dgRoles.SelectedIndex][DT_User_Role.ROLE] + "]?").ShowDialog() == true)
-                        RoleTable.Rows[dgRoles.SelectedIndex].Delete();
+                    IS_DELETING = true;
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + RoleTable.Rows[dgRoles.SelectedIndex][DT_User_Role.ROLE] + "]?");
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void Delete_Role()
+        {
+            try
+            {
+                if (dgRoles.SelectedIndex > 0)
+                {
+                    RoleTable.Rows[dgRoles.SelectedIndex].Delete();
+                }
+                IS_DELETING = false;
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
+            }            
+        }
+
+        private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true))
+            {
+                return;
+            }
+            if (Equals(eventArgs.Parameter, true))
+            {
+                if (IS_DELETING)
+                {
+                    Delete_Role();
+                }
             }
         }
 
@@ -182,7 +228,7 @@ namespace EnsureRisk.Windows
                 }
                 catch (Exception ex)
                 {
-                    new WindowMessageOK(ex.Message).ShowDialog();
+                    MostrarErrorDialog(ex.Message);
                 }
             }
         }
@@ -228,7 +274,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog(); ;
+                MostrarErrorDialog(ex.Message); ;
             }
 
         }

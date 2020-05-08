@@ -3,7 +3,7 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"        
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"        
         x:Class="EnsureRisk.Windows.WindowOption"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -14,8 +14,8 @@
         Title="Options" Height="377" Width="774" WindowStyle="ToolWindow" ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
-            <materialDesign:PackIcon Kind="ChevronLeft" x:Key="Left"/>
-            <materialDesign:PackIcon Kind="ChevronRight" x:Key="Right"/>
+            <md:PackIcon Kind="ChevronLeft" x:Key="Left"/>
+            <md:PackIcon Kind="ChevronRight" x:Key="Right"/>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -25,18 +25,18 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0">
             <Button Name="BtnSplit" Style="{DynamicResource MaterialDesignToolForegroundButton}" Click="BtnSplit_Click" HorizontalAlignment="Right" VerticalAlignment="Top">
-                <materialDesign:PackIcon Kind="ChevronLeft"/>
+                <md:PackIcon Kind="ChevronLeft"/>
             </Button>
             <ListView>
                 <ListViewItem Name="lvEnviroment" MouseEnter="lvEnviroment_MouseEnter">
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="ThemeLightDark" HorizontalAlignment="Left" Height="30" Width="30"/>
+                        <md:PackIcon Kind="ThemeLightDark" HorizontalAlignment="Left" Height="30" Width="30"/>
                         <TextBlock Name="TextEnviroment" Text="Environment" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                     </StackPanel>
                 </ListViewItem>
                 <ListViewItem Name="lvConnection" MouseEnter="lvConnection_MouseEnter">
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Server" HorizontalAlignment="Left" Height="30" Width="30"/>
+                        <md:PackIcon Kind="Server" HorizontalAlignment="Left" Height="30" Width="30"/>
                         <TextBlock Name="textSetting" Text="Server Setting" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                     </StackPanel>
                 </ListViewItem>

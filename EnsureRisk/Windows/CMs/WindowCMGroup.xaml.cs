@@ -25,6 +25,7 @@ namespace EnsureRisk.Windows
     /// </summary>
     public partial class WindowCMGroup : Window
     {
+        public bool IS_USING_NAME { get; set; } = false;
         public int RiskTreeID { get; set; }
         public DataSet DsCM { get; set; }
         public DataTable MyCM { get; set; }
@@ -39,6 +40,33 @@ namespace EnsureRisk.Windows
         {
             InitializeComponent();
             ChangeLanguage();
+        }
+
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
+        public void MostrarDialogYesNo(string textAlert)
+        {
+            YesNoDialog.IsOpen = true;
+            TextYesNoMessage.Text = textAlert;
+        }
+
+        private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true))
+            {
+                return;
+            }
+            if (Equals(eventArgs.Parameter, true))
+            {
+                if (IS_USING_NAME)
+                {
+                    AcceptCM();
+                }
+            }
         }
 
         public void ChangeLanguage()
@@ -56,7 +84,9 @@ namespace EnsureRisk.Windows
             NameShort = TextName.Text;
             Detail = TextDetail.Text;
             Probability = decimal.Parse(TextProbability.Text) / 100;
+            IS_USING_NAME = false;
             this.DialogResult = true;
+
         }
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
@@ -66,12 +96,8 @@ namespace EnsureRisk.Windows
                 {
                     if (MyCM.Select(DT_CounterM.ID_RISK_TREE + " = " + RiskTreeID + " and " + DT_CounterM.NAMESHORT + " = '" + TextName.Text + "'").Any())
                     {
-                        WindowMessageYesNo yesNo = new WindowMessageYesNo("The name [" + TextName.Text + "] Already exists in this diagram. Do you want to use it again?");
-                        yesNo.ShowDialog();
-                        if (yesNo.DialogResult == true)
-                        {
-                            AcceptCM();
-                        }
+                        IS_USING_NAME = true;
+                        MostrarDialogYesNo("The name [" + TextName.Text + "] Already exists in this diagram. Do you want to use it again?");                        
                     }
                     else
                     {
@@ -80,11 +106,12 @@ namespace EnsureRisk.Windows
                 }
                 else
                 {
-                    new WindowMessageOK(StringResources.FIELD_REQUIRED).ShowDialog();
+                    MostrarErrorDialog(StringResources.FIELD_REQUIRED);
                 }
             }
             catch (Exception EX)
             {
+                IS_USING_NAME = false;
                 MessageBox.Show(EX.Message);
             }
         }
@@ -110,7 +137,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog(); ;
+                MostrarErrorDialog(ex.Message);
             }
 
         }

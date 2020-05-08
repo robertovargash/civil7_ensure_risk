@@ -23,6 +23,7 @@ namespace EnsureRisk.Windows
     /// </summary>
     public partial class WindowRole : Window
     {
+        public bool IS_DELETING { get; set; } = false;
         public string Operation { get; set; }
         public DataTable OperationTable { get; set; }
         public DataView dv { get; set; }
@@ -31,6 +32,12 @@ namespace EnsureRisk.Windows
         {
             InitializeComponent();
             ChangeLanguage();
+        }
+
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
         }
 
         public void ChangeLanguage()
@@ -70,9 +77,30 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
 
+        }
+
+        private void Delete()
+        {
+            try
+            {
+                if (dgOperation.SelectedIndex >= 0)
+                    OperationTable.Rows[dgOperation.SelectedIndex].Delete();
+                IS_DELETING = false;
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        public void MostrarDialogYesNo(string textAlert)
+        {
+            YesNoDialog.IsOpen = true;
+            TextYesNoMessage.Text = textAlert;
         }
 
         private void BtnDel_Click(object sender, RoutedEventArgs e)
@@ -81,13 +109,29 @@ namespace EnsureRisk.Windows
             {
                 if (dgOperation.SelectedIndex >= 0)
                 {
-                    if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + OperationTable.Rows[dgOperation.SelectedIndex][DT_OperationRole.OPERATION_COLUMN] + "]?").ShowDialog() == true)
-                        OperationTable.Rows[dgOperation.SelectedIndex].Delete();
+                    IS_DELETING = true;
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + OperationTable.Rows[dgOperation.SelectedIndex][DT_OperationRole.OPERATION_COLUMN] + "]?");
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true))
+            {
+                return;
+            }
+            if (Equals(eventArgs.Parameter, true))
+            {
+                if (IS_DELETING)
+                {
+                    Delete();
+                }
             }
         }
 
@@ -100,7 +144,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -130,7 +174,7 @@ namespace EnsureRisk.Windows
                 }
                 catch (Exception ex)
                 {
-                    new WindowMessageOK(ex.Message).ShowDialog();
+                    MostrarErrorDialog(ex.Message);
                 }
             }
             TextRole.Focus();

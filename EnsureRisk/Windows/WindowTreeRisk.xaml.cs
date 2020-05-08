@@ -23,6 +23,7 @@ namespace EnsureRisk.Windows
     /// </summary>
     public partial class WindowTreeRisk : Window
     {
+        public bool IS_DELETING { get; set; } = false;
         public string Operation { get; set; }
         public int IDProject { get; set; }
         public DataTable TopRiskTable { get; set; }
@@ -37,6 +38,19 @@ namespace EnsureRisk.Windows
             InitializeComponent();
             ChangeLanguage();
         }
+
+        public void MostrarDialogYesNo(string textAlert)
+        {
+            YesNoDialog.IsOpen = true;
+            TextYesNoMessage.Text = textAlert;
+        }
+
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
         public void ChangeLanguage()
         {
             MaterialDesignThemes.Wpf.HintAssist.SetHint(TextName, StringResources.DiagramNameLabel);
@@ -72,7 +86,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
 
         }
@@ -104,8 +118,33 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog(); ;
+                MostrarErrorDialog(ex.Message);
             }
+        }
+
+        private void DELETE_DAMAGE()
+        {
+            if (dgTopRisk.SelectedIndex >= 0)
+            {
+                if (Operation == General.UPDATE)
+                {
+                    foreach (DataRow item in Risk_TopRisk.
+                    Select(DT_Risk_Damages.ID_DAMAGE + " = " + TopRiskTable.Rows[dgTopRisk.SelectedIndex][DT_Diagram_Damages.ID_DAMAGE] +
+                    " and " + DT_Risk_Damages.ID_RISK_TREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]))
+                    {
+                        item.Delete();
+                    }
+                    foreach (DataRow itemi in CM_TopRisk.
+                        Select(DT_CounterM_Damage.ID_DAMAGE + " = " + TopRiskTable.Rows[dgTopRisk.SelectedIndex][DT_Diagram_Damages.ID_DAMAGE] +
+                        " and " + DT_CounterM_Damage.ID_RISK_TREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]))
+                    {
+                        itemi.Delete();
+                    }
+                }
+
+                TopRiskTable.Rows[dgTopRisk.SelectedIndex].Delete();
+            }
+            IS_DELETING = false;
         }
 
         private void BtnDel_Click(object sender, RoutedEventArgs e)
@@ -115,33 +154,14 @@ namespace EnsureRisk.Windows
                 DataRow fila = Dv[dgTopRisk.SelectedIndex].Row;
                 if (dgTopRisk.SelectedIndex >= 0)
                 {
-                    WindowMessageYesNo msg = new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + fila[DT_Diagram_Damages.DAMAGE] + "]?");
-
-                    if (msg.ShowDialog() == true)
-                    {
-                        if (Operation == General.UPDATE)
-                        {
-                            foreach (DataRow item in Risk_TopRisk.
-                            Select(DT_Risk_Damages.ID_DAMAGE + " = " + TopRiskTable.Rows[dgTopRisk.SelectedIndex][DT_Diagram_Damages.ID_DAMAGE] +
-                            " and " + DT_Risk_Damages.ID_RISK_TREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]))
-                            {
-                                item.Delete();
-                            }
-                            foreach (DataRow itemi in CM_TopRisk.
-                                Select(DT_CounterM_Damage.ID_DAMAGE + " = " + TopRiskTable.Rows[dgTopRisk.SelectedIndex][DT_Diagram_Damages.ID_DAMAGE] +
-                                " and " + DT_CounterM_Damage.ID_RISK_TREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]))
-                            {
-                                itemi.Delete();
-                            }
-                        }
-
-                        TopRiskTable.Rows[dgTopRisk.SelectedIndex].Delete();
-                    }
+                    IS_DELETING = true;
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + fila[DT_Diagram_Damages.DAMAGE] + "]?");
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog(); ;
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -157,13 +177,13 @@ namespace EnsureRisk.Windows
                 }
                 else
                 {
-                    new WindowMessageOK(StringResources.FIELD_REQUIRED).ShowDialog();
+                    MostrarErrorDialog(StringResources.FIELD_REQUIRED);
                 }
 
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -171,5 +191,21 @@ namespace EnsureRisk.Windows
         {
             DialogResult = false; Close();
         }
+
+        private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true))
+            {
+                return;
+            }
+            if (Equals(eventArgs.Parameter, true))
+            {
+                if (IS_DELETING)
+                {
+                    DELETE_DAMAGE();
+                }
+            }
+        }
+
     }
 }

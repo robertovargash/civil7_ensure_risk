@@ -63,6 +63,12 @@ namespace EnsureRisk.Windows
             txtFilterRisk.DataContext = P;
         }
 
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
         public void ChangeLanguage()
         {
             BtnSelect.Content = StringResources.SelectButton;
@@ -90,7 +96,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -107,7 +113,7 @@ namespace EnsureRisk.Windows
             }
             else
             {
-                new WindowMessageOK("No selected").ShowDialog(); ;
+                MostrarErrorDialog("No selected"); ;
             }
         }
 
@@ -130,7 +136,7 @@ namespace EnsureRisk.Windows
             }
             else
             {
-                new WindowMessageOK("No selected").ShowDialog(); ;
+                MostrarErrorDialog("No selected"); ;
             }
         }
 

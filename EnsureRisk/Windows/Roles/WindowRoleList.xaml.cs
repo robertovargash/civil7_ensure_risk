@@ -26,11 +26,20 @@ namespace EnsureRisk.Windows
 
         public DataView dv { get; set; }
         public DataSet ds { get; set; }
+        public DataRow Selected_fila { get; private set; }
+        public bool IS_DELETING { get; private set; }
+
         public WindowRoleList()
         {
             InitializeComponent();
             ChangeLanguage();
             this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
+        }
+
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
         }
 
         private void HandleEsc(object sender, KeyEventArgs e)
@@ -51,7 +60,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -92,7 +101,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -129,47 +138,82 @@ namespace EnsureRisk.Windows
                     }
                     else
                     {
-                        new WindowMessageOK("'Administrator' role can´t be changed!").ShowDialog();
+                        MostrarErrorDialog("'Administrator' role can´t be changed!");
                     }
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
 
         }
 
-        private void BtnDel_Click(object sender, RoutedEventArgs e)
+        private void Delete(DataRow fila)
         {
             try
             {
-                DataRow fila = dv[dgRole.SelectedIndex].Row;
-                if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " ["+fila[DT_Role.ROLE_COLUM] + "]?").ShowDialog() == true)
+                if (fila[DT_Role.ROLE_COLUM].ToString() != "Administrator")
                 {
-                    if (fila[DT_Role.ROLE_COLUM].ToString() != "Administrator")
+                    fila.Delete();
+                    if (ds.HasChanges())
                     {
-                        fila.Delete();
-                        if (ds.HasChanges())
+                        using (ServiceRoleController.WebServiceRole ws = new ServiceRoleController.WebServiceRole())
                         {
-                            DataSet temp = new DataSet();
-                            ServiceRoleController.WebServiceRole ws = new ServiceRoleController.WebServiceRole();
-                            temp = ds.GetChanges();
+                            DataSet temp = ds.GetChanges();
                             temp = ws.SaveRole(temp);
                             ds.Merge(temp);
                             ds.AcceptChanges();
                             RefreshData();
                         }
                     }
-                    else
-                    {
-                        new WindowMessageOK("'Administrator' role can´t be deleted!").ShowDialog();
-                    }                    
                 }
+                else
+                {
+                    MostrarErrorDialog("'Administrator' role can´t be deleted!");
+                }
+                IS_DELETING = false;
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true))
+            {
+                return;
+            }
+            if (Equals(eventArgs.Parameter, true))
+            {
+                if (IS_DELETING)
+                {
+                    Delete(Selected_fila);
+                }
+            }
+        }
+
+        public void MostrarDialogYesNo(string textAlert)
+        {
+            YesNoDialog.IsOpen = true;
+            TextYesNoMessage.Text = textAlert;
+        }
+
+        private void BtnDel_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Selected_fila = dv[dgRole.SelectedIndex].Row;
+                IS_DELETING = true;
+                MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_fila[DT_Role.ROLE_COLUM] + "]?");
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
             }
         }
 

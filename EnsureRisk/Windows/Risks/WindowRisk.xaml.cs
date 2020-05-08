@@ -54,6 +54,11 @@ namespace EnsureRisk.Windows
     /// </summary>
     public partial class WindowRisk : Window
     {
+        public bool IS_USING_NAME { get; set; }=false;
+        public bool IS_DELETING_ROW { get; set; } = false;
+        public bool IS_DELETING_WBS_ROW{ get; set; } = false;
+        public DataRow Selected_RoleRow { get; set; }
+        public DataRow Selected_WBSRow { get; set; }
         public DataCurrentRisk Pi { get; set; }
         public DataRow RiskRow { get; set; }
         public string Operation { get; set; }
@@ -96,6 +101,18 @@ namespace EnsureRisk.Windows
             TextProbability.DataContext = Pi;
             gridTabRoles.DataContext = Pi;
             gridTabWBS.DataContext = Pi;
+        }
+
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
+        public void MostrarDialogYesNo(string textAlert)
+        {
+            YesNoDialog.IsOpen = true;
+            TextYesNoMessage.Text = textAlert;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -190,7 +207,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog(); ;
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -353,7 +370,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+               MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -436,44 +453,59 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+               MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void Delete_Role(DataRow fila)
+        {
+            try
+            {
+                if (Operation == General.UPDATE)
+                {
+                    foreach (var item in ChildrenLines)
+                    {
+                        if (item.IsCM)
+                        {
+                            if (CM_RoleTable.Rows.Contains(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }))
+                            {
+                                CM_RoleTable.Rows.Find(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }).Delete();
+                            }
+                        }
+                        else
+                        {
+                            if (Risk_RoleTable.Rows.Contains(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }))
+                            {
+                                Risk_RoleTable.Rows.Find(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }).Delete();
+                            }
+                        }
+                    }
+                }
+                fila.Delete();
+                IS_DELETING_ROW = false;
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING_ROW = false;
+                MostrarErrorDialog(ex.Message);
             }
         }
 
         private void BtnDelRole_Click(object sender, RoutedEventArgs e)
         {
-            DataRow fila = DvRoleRisk[dgRoles.SelectedIndex].Row;
-            if (fila[DT_Role_Risk.Role].ToString() != "Administrator")
+            if (dgRoles.SelectedIndex >= 0)
             {
-                if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + fila[DT_Role_Risk.Role].ToString() + "]?").ShowDialog() == true)
+                Selected_RoleRow = DvRoleRisk[dgRoles.SelectedIndex].Row;
+                if (Selected_RoleRow[DT_Role_Risk.Role].ToString() != "Administrator")
                 {
-                    if (Operation == General.UPDATE)
-                    {
-                        foreach (var item in ChildrenLines)
-                        {
-                            if (item.IsCM)
-                            {
-                                if (CM_RoleTable.Rows.Contains(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }))
-                                {
-                                    CM_RoleTable.Rows.Find(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }).Delete();
-                                }
-                            }
-                            else
-                            {
-                                if (Risk_RoleTable.Rows.Contains(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }))
-                                {
-                                    Risk_RoleTable.Rows.Find(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }).Delete();
-                                }
-                            }
-                        }
-                    }
-                    fila.Delete();
+                    IS_DELETING_ROW = true;
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_RoleRow[DT_Role_Risk.Role].ToString() + "]?");
                 }
-            }
-            else
-            {
-                new WindowMessageOK("'Administrator' role can't be deleted!").ShowDialog();
-            }
+                else
+                {
+                    MostrarErrorDialog("'Administrator' role can't be deleted!");
+                }
+            }            
         }
 
         private void BtnAddWBS_Click(object sender, RoutedEventArgs e)
@@ -681,7 +713,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+               MostrarErrorDialog(ex.Message);
             }
         }
         
@@ -719,52 +751,65 @@ namespace EnsureRisk.Windows
             { return true; }
         }
 
-        private void BtnDelWBS_Click(object sender, RoutedEventArgs e)
+        private void Delete_WBS_Row(DataRow fila)
         {
             try
             {
-                DataRow fila = DvRiskWBS[dgWBS.SelectedIndex].Row;
-                if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + fila[DT_RISK_WBS.WBS].ToString() + "]?").ShowDialog() == true)
+                foreach (var itemLines in ChildrenLines)
                 {
-                    foreach (var itemLines in ChildrenLines)
-                    {
-                        if (itemLines.IsCM)
-                        {//AQUI PROBLEMAS CON EL ROWSTATE
-                            foreach (DataRow itemC in WBS_CM_Damage.Select(DT_WBS_CM_Damage.ID_CM + " = " + itemLines.ID + " AND " + DT_WBS_CM_Damage.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
-                            {
-                                itemC.Delete();
-                            }
-                            if (CM_WBS_Table.Rows.Contains(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }))
-                            {
-                                CM_WBS_Table.Rows.Find(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }).Delete();
-                            }
-                        }
-                        else
+                    if (itemLines.IsCM)
+                    {//AQUI PROBLEMAS CON EL ROWSTATE
+                        foreach (DataRow itemC in WBS_CM_Damage.Select(DT_WBS_CM_Damage.ID_CM + " = " + itemLines.ID + " AND " + DT_WBS_CM_Damage.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
                         {
-                            foreach (DataRow itemC in WBS_RISK_Damage.Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + itemLines.ID + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
-                            {
-                                itemC.Delete();
-                            }
-                            if (Risk_WBS_Table.Rows.Contains(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }))
-                            {
-                                Risk_WBS_Table.Rows.Find(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }).Delete();
-                            }
+                            itemC.Delete();
+                        }
+                        if (CM_WBS_Table.Rows.Contains(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }))
+                        {
+                            CM_WBS_Table.Rows.Find(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }).Delete();
                         }
                     }
-                    foreach (DataRow itemC in WBS_RISK_Damage.Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
+                    else
                     {
-                        itemC.Delete();
+                        foreach (DataRow itemC in WBS_RISK_Damage.Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + itemLines.ID + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
+                        {
+                            itemC.Delete();
+                        }
+                        if (Risk_WBS_Table.Rows.Contains(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }))
+                        {
+                            Risk_WBS_Table.Rows.Find(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }).Delete();
+                        }
                     }
-                    fila.Delete();
                 }
+                foreach (DataRow itemC in WBS_RISK_Damage.Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
+                {
+                    itemC.Delete();
+                }
+                fila.Delete();
                 foreach (var item in ChildrenLines)
                 {
                     RefreshDamageValues(item.ID, item.IsCM);
                 }
+                IS_DELETING_WBS_ROW = false;
             }
-            catch (Exception EX)
+            catch (Exception ex)
             {
-                new WindowMessageOK(EX.Message).ShowDialog();
+                IS_DELETING_WBS_ROW = false;
+                MostrarErrorDialog(ex.Message);
+            }            
+        }
+
+        private void BtnDelWBS_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Selected_WBSRow = DvRiskWBS[dgWBS.SelectedIndex].Row;
+                IS_DELETING_WBS_ROW = true;
+                MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_WBSRow[DT_RISK_WBS.WBS].ToString() + "]?");
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING_WBS_ROW = false;
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -772,19 +817,19 @@ namespace EnsureRisk.Windows
         {
             if (!(Versioned.IsNumeric(TextProbability.Text)))
             {
-                new WindowMessageOK(StringResources.NUMERIC_FIELD).ShowDialog();
+                MostrarErrorDialog(StringResources.NUMERIC_FIELD);
             }
             else
             {
                 if (decimal.Parse(TextProbability.Text) > 100)
                 {
-                    new WindowMessageOK(StringResources.PROBABILITY_FIELD).ShowDialog();
+                    MostrarErrorDialog(StringResources.PROBABILITY_FIELD);
                 }
                 else
                 {
                     if (decimal.Parse(TextProbability.Text) < 0)
                     {
-                        new WindowMessageOK(StringResources.PROBABILITY_FIELD).ShowDialog();
+                        MostrarErrorDialog(StringResources.PROBABILITY_FIELD);
                     }
                 }
             }
@@ -798,11 +843,8 @@ namespace EnsureRisk.Windows
                 {
                     if (MyRisks.Select(DT_Risk.ID_DIAGRAM + " = " + RiskTreeID + " and " + DT_Risk.NAMESHORT + " = '" + TextName.Text + "' and " + DT_Risk.ID + " <> " + RiskRow[DT_Risk.ID]).Any())
                     {
-                        WindowMessageYesNo yesNo = new WindowMessageYesNo("The name [" + TextName.Text + "] Already exists in this diagram. Do you want to use it again?");
-                        if (yesNo.ShowDialog() == true)
-                        {
-                            AceptRisk();
-                        }
+                        IS_USING_NAME = true;
+                        MostrarDialogYesNo("The name [" + TextName.Text + "] Already exists in this diagram. Do you want to use it again?");
                     }
                     else
                     {
@@ -819,11 +861,12 @@ namespace EnsureRisk.Windows
                 }
                 else
                 {
-                    new WindowMessageOK(StringResources.FIELD_REQUIRED).ShowDialog();
+                    MostrarErrorDialog(StringResources.FIELD_REQUIRED);
                 }
             }
             catch (Exception EX)
             {
+                IS_USING_NAME = false;
                 MessageBox.Show(EX.Message);
             }
         }
@@ -874,7 +917,7 @@ namespace EnsureRisk.Windows
             {
                 if (Pi.Probability > 100)
                 {
-                    new WindowMessageOK(StringResources.PROBABILITY_FIELD).ShowDialog();
+                    MostrarErrorDialog(StringResources.PROBABILITY_FIELD);
                 }
                 else
                 {
@@ -884,7 +927,7 @@ namespace EnsureRisk.Windows
                         if ((decimal)item[DT_Risk_Damages.VALUE] < 0)
                         {
                             flag = false;
-                            new WindowMessageOK("Value of damages cannot be negative").ShowDialog();
+                            MostrarErrorDialog("Value of damages cannot be negative");
                             break;
                         }
                     }
@@ -898,8 +941,10 @@ namespace EnsureRisk.Windows
             }
             else
             {
-                new WindowMessageOK(StringResources.NUMERIC_FIELD).ShowDialog();
+                MostrarErrorDialog(StringResources.NUMERIC_FIELD);
+                MostrarErrorDialog(StringResources.NUMERIC_FIELD);
             }
+            IS_USING_NAME = false;
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -1010,7 +1055,7 @@ namespace EnsureRisk.Windows
                 e.Key != Key.D0 && e.Key != Key.D1 && e.Key != Key.D2 && e.Key != Key.D3 && e.Key != Key.D4 && e.Key != Key.D5 && e.Key != Key.D6 &&
                 e.Key != Key.D7 && e.Key != Key.D8 && e.Key != Key.D9)
             {
-                new WindowMessageOK("Insert a Numeric Value!").ShowDialog();
+                MostrarErrorDialog("Insert a Numeric Value!");
             }
         }
 
@@ -1034,7 +1079,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+               MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -1056,6 +1101,29 @@ namespace EnsureRisk.Windows
         private void DgWBS_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             CalculateProbability();
+        }
+
+        private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true))
+            {
+                return;
+            }
+            if (Equals(eventArgs.Parameter, true))
+            {
+                if (IS_USING_NAME)
+                {
+                    AceptRisk();
+                }
+                if (IS_DELETING_ROW)
+                {
+                    Delete_Role(Selected_RoleRow);
+                }
+                if (IS_DELETING_WBS_ROW)
+                {
+                    Delete_WBS_Row(Selected_WBSRow);
+                }
+            }
         }
     }
 }

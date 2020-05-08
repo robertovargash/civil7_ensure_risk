@@ -36,6 +36,12 @@ namespace EnsureRisk.Windows
             ChangeLanguage();
         }
 
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
         public void ChangeLanguage()
         {
             MaterialDesignThemes.Wpf.HintAssist.SetHint(TextUser, StringResources.UserText);
@@ -66,19 +72,19 @@ namespace EnsureRisk.Windows
                     this.DialogResult = true;
                     foreach (DataRow item in ds.Tables[DT_User_Operation.TABLE_NAME].Rows)
                     {
-                        AccessList.Add((Int32)item[DT_User_Operation.ID_OPERATION_COLUMN]);
+                        AccessList.Add((int)item[DT_User_Operation.ID_OPERATION_COLUMN]);
                     }
                 }
                 else
                 {
-                    new WindowMessageOK(StringResources.WRONG_PASSWORD).ShowDialog();
+                    MostrarErrorDialog(StringResources.WRONG_PASSWORD);
                     TextPasword.Focus();
                     TextPasword.SelectAll();
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -95,7 +101,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
             return tempObtenerAcceso;
         }

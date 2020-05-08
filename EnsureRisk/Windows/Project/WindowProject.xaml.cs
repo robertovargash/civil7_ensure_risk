@@ -24,6 +24,12 @@ namespace EnsureRisk.Windows
             InitializeComponent();
         }
 
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
             DrProject[DT_Project.PROJECT_NAME] = txtKeyword.Text;
@@ -46,7 +52,7 @@ namespace EnsureRisk.Windows
                 }
                 catch (Exception ex)
                 {
-                    new WindowMessageOK(ex.Message).ShowDialog();
+                    MostrarErrorDialog(ex.Message);
                 }
             }
         }

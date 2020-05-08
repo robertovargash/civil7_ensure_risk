@@ -23,6 +23,8 @@ namespace EnsureRisk.Windows
     /// </summary>
     public partial class WindowWBSList : Window
     {
+        public DataRow Selected_Row { get; set; }
+        public bool IS_DELETING { get; set; } = false;
         public DataView Dv { get; set; }
         public DataSet Ds { get; set; }
         public WindowWBSList()
@@ -37,6 +39,12 @@ namespace EnsureRisk.Windows
                 Close();
         }
 
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
         public void RefreshData()
         {
             try
@@ -49,7 +57,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -89,7 +97,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -127,43 +135,70 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog(); ;
+                MostrarErrorDialog(ex.Message);
             }
+        }
+
+        public void MostrarDialogYesNo(string textAlert)
+        {
+            YesNoDialog.IsOpen = true;
+            TextYesNoMessage.Text = textAlert;
+        }
+
+
+        private void DELETE(DataRow fila)
+        {
+            foreach (var item in Ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + fila[DT_WBS.ID_WBS]))
+            {
+                Ds.Tables[DT_WBS.TABLE_NAME].Rows.Find(item[DT_WBS_STRUCTURE.ID_CHILD]).Delete();
+            }
+            fila.Delete();
+            if (Ds.HasChanges())
+            {
+                DataSet temp = new DataSet();
+                ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS();
+                temp = Ds.GetChanges();
+                temp = ws.SaveWBS(temp);
+                Ds.Merge(temp);
+                Ds.AcceptChanges();
+                RefreshData();
+            }
+            IS_DELETING = false;
         }
 
         private void BtnDel_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                DataRow fila = Dv[dgWBS.SelectedIndex].Row;
-                if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + fila[DT_WBS.WBS_NAME] + "]?").ShowDialog() == true)
-                {
-                    foreach (var item in Ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + fila[DT_WBS.ID_WBS]))
-                    {
-                        Ds.Tables[DT_WBS.TABLE_NAME].Rows.Find(item[DT_WBS_STRUCTURE.ID_CHILD]).Delete();
-                    }
-                    fila.Delete();
-                    if (Ds.HasChanges())
-                    {
-                        DataSet temp = new DataSet();
-                        ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS();
-                        temp = Ds.GetChanges();
-                        temp = ws.SaveWBS(temp);
-                        Ds.Merge(temp);
-                        Ds.AcceptChanges();
-                        RefreshData();
-                    }
-                }
+                Selected_Row = Dv[dgWBS.SelectedIndex].Row;
+                IS_DELETING = true;
+                MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_Row[DT_WBS.WBS_NAME] + "]?");
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog(); ;
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
             }
         }
 
         private void dgRole_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             BtnEdit_Click(sender, e);
+        }
+
+        private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true))
+            {
+                return;
+            }
+            if (Equals(eventArgs.Parameter, true))
+            {
+                if (IS_DELETING)
+                {
+                    DELETE(Selected_Row);
+                }
+            }
         }
     }
 }

@@ -9,7 +9,7 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="Excel Clasification" Height="212" Width="445" ResizeMode="NoResize" Loaded="Window_Loaded">
     <Grid>
         <TextBlock Text="Excel Type: " Margin="34,51,328,104"/>
@@ -17,8 +17,8 @@
             <ComboBoxItem Content="Custom Excel"/>
             <ComboBoxItem Content="Zuidasdok Excel"/>
         </ComboBox>
-        <Button x:Name="BtnOK" Content="OK" Margin="0,0,106,10" Click="BtnOK_Click" IsDefault="True" TabIndex="1" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
-        <Button x:Name="BtnCancel" Content="Cancel" Margin="0,0,14,10" Click="BtnCancel_Click" IsCancel="True" TabIndex="2" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
+        <Button x:Name="BtnOK" Content="OK" Margin="0,0,106,10" Click="BtnOK_Click" IsDefault="True" TabIndex="1" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom" md:ShadowAssist.ShadowDepth="Depth5"/>
+        <Button x:Name="BtnCancel" Content="Cancel" Margin="0,0,14,10" Click="BtnCancel_Click" IsCancel="True" TabIndex="2" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom" md:ShadowAssist.ShadowDepth="Depth5"/>
 
     </Grid>
 </Window>

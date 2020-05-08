@@ -25,11 +25,19 @@ namespace EnsureRisk.Windows
     {
 
         public DataSet Ds { get; set; }
+        public bool IS_DELETING { get; private set; } = false;
+
         public WindowUserList()
         {
             InitializeComponent();
             ChangeLanguage();
             this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
+        }
+
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
         }
 
         private void HandleEsc(object sender, KeyEventArgs e)
@@ -76,7 +84,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -116,48 +124,85 @@ namespace EnsureRisk.Windows
                     }
                     else
                     {
-                        new WindowMessageOK("'admin' user can´t be changed!").ShowDialog();
+                        MostrarErrorDialog("'admin' user can´t be changed!");
                     }
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
+        }
+
+        private void Delete()
+        {
+            try
+            {
+                if (dgUser.SelectedIndex >= 0)
+                {
+                    if (Ds.Tables[DT_User.User_TABLA].Rows[dgUser.SelectedIndex][DT_User.USERNAME].ToString() != "admin")
+                    {
+                        Ds.Tables[DT_User.User_TABLA].Rows[dgUser.SelectedIndex].Delete();
+                        if (Ds.HasChanges())
+                        {
+                            using (ServiceUserController.WebServiceUser user = new ServiceUserController.WebServiceUser())
+                            {
+                                DataSet temp = Ds.GetChanges();
+                                temp = user.SaveUser(temp);
+                                Ds.Merge(temp);
+                                Ds.AcceptChanges();
+                            }                            
+                        }
+                    }
+                    else
+                    {
+                        MostrarErrorDialog("[admin] user can´t be deleted!");
+                    }
+                }
+                IS_DELETING = false;
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        public void MostrarDialogYesNo(string textAlert)
+        {
+            YesNoDialog.IsOpen = true;
+            TextYesNoMessage.Text = textAlert;
         }
 
         private void BtnDel_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                int intcell = dgUser.SelectedIndex;
-                if (intcell >= 0)
+                if (dgUser.SelectedIndex >= 0)
                 {
-                    if (new WindowMessageYesNo(StringResources.DELETE_MESSAGE + " [" + Ds.Tables[DT_User.User_TABLA].Rows[intcell][DT_User.USERNAME] + "]?").ShowDialog() == true)
-                    {
-                        if (Ds.Tables[DT_User.User_TABLA].Rows[intcell][DT_User.USERNAME].ToString() != "admin")
-                        {
-                            Ds.Tables[DT_User.User_TABLA].Rows[intcell].Delete();
-                            //DataSet temp = new DataSet();
-                            if (Ds.HasChanges())
-                            {
-                                ServiceUserController.WebServiceUser user = new ServiceUserController.WebServiceUser();
-                                DataSet temp = Ds.GetChanges();
-                                temp = user.SaveUser(temp);
-                                Ds.Merge(temp);
-                                Ds.AcceptChanges();
-                            }
-                        }
-                        else
-                        {
-                            new WindowMessageOK("'admin' user can´t be deleted!").ShowDialog();
-                        }
-                    }
+                    IS_DELETING = true;
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Ds.Tables[DT_User.User_TABLA].Rows[dgUser.SelectedIndex][DT_User.USERNAME] + "]?");
                 }
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                IS_DELETING = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true))
+            {
+                return;
+            }
+            if (Equals(eventArgs.Parameter, true))
+            {
+                if (IS_DELETING)
+                {
+                    Delete();
+                }
             }
         }
 
@@ -172,7 +217,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 

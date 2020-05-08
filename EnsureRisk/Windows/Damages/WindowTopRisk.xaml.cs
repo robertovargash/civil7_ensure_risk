@@ -36,6 +36,12 @@ namespace EnsureRisk.Windows
             ChangeLanguage();
         }
 
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
         public void ChangeLanguage()
         {
             MaterialDesignThemes.Wpf.HintAssist.SetHint(TextTopRisk, StringResources.TopRiskDefinitionText);
@@ -58,7 +64,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog(); ;
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -73,7 +79,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -82,29 +88,5 @@ namespace EnsureRisk.Windows
             DialogResult = false;
             Close();
         }
-
-        //private void BtnColor_Click(object sender, RoutedEventArgs e)
-        //{
-        //    //ColorDialog dlg = new ColorDialog();
-        //    //if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-        //    //{
-        //    //    BtnColor.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(dlg.Color.A, dlg.Color.R, dlg.Color.G, dlg.Color.B));
-        //    //    color = dlg.Color;
-        //    //}
-        //    WindowColorPicker wc = new WindowColorPicker();
-        //    if (Operation == General.UPDATE)
-        //    {
-        //        wc.R = color.R;
-        //        wc.G = color.G;
-        //        wc.B = color.B;
-        //        Operation = General.UPDATE;
-        //    }
-        //    wc.ShowDialog();
-        //    if (wc.DialogResult == true)
-        //    {
-        //        BtnColor.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, wc.R, wc.G, wc.B));
-        //        color = System.Drawing.Color.FromArgb(255, wc.R, wc.G, wc.B);
-        //    }
-        //}
     }
 }

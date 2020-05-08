@@ -32,6 +32,12 @@ namespace EnsureRisk.Windows
             tableConnectionServer = new DataTable();
         }
 
+        public void MostrarErrorDialog(string text)
+        {
+            ErrorMessageDialog.IsOpen = true;
+            TextMessage.Text = text;
+        }
+
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             try
@@ -45,7 +51,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -68,31 +74,8 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-                new WindowMessageOK(ex.Message).ShowDialog();
+                MostrarErrorDialog(ex.Message);
             }
         }
-
-        //public void Auto()
-        //{
-        //    if (tableConnectionServer.Rows.Count > 0)
-        //    {
-        //        for (int i = 0; i < tableConnectionServer.Rows.Count; i++)
-        //        {
-        //            coll.Add(tableConnectionServer.Rows[i]["Server"].ToString());
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Messages.ErrorMessage("File not found");
-        //    }
-
-        //    TextServer.auto = AutoCompleteMode.Suggest;
-
-        //    TextServer.AutoCompleteSource = AutoCompleteSource.CustomSource;
-
-        //    TextServer.AutoCompleteCustomSource = coll;
-
-        //}
-
     }
 }

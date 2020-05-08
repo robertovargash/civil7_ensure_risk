@@ -3,19 +3,20 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         x:Class="EnsureRisk.Windows.WindowUserList"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EnsureRisk.Windows"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="User List" Height="450" Width="800" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" >
     <Grid>
-        <Button Name="BtnAdd" Content="Add" HorizontalAlignment="Left"  Margin="22,27,0,0" VerticalAlignment="Top" Width="90" Click="BtnAdd_Click" TabIndex="1" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
-        <Button Name="BtnEdit" Content="Edit" HorizontalAlignment="Left"  Margin="22,81,0,0" VerticalAlignment="Top" Width="90" Click="BtnEdit_Click" TabIndex="2" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
-        <Button Name="BtnDel" Content="Delete" HorizontalAlignment="Left"  Margin="22,137,0,0" VerticalAlignment="Top" Width="90" Click="BtnDel_Click" TabIndex="3" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
+        <Button Name="BtnAdd" Content="Add" HorizontalAlignment="Left"  Margin="22,27,0,0" VerticalAlignment="Top" Width="90" Click="BtnAdd_Click" TabIndex="1" md:ShadowAssist.ShadowDepth="Depth5"/>
+        <Button Name="BtnEdit" Content="Edit" HorizontalAlignment="Left"  Margin="22,81,0,0" VerticalAlignment="Top" Width="90" Click="BtnEdit_Click" TabIndex="2" md:ShadowAssist.ShadowDepth="Depth5"/>
+        <Button Name="BtnDel" Content="Delete" HorizontalAlignment="Left"  Margin="22,137,0,0" VerticalAlignment="Top" Width="90" Click="BtnDel_Click" TabIndex="3" md:ShadowAssist.ShadowDepth="Depth5"/>
         <DataGrid Name="dgUser" Margin="128,10,20,21" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="DgUser_MouseDoubleClick" GridLinesVisibility="All" VerticalGridLinesBrush="#FFDEDEDE">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="userName" Header="User" Binding="{Binding Path= userName}" Width="*"/>
@@ -23,6 +24,54 @@
             </DataGrid.Columns>
 
         </DataGrid>
-
+        <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">
+            <md:DialogHost.DialogContent >
+                <StackPanel Margin="15">
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="ErrorOutline" Width="30" Height="50"/>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="ERROR!!!" TextAlignment="Justify"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Expander HorizontalAlignment="Stretch" Header="Expand for details" IsExpanded="True">
+                            <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                                <TextBlock x:Name="TextMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                            CLOSE
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </md:DialogHost.DialogContent>
+        </md:DialogHost>
+        <md:DialogHost IsOpen="False" x:Name="YesNoDialog" Grid.RowSpan="3" DialogClosing="YesNoDialog_DialogClosing">
+            <md:DialogHost.DialogContent>
+                <StackPanel Margin="15">
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="WarningCircleOutline" Width="30" Height="50"/>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="WARNING!!!" TextAlignment="Justify"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                        <TextBlock x:Name="TextYesNoMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="mY TEXT" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                            <Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Button.CommandParameter>
+                            ACCEPT
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                            <Button.CommandParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </Button.CommandParameter>
+                            CANCEL
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </md:DialogHost.DialogContent>
+        </md:DialogHost>
     </Grid>
 </Window>

@@ -3,7 +3,7 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         x:Class="EnsureRisk.Windows.WindowWBSChild"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,15 +13,33 @@
         mc:Ignorable="d"
         Title="WBS" Height="212" Width="499" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
-        <TextBox TabIndex="1" materialDesign:HintAssist.Hint="Level" materialDesign:HintAssist.IsFloating="True" x:Name="TextLevel" MaxLength="50" HorizontalAlignment="Left" Margin="11,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="107"  TextOptions.TextHintingMode="Animated"/>
-        <TextBox materialDesign:HintAssist.Hint="WBS Name" materialDesign:HintAssist.IsFloating="True" x:Name="TextName" HorizontalAlignment="Left" Margin="156,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="319" TextOptions.TextHintingMode="Animated"/>
-        <Button x:Name="BtnOK" Content="OK" HorizontalAlignment="Right" Height="25" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" Margin="0,0,172,24" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
-        <Button x:Name="BtnCancel" Content="Cancel" HorizontalAlignment="Right" Height="25"  VerticalAlignment="Bottom" Width="90" Click="BtnCancel_Click" IsCancel="True" Margin="0,0,24,24" materialDesign:ShadowAssist.ShadowDepth="Depth5"/>
+        <TextBox TabIndex="1" md:HintAssist.Hint="Level" md:HintAssist.IsFloating="True" x:Name="TextLevel" MaxLength="50" HorizontalAlignment="Left" Margin="11,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="107"  TextOptions.TextHintingMode="Animated"/>
+        <TextBox md:HintAssist.Hint="WBS Name" md:HintAssist.IsFloating="True" x:Name="TextName" HorizontalAlignment="Left" Margin="156,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="319" TextOptions.TextHintingMode="Animated"/>
+        <Button x:Name="BtnOK" Content="OK" HorizontalAlignment="Right" Height="25" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" Margin="0,0,172,24" md:ShadowAssist.ShadowDepth="Depth5"/>
+        <Button x:Name="BtnCancel" Content="Cancel" HorizontalAlignment="Right" Height="25"  VerticalAlignment="Bottom" Width="90" Click="BtnCancel_Click" IsCancel="True" Margin="0,0,24,24" md:ShadowAssist.ShadowDepth="Depth5"/>
         <StackPanel Orientation="Horizontal" >
-            <materialDesign:PackIcon Kind="User" VerticalAlignment="Center"/>
-            <ComboBox materialDesign:HintAssist.Hint="User" Name="cbUser" IsEditable="True" 
-                  materialDesign:HintAssist.HintOpacity=".26" ToolTip="Select a User" Width="162"/>
+            <md:PackIcon Kind="User" VerticalAlignment="Center"/>
+            <ComboBox md:HintAssist.Hint="User" Name="cbUser" IsEditable="True" 
+                  md:HintAssist.HintOpacity=".26" ToolTip="Select a User" Width="162"/>
 
         </StackPanel>
+        <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">
+            <md:DialogHost.DialogContent>
+                <StackPanel Margin="15">
+                    <StackPanel Orientation="Horizontal">
+                        <Button ToolTip="Close this" VerticalAlignment="Top" HorizontalAlignment="Right" Content="{md:PackIcon Kind=CloseCircle, Size=30}" Width="60" Height="40" Style="{DynamicResource MaterialDesignFlatButton}" Command="{x:Static md:DialogHost.CloseDialogCommand}" CommandTarget="{Binding ElementName=MessageDialog}" IsCancel="True"/>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="ERROR!!!" TextAlignment="Justify"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Expander HorizontalAlignment="Stretch" Header="Expand for details">
+                            <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                                <TextBlock x:Name="TextMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                </StackPanel>
+            </md:DialogHost.DialogContent>
+        </md:DialogHost>
+
     </Grid>
 </Window>
