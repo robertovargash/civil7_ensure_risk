@@ -148,6 +148,7 @@ namespace EnsureRisk.Classess
                 if (((MainWindow)MyWindow).OpenedDocuments.Contains(this))
                 {
                     ((MainWindow)MyWindow).OpenedDocuments.Remove(this);
+                    ((MainWindow)MyWindow).MiniMap.MapSource = new ScrollViewer();
                 }                
                 ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear();
                 ((MainWindow)MyWindow).DV_Cross_CM.Table.Clear();
@@ -238,7 +239,7 @@ namespace EnsureRisk.Classess
 
         public void EnterWorking()
         {
-            TheMainGrid.Margin = new Thickness(3);
+            TheMainGrid.Margin = new Thickness(3);            
         }
         public void ExitWorking()
         {
@@ -446,7 +447,6 @@ namespace EnsureRisk.Classess
                             }
                         }
                     }
-
                 }
             }
             catch (Exception ex)
@@ -1844,7 +1844,6 @@ namespace EnsureRisk.Classess
             }
         }
 
-
         public void RiskLeave()
         {
             SetLinesThickness();
@@ -2041,6 +2040,7 @@ namespace EnsureRisk.Classess
             destinationPolyLine.Children.Insert(pos, insertedRisk);
             SetPolyLinePosition(destinationPolyLine.Children);
         }
+
         private void MoveRisk(RiskPolyLine destinationPolyLine, Point point)
         {
             if (FullAccess(destinationPolyLine))
@@ -2939,16 +2939,16 @@ namespace EnsureRisk.Classess
             try
             {
 
-                if (((MainWindow)MyWindow).P.TheCurrentLayout.ID_Diagram != ID_Diagram)
-                {
-                    ((MainWindow)MyWindow).P.TheCurrentLayout = this;
-                }
-                ((MainWindow)MyWindow).UpdateMiniMapSource();
-                foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
-                {
-                    item.ExitWorking();
-                }
-                this.EnterWorking();
+                //if (((MainWindow)MyWindow).P.TheCurrentLayout.ID_Diagram != ID_Diagram)
+                //{
+                //    ((MainWindow)MyWindow).P.TheCurrentLayout = this;
+                //}
+                //((MainWindow)MyWindow).UpdateMiniMapSource();
+                //foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
+                //{
+                //    item.ExitWorking();
+                //}
+                //this.EnterWorking();
                 if (!(NameEditing))
                 {
                     if (e.LeftButton == MouseButtonState.Pressed)
@@ -3053,18 +3053,18 @@ namespace EnsureRisk.Classess
                 if (((MainWindow)MyWindow).P.TheCurrentLayout.ID_Diagram != ID_Diagram)
                 {
                     ((MainWindow)MyWindow).P.TheCurrentLayout = this;
-                    CleanFishBone();
-                    LoadFishBone();
-                    DrawNumbersAndLineThickness();
+                    ((MainWindow)MyWindow).UpdateMiniMapSource();
+                    foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
+                    {
+                        item.ExitWorking();
+                    }
+                    this.EnterWorking();
+                    //CleanFishBone();
+                    //LoadFishBone();
+                    //DrawNumbersAndLineThickness();
                     ((MainWindow)MyWindow).TextProbabilityChange(MainLine);
                 }
-
                 UpdateGridRiskAndGridCM();
-                foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
-                {
-                    item.ExitWorking();
-                }
-                this.EnterWorking();
                 if (Creando)
                 {
                     GridPaintLines.Children.Remove(Line_Created);
@@ -3237,12 +3237,42 @@ namespace EnsureRisk.Classess
             this.TheProgressBar.Value = 100;
             IFormatProvider formatProvider = CultureInfo.CurrentUICulture;
             ((MainWindow)MyWindow).MostrarInfoDialog(string.Format(formatProvider, "Diagram {0} was saved as excel file!", this.Title));
-            this.TheProgressBar.Visibility = Visibility.Hidden;
+            this.TheProgressBar.Visibility = Visibility.Collapsed;
             this.TheProgressBar.Value = 0;
             this.TheProgressBar.IsIndeterminate = true;
             this.IsExportingToExcel = false;
         }
 
         #endregion
+
+        private void LayoutDocument_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            
+        }
+
+        private void LayoutDocument_IsActiveChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (((MainWindow)MyWindow).P.TheCurrentLayout != null)
+                {
+                    if (((MainWindow)MyWindow).P.TheCurrentLayout.ID_Diagram != ID_Diagram)
+                    {
+                        ((MainWindow)MyWindow).P.TheCurrentLayout = this;
+                        ((MainWindow)MyWindow).UpdateMiniMapSource();
+                        foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
+                        {
+                            item.ExitWorking();
+                        }
+                        this.EnterWorking();
+                        ((MainWindow)MyWindow).TextProbabilityChange(MainLine);
+                    }
+                }                
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
     }
 }

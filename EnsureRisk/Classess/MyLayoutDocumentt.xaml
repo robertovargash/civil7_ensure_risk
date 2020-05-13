@@ -6,17 +6,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EnsureRisk.Classess"
              xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
-             mc:Ignorable="d" CanMove="True" CanClose="True" CanFloat="True">
-    <Grid>
-        <Grid x:Name="TheTopGrid" Background="Red">
-            <Grid x:Name="TheMainGrid" Background="White">
+             mc:Ignorable="d" CanMove="True" CanClose="True" CanFloat="True" IsActiveChanged="LayoutDocument_IsActiveChanged">
+    <Grid MouseDown="LayoutDocument_MouseDown">
+        <Grid x:Name="TheTopGrid" Background="Red" MouseDown="LayoutDocument_MouseDown">
+            <Grid x:Name="TheMainGrid" Background="White" MouseDown="LayoutDocument_MouseDown">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="50"/>                    
                 </Grid.RowDefinitions>
-                <ScrollViewer x:Name="ScrollGridPaint" Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <ScrollViewer x:Name="ScrollGridPaint" Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" >
                     <Grid x:Name="CanvasMain">
-                        <Grid Width="200" Height="200" Background="LightGoldenrodYellow" x:Name="GridPaintLines" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel">
+                        <Grid Width="200" Height="200" x:Name="GridPaintLines" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel">
                             <local:PopWindow x:Name="MyPopWindow" Visibility="Collapsed" Panel.ZIndex="1"/>
                             <local:PopCMWindow x:Name="MyPopCMWindow" Visibility="Collapsed" Panel.ZIndex="1"/>
                             <TextBox x:Name="TextChangeName" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>
@@ -33,7 +33,7 @@
                         <ColumnDefinition Width="150"/>
                         <ColumnDefinition Width="25"/>
                     </Grid.ColumnDefinitions>
-                    <ProgressBar Grid.Column="1" x:Name="TheProgressBar" VerticalAlignment="Center" Visibility="Visible" HorizontalAlignment="Stretch" IsIndeterminate="True"/>
+                    <ProgressBar Grid.Column="1" x:Name="TheProgressBar" VerticalAlignment="Center" Visibility="Collapsed" HorizontalAlignment="Stretch" IsIndeterminate="True"/>
                     <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left">
                         <ComboBox x:Name="CbFilterTopR" IsEditable="False" HorizontalContentAlignment="Center"  Style="{StaticResource MaterialDesignFloatingHintComboBox}"  DropDownClosed="CbFilterTopR_DropDownClosed">
                             <md:HintAssist.Hint>

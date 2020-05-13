@@ -250,15 +250,14 @@ namespace EnsureBusinesss.Business
             {
                 Orientation = Orientation.Horizontal,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top                
-               
+                VerticalAlignment = VerticalAlignment.Top               
             };
 
             TextPanel = new LBorder
             {
                 CornerRadius = new CornerRadius(1),
                 BorderBrush = this.Stroke,
-                BorderThickness = new Thickness(2),                
+                BorderThickness = new Thickness(1),                
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
@@ -276,7 +275,6 @@ namespace EnsureBusinesss.Business
                 ArrowEnds = ArrowEnds.None;
                 Stroke = new SolidColorBrush(Colors.Black);
             }
-            //Segments = new List<RiskPolyLine>();
             Segments = new List<SegmentPolyLine>();
             StrokeStartLineCap = PenLineCap.Round;
             StrokeEndLineCap = PenLineCap.Round;
@@ -338,15 +336,11 @@ namespace EnsureBusinesss.Business
                 {
                     double extra = (MyName.Text.Length > 26) ? 13 : -5;
                     this.TextPanel.Margin = new Thickness(Points[1].X - diagonalShiftLabelX + extra + StrokeThickness, Points[1].Y - diagonalShiftLabelY + 40, 0, 0);
-                    //RotateTransform rotateTransform1 = new RotateTransform(angle);
-                    //this.TextPanel.RenderTransform = rotateTransform1;
                 }
                 else
                 {
                     double extra = (MyName.Text.Length > 26) ? -0 : -0;
                     this.TextPanel.Margin = new Thickness(Points[1].X - diagonalShiftLabelX + extra + StrokeThickness, Points[1].Y + diagonalShiftLabelY - 55, 0, 0);
-                    //RotateTransform rotateTransform1 = new RotateTransform(-angle);
-                    //this.TextPanel.RenderTransform = rotateTransform1;
                 }
             }
             else

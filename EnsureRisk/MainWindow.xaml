@@ -469,7 +469,7 @@
         <Grid Grid.Row="2">
             <ProgressBar Name="TheProgress" IsIndeterminate="True" Visibility="Hidden"/>
         </Grid>
-        <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog" Grid.RowSpan="3" >
+        <md:DialogHost IsOpen="False" x:Name="ErrorDialogMessage" Grid.RowSpan="3" >
             <md:DialogHost.DialogContent >
                 <StackPanel Margin="15">
                     <StackPanel Orientation="Horizontal">

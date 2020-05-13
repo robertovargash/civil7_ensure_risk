@@ -365,7 +365,7 @@ namespace EnsureRisk
 
         public void MostrarErrorDialog(string text)
         {
-            ErrorMessageDialog.IsOpen = true;
+            ErrorDialogMessage.IsOpen = true;
             TextMessage.Text = text;
         }
 
@@ -699,8 +699,10 @@ namespace EnsureRisk
                 if (P.TheCurrentLayout != null)
                 {
                     MiniMap.MapSource = P.TheCurrentLayout.ScrollGridPaint;
-                    //this.DataContext = P.TheCurrentLayout;
-                    //MiniMap.DataContext = P.TheCurrentLayout;
+                }
+                else
+                {
+                    MiniMap.MapSource = new ScrollViewer();
                 }
             }
             catch (Exception ex)
@@ -1116,17 +1118,6 @@ namespace EnsureRisk
                 MenuGroupRisk = MenuGroupRisk,
                 MenuGroupMixed = MenuGroupMixed
             };
-            //Style btnStyle = new Style(typeof(Button), ((Button)FindResource("Delete")).Style);
-            //Style sldStyle = new Style(typeof(Slider), ((Slider)FindResource("CommonSlider")).Style);
-            //Style cbStyle = new Style(typeof(ComboBox), ((ComboBox)FindResource("CommonCB")).Style);
-
-            //myly.BtMinus.Style = myly.BtMPlus.Style = btnStyle;
-            //myly.SliderZoom.Style = sldStyle;
-            //myly.CbFilterTopR.Style = myly.TheZoomComboBox.Style = cbStyle;
-
-            //myly.GridPaintLines.Width = 200;
-            //myly.GridPaintLines.Height = 200;
-            //myly.MIdPoint = new Point(myly.GridPaintLines.Width - 180, myly.GridPaintLines.Height / 2);
             myly.DrDiagram = dataRow;
             myly.ID_Diagram = (int)dataRow[DT_Diagram.ID_DIAGRAM];
             myly.Title = dataRow[DT_Diagram.DIAGRAM_NAME].ToString();
@@ -1222,8 +1213,8 @@ namespace EnsureRisk
                         item.ExitWorking();
                     }
                     P.TheCurrentLayout.EnterWorking();
+                    UpdateMiniMapSource();
                 }
-
             }
             catch (Exception ex)
             {
@@ -1255,47 +1246,6 @@ namespace EnsureRisk
                     {
                         MostrarDialogYesNo("This diagram is already opened. Do you want to open it as New Diagram?");
                         IS_REOPEN_DIAGRAM = true;
-                        //if (new WindowMessageYesNo("This diagram is already opened. Do you want to open it as New Diagram?").ShowDialog() == true)
-                        //{
-                        //    MyLayoutDocumentt myly = new MyLayoutDocumentt
-                        //    {
-                        //        SaveAsClosing = true,
-                        //        MenuRisk = MenuRisk,
-                        //        MenuMainRisk = MenuMainRisk,
-                        //        MenuRiskLimited = MenuRiskLimited,
-                        //        MenuCM = MenuCM,
-                        //        Ds = DsMain.Copy(),
-                        //        LoginUser = LoginUser,
-                        //        MyWindow = this,
-                        //        MenuGroupCM = MenuGroupCM,
-                        //        MenuGroupRisk = MenuGroupRisk,
-                        //        MenuGroupMixed = MenuGroupMixed
-                        //    };
-                        //    myly.ID_Diagram = CreateAndOpenNewDiagram(DiagramID, DVRisk_Tree[Indexx].Row[DT_Diagram.DIAGRAM_NAME].ToString(), myly);
-                        //    WindowTreeRisk riskTree = new WindowTreeRisk
-                        //    {
-                        //        Operation = General.UPDATE,
-                        //        TopRiskTable = myly.Ds.Tables[DT_Diagram_Damages.TABLENAME].Copy(),
-                        //        DRow = myly.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(myly.ID_Diagram),
-                        //        Icon = Icon,
-                        //        IDProject = IdProject,
-                        //        CM_TopRisk = myly.Ds.Tables[DT_CounterM_Damage.TABLENAME].Copy(),
-                        //        Risk_TopRisk = myly.Ds.Tables[DT_Risk_Damages.TABLENAME].Copy()
-                        //    };
-                        //    if (riskTree.ShowDialog() == true)
-                        //    {
-                        //        myly.Ds.Tables[DT_Diagram_Damages.TABLENAME].Merge(riskTree.TopRiskTable);
-                        //        SetNewDamageToEntireTree(myly.ID_Diagram, myly.Ds);
-                        //        TextDiagram.Text = riskTree.TextName.Text;
-                        //        TheProgress.Visibility = Visibility.Visible;
-                        //        HabilitarBotones(false);
-                        //        myly.Title = riskTree.TextName.Text;
-                        //        LayoutDocumentPanel.Children.Add(myly);
-                        //        OpenedDocuments.Add(myly);
-                        //        P.TheCurrentLayout = myly;
-                        //        CambiosVisuales();
-                        //    }
-                        //}
                     }
                     else
                     {
@@ -1515,7 +1465,10 @@ namespace EnsureRisk
                 P.TheCurrentLayout.DrawNumbers();
                 P.TheCurrentLayout.SetLinesThickness();
                 TextProbabilityChange(P.TheCurrentLayout.MainLine);
-                
+                P.TheCurrentLayout.ScrollGridPaint.ScrollToRightEnd();
+                P.TheCurrentLayout.ScrollGridPaint.ScrollToVerticalOffset(P.TheCurrentLayout.MainLine.Points[1].Y - 200);
+                UpdateMiniMapSource();
+
                 BtnBackward.Visibility = Visibility.Hidden;
 
                 CruzarTablaRisk(P.TheCurrentLayout.Ds);
@@ -4150,6 +4103,7 @@ namespace EnsureRisk
                                 column.Binding = probabilityBinding;
                                 column.IsReadOnly = true;
                                 column.MinWidth = 100;
+                                column.MaxWidth = 300;
                                 dgRisksCross.Columns.Add(column);
                                 break;
                             case "nameShort":
@@ -4167,6 +4121,7 @@ namespace EnsureRisk
                                 column.ElementStyle = styleText;
                                 column.IsReadOnly = true;
                                 column.MinWidth = 100;
+                                column.MaxWidth = 300;
                                 dgRisksCross.Columns.Add(column);
                                 break;
                             case "userName":
@@ -4175,6 +4130,7 @@ namespace EnsureRisk
                                 column.ElementStyle = styleText;
                                 column.IsReadOnly = true;
                                 column.MinWidth = 100;
+                                column.MaxWidth = 300;
                                 dgRisksCross.Columns.Add(column);
                                 break;
                             case "Father":
@@ -4183,6 +4139,7 @@ namespace EnsureRisk
                                 column.ElementStyle = styleText;
                                 column.IsReadOnly = true;
                                 column.MinWidth = 100;
+                                column.MaxWidth = 300;
                                 dgRisksCross.Columns.Add(column);
                                 break;
                             case "Status":
@@ -4190,6 +4147,7 @@ namespace EnsureRisk
                                 column.Binding = new Binding(Dt_Cross_Risk.Columns[i].ToString());
                                 column.IsReadOnly = true;
                                 column.MinWidth = 100;
+                                column.MaxWidth = 300;
                                 dgRisksCross.Columns.Add(column);
                                 break;
                             case "GroupeName":
@@ -4314,6 +4272,7 @@ namespace EnsureRisk
                             column.ElementStyle = styleText;
                             column.IsReadOnly = true;
                             column.MinWidth = 100;
+                            column.MaxWidth = 300;
                             dgCrossCM.Columns.Add(column);
                             break;
                         case "userName":
@@ -4322,6 +4281,7 @@ namespace EnsureRisk
                             column.ElementStyle = styleText;
                             column.IsReadOnly = true;
                             column.MinWidth = 100;
+                            column.MaxWidth = 300;
                             dgCrossCM.Columns.Add(column);
                             break;
                         case DT_CounterM_Damage.RISK:
@@ -4330,6 +4290,7 @@ namespace EnsureRisk
                             column.Binding = new Binding(Dt_Cross_CM.Columns[i].ToString());
                             column.IsReadOnly = true;
                             column.MinWidth = 100;
+                            column.MaxWidth = 300;
                             dgCrossCM.Columns.Add(column);
                             break;
                         case DT_CounterM_Damage.STATUS:
@@ -4337,6 +4298,7 @@ namespace EnsureRisk
                             column.Binding = new Binding(Dt_Cross_CM.Columns[i].ToString());
                             column.IsReadOnly = true;
                             column.MinWidth = 100;
+                            column.MaxWidth = 300;
                             dgCrossCM.Columns.Add(column);
                             break;
                         case DT_CounterM_Damage.GROUPENAME:
@@ -4359,7 +4321,7 @@ namespace EnsureRisk
                             break;
                         default:
                             Binding columnBinding = new Binding(Dt_Cross_CM.Columns[i].ToString());
-                            if (Dt_Cross_CM.Columns[i].DataType.Equals(typeof(System.Decimal)))
+                            if (Dt_Cross_CM.Columns[i].DataType.Equals(typeof(decimal)))
                             {
                                 columnBinding.Converter = new DecimalUIConverter();
                                 columnBinding.ConverterCulture = CultureInfo.CurrentUICulture;
@@ -5235,7 +5197,6 @@ namespace EnsureRisk
             {
                 MostrarErrorDialog(ex.Message);
             }
-
         }
 
         public void TextProbabilityChange(RiskPolyLine line)
@@ -5484,7 +5445,6 @@ namespace EnsureRisk
             var height = cap.PageImageableArea.ExtentHeight;
             return new Rect(leftMargin, topMargin, width, height);
         }
-
 
         #region VerticalTree
         /// <summary>
@@ -6110,7 +6070,7 @@ namespace EnsureRisk
             }
             catch (Exception ex)
             {
-                throw ex;
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -6492,7 +6452,6 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
-
        
 
         private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
