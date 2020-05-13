@@ -8,6 +8,7 @@
              xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
              mc:Ignorable="d" CanMove="True" CanClose="True" CanFloat="True" IsActiveChanged="LayoutDocument_IsActiveChanged">
     <Grid MouseDown="LayoutDocument_MouseDown">
+        <Button x:Name="BtnUndoneScope" Panel.ZIndex="1" Click="BtnUndoneScope_Click" Visibility="Collapsed" Content="{md:PackIcon Kind=UndoVariant}" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
         <Grid x:Name="TheTopGrid" Background="Red" MouseDown="LayoutDocument_MouseDown">
             <Grid x:Name="TheMainGrid" Background="White" MouseDown="LayoutDocument_MouseDown">
                 <Grid.RowDefinitions>
@@ -16,7 +17,7 @@
                 </Grid.RowDefinitions>
                 <ScrollViewer x:Name="ScrollGridPaint" Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" >
                     <Grid x:Name="CanvasMain">
-                        <Grid Width="200" Height="200" x:Name="GridPaintLines" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel">
+                        <Grid Width="200" Height="200" x:Name="GridPaintLines" Background="#FFEDDBDB" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel">
                             <local:PopWindow x:Name="MyPopWindow" Visibility="Collapsed" Panel.ZIndex="1"/>
                             <local:PopCMWindow x:Name="MyPopCMWindow" Visibility="Collapsed" Panel.ZIndex="1"/>
                             <TextBox x:Name="TextChangeName" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>

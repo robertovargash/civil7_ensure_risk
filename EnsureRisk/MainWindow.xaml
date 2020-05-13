@@ -333,7 +333,7 @@
                                             </DataGrid.Columns>
                                         </DataGrid>
                                         <StackPanel HorizontalAlignment="Left"  Margin="1,0,0,0" VerticalAlignment="Top" Width="50">
-                                            <Button ToolTip="Go Back!!"  x:Name="BtnBackward"  HorizontalAlignment="Left"  Click="BtnBackward_Click" Content="{md:PackIcon Kind=StepBackward}" md:ShadowAssist.ShadowDepth="Depth5"/>
+                                            <!--<Button ToolTip="Go Back!!"  x:Name="BtnBackward"  HorizontalAlignment="Left"  Click="BtnBackward_Click" Content="{md:PackIcon Kind=StepBackward}" md:ShadowAssist.ShadowDepth="Depth5"/>-->
                                             <Button x:Name="AddTree" ToolTip="Add New Diagram" HorizontalAlignment="Left" Click="AddTree_Click" Margin="0,20,0,0" Content="{md:PackIcon Kind=Plus  }" md:ShadowAssist.ShadowDepth="Depth5"/>
                                             <Button x:Name="EditTree" ToolTip="Load and Edit Diagram" HorizontalAlignment="Left" Click="EditTree_Click" Margin="0,20,0,0" Content="{md:PackIcon Kind=Pencil}" md:ShadowAssist.ShadowDepth="Depth5"/>
                                             <Button x:Name="RemoveTree" ToolTip="Remove Diagram" HorizontalAlignment="Left" Click="RemoveTree_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=Delete}" md:ShadowAssist.ShadowDepth="Depth5"/>

@@ -26,7 +26,7 @@
     </Window.Triggers>
     <Grid>
         <Button Name="BtnOK" Content="OK" Height="25" Margin="0,0,143,19" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
-        <Button Name="BtnCancel" Content="Cancel" Height="25" Margin="0,0,39,17" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
+        <Button Name="BtnCancel" Content="CLOSE" Height="25" Margin="0,0,39,19" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
         <StackPanel Orientation="Vertical" Margin="34,7,347,0">
             <TextBox TabIndex="1" IsEnabled="{Binding Path = HasAccess}" KeyUp="TextName_KeyUp" md:HintAssist.Hint="Short Name" md:HintAssist.IsFloating="True" Name="TextName" MaxLength="250"  TextWrapping="Wrap"  VerticalAlignment="Top" LostFocus="TextName_LostFocus" MaxLines="1" TextOptions.TextHintingMode="Animated"/>
             <Border Width="291" Height="61" BorderBrush="Black"  BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Top">
@@ -43,9 +43,9 @@
                 <Grid Background="#FFE5E5E5">
                     <DataGrid TabIndex="4" Name="dgTopRisk" Margin="1,1,34,3" AutoGenerateColumns="False" KeyDown="DgTopRisk_KeyUp" >
                         <DataGrid.Columns>
-                            <DataGridTextColumn x:Name="WBSn" Header="WBS" Binding="{Binding Path= WBSName}" Width="*"/>
-                            <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding Path= Damage}" Width="*"/>
-                            <DataGridTextColumn x:Name="TopValue" Header="Value" Binding="{Binding Path= value}" Width="*"/>
+                            <DataGridTextColumn x:Name="WBSn" Header="WBS" Binding="{Binding Path= WBSName}" Width="*" IsReadOnly="True"/>
+                            <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding Path= Damage}" Width="*" IsReadOnly="True"/>
+                            <DataGridTextColumn x:Name="TopValue" Header="Value" Binding="{Binding Path= value}" Width="*" IsReadOnly="False"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

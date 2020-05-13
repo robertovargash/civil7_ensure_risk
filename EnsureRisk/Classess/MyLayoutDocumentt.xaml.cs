@@ -223,7 +223,8 @@ namespace EnsureRisk.Classess
                     ((MainWindow)MyWindow).TextDiagram.Text = LinesList.Find(x => x.ID == ScopeLine.ID).ShortName;
                     LinesList.Find(x => x.ID == ScopeLine.ID).ExtrasVisibility(Visibility.Hidden);
 
-                    ((MainWindow)MyWindow).BtnBackward.Visibility = Visibility.Visible;
+                    //((MainWindow)MyWindow).BtnBackward.Visibility = Visibility.Visible;
+                    BtnUndoneScope.Visibility = Visibility.Visible;
                 }
                 catch (Exception ex)
                 {
@@ -3268,6 +3269,28 @@ namespace EnsureRisk.Classess
                         ((MainWindow)MyWindow).TextProbabilityChange(MainLine);
                     }
                 }                
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        private void BtnUndoneScope_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                IsScoping = false;
+                DropLines();
+                DropRectangles();
+                LoadLines();
+                LoadRectangles();
+                DrawNumbers();
+                BtnUndoneScope.Visibility = Visibility.Hidden;
+                //TextDiagram.Text = P.TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(P.TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
+                Title = Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
+                //TextProbabilityChange(P.TheCurrentLayout.MainLine);
+                SetLinesThickness();
             }
             catch (Exception ex)
             {

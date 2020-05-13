@@ -399,7 +399,7 @@ namespace EnsureRisk
                 dgTreeDiagrams.SelectedIndex = Indexx;
 
                 ValidateAccess();
-                BtnBackward.Visibility = Visibility.Hidden;
+                //BtnBackward.Visibility = Visibility.Hidden;
                 MenuRisk.Visibility = Visibility.Visible;
                 MenuRiskLimited.Visibility = Visibility.Visible;
                 MenuMainRisk.Visibility = Visibility.Visible;
@@ -1156,7 +1156,6 @@ namespace EnsureRisk
                 };
                 WindowTreeRisk riskTree = new WindowTreeRisk
                 {
-                    //generate a new form to create a new tree risk
                     Operation = General.INSERT,
                     TopRiskTable = myly.Ds.Tables[DT_Diagram_Damages.TABLENAME].Copy(),
                     DRow = myly.Ds.Tables[DT_Diagram.TABLE_NAME].NewRow(),
@@ -1177,11 +1176,8 @@ namespace EnsureRisk
 
                     drRisk[DT_Risk.ISCOLLAPSED] = false;
                     drRisk[DT_Risk.ENABLED] = true;
-                    //drRisk[RiskDatos.DIAGONAL_COLUMNA] = false;
                     drRisk[DT_Risk.FROM_TOP] = false;
                     drRisk[DT_Risk.PROBABILITY] = 100;
-                    //the tree always can contain only a unique Unit of Mesurement for each Top Risk 
-
                     drRisk[DT_Risk.ID_DIAGRAM] = riskTree.DRow[DT_Diagram.ID_DIAGRAM];
                     myly.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
 
@@ -1191,7 +1187,6 @@ namespace EnsureRisk
                     newRow[DT_Role_Risk.IDROL_COLUMN] = myly.Ds.Tables[DT_Role.ROLE_TABLE].Select(DT_Role.ROLE_COLUM + " = 'Administrator'").First()[DT_Role.IDROL_COLUMN];
                     myly.Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Add(newRow);
 
-                    //SaveData(false);
                     System.Drawing.Color color = System.Drawing.Color.FromArgb(int.Parse(myly.Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + riskTree.DRow[DT_Diagram.ID_DIAGRAM]).First()[DT_Diagram_Damages.COLOR].ToString()));
                     myly.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
                     LayoutDocumentPanel.Children.Add(myly);
@@ -1204,7 +1199,6 @@ namespace EnsureRisk
                     P.TheCurrentLayout.LoadComboDamage();
                     P.TheCurrentLayout.LoadRectangles();
                     TextProbability.Text = "0";
-                    BtnBackward.Visibility = Visibility.Hidden;
                     TextDiagram.Text = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
                     P.TheCurrentLayout.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
                     P.TheCurrentLayout.FixDrawPanel();
@@ -1273,18 +1267,14 @@ namespace EnsureRisk
                             CM_TopRisk = myly.Ds.Tables[DT_CounterM_Damage.TABLENAME].Copy(),
                             Risk_TopRisk = myly.Ds.Tables[DT_Risk_Damages.TABLENAME].Copy()
                         };
-
                         if (riskTree.ShowDialog() == true)
                         {
                             DVRisk_Tree[Indexx].Row[DT_Diagram.DIAGRAM_NAME] = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
-
                             myly.Ds.Tables[DT_Diagram_Damages.TABLENAME].Merge(riskTree.TopRiskTable);
                             myly.Ds.Tables[DT_CounterM_Damage.TABLENAME].Merge(riskTree.CM_TopRisk);
                             myly.Ds.Tables[DT_Risk_Damages.TABLENAME].Merge(riskTree.Risk_TopRisk);
                             myly.ID_Diagram = DiagramID;
-
                             SetNewDamageToEntireTree(myly.ID_Diagram, myly.Ds);
-
                             TheProgress.Visibility = Visibility.Visible;
                             HabilitarBotones(false);
                             myly.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
@@ -1469,7 +1459,8 @@ namespace EnsureRisk
                 P.TheCurrentLayout.ScrollGridPaint.ScrollToVerticalOffset(P.TheCurrentLayout.MainLine.Points[1].Y - 200);
                 UpdateMiniMapSource();
 
-                BtnBackward.Visibility = Visibility.Hidden;
+                //BtnBackward.Visibility = Visibility.Hidden;
+                P.TheCurrentLayout.BtnUndoneScope.Visibility = Visibility.Collapsed;
 
                 CruzarTablaRisk(P.TheCurrentLayout.Ds);
                 CruzarTablaCM(P.TheCurrentLayout.Ds);
@@ -5366,7 +5357,7 @@ namespace EnsureRisk
             ((MenuItem)MenuMainRisk.Items[(int)MenuMain.AddRisk]).ToolTip = StringResources.AddRiskMenu;
             ((MenuItem)MenuMainRisk.Items[(int)MenuMain.Paste]).ToolTip = StringResources.PASTE_MENU;
             ((MenuItem)MenuMainRisk.Items[(int)MenuMain.Import]).ToolTip = StringResources.MENU_IMPORT;
-            BtnBackward.ToolTip = StringResources.GoBackTooltip;
+            //BtnBackward.ToolTip = StringResources.GoBackTooltip;
             StartMenu.ToolTip = StringResources.StartTooltip;
             MenuItemFish_Tree.ToolTip = StringResources.FISH_MENU_TOOLTIP;
             MenuItemReload.ToolTip = StringResources.REBOOT;
@@ -5537,7 +5528,7 @@ namespace EnsureRisk
                 P.TheCurrentLayout.LoadLines();
                 P.TheCurrentLayout.LoadRectangles();
                 P.TheCurrentLayout.DrawNumbers();
-                BtnBackward.Visibility = Visibility.Hidden;
+                ///*BtnBackward*/.Visibility = Visibility.Hidden;
                 TextDiagram.Text = P.TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(P.TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
                 P.TheCurrentLayout.Title = P.TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(P.TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
                 TextProbabilityChange(P.TheCurrentLayout.MainLine);
