@@ -346,6 +346,7 @@ namespace EnsureRisk.Classess
             }
         }
 
+        //TODO: PINTA LOS RECTANGULOS
         public void LoadRectangles()
         {
             try
@@ -2712,14 +2713,13 @@ namespace EnsureRisk.Classess
 
         #endregion
 
-
+        //TODO:COMO CAMBIAR COLOR AL ARBOL COMPLETO
         private void CbFilterTopR_DropDownClosed(object sender, EventArgs e)
         {
             try
             {
                 if (LinesList.Count > 0)
                 {
-
                     if (!(CbFilterTopR.SelectedValue is null))
                     {
                         IdDamageSelected = (Int32)CbFilterTopR.SelectedValue;
