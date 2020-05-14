@@ -250,7 +250,8 @@ namespace EnsureBusinesss.Business
             {
                 Orientation = Orientation.Horizontal,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top               
+                VerticalAlignment = VerticalAlignment.Top                
+               
             };
 
             TextPanel = new LBorder
@@ -697,12 +698,10 @@ namespace EnsureBusinesss.Business
                 return Points[0];
             }
         }
+
         public void AllSegmentClear()
         {
-            if (Segments != null && Segments.Any())
-            {
-                Segments.Clear();                
-            }
+            SegmentClear();
             if (Children != null && Children.Any())
             {
                 foreach (RiskPolyLine line in Children)
@@ -716,6 +715,10 @@ namespace EnsureBusinesss.Business
         {
             if (Segments != null && Segments.Any())
             {
+                foreach (var segment in Segments)
+                {
+                    MyContainer.Children.Remove(segment);
+                }
                 Segments.Clear();
             }
         }

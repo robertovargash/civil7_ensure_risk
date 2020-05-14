@@ -90,7 +90,7 @@ namespace EnsureRisk.Classess
         public RiskPolyLine Line_Created { get; set; }
         public RiskPolyLine LineInMoving { get; set; }
         #endregion
-        public MyLayoutDocumentt():base()
+        public MyLayoutDocumentt() : base()
         {
             InitializeComponent();
             MIdPoint = new Point(GridPaintLines.Width - 180, GridPaintLines.Height / 2);
@@ -149,7 +149,7 @@ namespace EnsureRisk.Classess
                 {
                     ((MainWindow)MyWindow).OpenedDocuments.Remove(this);
                     ((MainWindow)MyWindow).MiniMap.MapSource = new ScrollViewer();
-                }                
+                }
                 ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear();
                 ((MainWindow)MyWindow).DV_Cross_CM.Table.Clear();
             }
@@ -223,7 +223,6 @@ namespace EnsureRisk.Classess
                     ((MainWindow)MyWindow).TextDiagram.Text = LinesList.Find(x => x.ID == ScopeLine.ID).ShortName;
                     LinesList.Find(x => x.ID == ScopeLine.ID).ExtrasVisibility(Visibility.Hidden);
 
-                    //((MainWindow)MyWindow).BtnBackward.Visibility = Visibility.Visible;
                     BtnUndoneScope.Visibility = Visibility.Visible;
                 }
                 catch (Exception ex)
@@ -240,7 +239,7 @@ namespace EnsureRisk.Classess
 
         public void EnterWorking()
         {
-            TheMainGrid.Margin = new Thickness(3);            
+            TheMainGrid.Margin = new Thickness(3);
         }
         public void ExitWorking()
         {
@@ -310,35 +309,26 @@ namespace EnsureRisk.Classess
         {
             try
             {
-                if (LinesList.OrderBy(rl => rl.Points[0].X).First().Points[0].X < 0)
+                RiskPolyLine firstX = LinesList.OrderBy(rl => rl.Points[0].X).First();
+                RiskPolyLine firstY = LinesList.OrderBy(rl => rl.Points[0].Y).First();
+
+                if (firstX.Points[0].X < 0 && firstY.Points[0].Y < 0)
                 {
-                    while (LinesList.OrderBy(rl => rl.Points[0].X).First().Points[0].X < 0)
+                    TreeOperation.MoveEntireTree(LinesList, (int)(Math.Ceiling(Math.Abs(firstX.Points[0].X) / 70) * 70), (int)(Math.Ceiling(Math.Abs(firstY.Points[0].Y) / 210) * 210), Rectangles);
+                }
+                else
+                {
+                    if (firstX.Points[0].X < 0)
                     {
-                        TreeOperation.MoveEntireTree(LinesList, 70, 0, Rectangles);
+                        TreeOperation.MoveEntireTree(LinesList, (int)(Math.Ceiling(Math.Abs(firstX.Points[0].X) / 70) * 70), 0, Rectangles);
+                    }
+                    if (firstY.Points[0].Y < 0)
+                    {
+                        TreeOperation.MoveEntireTree(LinesList, 0, (int)(Math.Ceiling(Math.Abs(firstY.Points[0].Y) / 210) * 210), Rectangles);
                     }
                 }
                 GridPaintLines.Width = LinesList.OrderByDescending(rl => rl.Points[1].X).First().Points[1].X + 500;
-                if (LinesList.OrderBy(rl => rl.Points[0].Y).First().Points[0].Y < 0)
-                {
-                    while (LinesList.OrderBy(rl => rl.Points[0].Y).First().Points[0].Y < 0)
-                    {
-                        TreeOperation.MoveEntireTree(this.LinesList, 0, 210, Rectangles);
-                    }
-                }
                 GridPaintLines.Height = LinesList.OrderByDescending(rl => rl.Points[1].Y).First().Points[1].Y + 300;
-                foreach (var item in GridPaintLines.Children)
-                {
-                    if (item is SegmentPolyLine)
-                    {
-                        foreach (var p in ((SegmentPolyLine)item).Points)
-                        {
-                            if (p.X < 0 || p.Y < 0)
-                            {
-                                ((SegmentPolyLine)item).Visibility = Visibility.Collapsed;
-                            }
-                        }
-                    }
-                }
             }
             catch (Exception ex)
             {
@@ -479,7 +469,7 @@ namespace EnsureRisk.Classess
                     IdGroup = 0,
                     GroupName = "None"
                 };
-                
+
                 //adding the 3 points of the risk. The Main line the angle = 180º
                 MainLine.Points[0] = (new Point(MIdPoint.X - 500, MIdPoint.Y));
                 MainLine.Points[1] = (new Point(MainLine.Points[0].X + 200, MainLine.Points[0].Y));
@@ -561,9 +551,12 @@ namespace EnsureRisk.Classess
         {
             try
             {
+                ((MainWindow)MyWindow).P.TheCurrentLayout.GridPaintLines.Children.Clear();
+
                 LinesListCMState.Clear();
                 if (CbFilterTopR.SelectedIndex >= 0)
                 {
+                    LinesList.Clear();
                     System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
                     AddMainLine(Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram + " and " + DT_Risk.IS_ROOT + " = " + 1).First(), drawingCColor);
 
@@ -1618,11 +1611,10 @@ namespace EnsureRisk.Classess
                 {
                     CreateRisk();
                 }
-                else 
-                { 
+                else
+                {
                     MostrarDialog("No Access Granted to do this Operation");
                 }
-
 
                 GridPaintLines.Children.Remove(Line_Created);
                 Line_Created = null;
@@ -1923,7 +1915,7 @@ namespace EnsureRisk.Classess
                         Popin = new Popin(GridPaintLines, pointToShowPopup, "Risk: " + TheLine.ShortName, probability, EL, Valuee, AcumValue, ED)
                         {
                             Visibility = Visibility.Visible
-                        };                        
+                        };
                         if ((bool)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheLine.ID)[DT_Risk.ENABLED])
                         {
                             ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
@@ -2042,7 +2034,6 @@ namespace EnsureRisk.Classess
             destinationPolyLine.Children.Insert(pos, insertedRisk);
             SetPolyLinePosition(destinationPolyLine.Children);
         }
-
         private void MoveRisk(RiskPolyLine destinationPolyLine, Point point)
         {
             if (FullAccess(destinationPolyLine))
@@ -2712,7 +2703,6 @@ namespace EnsureRisk.Classess
 
 
         #endregion
-
         //TODO:COMO CAMBIAR COLOR AL ARBOL COMPLETO
         private void CbFilterTopR_DropDownClosed(object sender, EventArgs e)
         {
@@ -3248,7 +3238,7 @@ namespace EnsureRisk.Classess
 
         private void LayoutDocument_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            
+
         }
 
         private void LayoutDocument_IsActiveChanged(object sender, EventArgs e)
@@ -3268,7 +3258,7 @@ namespace EnsureRisk.Classess
                         this.EnterWorking();
                         ((MainWindow)MyWindow).TextProbabilityChange(MainLine);
                     }
-                }                
+                }
             }
             catch (Exception ex)
             {
