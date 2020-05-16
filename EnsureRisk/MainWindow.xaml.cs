@@ -3232,8 +3232,8 @@ namespace EnsureRisk
         {
             try
             {
-                Boolean result = false;
-                Boolean enabledColumn = (isGroup) ? estadoActual : (Boolean)P.TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.ENABLED];
+                bool result = false;
+                bool enabledColumn = (isGroup) ? estadoActual : (bool)P.TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.ENABLED];
                 if (enabledColumn)
                 {
                     P.TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.ENABLED] = false;
@@ -3251,8 +3251,6 @@ namespace EnsureRisk
                         {
                             itemi.IsActivated = false;
                             itemi.SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
-                            //(P.TheCurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).DrawEntireLine("(Disabled)" + P.TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(itemi.ID)[DT_CounterM.NAMESHORT]);
-                            //(CurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).Stroke = new SolidColorBrush(Colors.Gray);
                             (P.TheCurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
                             (P.TheCurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).IsActivated = false;
                             P.TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(itemi.ID)[DT_CounterM.ENABLED] = false;
@@ -3285,6 +3283,7 @@ namespace EnsureRisk
                     }
                     result = true;
                 }
+                P.TheCurrentLayout.UpdateLinesValues();
                 return result;
             }
             catch (Exception ex)

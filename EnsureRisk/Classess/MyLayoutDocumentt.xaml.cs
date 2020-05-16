@@ -689,53 +689,75 @@ namespace EnsureRisk.Classess
             }
         }
 
+        private decimal CalculateOwnValueRisk(int idRisk, int idDamage)
+        {
+            if (Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Contains(new object[] { idRisk, idDamage }))
+            {
+                return (decimal)Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { idRisk, idDamage })[DT_Risk_Damages.VALUE];
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        private decimal CalculateAcumDamageRisk(RiskPolyLine line, int IdDamageSelected)
+        {
+            decimal AcumDamage = CalculateOwnValueRisk(line.ID, IdDamageSelected) * General.AcumulatedLikelihood(line);
+            decimal value = 0;
+            if (line.IsActivated)
+            {
+                foreach (var hijo in line.Children)
+                {
+                    if (hijo.IsActivated)
+                    {
+                        if (hijo.IsLeaf())
+                        {
+                            if (hijo.IsCM)
+                            {
+                                if (Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Contains(new object[] { hijo.ID, IdDamageSelected }))
+                                {
+                                    value = (decimal)Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Find(new object[] { hijo.ID, IdDamageSelected })[DT_CounterM_Damage.VALUE];
+                                }
+                                AcumDamage += value;
+                                value = 0;
+                            }
+                            else
+                            {
+                                if (Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Contains(new object[] { hijo.ID, IdDamageSelected }))
+                                {
+                                    value = (decimal)Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { hijo.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
+                                }
+                                AcumDamage += value * General.AcumulatedLikelihood(hijo);
+                                value = 0;
+                            }
+                        }
+                        else
+                        {
+                            return AcumDamage + CalculateAcumDamageRisk(hijo, IdDamageSelected);
+                        }
+                    }                    
+                }
+                return AcumDamage;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         public void UpdateLinesValues()
         {
             foreach (var item in LinesList)
             {
                 if (!item.IsCM)
                 {
-                    decimal al = General.AcumulatedLikelihood(item);
-                    decimal valor = General.CalculateTopRiskTreeValue(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID),
+                    item.AcLike = General.AcumulatedLikelihood(item);
+                    item.AcValue = General.CalculateTopRiskTreeValue(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID),
                         Ds.Tables[DT_Risk.TABLE_NAME], IdDamageSelected, Ds.Tables[DT_Risk_Damages.TABLENAME],
                             Ds.Tables[DT_CounterM.TABLE_NAME], Ds.Tables[DT_CounterM_Damage.TABLENAME]);
-                    decimal myvalue = 0;
-                    if (Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Contains(new object[] { item.ID, IdDamageSelected }))
-                    {
-                        myvalue = (decimal)Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { item.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
-                    }
-                    decimal AcumDamage = 0;
-                    foreach (var itemI in TreeOperation.GetMeAndMyChildrenWithCM(item))
-                    {
-                        if (itemI.IsActivated)
-                        {
-                            decimal value = 0;
-                            if (itemI.IsCM)
-                            {
-                                if (itemI.IsActivated)
-                                {
-                                    if (Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
-                                    {
-                                        value = (decimal)Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_CounterM_Damage.VALUE];
-                                    }
-                                    AcumDamage += value;
-                                }
-                            }
-                            else
-                            {
-                                if (Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
-                                {
-                                    value = (decimal)Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
-                                }
-                                AcumDamage += value * General.AcumulatedLikelihood(itemI);
-                            }
-                        }
-                    }
-
-                    item.AcLike = al;
-                    item.AcValue = valor;
-                    item.OwnValue = myvalue;
-                    item.AcDamage = AcumDamage;
+                    item.OwnValue = CalculateOwnValueRisk(item.ID, IdDamageSelected);
+                    item.AcDamage = CalculateAcumDamageRisk(item, IdDamageSelected); ;
                 }
             }
         }

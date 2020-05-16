@@ -33,8 +33,7 @@ namespace EnsureBusinesss.Business
 
         #region Properties
         #region Booleans
-        //public static readonly DependencyProperty IsActivatedProperty =
-        //   DependencyProperty.Register("IsActivated", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
 
         //public static readonly DependencyProperty FromTopProperty =
         //   DependencyProperty.Register("FromTop", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsMeasure));
@@ -57,11 +56,15 @@ namespace EnsureBusinesss.Business
         //public static readonly DependencyProperty IsDiagonalProperty =
         //  DependencyProperty.Register("IsDiagonal", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
 
+        public static readonly DependencyProperty IsActivatedProperty =
+            DependencyProperty.Register("IsActivated", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
+
         public bool IsActivated
         {
-            set; /*{ SetValue(IsActivatedProperty, value); }*/
-            get; /*{ return (bool)GetValue(IsActivatedProperty); }*/
+            set { SetValue(IsActivatedProperty, value); }
+            get { return (bool)GetValue(IsActivatedProperty); }
         }
+
         public bool FromTop
         {
             set; /*{ SetValue(FromTopProperty, value); }*/
@@ -394,6 +397,7 @@ namespace EnsureBusinesss.Business
                 else
                 {
                     MyName.Text = "(Disabled)" + ShortName;
+                    
                 }
                 if (ShortName == string.Empty)
                 {

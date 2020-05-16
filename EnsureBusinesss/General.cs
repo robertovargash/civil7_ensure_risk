@@ -363,7 +363,10 @@ namespace EnsureBusinesss
                 else
                 {
                     //ELSE FOR EACH CHILDS EXECUTE THE FUNCTION RECURSIVELY
-                    riskValue += CalculateTopRiskTreeValue(item, dtRisk, idtoprisk, dtRisk_TopRisk, dtCM, dtCM_TopRisk);
+                    if ((bool)item[DT_Risk.ENABLED])
+                    {
+                        riskValue += CalculateTopRiskTreeValue(item, dtRisk, idtoprisk, dtRisk_TopRisk, dtCM, dtCM_TopRisk);
+                    }
                 }
             }
             return riskValue;
@@ -404,7 +407,14 @@ namespace EnsureBusinesss
                     }
                     else
                     {
-                        Probability_List.Add(AcumulatedLikelihood(item));//else, call the function as recursive
+                        if (item.IsActivated)
+                        {
+                            Probability_List.Add(AcumulatedLikelihood(item));//else, call the function as recursive
+                        }
+                        else
+                        {
+                            Probability_List.Add(1);
+                        }
                     }
                 }
             }
