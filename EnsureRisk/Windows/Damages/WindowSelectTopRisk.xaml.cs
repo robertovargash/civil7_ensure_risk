@@ -15,20 +15,29 @@ using System.Data;
 using DataMapping.Data;
 using EnsureBusinesss;
 using EnsureRisk.Resources;
+using System.ComponentModel;
 
 namespace EnsureRisk.Windows
 {
     /// <summary>
     /// Interaction logic for WindowSelectTopRisk.xaml
     /// </summary>
-    public partial class WindowSelectTopRisk : Window
+    public partial class WindowSelectTopRisk : Window, INotifyPropertyChanged
     {
+        private string _um;
+        public string UM { get { return _um; } set { _um = value; OnPropertyChanged("UM"); } }
         public DataRow Drow { get; set; }
         public DataTable TopRiskTable { get; set; }
         public WindowSelectTopRisk()
         {
             InitializeComponent();
             ChangeLanguage();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         public void MostrarErrorDialog(string text)
@@ -42,6 +51,7 @@ namespace EnsureRisk.Windows
             MaterialDesignThemes.Wpf.HintAssist.SetHint(TextUnit, StringResources.UnitText);
             BtnCancel.Content = StringResources.CancelButton;
             Title = StringResources.SelectTopRiskTitle;
+            TextUnit.DataContext = this;
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -97,7 +107,7 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                if (TextTopRisk.Text != "")
+                if (TextTopRisk.Text != "" || UM != "")
                 {
                     Drow[DT_Diagram_Damages.DAMAGE] = TextTopRisk.Text;
                     Drow[DT_Diagram_Damages.UM] = TextUnit.Text;
@@ -105,19 +115,24 @@ namespace EnsureRisk.Windows
                 }
                 else
                 {
-                    MostrarErrorDialog("Please, select a Top Risk!!!");
+                    MostrarErrorDialog("Please, select a Top Risk and a Unit!!!");
                 }
             }
             catch (Exception ex)
             {
                 MostrarErrorDialog(ex.Message);
             }
-
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false; Close();
+            DialogResult = false; 
+            Close();
+        }
+
+        private void TextUnit_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UM = TextUnit.Text;
         }
     }
 }

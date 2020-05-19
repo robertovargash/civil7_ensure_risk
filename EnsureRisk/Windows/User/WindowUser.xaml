@@ -24,11 +24,21 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="10,10,10,10">
             <md:PackIcon Kind="User" VerticalAlignment="Center"/>
-            <TextBox  md:HintAssist.Hint="User" md:HintAssist.IsFloating="True" Name="TextUser"  TextWrapping="Wrap"   Cursor="IBeam" TabIndex="1"  Width="370" />
+            <TextBox  md:HintAssist.Hint="User" md:HintAssist.IsFloating="True" Name="TextUser"  TextWrapping="Wrap"   Cursor="IBeam" TabIndex="1"  Width="370">
+                <TextBox.Text>
+                    <Binding Path="Usuario" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="10,10,10,10">
             <md:PackIcon Kind="Key" VerticalAlignment="Center"/>
-            <PasswordBox  md:HintAssist.Hint="Password" md:HintAssist.IsFloating="True" Name="TextPasword" LostFocus="TextPasword_LostFocus" TabIndex="2" Width="370"/>
+            <PasswordBox  md:HintAssist.Hint="Password" md:HintAssist.IsFloating="True" Name="TextPasword" LostFocus="TextPasword_LostFocus" TabIndex="2" Width="370">
+               
+            </PasswordBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="10,10,10,10">
             <md:PackIcon Kind="KeyPlus" VerticalAlignment="Center"/>

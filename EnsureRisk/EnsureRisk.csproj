@@ -135,6 +135,7 @@
     </Compile>
     <Compile Include="Classess\MyRadioButton.cs" />
     <Compile Include="Classess\MyTreeItem.cs" />
+    <Compile Include="Classess\NotEmptyValidationRule.cs" />
     <Compile Include="Classess\PannelWBS.cs" />
     <Compile Include="Classess\PopCMWindow.xaml.cs">
       <DependentUpon>PopCMWindow.xaml</DependentUpon>

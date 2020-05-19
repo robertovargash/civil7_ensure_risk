@@ -13,7 +13,15 @@
         mc:Ignorable="d"
         Title="Save As..." Height="194.946" Width="425" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" >
     <Grid>
-        <TextBox md:HintAssist.Hint="Diagram Name" md:HintAssist.IsFloating="True" Name="TextName" HorizontalAlignment="Left" Height="62" Margin="33,24,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="361" FontWeight="Normal" TabIndex="1"/>
+        <TextBox md:HintAssist.Hint="Diagram Name" TextChanged="TextName_TextChanged" md:HintAssist.IsFloating="True" Name="TextName" HorizontalAlignment="Left" Height="62" Margin="33,24,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="361" FontWeight="Normal" TabIndex="1">
+            <TextBox.Text>
+                <Binding Path="DiagramName" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
         <Button x:Name="BtnOK" Content="OK" HorizontalAlignment="Right" Margin="0,0,146,17" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5"/>
         <Button x:Name="BtnCancel" Content="Cancel" Margin="0,0,25,17" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5"/>
         <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">

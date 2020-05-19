@@ -17,7 +17,15 @@
     <Grid>
         <Button Name="BtnOK" Content="OK" HorizontalAlignment="Right" Margin="0,0,152,24" VerticalAlignment="Bottom" Width="90" Height="27" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5"/>
         <Button Name="BtnCancel" Content="Cancel" Margin="0,0,50,24" HorizontalAlignment="Right" Width="90" Height="27" VerticalAlignment="Bottom" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5"/>
-        <TextBox Name="TextRole" md:HintAssist.Hint="Role Name" md:HintAssist.IsFloating="True" HorizontalAlignment="Left" Height="38" Margin="17,22,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="337" TabIndex="1"/>
+        <TextBox Name="TextRole" md:HintAssist.Hint="Role Name" md:HintAssist.IsFloating="True" TextChanged="TextRole_TextChanged" HorizontalAlignment="Left" Height="38" Margin="17,22,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="337" TabIndex="1">
+            <TextBox.Text>
+                <Binding Path="Role" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>            
+        </TextBox>
         <DataGrid Name="dgOperation" HorizontalAlignment="Left" Height="244" Margin="71,82,0,0" VerticalAlignment="Top" Width="284" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="colOperation" Header="Operation" Binding="{Binding Path= Operation}" Width="*"/>

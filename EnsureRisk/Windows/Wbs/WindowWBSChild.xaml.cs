@@ -2,6 +2,7 @@
 using System;
 using System.Data;
 using System.Windows;
+using System.ComponentModel;
 
 
 namespace EnsureRisk.Windows
@@ -9,16 +10,33 @@ namespace EnsureRisk.Windows
     /// <summary>
     /// Interaction logic for WindowWBSChild.xaml
     /// </summary>
-    public partial class WindowWBSChild : Window
+    public partial class WindowWBSChild : Window, INotifyPropertyChanged
     {
+        private string _user;
+        private string _level;
+        private string _wbs;
+        private DataTable dt;
+        public string Usuario { get { return _user; } set { _user = value; OnPropertyChanged("Usuario"); } }
+        public string Nivel { get { return _level; } set { _level = value; OnPropertyChanged("Nivel"); } }
+        public string WBSName { get { return _wbs; } set { _wbs = value; OnPropertyChanged("WBSName"); } }
+        public DataTable DtUsuarios { get { return dt; } set { dt = value; OnPropertyChanged("DtUsuarios"); } }
         public DataRow DrWBS { get; set; }
         public int Cantidad { get; set; }
         public WindowWBS MyFather { get; set; }
         public DataRow DrWBS_Structure { get; set; }
         public int IdProject { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+
         public WindowWBSChild()
         {
             InitializeComponent();
+            TextName.DataContext = this;
+            TextLevel.DataContext = this;
+            cbUser.DataContext = this;
         }
 
         public void MostrarErrorDialog(string text)
@@ -29,11 +47,11 @@ namespace EnsureRisk.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ServiceUserController.WebServiceUser wsu = new ServiceUserController.WebServiceUser();
-            DataTable OpCod = wsu.GetUserData().Tables[DT_User.User_TABLA].Copy();
-            cbUser.ItemsSource = OpCod.DefaultView;
-            cbUser.SelectedValuePath = DT_User.USERNAME;
-            cbUser.DisplayMemberPath = DT_User.USERNAME;
+            using (ServiceUserController.WebServiceUser wsu = new ServiceUserController.WebServiceUser())
+            {
+                DtUsuarios = wsu.GetUserData().Tables[DT_User.User_TABLA].Copy();
+            }
+            
         }
 
         private void BtnOK_Click(object sender, RoutedEventArgs e)
@@ -74,5 +92,14 @@ namespace EnsureRisk.Windows
             DialogResult = false;
         }
 
+        private void TextName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            WBSName = TextName.Text;
+        }
+
+        private void TextLevel_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            Nivel = TextLevel.Text;
+        }
     }
 }

@@ -13,14 +13,37 @@
         mc:Ignorable="d"
         Title="WBS" Height="212" Width="499" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
-        <TextBox TabIndex="1" md:HintAssist.Hint="Level" md:HintAssist.IsFloating="True" x:Name="TextLevel" MaxLength="50" HorizontalAlignment="Left" Margin="11,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="107"  TextOptions.TextHintingMode="Animated"/>
-        <TextBox md:HintAssist.Hint="WBS Name" md:HintAssist.IsFloating="True" x:Name="TextName" HorizontalAlignment="Left" Margin="156,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="319" TextOptions.TextHintingMode="Animated"/>
+        <TextBox TabIndex="1" md:HintAssist.Hint="Level" TextChanged="TextLevel_TextChanged" md:HintAssist.IsFloating="True" x:Name="TextLevel" MaxLength="50" HorizontalAlignment="Left" Margin="11,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="107"  TextOptions.TextHintingMode="Animated">
+            <TextBox.Text>
+                <Binding Path="Nivel" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <TextBox md:HintAssist.Hint="WBS Name" TextChanged="TextName_TextChanged" md:HintAssist.IsFloating="True" x:Name="TextName" HorizontalAlignment="Left" Margin="156,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="319" TextOptions.TextHintingMode="Animated">
+            <TextBox.Text>
+                <Binding Path="WBSName" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
         <Button x:Name="BtnOK" Content="OK" HorizontalAlignment="Right" Height="25" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" Margin="0,0,172,24" md:ShadowAssist.ShadowDepth="Depth5"/>
         <Button x:Name="BtnCancel" Content="Cancel" HorizontalAlignment="Right" Height="25"  VerticalAlignment="Bottom" Width="90" Click="BtnCancel_Click" IsCancel="True" Margin="0,0,24,24" md:ShadowAssist.ShadowDepth="Depth5"/>
         <StackPanel Orientation="Horizontal" >
             <md:PackIcon Kind="User" VerticalAlignment="Center"/>
-            <ComboBox md:HintAssist.Hint="User" Name="cbUser" IsEditable="True" 
-                  md:HintAssist.HintOpacity=".26" ToolTip="Select a User" Width="162"/>
+            <ComboBox md:HintAssist.Hint="User" Name="cbUser" IsEditable="True" md:HintAssist.HintOpacity=".26" ToolTip="Select a User" Width="162"  ItemsSource="{Binding DtUsuarios.DefaultView}" SelectedValuePath="userName" DisplayMemberPath="userName">
+                <ComboBox.Text>
+                    <Binding Path="Usuario" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </ComboBox.Text>
+            </ComboBox>
 
         </StackPanel>
         <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">

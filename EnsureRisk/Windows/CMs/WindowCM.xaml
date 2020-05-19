@@ -25,7 +25,15 @@
     <Grid>
         <Button Name="BtnOK" Content="OK" HorizontalAlignment="Left" Height="25" Margin="449,405,0,0" VerticalAlignment="Top" Width="90" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5"/>
         <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Left" Height="25" Margin="551,405,0,0" VerticalAlignment="Top" Width="90" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5"/>
-        <TextBox IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Short Name" md:HintAssist.IsFloating="True" Name="TextName" MaxLength="250" HorizontalAlignment="Left" Margin="34,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Width="288" MaxLines="1"/>
+        <TextBox IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Short Name" md:HintAssist.IsFloating="True" Name="TextName" MaxLength="250" HorizontalAlignment="Left" Margin="34,7,0,0" TextChanged="TextName_TextChanged" TextWrapping="Wrap"  VerticalAlignment="Top"  Width="288" MaxLines="1">
+            <TextBox.Text>
+                <Binding Path="ShortName" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
         <TextBox md:HintAssist.Hint="Father" md:HintAssist.IsFloating="True" x:Name="TextFather" HorizontalAlignment="Left" Margin="408,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="246" IsReadOnly="True" IsEnabled="False"/>
         <TextBox IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" Name="TextDetail" HorizontalAlignment="Left" Height="71" Margin="34,59,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="622" TextAlignment="Justify"/>
         <TabControl HorizontalAlignment="Left" Height="192" Margin="79,186,0,0" VerticalAlignment="Top" Width="575">
@@ -41,17 +49,17 @@
                 </Grid>
             </TabItem>
             <TabItem Header="WBS" Name="tabWBS" >
-                <Grid Background="#FFE5E5E5" Name="gridTabWBS" IsEnabled="{Binding Path = HasAccess}">
-                    <Button Name="BtnAddWBS"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAddWBS_Click" md:ShadowAssist.ShadowDepth="Depth5">
+                <Grid Background="#FFE5E5E5" Name="gridTabWBS" >
+                    <Button Name="BtnAddWBS" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAddWBS_Click" md:ShadowAssist.ShadowDepth="Depth5">
                         <md:PackIcon Kind="Plus"/>
                     </Button>
-                    <Button x:Name="BtnDelWBS" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" Click="BtnDelWBS_Click" md:ShadowAssist.ShadowDepth="Depth5">
+                    <Button x:Name="BtnDelWBS" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" Click="BtnDelWBS_Click" md:ShadowAssist.ShadowDepth="Depth5">
                         <md:PackIcon Kind="Minus"/>
                     </Button>
-                    <Button x:Name="BtnSetPrimary" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignFloatingActionAccentButton}" ToolTip="Set Primary WBS" Margin="15,89,0,0" VerticalAlignment="Top" Width="47" Click="BtnSetPrimary_Click" md:ShadowAssist.ShadowDepth="Depth5" Height="44">
+                    <Button x:Name="BtnSetPrimary" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignFloatingActionAccentButton}" ToolTip="Set Primary WBS" Margin="15,89,0,0" VerticalAlignment="Top" Width="47" Click="BtnSetPrimary_Click" md:ShadowAssist.ShadowDepth="Depth5" Height="44">
                         <md:PackIcon Kind="Key"/>
                     </Button>
-                    <DataGrid Name="dgWBS" HorizontalAlignment="Left" Height="156" Margin="71,5,0,0" VerticalAlignment="Top" Width="489" AutoGenerateColumns="False" SelectedCellsChanged="DgWBS_SelectedCellsChanged" LostFocus="DgWBS_LostFocus" SelectionChanged="DgWBS_SelectionChanged" CellEditEnding="DgWBS_CellEditEnding">
+                    <DataGrid Name="dgWBS" CanUserDeleteRows="False" HorizontalAlignment="Left" Height="156" Margin="71,5,0,0" VerticalAlignment="Top" Width="489" AutoGenerateColumns="False" SelectedCellsChanged="DgWBS_SelectedCellsChanged" LostFocus="DgWBS_LostFocus" SelectionChanged="DgWBS_SelectionChanged" CellEditEnding="DgWBS_CellEditEnding">
                         <DataGrid.Columns>
                             <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= Nivel}" Width="100" IsReadOnly="True"/>
                             <DataGridTextColumn x:Name="WBS" Header="WBS Name" Binding="{Binding Path= WBS_Name}" Width="*" IsReadOnly="True"/>

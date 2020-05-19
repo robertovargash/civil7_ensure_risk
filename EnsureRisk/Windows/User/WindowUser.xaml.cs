@@ -1,25 +1,24 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using DataMapping.Data;
 using System.Data;
 using EnsureBusinesss;
 using EnsureRisk.Resources;
+using System.ComponentModel;
 
 namespace EnsureRisk.Windows
 {
     /// <summary>
     /// Interaction logic for WindowUser.xaml
     /// </summary>
-    public partial class WindowUser : Window
+    public partial class WindowUser : Window, INotifyPropertyChanged
     {
+        private string _user;
+        private string _contra;
+        private string _confirm;
+        public string Usuario { get { return _user; } set { _user = value; OnPropertyChanged("Usuario"); } }
+        public string Contrasenna { get { return _contra; } set { _contra = value; OnPropertyChanged("Contrasenna"); } }
+        public string ConfContrasenna { get { return _confirm; } set { _confirm = value; OnPropertyChanged("ConfContrasenna"); } }
         public bool IS_DELETING { get; set; } = false;
         public DataRow User { get; set; }
         public string Operation { get; set; }
@@ -28,10 +27,18 @@ namespace EnsureRisk.Windows
         public DataView DVWBS { get; set; }
 
         private bool changepassword;
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
         public WindowUser()
         {
             InitializeComponent();
             ChangeLanguage();
+            TextConfirm.DataContext = this;
+            TextUser.DataContext = this;
+            TextPasword.DataContext = this;
         }
 
         public void MostrarErrorDialog(string text)

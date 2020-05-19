@@ -14,15 +14,38 @@
         mc:Ignorable="d"
         Title="WBS" Height="427" Width="613.662" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
-        <TextBox TabIndex="1" md:HintAssist.Hint="Level" md:HintAssist.IsFloating="True" x:Name="TextLevel" MaxLength="50" HorizontalAlignment="Left" Margin="11,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="107"  TextOptions.TextHintingMode="Animated"/>
+        <TextBox TabIndex="1" md:HintAssist.Hint="Level" md:HintAssist.IsFloating="True" TextChanged="TextLevel_TextChanged" x:Name="TextLevel" MaxLength="50" HorizontalAlignment="Left" Margin="11,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="107"  TextOptions.TextHintingMode="Animated">
+            <TextBox.Text>
+                <Binding Path="Nivel" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>            
+        </TextBox>
 
         <StackPanel Orientation="Horizontal" Margin="24,69,64,256" >
             <md:PackIcon Kind="User" VerticalAlignment="Center"/>
-            <ComboBox md:HintAssist.Hint="User" Name="cbUser" IsEditable="True" 
-                  md:HintAssist.HintOpacity=".26" ToolTip="Select a User" Width="162"/>
+            <ComboBox md:HintAssist.Hint="User" Name="cbUser" IsEditable="True" md:HintAssist.HintOpacity=".26" ToolTip="Select a User" Width="162" ItemsSource="{Binding DtUsuarios.DefaultView}" SelectedValuePath="userName" DisplayMemberPath="userName">
+                <ComboBox.Text>
+                    <Binding Path="Usuario" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </ComboBox.Text>
+            </ComboBox>
 
         </StackPanel>
-        <TextBox TextChanged="TextName_TextChanged" md:HintAssist.Hint="WBS Name" md:HintAssist.IsFloating="True" x:Name="TextName" HorizontalAlignment="Left" Margin="156,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="426" TextOptions.TextHintingMode="Animated"/>
+        <TextBox TextChanged="TextName_TextChanged" md:HintAssist.Hint="WBS Name" md:HintAssist.IsFloating="True" x:Name="TextName" HorizontalAlignment="Left" Margin="156,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="426" TextOptions.TextHintingMode="Animated">
+            <TextBox.Text>
+                <Binding Path="WBSName" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
         <CheckBox x:Name="chkIsManager" Content="Is Manager?" Visibility="Collapsed" Margin="480,69,26,281" IsChecked="True" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
         <Grid Background="#FFE5E5E5" Height="202" Margin="11,156,0,0" VerticalAlignment="Top">
             <Button Name="BtnAdd"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAdd_Click" md:ShadowAssist.ShadowDepth="Depth5">

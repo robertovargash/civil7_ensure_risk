@@ -26,6 +26,8 @@ namespace EnsureRisk.Windows
     {
         private bool hasAccess = false;
         private decimal probability;
+        private string _shortName;
+        public string ShortName { get { return _shortName; } set { _shortName = value; OnPropertyChanged("ShortName"); } }
 
         public decimal Probability { get {return probability; } set { probability = value;OnPropertyChanged("Probability"); } }
 
@@ -96,7 +98,7 @@ namespace EnsureRisk.Windows
             InitializeComponent();
             Pi = new DataCurrentRisk();
             ChangeLanguage();
-            TextName.DataContext = Pi;
+            RiskName.DataContext = Pi;
             TextDetail.DataContext = Pi;
             TextProbability.DataContext = Pi;
             gridTabRoles.DataContext = Pi;
@@ -149,7 +151,7 @@ namespace EnsureRisk.Windows
                         WBS_NAME = RiskRow[DT_Risk.WBS_NAME].ToString();
                     }
                     Enabled = (bool)RiskRow[DT_Risk.ENABLED];
-                    TextName.Text = RiskRow[DT_Risk.NAMESHORT].ToString();
+                    RiskName.Text = RiskRow[DT_Risk.NAMESHORT].ToString();
                     TextDetail.Text = RiskRow[DT_Risk.COMMENTS].ToString();
                     TextProbability.Text = RiskRow[DT_Risk.PROBABILITY].ToString();
                     if (RiskRow[DT_Risk.ID_WBS] != DBNull.Value)
@@ -160,7 +162,7 @@ namespace EnsureRisk.Windows
                     SetTableRisk_Damages(true, Enabled);
                     TextFather.Text = RowFather[DT_Risk.NAMESHORT].ToString();
                 }
-                TextName.Focus();
+                RiskName.Focus();
                 DvRoleRisk = Risk_RoleTable.DefaultView;
                 dgRoles.ItemsSource = DvRoleRisk;
                 DvRoleRisk.RowFilter = DT_Role_Risk.ID_RISK + " = " + RiskRow[DT_Risk.ID];
@@ -406,7 +408,7 @@ namespace EnsureRisk.Windows
 
         public void ChangeLanguage()
         {
-            MaterialDesignThemes.Wpf.HintAssist.SetHint(TextName, StringResources.ShortNameText);
+            MaterialDesignThemes.Wpf.HintAssist.SetHint(RiskName, StringResources.ShortNameText);
             MaterialDesignThemes.Wpf.HintAssist.SetHint(TextFather, StringResources.FatherText);
             MaterialDesignThemes.Wpf.HintAssist.SetHint(TextDetail, StringResources.RiskDetailText);
             LabelProbability.Content = StringResources.ProbabilityLabel;
@@ -444,7 +446,7 @@ namespace EnsureRisk.Windows
                     {
                         DataRow drRole = Risk_RoleTable.NewRow();
                         drRole[DT_Role_Risk.ID_RISK] = RiskRow[DT_Risk.ID];
-                        drRole[DT_Role_Risk.NAME_SHORT] = TextName.Text;
+                        drRole[DT_Role_Risk.NAME_SHORT] = RiskName.Text;
                         drRole[DT_Role_Risk.Role] = itemRole[DT_Role.ROLE_COLUM];
                         drRole[DT_Role_Risk.IDROL_COLUMN] = itemRole[DT_Role.IDROL_COLUMN];
                         Risk_RoleTable.Rows.Add(drRole);
@@ -570,7 +572,7 @@ namespace EnsureRisk.Windows
                     {
                         DataRow drRiskWBS = Risk_WBS_Table.NewRow();
                         drRiskWBS[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
-                        drRiskWBS[DT_RISK_WBS.RISK] = TextName.Text;
+                        drRiskWBS[DT_RISK_WBS.RISK] = RiskName.Text;
                         drRiskWBS[DT_RISK_WBS.WBS] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart();
                         drRiskWBS[DT_RISK_WBS.ID_WBS] = itemWBS[DT_WBS.ID_WBS];
                         drRiskWBS[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
@@ -585,7 +587,7 @@ namespace EnsureRisk.Windows
                             {
                                 DataRow drRiskWBSi = Risk_WBS_Table.NewRow();
                                 drRiskWBSi[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
-                                drRiskWBSi[DT_RISK_WBS.RISK] = TextName.Text;
+                                drRiskWBSi[DT_RISK_WBS.RISK] = RiskName.Text;
                                 drRiskWBSi[DT_RISK_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
                                 drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
                                 drRiskWBSi[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
@@ -869,12 +871,12 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                if (TextName.Text != "")
+                if (RiskName.Text != "")
                 {
-                    if (MyRisks.Select(DT_Risk.ID_DIAGRAM + " = " + RiskTreeID + " and " + DT_Risk.NAMESHORT + " = '" + TextName.Text + "' and " + DT_Risk.ID + " <> " + RiskRow[DT_Risk.ID]).Any())
+                    if (MyRisks.Select(DT_Risk.ID_DIAGRAM + " = " + RiskTreeID + " and " + DT_Risk.NAMESHORT + " = '" + RiskName.Text + "' and " + DT_Risk.ID + " <> " + RiskRow[DT_Risk.ID]).Any())
                     {
                         IS_USING_NAME = true;
-                        MostrarDialogYesNo("The name [" + TextName.Text + "] Already exists in this diagram. Do you want to use it again?");
+                        MostrarDialogYesNo("The name [" + RiskName.Text + "] Already exists in this diagram. Do you want to use it again?");
                     }
                     else
                     {
@@ -931,7 +933,7 @@ namespace EnsureRisk.Windows
 
         private void AceptRisk()
         {
-            RiskRow[DT_Risk.NAMESHORT] = TextName.Text;
+            RiskRow[DT_Risk.NAMESHORT] = RiskName.Text;
             RiskRow[DT_Risk.ISCOLLAPSED] = false;
             RiskRow[DT_Risk.ENABLED] = Enabled;
             RiskRow[DT_Risk.COMMENTS] = TextDetail.Text;
@@ -989,7 +991,7 @@ namespace EnsureRisk.Windows
             e.Handled = regex.IsMatch(e.Text);
         }
 
-        private void TextName_KeyUp(object sender, KeyEventArgs e)
+        private void RiskName_KeyUp(object sender, KeyEventArgs e)
         {
             Editando = true;
             resultStack.Visibility = Visibility.Visible;
@@ -1040,7 +1042,7 @@ namespace EnsureRisk.Windows
 
             block.MouseLeftButtonUp += (sender, e) =>
             {
-                TextName.Text = (sender as TextBlock).Text;
+                RiskName.Text = (sender as TextBlock).Text;
                 resultStack.Visibility = Visibility.Collapsed;
             };
 
@@ -1061,11 +1063,11 @@ namespace EnsureRisk.Windows
             resultStack.Children.Add(block);
         }
 
-        private void TextName_LostFocus(object sender, RoutedEventArgs e)
+        private void RiskName_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (TextName.Text == "")
+            if (RiskName.Text == "")
             {
-                TextName.ToolTip = "Empty";
+                RiskName.ToolTip = "Empty";
             }
             if (Editando)
             {
@@ -1154,6 +1156,16 @@ namespace EnsureRisk.Windows
                     Delete_WBS_Row(Selected_WBSRow);
                 }
             }
+        }
+
+        private void RiskName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Pi.ShortName = RiskName.Text;
+        }
+
+        private void TextName_LostFocus(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

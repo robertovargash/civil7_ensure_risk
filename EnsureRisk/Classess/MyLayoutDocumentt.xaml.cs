@@ -297,7 +297,7 @@ namespace EnsureRisk.Classess
                 CbFilterTopR.ItemsSource = thisTopRisk.CopyToDataTable().DefaultView;
                 CbFilterTopR.DisplayMemberPath = DT_Diagram_Damages.DAMAGE;
                 CbFilterTopR.SelectedIndex = 0;
-                IdDamageSelected = (Int32)CbFilterTopR.SelectedValue;
+                IdDamageSelected = (int)CbFilterTopR.SelectedValue;
             }
             catch (Exception ex)
             {

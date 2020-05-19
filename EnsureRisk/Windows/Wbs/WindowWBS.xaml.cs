@@ -4,14 +4,24 @@ using System.Data;
 using System.Windows;
 using EnsureBusinesss;
 using EnsureRisk.Resources;
+using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace EnsureRisk.Windows
 {
     /// <summary>
     /// Interaction logic for WindowWBS.xaml
     /// </summary>
-    public partial class WindowWBS : Window
+    public partial class WindowWBS : Window, INotifyPropertyChanged
     {
+        private string _user;
+        private string _level;
+        private string _wbs;
+        private DataTable dt;
+        public string Usuario { get { return _user; } set { _user = value; OnPropertyChanged("Usuario"); } }
+        public string Nivel { get { return _level; } set { _level = value; OnPropertyChanged("Nivel"); } }
+        public string WBSName { get { return _wbs; } set { _wbs = value; OnPropertyChanged("WBSName"); } }
+        public DataTable DtUsuarios { get { return dt; } set { dt = value; OnPropertyChanged("DtUsuarios"); } }
         public bool IS_DELETING { get; set; } = false;
         public string Operation { get; set; }
         public DataRow DrWBS { get; set; }
@@ -19,9 +29,18 @@ namespace EnsureRisk.Windows
         public DataTable WBS_Structure { get; set; }
         public DataTable WBS_Encoder { get; set; }
         public DataView DvWBS { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+
         public WindowWBS()
         {
             InitializeComponent();
+            TextLevel.DataContext = this;
+            TextName.DataContext = this;
+            cbUser.DataContext = this;
         }
 
         public void MostrarErrorDialog(string text)
@@ -34,25 +53,28 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                ServiceUserController.WebServiceUser wsu = new ServiceUserController.WebServiceUser();
-                DataTable OpCod = wsu.GetUserData().Tables[DT_User.User_TABLA].Copy();
-                cbUser.ItemsSource = OpCod.DefaultView;
-                cbUser.SelectedValuePath = DT_User.USERNAME;
-                cbUser.DisplayMemberPath = DT_User.USERNAME;
-                if (Operation == General.UPDATE)
+                using (ServiceUserController.WebServiceUser wsu = new ServiceUserController.WebServiceUser())
                 {
-                    TextName.Text = DrWBS[DT_WBS.WBS_NAME].ToString();
-                    TextLevel.Text = DrWBS[DT_WBS.NIVEL].ToString();
-                    //chkIsManager.IsChecked = (bool)DrWBS[DT_WBS.IS_MANAGER];
-                    cbUser.Text = DrWBS[DT_WBS.USERNAME].ToString();
+                    DtUsuarios = wsu.GetUserData().Tables[DT_User.User_TABLA].Copy();
+                    //cbUser.ItemsSource = DtUsuarios.DefaultView;
+                    //cbUser.SelectedValuePath = DT_User.USERNAME;
+                    //cbUser.DisplayMemberPath = DT_User.USERNAME;
+                    if (Operation == General.UPDATE)
+                    {
+                        TextName.Text = DrWBS[DT_WBS.WBS_NAME].ToString();
+                        TextLevel.Text = DrWBS[DT_WBS.NIVEL].ToString();
+                        //chkIsManager.IsChecked = (bool)DrWBS[DT_WBS.IS_MANAGER];
+                        cbUser.Text = DrWBS[DT_WBS.USERNAME].ToString();
+                    }
+                    if (TextName.Text == "")
+                    {
+                        BtnAdd.IsEnabled = false;
+                    }
+                    DvWBS = WBS_Structure.DefaultView;
+                    DvWBS.RowFilter = DT_WBS_STRUCTURE.ID_FATHER + " = " + DrWBS[DT_WBS.ID_WBS];
+                    dgWBS.ItemsSource = DvWBS;
                 }
-                if (TextName.Text == "")
-                {
-                    BtnAdd.IsEnabled = false;
-                }
-                DvWBS = WBS_Structure.DefaultView;
-                DvWBS.RowFilter = DT_WBS_STRUCTURE.ID_FATHER + " = " + DrWBS[DT_WBS.ID_WBS];
-                dgWBS.ItemsSource = DvWBS;
+                
             }
             catch (Exception ex)
             {
@@ -182,11 +204,17 @@ namespace EnsureRisk.Windows
                 {
                     BtnAdd.IsEnabled = true;
                 }
+                WBSName = TextName.Text;
             }
             catch (Exception ex)
             {
                 MostrarErrorDialog(ex.Message);
             }
+        }
+
+        private void TextLevel_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            Nivel = TextLevel.Text;
         }
     }
 }

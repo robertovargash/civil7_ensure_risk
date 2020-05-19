@@ -26,7 +26,8 @@ namespace EnsureRisk.Windows
     {
         private bool hasAccess = false;
         private decimal probability;
-
+        private string _shortName;
+        public string ShortName { get { return _shortName; } set { _shortName = value; OnPropertyChanged("ShortName"); } }
         public decimal Probability { get { return probability; } set { probability = value; OnPropertyChanged("Probability"); } }
 
         public bool HasAccess
@@ -777,6 +778,11 @@ namespace EnsureRisk.Windows
         private void DgWBS_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             CalculateProbability();
+        }
+
+        private void TextName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Pi.ShortName = TextName.Text;
         }
     }
 }

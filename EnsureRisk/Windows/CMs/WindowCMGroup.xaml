@@ -25,7 +25,16 @@
     <Grid>
         <Button Name="BtnOK" Content="OK" HorizontalAlignment="Left" Height="24" Margin="453,396,0,0" VerticalAlignment="Top" Width="90" Click="BtnOK_Click" md:ShadowAssist.ShadowDepth="Depth5"/>
         <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Left" Height="24" Margin="555,396,0,0" VerticalAlignment="Top" Width="90" Click="BtnCancel_Click" md:ShadowAssist.ShadowDepth="Depth5"/>
-        <TextBox md:HintAssist.Hint="Short Name" md:HintAssist.IsFloating="True" Name="TextName" MaxLength="250" HorizontalAlignment="Left" Margin="34,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Width="288"/>
+        <TextBox md:HintAssist.Hint="Short Name" md:HintAssist.IsFloating="True" Name="TextName" TextChanged="TextName_TextChanged" MaxLength="250" HorizontalAlignment="Left" Margin="34,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Width="288">
+            <TextBox.Text>
+                <Binding Path="NameShort" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+
+        </TextBox>
         <TextBox md:HintAssist.Hint="Father" md:HintAssist.IsFloating="True" x:Name="TextFather" HorizontalAlignment="Left" Margin="408,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="246" IsReadOnly="True" IsEnabled="False"/>
         <TextBox md:HintAssist.Hint="Detail" md:HintAssist.IsFloating="True" Name="TextDetail" HorizontalAlignment="Left" Height="71" Margin="34,59,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="622" TextAlignment="Justify"/>
         <TextBox x:Name="TextProbability" HorizontalAlignment="Left" Height="27" Margin="577,145,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="73"  MaxLines="2" TextAlignment="Right"/>

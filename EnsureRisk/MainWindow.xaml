@@ -28,11 +28,10 @@
                     <MenuItem.Header>
                         <md:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}" PlacementMode="RightAndAlignMiddles" HorizontalAlignment="Right" VerticalAlignment="Bottom" UnfurlOrientation="Horizontal" Width="32" Height="32">
                             <StackPanel Orientation="Horizontal">
-                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="AddButton" Click="MenuAddRisk_Click" Content="{md:PackIcon Kind=Plus}" Width="32" Height="32"/>
-                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EditButton" Click="MenuEditRisk_Click" Content="{md:PackIcon Kind=Pencil}" Width="32" Height="32"/>
-                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="DeleteButton" Click="MenuDeleteRisk_Click" Content="{md:PackIcon Kind=Delete}" Width="32" Height="32"/>
-                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="MoveButton" Click="MenuMoveRisk_Click" Content="{md:PackIcon Kind=ArrowAll}" Width="32" Height="32"/>
-
+                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="AddButton" ToolTip="Add Risk" Click="MenuAddRisk_Click" Content="{md:PackIcon Kind=Plus}" Width="32" Height="32"/>
+                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EditButton" ToolTip="Edit Risk" Click="MenuEditRisk_Click" Content="{md:PackIcon Kind=Pencil}" Width="32" Height="32"/>
+                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="DeleteButton" ToolTip="Delete Risk" Click="MenuDeleteRisk_Click" Content="{md:PackIcon Kind=Delete}" Width="32" Height="32"/>
+                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="MoveButton" ToolTip="Move Risk" Click="MenuMoveRisk_Click" Content="{md:PackIcon Kind=ArrowAll}" Width="32" Height="32"/>
                             </StackPanel>
                         </md:PopupBox>
                     </MenuItem.Header>
@@ -245,28 +244,37 @@
             <xcad:LayoutRoot x:Name="_layoutRoot">
                 <xcad:LayoutPanel Orientation="Horizontal">
                     <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200">
-                        <xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="Mini Map" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300">
-                            <Grid Name="gridMiniMap" Background="#FF918080">
-                                <classess:MiniMapControl x:Name="MiniMap" />
-                            </Grid>
-                        </xcad:LayoutAnchorable>
                         <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" IsVisibleChanged="AnchorWBSList_IsVisibleChanged" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="60"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <Grid Grid.Row="0">
-                                    <Button x:Name="BtnAddWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Add}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" ToolTip="Add WBS" Click="BtnAddWBS_Click"/>
+                                    <md:PopupBox ToolTip="More" Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}" PlacementMode="RightAndAlignMiddles" HorizontalAlignment="Left" VerticalAlignment="Top" UnfurlOrientation="Horizontal" >
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnAddWBS" Click="BtnAddWBS_Click" Content="{md:PackIcon Kind=Add}" Width="32" Height="32" ToolTip="Add WBS"/>
+                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnCollapseWBS" Click="BtnCollapse_Click" Content="{md:PackIcon Kind=ContentCopy}" Width="32" Height="32" ToolTip="Collapse All"/>
+                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnDeselect" Click="BtnDeselect_Click" Content="{md:PackIcon Kind=ArrowBack}" Width="32" Height="32" ToolTip="DeSelect"/>
+                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnSettings" Click="BtnDeselect_Click" Content="{md:PackIcon Kind=Settings}" Width="32" Height="32" ToolTip="WBS Settings"/>
+                                        </StackPanel>
+                                    </md:PopupBox>
+                                    <!--<Button x:Name="BtnAddWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Add}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" ToolTip="Add WBS" Click="BtnAddWBS_Click"/>
                                     <Button x:Name="BtnCollapseWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=ContentCopy}" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" ToolTip="Collapse All" Click="BtnCollapse_Click"/>
                                     <Button x:Name="BtnDeselect" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=ArrowBack}" HorizontalAlignment="Left"  Margin="100,0,0,0" VerticalAlignment="Top" ToolTip="DeSelect" Click="BtnDeselect_Click"/>
-                                    <Button x:Name="BtnSettings" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Settings}" HorizontalAlignment="Left"  Margin="145,0,0,0" VerticalAlignment="Top" ToolTip="WBS Settings" Click="BtnDeselect_Click"/>
+                                    <Button x:Name="BtnSettings" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Settings}" HorizontalAlignment="Left"  Margin="145,0,0,0" VerticalAlignment="Top" ToolTip="WBS Settings" Click="BtnDeselect_Click"/>-->
                                 </Grid>
                                 <Grid Grid.Row="1">
                                     <TreeView Name="TreeViewWBS"/>
                                 </Grid>
                             </Grid>
                         </xcad:LayoutAnchorable>
+                        <xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="Mini Map" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300">
+                            <Grid Name="gridMiniMap" Background="#FF918080">
+                                <classess:MiniMapControl x:Name="MiniMap" />
+                            </Grid>
+                        </xcad:LayoutAnchorable>
+
                         <xcad:LayoutAnchorable ContentId="properties" x:Name="LayoutProperties"  Title="Properties"  CanHide="true" CanClose="False" AutoHideWidth="240">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" >
                                 <Grid>
@@ -290,9 +298,6 @@
                                                 <TextBlock x:Name="TextLineType" Text="{Binding Path = TSelected}" TextAlignment="Justify" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                                             </StackPanel>
                                         </StackPanel>
-                                    </GroupBox>
-                                    <GroupBox x:Name="cbFilterTR" Header="Filter by Top Risk"  VerticalAlignment="Bottom" Grid.Row="1" Visibility="Collapsed">
-
                                     </GroupBox>
                                     <GroupBox x:Name="cbDiagramValues" Header="Diagram Values" Height="183"  VerticalAlignment="Bottom" Grid.Row="3">
                                         <Grid>
@@ -324,7 +329,7 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <Button Name="RefreshButton" ToolTip="Refresh Data!" Grid.Column="0" Content="{md:PackIcon Kind=Restart}" Click="RefreshButton_Click" Style="{DynamicResource MaterialDesignToolForegroundButton}"/>
-                                        <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Project Name" Name="cbProjects" DropDownClosed="CbProjects_DropDownClosed" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2"/>                                       
+                                        <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Project Name" Name="cbProjects" DropDownClosed="CbProjects_DropDownClosed" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2"/>
                                     </Grid>
                                     <Grid Grid.Row="1">
                                         <DataGrid x:Name="dgTreeDiagrams" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" SelectionChanged="DgTreeDiagrams_SelectionChanged" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Margin="55,0,0,0" AutoGenerateColumns="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False" IsReadOnly="True" Grid.ColumnSpan="2" MouseDoubleClick="DgTreeDiagrams_MouseDoubleClick" HeadersVisibility="Column">
@@ -348,6 +353,7 @@
                                 <Grid x:Name="GridRisksCross">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="50"/>
+                                        <RowDefinition Height="50"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <Grid Grid.Row="0">
@@ -364,7 +370,15 @@
                                             <md:PackIcon Kind="Close" Opacity=".56" />
                                         </Button>
                                     </Grid>
-                                    <DataGrid Grid.Row="1" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
+                                    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                        <md:HintAssist.Hint>
+                                            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+                                                <md:PackIcon Kind="FileTree" />
+                                                <TextBlock Text="WBS Filter"/>
+                                            </StackPanel>
+                                        </md:HintAssist.Hint>
+                                    </ComboBox>
+                                    <DataGrid Grid.Row="2" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
                                               VerticalAlignment="Stretch" AutoGenerateColumns="False" 
                                               CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False"  Grid.ColumnSpan="2" MouseLeave="DgRisksCross_MouseLeave" 
                                               SelectedCellsChanged="DgRisksCross_SelectedCellsChanged" LostFocus="DgRisksCross_LostFocus"  CanUserDeleteRows="False" SelectionChanged="DgRisksCross_SelectionChanged" CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True">
@@ -375,6 +389,7 @@
                             <xcad:LayoutAnchorable x:Name="AnchorCMList"  Title="CounterMeasure"  CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Countermeasure" AutoHideWidth="300" FloatingWidth="300">
                                 <Grid x:Name="GridCrossCM">
                                     <Grid.RowDefinitions>
+                                        <RowDefinition Height="50"/>
                                         <RowDefinition Height="50"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
@@ -392,7 +407,15 @@
                                             <md:PackIcon Kind="Close" Opacity=".56"  />
                                         </Button>
                                     </Grid>
-                                    <DataGrid Grid.Row="1" x:Name="dgCrossCM" HorizontalAlignment="Stretch" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
+                                    <ComboBox x:Name="CbFilterWBSCM" Margin="5" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                        <md:HintAssist.Hint>
+                                            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+                                                <md:PackIcon Kind="FileTree" />
+                                                <TextBlock Text="WBS Filter"/>
+                                            </StackPanel>
+                                        </md:HintAssist.Hint>
+                                    </ComboBox>
+                                    <DataGrid Grid.Row="2" x:Name="dgCrossCM" HorizontalAlignment="Stretch" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
                                               VerticalAlignment="Stretch" AutoGenerateColumns="False" 
                                               CanUserSortColumns="True" CanUserReorderColumns="True"  IsReadOnly="False"  Grid.ColumnSpan="2" MouseLeave="DgCrossCM_MouseLeave" SelectedCellsChanged="DgCrossCM_SelectedCellsChanged" LostFocus="DgCrossCM_LostFocus" CanUserDeleteRows="False" SelectionChanged="DgCrossCM_SelectionChanged" CellEditEnding="DgCrossCM_CellEditEnding"/>
                                 </Grid>

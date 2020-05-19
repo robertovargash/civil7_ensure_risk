@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -14,16 +15,25 @@ namespace EnsureRisk.Windows
     /// <summary>
     /// Interaction logic for WindowProject.xaml
     /// </summary>
-    public partial class WindowProject : Window
+    public partial class WindowProject : Window, INotifyPropertyChanged
     {
+        private string _project;
+        public string Project { get { return _project; } set { _project = value; OnPropertyChanged("Project"); } }
         public DataRow DrProject { get; set; }
         public string Operation { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
 
         public WindowProject()
         {
             InitializeComponent();
+            TxtProject.DataContext = this;
         }
 
+        
         public void MostrarErrorDialog(string text)
         {
             ErrorMessageDialog.IsOpen = true;
@@ -32,7 +42,7 @@ namespace EnsureRisk.Windows
 
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
-            DrProject[DT_Project.PROJECT_NAME] = txtKeyword.Text;
+            DrProject[DT_Project.PROJECT_NAME] = TxtProject.Text;
             DialogResult = true;
         }
 
@@ -48,13 +58,18 @@ namespace EnsureRisk.Windows
             {
                 try
                 {
-                    txtKeyword.Text = DrProject[DT_Project.PROJECT_NAME].ToString();
+                    TxtProject.Text = DrProject[DT_Project.PROJECT_NAME].ToString();
                 }
                 catch (Exception ex)
                 {
                     MostrarErrorDialog(ex.Message);
                 }
             }
+        }
+
+        private void TxtKeyword_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            Project = TxtProject.Text;
         }
     }
 }

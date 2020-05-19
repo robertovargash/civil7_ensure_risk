@@ -5,24 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.ComponentModel;
 
 namespace EnsureRisk.Windows
 {
     /// <summary>
     /// Interaction logic for WindowSaveAs.xaml
     /// </summary>
-    public partial class WindowSaveAs : Window
+    public partial class WindowSaveAs : Window, INotifyPropertyChanged
     {
-        public string DiagramName { get; set; }
+        private string _name;
+        public string DiagramName { get { return _name; } set { _name = value; OnPropertyChanged("DName"); } }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
         public WindowSaveAs()
         {
             InitializeComponent();
+            TextName.DataContext = this;
         }
 
         public void MostrarErrorDialog(string text)
@@ -52,6 +54,11 @@ namespace EnsureRisk.Windows
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+        }
+
+        private void TextName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            DiagramName = TextName.Text;
         }
     }
 }

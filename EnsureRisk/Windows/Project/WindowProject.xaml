@@ -13,7 +13,15 @@
         mc:Ignorable="d"
         Title="Project" Height="205" Width="529" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
-        <TextBox  md:HintAssist.Hint="Project" md:HintAssist.IsFloating="True" Name="txtKeyword" MaxLength="50" HorizontalAlignment="Left" Margin="34,40,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="463" MaxLines="1" TextOptions.TextHintingMode="Animated" Height="48"/>
+        <TextBox  md:HintAssist.Hint="Project" md:HintAssist.IsFloating="True" Name="TxtProject" TextChanged="TxtKeyword_TextChanged" MaxLength="50" HorizontalAlignment="Left" Margin="34,40,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="463" MaxLines="1" TextOptions.TextHintingMode="Animated" Height="48">
+            <TextBox.Text>
+                <Binding Path="Project" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
 
         <Button Name="BtnOK" Content="OK" HorizontalAlignment="Right" Height="25" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" Margin="0,0,164,10" md:ShadowAssist.ShadowDepth="Depth5"/>
         <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Right" Height="25"  VerticalAlignment="Bottom" Width="90" Click="BtnCancel_Click" IsCancel="True" Margin="0,0,22,10" md:ShadowAssist.ShadowDepth="Depth5"/>

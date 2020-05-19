@@ -5,12 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.ComponentModel;
 using System.Data;
 using DataMapping.Data;
 using EnsureBusinesss;
@@ -21,8 +16,10 @@ namespace EnsureRisk.Windows
     /// <summary>
     /// Interaction logic for WindowTreeRisk.xaml
     /// </summary>
-    public partial class WindowTreeRisk : Window
+    public partial class WindowTreeRisk : Window, INotifyPropertyChanged
     {
+        private string _name;
+        public string DName { get { return _name; } set { _name = value; OnPropertyChanged("DName"); } }
         public bool IS_DELETING { get; set; } = false;
         public string Operation { get; set; }
         public int IDProject { get; set; }
@@ -32,11 +29,17 @@ namespace EnsureRisk.Windows
         public DataRow DRow { get; set; }
         public DataView Dv { get; set; }
         public string SuggestionName { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
 
         public WindowTreeRisk()
         {
             InitializeComponent();
             ChangeLanguage();
+            TextName.DataContext = this;
         }
 
         public void MostrarDialogYesNo(string textAlert)
@@ -61,19 +64,9 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                //if (Operation == General.INSERT)
-                //{
-                //    Dv = TopRiskTable.DefaultView;
-                //    dgTopRisk.ItemsSource = Dv;
-                //}
                 if (Operation == General.UPDATE)
                 {
                     TextName.Text = DRow[DT_Diagram.DIAGRAM_NAME].ToString();
-                    //ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk();
-                    //TopRiskTable = ws.GetRiskTree(new object[] { (Int32)DRow[DT_RiskTree.ID_RISK_TREE] }).Tables[DT_RiskTree_Damages.TABLENAME].Copy();
-
-                    //BtnAdd.IsEnabled = false;
-                    //BtnDel.IsEnabled = false;
                 }
                 else
                 {
@@ -88,7 +81,6 @@ namespace EnsureRisk.Windows
             {
                 MostrarErrorDialog(ex.Message);
             }
-
         }
 
 
@@ -207,5 +199,9 @@ namespace EnsureRisk.Windows
             }
         }
 
+        private void TextName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            DName = TextName.Text;
+        }
     }
 }

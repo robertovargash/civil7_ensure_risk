@@ -15,23 +15,34 @@ using System.Data;
 using DataMapping.Data;
 using EnsureBusinesss;
 using EnsureRisk.Resources;
+using System.ComponentModel;
 
 namespace EnsureRisk.Windows
 {
     /// <summary>
     /// Interaction logic for WindowRole.xaml
     /// </summary>
-    public partial class WindowRole : Window
+    public partial class WindowRole : Window, INotifyPropertyChanged
     {
+        private string _role;
+        public string Role { get { return _role; } set { _role = value; OnPropertyChanged("Role"); } }
+    
         public bool IS_DELETING { get; set; } = false;
         public string Operation { get; set; }
         public DataTable OperationTable { get; set; }
         public DataView dv { get; set; }
         public DataRow dRow { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+
         public WindowRole()
         {
             InitializeComponent();
             ChangeLanguage();
+            TextRole.DataContext = this;
         }
 
         public void MostrarErrorDialog(string text)
@@ -178,6 +189,11 @@ namespace EnsureRisk.Windows
                 }
             }
             TextRole.Focus();
+        }
+
+        private void TextRole_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Role = TextRole.Text;
         }
     }
 }
