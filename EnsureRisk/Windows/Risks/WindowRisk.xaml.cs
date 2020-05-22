@@ -974,7 +974,6 @@ namespace EnsureRisk.Windows
             else
             {
                 MostrarErrorDialog(StringResources.NUMERIC_FIELD);
-                MostrarErrorDialog(StringResources.NUMERIC_FIELD);
             }
             IS_USING_NAME = false;
         }

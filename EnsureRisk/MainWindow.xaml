@@ -370,7 +370,7 @@
                                             <md:PackIcon Kind="Close" Opacity=".56" />
                                         </Button>
                                     </Grid>
-                                    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" Grid.Row="1" SelectedValue="{Binding Path=IdWBSFilter}" md:ComboBoxAssist.ClassicMode="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed"  VerticalAlignment="Top" HorizontalAlignment="Left" SelectionChanged="CbFilterWBSRisk_SelectionChanged" >
                                         <md:HintAssist.Hint>
                                             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
                                                 <md:PackIcon Kind="FileTree" />

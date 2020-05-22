@@ -149,6 +149,7 @@ namespace EnsureRisk.Classess
                 {
                     ((MainWindow)MyWindow).OpenedDocuments.Remove(this);
                     ((MainWindow)MyWindow).MiniMap.MapSource = new ScrollViewer();
+                    ((MainWindow)MyWindow).P.TheCurrentLayout = null;
                 }
                 ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear();
                 ((MainWindow)MyWindow).DV_Cross_CM.Table.Clear();
