@@ -22,7 +22,7 @@ using System.Windows.Threading;
 using System.ComponentModel;
 using EnsureRisk.Classess;
 using System.Collections.ObjectModel;
-//using EnsureRisk.DataBinding;
+using EnsureRisk.DataBinding;
 using System.Threading.Tasks;
 using EnsureRisk.Export.Trader;
 using EnsureRisk.Export;
@@ -265,7 +265,7 @@ namespace EnsureRisk
         #endregion
 
         #region DecimalUIConverterParams
-        //static DecimalUIConverterParams decimalConfig = new DecimalUIConverterParams(Properties.Settings.Default.DecimalsStringFormat, Properties.Settings.Default.DecimalFractionalDigits);
+        static DecimalUIConverterParams decimalConfig = new DecimalUIConverterParams(Properties.Settings.Default.DecimalsStringFormat, Properties.Settings.Default.DecimalFractionalDigits);
         #endregion
         #region Another Properties & Atributes
         //public int IdWBS { get; set; }
@@ -4083,12 +4083,12 @@ namespace EnsureRisk
             {
                 if (dtCM_WBS.Select(DT_CM_WBS.ID_WBS + " = " + P.IdWBSFilter + " and " + DT_CM_WBS.ID_CM + " = " + drRiskDamage[DT_CounterM_Damage.ID_COUNTERM]).Any())
                 {
-                    drRiskDamage[DT_CounterM_Damage.RISK_REDUCTION] = dtCM_WBS.Select(DT_CM_WBS.ID_WBS + " = " + P.IdWBSFilter + " and " + DT_CM_WBS.ID_CM + " = " + drRiskDamage[DT_CounterM_Damage.ID_COUNTERM]).First()[DT_RISK_WBS.PROBABILITY];
+                    drRiskDamage[DT_CounterM_Damage.RISK_REDUCTION] = dtCM_WBS.Select(DT_CM_WBS.ID_WBS + " = " + P.IdWBSFilter + " and " + DT_CM_WBS.ID_CM + " = " + drRiskDamage[DT_CounterM_Damage.ID_COUNTERM]).First()[DT_CM_WBS.PROBABILITY];
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                throw new Exception("Error ajustando ProbCM");
             }
         }
 
@@ -4105,9 +4105,9 @@ namespace EnsureRisk
                     drRiskDamage[DT_Risk_Damages.VALUE] = DBNull.Value;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                throw new Exception("Error ajustandoDamagesRisk");
             }
         }
 
@@ -4120,9 +4120,9 @@ namespace EnsureRisk
                     drCMDamage[DT_CounterM_Damage.VALUE] = dtCM_WBS_Damage.Select(DT_WBS_CM_Damage.ID_WBS + " = " + P.IdWBSFilter + " and " + DT_WBS_CM_Damage.ID_CM + " = " + drCMDamage[DT_CounterM_Damage.ID_COUNTERM] + " and " + DT_WBS_CM_Damage.ID_DAMAGE + " = " + drCMDamage[DT_CounterM_Damage.ID_DAMAGE]).First()[DT_WBS_CM_Damage.VALUE];
                 }
             }
-            catch (Exception ex)
+            catch 
             {
-                throw ex;
+                throw new Exception("Error ajustando DmaagesCM");
             }
         }
 
@@ -4266,9 +4266,9 @@ namespace EnsureRisk
                             case "probability":
                                 Binding probabilityBinding = new Binding(Dt_Cross_Risk.Columns[i].ToString())
                                 {
-                                    //Converter = new DecimalUIConverter(),
-                                    //ConverterCulture = CultureInfo.CurrentUICulture,
-                                    //ConverterParameter = decimalConfig
+                                    Converter = new DecimalUIConverter(),
+                                    ConverterCulture = CultureInfo.CurrentUICulture,
+                                    ConverterParameter = decimalConfig
                                 };
                                 column.Header = "Probability (%)";
                                 column.Binding = probabilityBinding;
@@ -4349,9 +4349,9 @@ namespace EnsureRisk
                                 Binding columnBinding = new Binding(Dt_Cross_Risk.Columns[i].ToString());
                                 if (Dt_Cross_Risk.Columns[i].DataType.Equals(typeof(decimal)))
                                 {
-                                    //columnBinding.Converter = new DecimalUIConverter();
-                                    //columnBinding.ConverterCulture = CultureInfo.CurrentUICulture;
-                                    //columnBinding.ConverterParameter = decimalConfig;
+                                    columnBinding.Converter = new DecimalUIConverter();
+                                    columnBinding.ConverterCulture = CultureInfo.CurrentUICulture;
+                                    columnBinding.ConverterParameter = decimalConfig;
                                 }
                                 column.Header = Dt_Cross_Risk.Columns[i].ToString();
                                 column.Binding = columnBinding;
@@ -4369,7 +4369,7 @@ namespace EnsureRisk
             }
             catch (Exception ex)
             {
-                MostrarErrorDialog(ex.Message);
+                MostrarErrorDialog(ex.Message + "-CruzandoTablaRisk");
             }
         }
         
@@ -4439,9 +4439,9 @@ namespace EnsureRisk
                         case DT_CounterM_Damage.RISK_REDUCTION:
                             Binding riskReductionBinding = new Binding(Dt_Cross_CM.Columns[i].ToString())
                             {
-                                //Converter = new DecimalUIConverter(),
-                                //ConverterCulture = CultureInfo.CurrentUICulture,
-                                //ConverterParameter = decimalConfig
+                                Converter = new DecimalUIConverter(),
+                                ConverterCulture = CultureInfo.CurrentUICulture,
+                                ConverterParameter = decimalConfig
                             };
                             column.MinWidth = 100;
                             column.Header = "Risk Reduction(%)";
@@ -4515,9 +4515,9 @@ namespace EnsureRisk
                             Binding columnBinding = new Binding(Dt_Cross_CM.Columns[i].ToString());
                             if (Dt_Cross_CM.Columns[i].DataType.Equals(typeof(decimal)))
                             {
-                                //columnBinding.Converter = new DecimalUIConverter();
-                                //columnBinding.ConverterCulture = CultureInfo.CurrentUICulture;
-                                //columnBinding.ConverterParameter = decimalConfig;
+                                columnBinding.Converter = new DecimalUIConverter();
+                                columnBinding.ConverterCulture = CultureInfo.CurrentUICulture;
+                                columnBinding.ConverterParameter = decimalConfig;
                             }
                             column.Header = Dt_Cross_CM.Columns[i].ToString();
                             column.Binding = columnBinding;
@@ -4571,7 +4571,6 @@ namespace EnsureRisk
                             dt.Columns.Add(new DataColumn("Father", typeof(string)));
                             dt.Columns.Add(new DataColumn("Activated", typeof(bool)));
                             dt.Columns.Add(new DataColumn("Probability", typeof(decimal)));
-
                             dt.TableName = myDs.Tables[DT_Groupe.TABLE_NAME].Rows.Find(item.IdGroup)[DT_Groupe.GROUPE_NAME].ToString();
 
                             foreach (var ite in P.TheCurrentLayout.LinesList.Where(x => x.Group.IdGroup == item.IdGroup))
@@ -4641,9 +4640,9 @@ namespace EnsureRisk
                                 Binding columnBinding = new Binding(dt.Columns[i].ToString());
                                 if (dt.Columns[i].DataType.Equals(typeof(decimal)))
                                 {
-                                    //columnBinding.Converter = new DecimalUIConverter();
-                                    //columnBinding.ConverterCulture = CultureInfo.CurrentUICulture;
-                                    //columnBinding.ConverterParameter = decimalConfig;
+                                    columnBinding.Converter = new DecimalUIConverter();
+                                    columnBinding.ConverterCulture = CultureInfo.CurrentUICulture;
+                                    columnBinding.ConverterParameter = decimalConfig;
                                 }
                                 column.Binding = columnBinding;
                                 column.IsReadOnly = true;
@@ -5917,7 +5916,7 @@ namespace EnsureRisk
             }
             catch (Exception ex)
             {
-                MostrarErrorDialog(ex.Message);
+                MostrarErrorDialog(ex.Message + "Cambiando Celda");
             }
         }
 
@@ -5948,6 +5947,10 @@ namespace EnsureRisk
                     {
                         if (item["nameShort"].ToString() != string.Empty)
                         {
+                            if (item["RiskReduction"] == DBNull.Value || item["RiskReduction"].ToString() == "" || item["RiskReduction"].ToString() == "-")
+                            {
+                                item["RiskReduction"] = 0;
+                            }
                             if ((decimal)item["RiskReduction"] <= 100 && (decimal)item["RiskReduction"] >= 0)
                             {
                                 decimal tempRiskRed = (decimal)P.TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(item[DT_CounterM_Damage.ID_COUNTERM])[DT_CounterM.PROBABILITY];
@@ -5966,7 +5969,7 @@ namespace EnsureRisk
                                     {
                                         if (WBS_isSheet((int)rowWBS_CM[DT_CM_WBS.ID_WBS]))
                                         {
-                                            if (item[DT_CM_WBS.PROBABILITY] == DBNull.Value)
+                                            if (rowWBS_CM[DT_CM_WBS.PROBABILITY] == DBNull.Value)
                                             {
                                                 Probabilities.Add(100);
                                             }
@@ -5988,6 +5991,10 @@ namespace EnsureRisk
                                 {
                                     if (P.TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + item[DT_CounterM_Damage.ID_COUNTERM] + " and " + DT_CounterM_Damage.DAMAGE + " = '" + itemi.ToString() + "'").Any())
                                     {
+                                        if (item[itemi] == DBNull.Value || item[itemi].ToString() == "" || item[itemi].ToString() == "-")
+                                        {
+                                            item[itemi] = 0;
+                                        }
                                         if ((decimal)item[itemi] >= 0)
                                         {
                                             decimal tempValue = (decimal)item[itemi];
@@ -6052,6 +6059,10 @@ namespace EnsureRisk
                     {
                         if (item["nameShort"].ToString() != string.Empty)
                         {
+                            if (item["probability"] == DBNull.Value || item["probability"].ToString() == "" || item["probability"].ToString() == "-")
+                            {
+                                item["probability"] = 0;
+                            }
                             if ((decimal)item["probability"] <= 100 && (decimal)item["probability"] >= 0)
                             {
                                 if (P.TheCurrentLayout != null)
@@ -6096,6 +6107,10 @@ namespace EnsureRisk
                                     {
                                         if (P.TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + item[DT_Risk_Damages.ID_RISK] + " and " + DT_Risk_Damages.DAMAGE + " = '" + itemi.ToString() + "'").Any())
                                         {
+                                            if (item[itemi] == DBNull.Value || item[itemi].ToString() == "" || item[itemi].ToString() == "-")
+                                            {
+                                                item[itemi] = 0;
+                                            }
                                             if ((decimal)item[itemi] >= 0)
                                             {
                                                 decimal tempValue = (decimal)item[itemi];
@@ -6106,7 +6121,7 @@ namespace EnsureRisk
                                                     " and " + DT_WBS_RISK_DAMAGE.DAMAGE + " = '" + itemi.ToString() + "' and " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + P.IdWBSFilter).First()[DT_WBS_RISK_DAMAGE.VALUE] = (decimal)item[itemi];
                                                 }
                                                 tempValue = 0;
-                                                foreach (DataRow rowRISK_WBS_DAMAGE in P.TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + item[DT_Risk_Damages.ID_RISK] + 
+                                                foreach (DataRow rowRISK_WBS_DAMAGE in P.TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + item[DT_Risk_Damages.ID_RISK] +
                                                     " and " + DT_WBS_RISK_DAMAGE.DAMAGE + " = '" + itemi.ToString() + "'"))
                                                 {
                                                     if (WBS_isSheet((int)rowRISK_WBS_DAMAGE[DT_WBS_RISK_DAMAGE.ID_WBS]))
@@ -6148,7 +6163,7 @@ namespace EnsureRisk
             }
             catch (Exception ex)
             {
-                MostrarErrorDialog(ex.Message);
+                MostrarErrorDialog(ex.Message + " Ajustando Datos");
             }
         }
 
@@ -6223,7 +6238,7 @@ namespace EnsureRisk
             }
             catch (Exception ex)
             {
-                MostrarErrorDialog(ex.Message);
+                MostrarErrorDialog(ex.Message + "Cambiando bando");
             }
         }
 

@@ -38,14 +38,29 @@ namespace EnsureRisk.DataBinding
         {
             try
             {
-                if (parameter is DecimalUIConverterParams paramValue)
+                if (value is decimal && (decimal)value == 0)
                 {
-                    return string.Format(CultureInfo.CurrentUICulture, paramValue.StringFormat, Math.Round((decimal)value, paramValue.Decimals, MidpointRounding.AwayFromZero));
+                    return "-";
                 }
                 else
                 {
-                    return value;
-                }
+                    if (value.ToString() == "")
+                    {
+                        return "-";
+                    }
+                    else
+                    {
+                        if (parameter is DecimalUIConverterParams paramValue)
+                        {
+                            return string.Format(CultureInfo.CurrentUICulture, paramValue.StringFormat, Math.Round((decimal)value, paramValue.Decimals, MidpointRounding.AwayFromZero));
+                        }
+                        else
+                        {
+                            return value;
+                        }
+                    }
+                    
+                }                
             }
             catch (Exception ex)
             {
@@ -58,10 +73,17 @@ namespace EnsureRisk.DataBinding
         {
             try
             {
-                if (decimal.TryParse(value.ToString(), NumberStyles.Number, CultureInfo.CurrentUICulture, out decimal valueResult))
-                    return valueResult;
-                else
+                if (value.ToString() == "-" || value.ToString() == "")
+                {
                     return 0;
+                }
+                else
+                {
+                    if (decimal.TryParse(value.ToString(), NumberStyles.Number, CultureInfo.CurrentUICulture, out decimal valueResult))
+                        return valueResult;
+                    else
+                        return 0;
+                }               
             }
             catch (Exception ex)
             {
