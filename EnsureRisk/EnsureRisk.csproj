@@ -145,7 +145,6 @@
     </Compile>
     <Compile Include="CursorHelper.cs" />
     <Compile Include="CustomCommands.cs" />
-    <Compile Include="DecimalUIConverter.cs" />
     <Compile Include="Export\ExportRiskTree.cs" />
     <Compile Include="Export\Trader\DataSetTrader.cs" />
     <Compile Include="Export\Trader\RiskTreeDataSetTrader.cs" />

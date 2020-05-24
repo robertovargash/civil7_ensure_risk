@@ -147,7 +147,15 @@ namespace EnsureRisk.Windows
 
         private void TxtFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Dv.RowFilter = ColumnToFilter + " like '%" + txtFilterRisk.Text + "%'";
+            try
+            {
+                Dv.RowFilter = ColumnToFilter + " like '%" + txtFilterRisk.Text + "%'";
+
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
         }
 
         private void btnClearFilter_Click(object sender, RoutedEventArgs e)

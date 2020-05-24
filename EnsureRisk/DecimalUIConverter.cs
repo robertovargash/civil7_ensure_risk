@@ -40,7 +40,7 @@ namespace EnsureRisk.DataBinding
             {
                 if (parameter is DecimalUIConverterParams paramValue)
                 {
-                    return String.Format(CultureInfo.CurrentUICulture, paramValue.StringFormat, Math.Round((decimal)value, paramValue.Decimals, MidpointRounding.AwayFromZero));
+                    return string.Format(CultureInfo.CurrentUICulture, paramValue.StringFormat, Math.Round((decimal)value, paramValue.Decimals, MidpointRounding.AwayFromZero));
                 }
                 else
                 {
@@ -58,8 +58,7 @@ namespace EnsureRisk.DataBinding
         {
             try
             {
-                decimal valueResult;
-                if (decimal.TryParse(value.ToString(), NumberStyles.Number, CultureInfo.CurrentUICulture, out valueResult))
+                if (decimal.TryParse(value.ToString(), NumberStyles.Number, CultureInfo.CurrentUICulture, out decimal valueResult))
                     return valueResult;
                 else
                     return 0;

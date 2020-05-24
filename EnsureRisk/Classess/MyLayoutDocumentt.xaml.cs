@@ -394,7 +394,7 @@ namespace EnsureRisk.Classess
                                 {
                                     if (Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Contains(new object[] { itemI.ID, item.ID_TopRisk }))
                                     {
-                                        value = (Decimal)Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Find(new object[] { itemI.ID, item.ID_TopRisk })[DT_CounterM_Damage.VALUE];
+                                        value = (decimal)Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Find(new object[] { itemI.ID, item.ID_TopRisk })[DT_CounterM_Damage.VALUE];
                                     }
                                     AcumDamage += value;
                                 }
@@ -405,7 +405,7 @@ namespace EnsureRisk.Classess
                                 {
                                     if (Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Contains(new object[] { itemI.ID, item.ID_TopRisk }))
                                     {
-                                        value = (Decimal)Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { itemI.ID, item.ID_TopRisk })[DT_Risk_Damages.VALUE];
+                                        value = (decimal)Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { itemI.ID, item.ID_TopRisk })[DT_Risk_Damages.VALUE];
                                     }
                                     AcumDamage += value * General.AcumulatedLikelihood(itemI);
                                 }
@@ -1162,7 +1162,7 @@ namespace EnsureRisk.Classess
                 decimal valor;
                 if (Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Contains(new object[] { CMLine.ID, (Int32)CbFilterTopR.SelectedValue }))
                 {
-                    valor = (Decimal)Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Find(new object[] { CMLine.ID, (Int32)CbFilterTopR.SelectedValue })[DT_CounterM_Damage.VALUE];
+                    valor = (decimal)Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Find(new object[] { CMLine.ID, (Int32)CbFilterTopR.SelectedValue })[DT_CounterM_Damage.VALUE];
                 }
                 else
                 {

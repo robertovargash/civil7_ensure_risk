@@ -15,6 +15,7 @@ namespace EnsureRisk.Windows
     {
         public int IdGroup = -100;
         public string GroupName { get; set; }
+        public DataTable DT_Groups { get; set; }
         public WindowGroupe()
         {
             InitializeComponent();
@@ -49,19 +50,23 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                GroupService.WebServiceGroupe ws = new GroupService.WebServiceGroupe();
-                DataTable topCodif = ws.GetAllGroupes().Tables[DT_Groupe.TABLE_NAME].Copy();
+                //using (GroupService.WebServiceGroupe ws = new GroupService.WebServiceGroupe())
+                //{
+                //    DataTable topCodif = ws.GetAllGroupes().Tables[DT_Groupe.TABLE_NAME].Copy();
+                    
+                //}
                 WindowSelection frmSelection = new WindowSelection
                 {
-                    Dt = topCodif,
+                    Dt = DT_Groups,
                     DcolumToShow = new string[] { DT_Groupe.GROUPE_NAME },
+                    ColumnToFilter = DT_Groupe.GROUPE_NAME,
                     DcolumToShowAlias = new string[] { DT_Groupe.GROUPE_NAME },
                     Title = "Groups"
                 };
                 frmSelection.ShowDialog();
                 if (frmSelection.DialogResult == true)
                 {//Arreglado por roberto pues estaba  tomando el primer elemento
-                    IdGroup = (Int32)frmSelection.RowsSelected[0][DT_Groupe.ID_GROUPE];
+                    IdGroup = (int)frmSelection.RowsSelected[0][DT_Groupe.ID_GROUPE];
                     TextGroup.Text = frmSelection.RowsSelected[0][DT_Groupe.GROUPE_NAME].ToString();
                 }
             }
@@ -70,6 +75,5 @@ namespace EnsureRisk.Windows
                 MostrarErrorDialog(ex.Message);
             }
         }
-
     }
 }

@@ -41,6 +41,7 @@ namespace EnsureRiskWS
                 ds.Tables[13].TableName = DT_User_Role.TABLE_NAME;
                 ds.Tables[14].TableName = DT_Role.ROLE_TABLE;
                 ds.Tables[15].TableName = DT_DefaulRisk.Risk_TABLA;
+                ds.Tables[16].TableName = DT_Groupe.TABLE_NAME;
                 //ds.Tables[14].TableName = DT_User_WBS.TABLE_NAME;
                 userds.Merge(ds);
                 return userds;
@@ -191,6 +192,7 @@ namespace EnsureRiskWS
                 ds.Tables[13].TableName = DT_User_Role.TABLE_NAME;
                 ds.Tables[14].TableName = DT_Role.ROLE_TABLE;
                 ds.Tables[15].TableName = DT_DefaulRisk.Risk_TABLA;
+                ds.Tables[16].TableName = DT_Groupe.TABLE_NAME;
                 //ds.Tables[14].TableName = DT_User_WBS.TABLE_NAME;
                 userds.Merge(ds);
                 return userds;

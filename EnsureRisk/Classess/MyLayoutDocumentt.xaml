@@ -13,17 +13,17 @@
             <Grid x:Name="TheMainGrid" Background="White" MouseDown="LayoutDocument_MouseDown">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="50"/>                    
+                    <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
                 <ScrollViewer x:Name="ScrollGridPaint" Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" >
                     <Grid x:Name="CanvasMain">
-                        <Grid Width="200" Height="200" x:Name="GridPaintLines" Background="#FFE7F1AC" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel">
+                        <Grid Width="200" Height="200" x:Name="GridPaintLines" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel" Background="#FFFAF3FA">
                             <local:PopWindow x:Name="MyPopWindow" Visibility="Collapsed" Panel.ZIndex="1"/>
                             <local:PopCMWindow x:Name="MyPopCMWindow" Visibility="Collapsed" Panel.ZIndex="1"/>
                             <TextBox x:Name="TextChangeName" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>
                         </Grid>
                     </Grid>
-                </ScrollViewer>                
+                </ScrollViewer>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -44,7 +44,7 @@
                                         Damages
                                     </TextBlock>
                                 </StackPanel>
-                            </md:HintAssist.Hint>                            
+                            </md:HintAssist.Hint>
                         </ComboBox>
                     </StackPanel>
                     <ComboBox x:Name="TheZoomComboBox" Style="{DynamicResource MaterialDesignComboBox}" Grid.Column="2" Text="100" VerticalAlignment="Center" HorizontalAlignment="Right" HorizontalContentAlignment="Right" IsEditable="True">
@@ -54,7 +54,7 @@
                         <ComboBoxItem Content="75"/>
                         <ComboBoxItem Content="100"/>
                         <ComboBoxItem Content="150"/>
-                        <ComboBoxItem Content="200"/>                   
+                        <ComboBoxItem Content="200"/>
                     </ComboBox>
                     <TextBlock Text="%" Grid.Column="3" VerticalAlignment="Center"/>
                     <Button Content="{md:PackIcon Kind=MinusCircleOutline}" x:Name="BtnMinus" Grid.Column="4" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignToolButton}" HorizontalAlignment="Right" Click="BtnMinusZoom_Click"/>
