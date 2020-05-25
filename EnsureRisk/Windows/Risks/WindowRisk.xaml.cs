@@ -980,6 +980,7 @@ namespace EnsureRisk.Windows
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
+            
             DialogResult = false;
             Close();
         }
@@ -1080,14 +1081,14 @@ namespace EnsureRisk.Windows
 
         private void DgTopRisk_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.NumPad0 && e.Key != Key.NumPad1 && e.Key != Key.NumPad2 && e.Key != Key.NumPad3 && e.Key != Key.NumPad4 && e.Key != Key.NumPad5 && e.Key != Key.NumPad6 &&
-                e.Key != Key.NumPad7 && e.Key != Key.NumPad8 && e.Key != Key.NumPad9 && e.Key != Key.Decimal && e.Key != Key.Back &&
-                e.Key != Key.Delete && e.Key != Key.OemComma && e.Key != Key.OemPeriod &&
-                e.Key != Key.D0 && e.Key != Key.D1 && e.Key != Key.D2 && e.Key != Key.D3 && e.Key != Key.D4 && e.Key != Key.D5 && e.Key != Key.D6 &&
-                e.Key != Key.D7 && e.Key != Key.D8 && e.Key != Key.D9)
-            {
-                MostrarErrorDialog("Insert a Numeric Value!");
-            }
+            //if (e.Key != Key.NumPad0 && e.Key != Key.NumPad1 && e.Key != Key.NumPad2 && e.Key != Key.NumPad3 && e.Key != Key.NumPad4 && e.Key != Key.NumPad5 && e.Key != Key.NumPad6 &&
+            //    e.Key != Key.NumPad7 && e.Key != Key.NumPad8 && e.Key != Key.NumPad9 && e.Key != Key.Decimal && e.Key != Key.Back &&
+            //    e.Key != Key.Delete && e.Key != Key.OemComma && e.Key != Key.OemPeriod &&
+            //    e.Key != Key.D0 && e.Key != Key.D1 && e.Key != Key.D2 && e.Key != Key.D3 && e.Key != Key.D4 && e.Key != Key.D5 && e.Key != Key.D6 &&
+            //    e.Key != Key.D7 && e.Key != Key.D8 && e.Key != Key.D9)
+            //{
+            //    MostrarErrorDialog("Insert a Numeric Value!");
+            //}
         }
 
         private void BtnSetPrimary_Click(object sender, RoutedEventArgs e)
