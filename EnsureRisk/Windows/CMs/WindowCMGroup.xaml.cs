@@ -35,15 +35,13 @@ namespace EnsureRisk.Windows
         public decimal Probability { get; set; }
         public string NameShort { get; set; }
         public string Detail { get; set; }
-        public DataCurrentCM Pi { get; set; }
         public WindowCMGroup()
         {
             InitializeComponent();
             ChangeLanguage();
-            Pi = new DataCurrentCM();
-            TextName.DataContext = Pi;
-            TextDetail.DataContext = Pi;
-            TextProbability.DataContext = Pi;
+            TextName.DataContext = this;
+            TextDetail.DataContext = this;
+            TextProbability.DataContext = this;
         }
 
         public void MostrarErrorDialog(string text)

@@ -39,11 +39,30 @@
         <TabControl HorizontalAlignment="Left" Height="192" Margin="79,186,0,0" VerticalAlignment="Top" Width="575">
             <TabItem Header="Values" Name="tabValues" >
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid Name="dgTopRisk" HorizontalAlignment="Left" Height="159" Margin="1,1,0,0" VerticalAlignment="Top" Width="565" AutoGenerateColumns="False" KeyUp="DgTopRisk_KeyUp">
+                    <DataGrid Name="dgTopRisk" HorizontalAlignment="Left" Height="159" Margin="1,1,0,0" VerticalAlignment="Top" Width="565" AutoGenerateColumns="False">
+                        <DataGrid.Resources>
+                            <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
+                                <Setter Property="Padding" Value="-2"/>
+                                <Style.Triggers>
+                                    <Trigger Property="Validation.HasError" Value="True">
+                                        <Setter Property="Background" Value="Red"/>
+                                        <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn x:Name="WBSn" Header="WBS" Binding="{Binding Path= WBSName}" Width="*"/>
                             <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding Path= Damage}" Width="*"/>
-                            <DataGridTextColumn x:Name="TopValue" Header="Value" Binding="{Binding Path= value}" Width="*"/>
+                            <DataGridTextColumn x:Name="TopValue" Header="Value" Width="*">
+                                <DataGridTextColumn.Binding>
+                                    <Binding Path="value" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <classes:NegativeValidation ValidationStep="UpdatedValue" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -60,11 +79,30 @@
                         <md:PackIcon Kind="Key"/>
                     </Button>
                     <DataGrid Name="dgWBS" CanUserDeleteRows="False" HorizontalAlignment="Left" Height="156" Margin="71,5,0,0" VerticalAlignment="Top" Width="489" AutoGenerateColumns="False" SelectedCellsChanged="DgWBS_SelectedCellsChanged" LostFocus="DgWBS_LostFocus" SelectionChanged="DgWBS_SelectionChanged" CellEditEnding="DgWBS_CellEditEnding">
+                        <DataGrid.Resources>
+                            <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
+                                <Setter Property="Padding" Value="-2"/>
+                                <Style.Triggers>
+                                    <Trigger Property="Validation.HasError" Value="True">
+                                        <Setter Property="Background" Value="Red"/>
+                                        <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= Nivel}" Width="100" IsReadOnly="True"/>
                             <DataGridTextColumn x:Name="WBS" Header="WBS Name" Binding="{Binding Path= WBS_Name}" Width="*" IsReadOnly="True"/>
                             <DataGridTextColumn x:Name="WBSUser" Header="User" Binding="{Binding Path= userName}" Width="*" IsReadOnly="True"/>
-                            <DataGridTextColumn x:Name="WBSProb" Header="Risk Red.(%)" Binding="{Binding Path= probability}" Width="100" IsReadOnly="False"/>
+                            <DataGridTextColumn x:Name="WBSProb" Header="Risk Red.(%)" Width="100" IsReadOnly="False">
+                                <DataGridTextColumn.Binding>
+                                    <Binding Path="probability" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <classes:NegativePlusValidation ValidationStep="UpdatedValue" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
                             <DataGridTextColumn x:Name="PRIMARY" Header="Primary" Binding="{Binding Path= Primaryy}" Width="100" Foreground="#FFF30808" FontWeight="Bold" IsReadOnly="True"/>
                         </DataGrid.Columns>
                     </DataGrid>

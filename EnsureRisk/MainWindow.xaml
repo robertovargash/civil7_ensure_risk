@@ -370,7 +370,7 @@
                                             <md:PackIcon Kind="Close" Opacity=".56" />
                                         </Button>
                                     </Grid>
-                                    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" Grid.Row="1" SelectedValue="{Binding Path=IdWBSFilter}" md:ComboBoxAssist.ClassicMode="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed"  VerticalAlignment="Top" HorizontalAlignment="Left" SelectionChanged="CbFilterWBSRisk_SelectionChanged" >
+                                    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" Grid.Row="1" SelectedValue="{Binding Path=IdWBSFilter}"  md:ComboBoxAssist.ClassicMode="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed"  VerticalAlignment="Top" HorizontalAlignment="Left" SelectionChanged="CbFilterWBSRisk_SelectionChanged" >
                                         <md:HintAssist.Hint>
                                             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
                                                 <md:PackIcon Kind="FileTree" />
@@ -378,11 +378,10 @@
                                             </StackPanel>
                                         </md:HintAssist.Hint>
                                     </ComboBox>
-                                    <DataGrid Grid.Row="2" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
-                                              VerticalAlignment="Stretch" AutoGenerateColumns="False" 
-                                              CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False"  Grid.ColumnSpan="2" MouseLeave="DgRisksCross_MouseLeave" 
-                                              SelectedCellsChanged="DgRisksCross_SelectedCellsChanged" LostFocus="DgRisksCross_LostFocus"  CanUserDeleteRows="False" SelectionChanged="DgRisksCross_SelectionChanged" CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True" CanUserAddRows="False">
-
+                                    <DataGrid Grid.Row="2" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" VerticalAlignment="Stretch" 
+                                              AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False" Grid.ColumnSpan="2" MouseLeave="DgRisksCross_MouseLeave" 
+                                              SelectedCellsChanged="DgRisksCross_SelectedCellsChanged" LostFocus="DgRisksCross_LostFocus" CanUserDeleteRows="False" SelectionChanged="DgRisksCross_SelectionChanged" 
+                                              CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True" CanUserAddRows="False">
                                     </DataGrid>
                                 </Grid>
                             </xcad:LayoutAnchorable>
@@ -407,7 +406,7 @@
                                             <md:PackIcon Kind="Close" Opacity=".56"  />
                                         </Button>
                                     </Grid>
-                                    <ComboBox x:Name="CbFilterWBSCM" Margin="5" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <ComboBox x:Name="CbFilterWBSCM" Margin="5" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" SelectedIndex="{Binding Path=SelectedIndex, Source=CbFilterWBSRisk, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed" VerticalAlignment="Top" HorizontalAlignment="Left">
                                         <md:HintAssist.Hint>
                                             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
                                                 <md:PackIcon Kind="FileTree" />
@@ -570,8 +569,14 @@
                             <md:PackIcon Name="IconUser" Kind="AccountCircle" Height="161" Width="152" />
                         </Grid>
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                            <TextBox md:HintAssist.Hint="User" Width="200" Margin="15" md:HintAssist.IsFloating="True" GotFocus="TextUser_GotFocus" x:Name="TextUser" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" TabIndex="1"/>
-                            <PasswordBox md:HintAssist.Hint="Password"  Margin="15" Width="200" GotFocus="TextPasword_GotFocus" md:HintAssist.IsFloating="True" x:Name="TextPasword" HorizontalAlignment="Left"  VerticalAlignment="Top" TabIndex="2"/>
+                            <StackPanel Orientation="Horizontal">
+                                <md:PackIcon Kind="User" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding ElementName=TextUser, Path=BorderBrush}"/>
+                                <TextBox md:HintAssist.Hint="User" Width="200" Margin="0,15,15,15" md:HintAssist.IsFloating="True" GotFocus="TextUser_GotFocus" x:Name="TextUser" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" TabIndex="1"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <md:PackIcon Kind="TextboxPassword" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding ElementName=TextPasword, Path=BorderBrush}"/>
+                                <PasswordBox md:HintAssist.Hint="Password"  Margin="0,15,15,15" Width="200" GotFocus="TextPasword_GotFocus" md:HintAssist.IsFloating="True" x:Name="TextPasword" HorizontalAlignment="Left"  VerticalAlignment="Top" TabIndex="2"/>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">

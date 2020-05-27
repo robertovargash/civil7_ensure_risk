@@ -22,14 +22,17 @@ using System.ComponentModel;
 
 namespace EnsureRisk.Windows
 {
-    public class DataCurrentRisk : INotifyPropertyChanged
+    /// <summary>
+    /// Interaction logic for WindowRisk.xaml
+    /// </summary>
+    public partial class WindowRisk : Window, INotifyPropertyChanged
     {
         private bool hasAccess = false;
         private decimal probability;
         private string _shortName;
         public string ShortName { get { return _shortName; } set { _shortName = value; OnPropertyChanged("ShortName"); } }
 
-        public decimal Probability { get {return probability; } set { probability = value;OnPropertyChanged("Probability"); } }
+        public decimal Probability { get { return probability; } set { probability = value; OnPropertyChanged("Probability"); } }
 
         public bool HasAccess
         {
@@ -50,18 +53,12 @@ namespace EnsureRisk.Windows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-    }
-    /// <summary>
-    /// Interaction logic for WindowRisk.xaml
-    /// </summary>
-    public partial class WindowRisk : Window
-    {
+
         public bool IS_USING_NAME { get; set; }=false;
         public bool IS_DELETING_ROW { get; set; } = false;
         public bool IS_DELETING_WBS_ROW{ get; set; } = false;
         public DataRow Selected_RoleRow { get; set; }
         public DataRow Selected_WBSRow { get; set; }
-        public DataCurrentRisk Pi { get; set; }
         public DataRow RiskRow { get; set; }
         public string Operation { get; set; }
         public int RiskTreeID { get; set; }
@@ -96,13 +93,12 @@ namespace EnsureRisk.Windows
         public WindowRisk()
         {
             InitializeComponent();
-            Pi = new DataCurrentRisk();
             ChangeLanguage();
-            RiskName.DataContext = Pi;
-            TextDetail.DataContext = Pi;
-            TextProbability.DataContext = Pi;
-            gridTabRoles.DataContext = Pi;
-            gridTabWBS.DataContext = Pi;
+            RiskName.DataContext = this;
+            TextDetail.DataContext = this;
+            TextProbability.DataContext = this;
+            gridTabRoles.DataContext = this;
+            gridTabWBS.DataContext = this;
         }
 
         public void MostrarErrorDialog(string text)
@@ -169,7 +165,7 @@ namespace EnsureRisk.Windows
 
                 DvRiskWBS = Risk_WBS_Table.DefaultView;
                 dgWBS.ItemsSource = DvRiskWBS;
-                if (Pi.HasAccess)
+                if (HasAccess)
                 {                   
                     DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
                 }
@@ -227,7 +223,7 @@ namespace EnsureRisk.Windows
                     rowTop[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString() + "(" + item[DT_Diagram_Damages.UM] + ")";
                     rowTop[DT_Risk_Damages.VALUE] = 0;
                     rowTop[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.DAMAGE];
-                    rowTop[DT_Risk_Damages.PROBABILITY] = useProbability ? Pi.Probability : 0;
+                    rowTop[DT_Risk_Damages.PROBABILITY] = useProbability ? Probability : 0;
                     rowTop[DT_Risk_Damages.GROUPE_NAME] = "None";
                     rowTop[DT_Risk_Damages.RISK_NAMESHORT] = "";
                     rowTop[DT_Risk_Damages.FATHER] = RowFather[DT_Risk.NAMESHORT].ToString();
@@ -244,7 +240,7 @@ namespace EnsureRisk.Windows
         {
             if (RiskSelected != null)
             {
-                foreach (DataRow item in Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + RiskSelected.ID))
+                foreach (DataRow item in Risk_RoleTable.Select(DT_Role_Risk.ID_RISK + " = " + RiskSelected.ID))
                 {
                     DataRow newRow = Risk_RoleTable.NewRow();
                     newRow[DT_Role_Risk.ID_RISK] = RiskRow[DT_Risk.ID];
@@ -262,7 +258,7 @@ namespace EnsureRisk.Windows
                 bool hasWBS = false;
                 if (!RiskSelected.IsRoot)
                 {
-                    foreach (DataRow itemWBS in Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskSelected.ID))
+                    foreach (DataRow itemWBS in Risk_WBS_Table.Select(DT_RISK_WBS.ID_RISK + " = " + RiskSelected.ID))
                     {
                         DataRow newRow = Risk_WBS_Table.NewRow();
                         newRow[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
@@ -288,7 +284,7 @@ namespace EnsureRisk.Windows
                 else
                 {
                     CompleteRiskWBSTable(false);
-                    foreach (DataRow itemWBS in Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + (int)RiskRow[DT_Risk.ID]))
+                    foreach (DataRow itemWBS in Risk_WBS_Table.Select(DT_RISK_WBS.ID_RISK + " = " + (int)RiskRow[DT_Risk.ID]))
                     {
                         if (!(Risk_WBS_Table.Rows.Contains(new object[] { RiskRow[DT_Risk.ID], itemWBS[DT_RISK_WBS.ID_WBS] })))
                         {
@@ -321,9 +317,9 @@ namespace EnsureRisk.Windows
             {
                 if (!(dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + item[DT_WBS.ID_WBS]).Any()))
                 {
-                    if (!(Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Contains(new object[] { RiskRow[DT_Risk.ID], item[DT_WBS.ID_WBS] })))
+                    if (!(Risk_WBS_Table.Rows.Contains(new object[] { RiskRow[DT_Risk.ID], item[DT_WBS.ID_WBS] })))
                     {
-                        DataRow drRiskWBS = Ds.Tables[DT_RISK_WBS.TABLENAME].NewRow();
+                        DataRow drRiskWBS = Risk_WBS_Table.NewRow();
                         drRiskWBS[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
                         drRiskWBS[DT_RISK_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
                         drRiskWBS[DT_RISK_WBS.WBS] = item[DT_WBS.WBS_NAME];
@@ -344,7 +340,7 @@ namespace EnsureRisk.Windows
                             drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = false;
                             drRiskWBS[DT_RISK_WBS.PRIMARY] = "";
                         }
-                        Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Add(drRiskWBS);
+                        Risk_WBS_Table.Rows.Add(drRiskWBS);
                     }
                 }
             }
@@ -393,11 +389,11 @@ namespace EnsureRisk.Windows
                 }
                 if (Probabilities.Count > 0)
                 {
-                    Pi.Probability = Probabilities.Sum() / Probabilities.Count;
+                    Probability = Probabilities.Sum() / Probabilities.Count;
                 }
                 else
                 {
-                    Pi.Probability = 100;
+                    Probability = 100;
                 }
             }
             catch (Exception ex)
@@ -947,7 +943,7 @@ namespace EnsureRisk.Windows
 
             if (Versioned.IsNumeric(TextProbability.Text))
             {
-                if (Pi.Probability > 100)
+                if (Probability > 100)
                 {
                     MostrarErrorDialog(StringResources.PROBABILITY_FIELD);
                 }
@@ -966,7 +962,7 @@ namespace EnsureRisk.Windows
                     if (flag)
                     {
                         CalculateProbability();
-                        RiskRow[DT_Risk.PROBABILITY] = Pi.Probability;
+                        RiskRow[DT_Risk.PROBABILITY] = Probability;
                         this.DialogResult = true;
                     }
                 }
@@ -1160,7 +1156,7 @@ namespace EnsureRisk.Windows
 
         private void RiskName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Pi.ShortName = RiskName.Text;
+            ShortName = RiskName.Text;
         }
 
         private void TextName_LostFocus(object sender, RoutedEventArgs e)
