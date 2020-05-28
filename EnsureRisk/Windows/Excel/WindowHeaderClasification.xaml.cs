@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using DataMapping.Data;
 using EnsureRisk.Classess;
+using MaterialDesignThemes.Wpf;
 
 namespace EnsureRisk.Windows
 {
@@ -25,6 +26,7 @@ namespace EnsureRisk.Windows
 
         public List<HeaderExcelContent> MyList { get; set; }
         public List<MyExcelButton> BtnList { get; set; }
+        public List<int> ChipList { get; set; }
         public DataSet MyDataset { get; set; }
        
 
@@ -54,15 +56,22 @@ namespace EnsureRisk.Windows
                 };
 
                 //MultiCheckboxes mck = new MultiCheckboxes();
-                MyExcelButton mck = new MyExcelButton
+                MyExcelButton btnExcel = new MyExcelButton
                 {
-                    Content = "Select...",
+                    Content = "...",
                     Style = BtnOK.Style
                 };
-                mck.Click += Mck_Click;
-                BtnList.Add(mck);
+                //Chip chip = new Chip() 
+                //{
+                //    Content = "ANZ Bank",
+                //    Icon = "A",
+                //    IsDeletable = true
+                //};
+                btnExcel.Click += Mck_Click;
+                BtnList.Add(btnExcel);
                 stk.Children.Add(texting);
-                stk.Children.Add(mck);
+                stk.Children.Add(btnExcel);
+                //stk.Children.Add(chip);
                 listBox.Items.Add(stk);               
             }
             TheStackPanel.Children.Add(listBox);
@@ -74,8 +83,24 @@ namespace EnsureRisk.Windows
             if (wmr.ShowDialog() == true)
             {
                 ((MyExcelButton)sender).MyValue = wmr.ValueSelected;
-                ((MyExcelButton)sender).Content = wmr.ContentSelected;
+                //((MyExcelButton)sender).Content = wmr.ContentSelected;
+                Chip chip = new Chip()
+                {
+                    Content = wmr.ContentSelected,
+                    Icon = wmr.ContentSelected.ToString().ToCharArray()[0].ToString().ToUpper(),
+                    IsDeletable = true
+                };
+                chip.DeleteClick += Chip_DeleteClick;
+                ((StackPanel)((MyExcelButton)sender).Parent).Children.Add(chip);
+                ((MyExcelButton)sender).Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void Chip_DeleteClick(object sender, RoutedEventArgs e)
+        {
+            ((MyExcelButton)((StackPanel)((Chip)sender).Parent).Children[1]).Visibility = Visibility.Visible;
+            ((MyExcelButton)((StackPanel)((Chip)sender).Parent).Children[1]).MyValue = 0;
+            ((StackPanel)((Chip)sender).Parent).Children.RemoveAt(2);
         }
 
         private void BtnOK_Click(object sender, RoutedEventArgs e)
