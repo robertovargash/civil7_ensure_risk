@@ -560,8 +560,6 @@ namespace EnsureRisk.Classess
         {
             try
             {
-                ((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines.Children.Clear();
-
                 LinesListCMState.Clear();
                 if (CbFilterTopR.SelectedIndex >= 0)
                 {
@@ -2766,7 +2764,7 @@ namespace EnsureRisk.Classess
             }
         }
 
-        private void ManageTextChangeProperties(String valueTextProperty, Visibility aVisibility)
+        private void ManageTextChangeProperties(string valueTextProperty, Visibility aVisibility)
         {
             TextChangeName.Text = valueTextProperty;
             TextChangeName.Visibility = aVisibility;

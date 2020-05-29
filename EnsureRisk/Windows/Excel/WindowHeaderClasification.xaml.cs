@@ -23,12 +23,10 @@ namespace EnsureRisk.Windows
     /// </summary>
     public partial class WindowHeaderClasification : Window
     {
-
         public List<HeaderExcelContent> MyList { get; set; }
         public List<MyExcelButton> BtnList { get; set; }
         public List<int> ChipList { get; set; }
-        public DataSet MyDataset { get; set; }
-       
+        public DataSet MyDataset { get; set; }       
 
         public WindowHeaderClasification()
         {
@@ -37,79 +35,97 @@ namespace EnsureRisk.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            BtnList = new List<MyExcelButton>();
-            ListBox listBox = new ListBox();
-            foreach (var item in MyList)
+            try
             {
-                var margin = new Thickness(10, 10, 10, 10);
-                StackPanel stk = new StackPanel
+                BtnList = new List<MyExcelButton>();
+                ListBox listBox = new ListBox();
+                foreach (var item in MyList)
                 {
-                    Orientation = Orientation.Horizontal,
-                    Margin = margin,
-                    HorizontalAlignment = HorizontalAlignment.Right
-                };
-                TextBlock texting = new TextBlock
-                {
-                    Text = item.MyContent,
-                    Margin = margin,
-                    Width = 125
-                };
-
-                //MultiCheckboxes mck = new MultiCheckboxes();
-                MyExcelButton btnExcel = new MyExcelButton
-                {
-                    Content = "...",
-                    Style = BtnOK.Style
-                };
-                //Chip chip = new Chip() 
-                //{
-                //    Content = "ANZ Bank",
-                //    Icon = "A",
-                //    IsDeletable = true
-                //};
-                btnExcel.Click += Mck_Click;
-                BtnList.Add(btnExcel);
-                stk.Children.Add(texting);
-                stk.Children.Add(btnExcel);
-                //stk.Children.Add(chip);
-                listBox.Items.Add(stk);               
+                    var margin = new Thickness(10, 10, 10, 10);
+                    StackPanel stk = new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        Margin = margin,
+                        HorizontalAlignment = HorizontalAlignment.Right
+                    };
+                    TextBlock texting = new TextBlock
+                    {
+                        Text = item.MyContent,
+                        Margin = margin,
+                        Width = 125
+                    };
+                    MyExcelButton btnExcel = new MyExcelButton
+                    {
+                        Content = "...",
+                        Style = BtnOK.Style
+                    };
+                    btnExcel.Click += Mck_Click;
+                    BtnList.Add(btnExcel);
+                    stk.Children.Add(texting);
+                    stk.Children.Add(btnExcel);
+                    listBox.Items.Add(stk);
+                }
+                TheStackPanel.Children.Add(listBox);
             }
-            TheStackPanel.Children.Add(listBox);
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }            
         }
 
         private void Mck_Click(object sender, RoutedEventArgs e)
         {
-            WindowMultiRadio wmr = new WindowMultiRadio();
-            if (wmr.ShowDialog() == true)
+            try
             {
-                ((MyExcelButton)sender).MyValue = wmr.ValueSelected;
-                //((MyExcelButton)sender).Content = wmr.ContentSelected;
-                Chip chip = new Chip()
+                WindowMultiRadio wmr = new WindowMultiRadio();
+                if (wmr.ShowDialog() == true)
                 {
-                    Content = wmr.ContentSelected,
-                    Icon = wmr.ContentSelected.ToString().ToCharArray()[0].ToString().ToUpper(),
-                    IsDeletable = true
-                };
-                chip.DeleteClick += Chip_DeleteClick;
-                ((StackPanel)((MyExcelButton)sender).Parent).Children.Add(chip);
-                ((MyExcelButton)sender).Visibility = Visibility.Collapsed;
+                    ((MyExcelButton)sender).MyValue = wmr.ValueSelected;
+                    Chip chip = new Chip()
+                    {
+                        Content = wmr.ContentSelected,
+                        Icon = wmr.ContentSelected.ToString().ToCharArray()[0].ToString().ToUpper(),
+                        IsDeletable = true
+                    };
+                    chip.DeleteClick += Chip_DeleteClick;
+                    ((StackPanel)((MyExcelButton)sender).Parent).Children.Add(chip);
+                    ((MyExcelButton)sender).Visibility = Visibility.Collapsed;
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }            
         }
 
         private void Chip_DeleteClick(object sender, RoutedEventArgs e)
         {
-            ((MyExcelButton)((StackPanel)((Chip)sender).Parent).Children[1]).Visibility = Visibility.Visible;
-            ((MyExcelButton)((StackPanel)((Chip)sender).Parent).Children[1]).MyValue = 0;
-            ((StackPanel)((Chip)sender).Parent).Children.RemoveAt(2);
+            try
+            {
+                ((MyExcelButton)((StackPanel)((Chip)sender).Parent).Children[1]).Visibility = Visibility.Visible;
+                ((MyExcelButton)((StackPanel)((Chip)sender).Parent).Children[1]).MyValue = 0;
+                ((StackPanel)((Chip)sender).Parent).Children.RemoveAt(2);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < BtnList.Count; i++)
+            try
             {
-                MyList[i].IdClasification = BtnList[i].MyValue;
+                for (int i = 0; i < BtnList.Count; i++)
+                {
+                    MyList[i].IdClasification = BtnList[i].MyValue;
+                }
+                DialogResult = true;
             }
-            DialogResult = true;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }           
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
