@@ -279,10 +279,10 @@ namespace EnsureRisk
                 }
                 //P = new DataCurrenDiagram();               
                 InitializeComponent();
-                buttonCantidad.DataContext = this;
-                buttonCantidadCM.DataContext = this;
-                TextLineSelected.DataContext = this;
-                TextLineType.DataContext = this;
+                //buttonCantidad.DataContext = this;
+                //buttonCantidadCM.DataContext = this;
+                //TextLineSelected.DataContext = this;
+                //TextLineType.DataContext = this;
                 CbFilterWBSRisk.DataContext = this;
                 CbFilterWBSCM.DataContext = this;
                 WSRisk = new ServiceRiskController.WebServiceRisk();
@@ -1139,8 +1139,8 @@ namespace EnsureRisk
                     TheCurrentLayout.AddMainLine(drRisk, color);
                     TheCurrentLayout.LoadComboDamage();
                     TheCurrentLayout.LoadRectangles();
-                    TextProbability.Text = "0";
-                    TextDiagram.Text = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
+                    //TextProbability.Text = "0";
+                    //TextDiagram.Text = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
                     TheCurrentLayout.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
                     TheCurrentLayout.FixDrawPanel();
                     foreach (var item in OpenedDocuments)
@@ -1268,7 +1268,7 @@ namespace EnsureRisk
                 {
                     myly.Ds.Tables[DT_Diagram_Damages.TABLENAME].Merge(riskTree.TopRiskTable);
                     SetNewDamageToEntireTree(myly.ID_Diagram, myly.Ds);
-                    TextDiagram.Text = riskTree.TextName.Text;
+                    //TextDiagram.Text = riskTree.TextName.Text;
                     TheProgress.Visibility = Visibility.Visible;
                     HabilitarBotones(false);
                     myly.Title = riskTree.TextName.Text;
@@ -1440,8 +1440,8 @@ namespace EnsureRisk
                 //{
                 //    item.Close();
                 //}
-                TextDiagram.Text = "None";
-                TextProbability.Text = "0";
+                //TextDiagram.Text = "None";
+                //TextProbability.Text = "0";
                 DVRisk_Tree[dgTreeDiagrams.SelectedIndex].Delete();
                 SaveData(DsMain, true);
                 IS_DELETING_DIAGRAM = false;
@@ -2891,7 +2891,7 @@ namespace EnsureRisk
                     TheCurrentLayout.LoadLines();
                     TheCurrentLayout.LoadRectangles();
                     TextProbabilityChange(TheCurrentLayout.MainLine);
-                    TextProbability.Text = Math.Round(General.AcumulatedLikelihood(TheCurrentLayout.MainLine) * 100, 2).ToString() + " %";
+                    //TextProbability.Text = Math.Round(General.AcumulatedLikelihood(TheCurrentLayout.MainLine) * 100, 2).ToString() + " %";
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.SetLinesThickness();
                     CruzarTablaRisk(TheCurrentLayout.Ds);
@@ -5387,7 +5387,7 @@ namespace EnsureRisk
 
         public void TextProbabilityChange(RiskPolyLine line)
         {
-            TextProbability.Text = General.MyRound(General.AcumulatedLikelihood(line) * 100, 2).ToString() + " %";
+            //TextProbability.Text = General.MyRound(General.AcumulatedLikelihood(line) * 100, 2).ToString() + " %";
         }
 
         public void UpdateServerAccess()
@@ -5527,9 +5527,9 @@ namespace EnsureRisk
                 MenuItemTopRisk.Header = StringResources.TopRiskList;
                 MenuItemOption.Header = StringResources.SettingsMenu;
                 MenuItemExit.Header = StringResources.ExitMenu;
-                LabelDiagram.Content = StringResources.DiagramNameLabel;
-                LabelProbability.Content = StringResources.ExpectedLKLabel;
-                cbDiagramValues.Header = StringResources.DiagramValuesGroupB;
+                //LabelDiagram.Content = StringResources.DiagramNameLabel;
+                //LabelProbability.Content = StringResources.ExpectedLKLabel;
+                //cbDiagramValues.Header = StringResources.DiagramValuesGroupB;
                 ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.AddRisk]).ToolTip = StringResources.AddRiskMenu;
                 ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.AddCM]).ToolTip = StringResources.AddCMMenu;
                 ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Scope]).ToolTip = StringResources.MENU_SCOPE;
@@ -5728,7 +5728,7 @@ namespace EnsureRisk
                 TheCurrentLayout.LoadRectangles();
                 TheCurrentLayout.DrawNumbers();
                 ///*BtnBackward*/.Visibility = Visibility.Hidden;
-                TextDiagram.Text = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
+                //TextDiagram.Text = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
                 TheCurrentLayout.Title = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
                 TextProbabilityChange(TheCurrentLayout.MainLine);
                 TheCurrentLayout.SetLinesThickness();

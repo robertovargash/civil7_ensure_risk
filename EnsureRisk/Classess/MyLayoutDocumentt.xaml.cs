@@ -193,7 +193,7 @@ namespace EnsureRisk.Classess
                     DrawNumbers();
                     ((MainWindow)MyWindow).TextProbabilityChange(LinesList.Find(x => x.ID == ScopeLine.ID));
                     Title = LinesList.Find(x => x.ID == ScopeLine.ID).ShortName;
-                    ((MainWindow)MyWindow).TextDiagram.Text = LinesList.Find(x => x.ID == ScopeLine.ID).ShortName;
+                    //((MainWindow)MyWindow).TextDiagram.Text = LinesList.Find(x => x.ID == ScopeLine.ID).ShortName;
                     LinesList.Find(x => x.ID == ScopeLine.ID).ExtrasVisibility(Visibility.Hidden);
 
                     BtnUndoneScope.Visibility = Visibility.Visible;
