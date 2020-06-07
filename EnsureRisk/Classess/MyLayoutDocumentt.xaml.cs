@@ -54,7 +54,7 @@ namespace EnsureRisk.Classess
         public bool IsExportingToExcel { get; set; }
         public LineGroup GroupSelected { get; set; }
         public int ID_Diagram { get; set; }
-        public Popin Popin { get; set; }
+        //public Popin Popin { get; set; }
         public Point MIdPoint { get; set; }
         public DataSet Ds { get; set; }
         public DataRow DrDiagram { get; set; }
@@ -163,6 +163,39 @@ namespace EnsureRisk.Classess
                 MostrarDialog(ex.Message);
             }
         }
+
+        public void MostrarPopWindow(Point pointToShow, string lineName, string probability, string value, string acumDamage, string acumValue, string EL)
+        {
+            MyPopWindow.Visibility = Visibility.Visible;
+            MyPopWindow.Margin = new Thickness(pointToShow.X, pointToShow.Y, 0, 0);
+            MyPopWindow.TextRiskName.Text = lineName;
+            MyPopWindow.TextProb.Text = probability;
+            MyPopWindow.TextValue.Text = value;
+            MyPopWindow.TextAcumDamage.Text = acumDamage;
+            MyPopWindow.TextAcumValue.Text = acumValue;
+            MyPopWindow.TextEL.Text = EL;
+        }
+
+
+        public void OcultarPopWindow()
+        {
+            MyPopWindow.Visibility = Visibility.Collapsed;
+        }
+
+        public void MostrarPopCMWindow(Point pointToShow, string lineName, string probability, string value)
+        {
+            MyPopCMWindow.Visibility = Visibility.Visible;
+            MyPopCMWindow.Margin = new Thickness(pointToShow.X, pointToShow.Y, 0, 0);
+            MyPopCMWindow.TextRiskName.Text = lineName;
+            MyPopCMWindow.TextProb.Text = probability;
+            MyPopCMWindow.TextValue.Text = value;
+        }
+
+        public void OcultarPopCMWindow()
+        {
+            MyPopCMWindow.Visibility = Visibility.Collapsed;
+        }
+
 
         public void Scope()
         {
@@ -1153,11 +1186,11 @@ namespace EnsureRisk.Classess
         {
             if (sender is RiskPolyLine CMHoover)
             {
-                CMEnter(CMHoover, new Point(e.GetPosition(GridPaintLines).X, e.GetPosition(GridPaintLines).Y));
+                CMEnter(CMHoover, new Point(e.GetPosition(TheMainGrid).X, e.GetPosition(TheMainGrid).Y));
             }
             if (sender is LabelPolyLine CMLabelHoover)
             {
-                CMEnter(CMLabelHoover.Line, new Point(e.GetPosition(GridPaintLines).X, e.GetPosition(GridPaintLines).Y));
+                CMEnter(CMLabelHoover.Line, new Point(e.GetPosition(TheMainGrid).X, e.GetPosition(TheMainGrid).Y));
             }
         }
 
@@ -1177,15 +1210,16 @@ namespace EnsureRisk.Classess
                     valor = 0;
                 }
 
-                string Value = "Value: " + General.MyRound(valor, 4);
+                string Value = General.MyRound(valor, 4).ToString();
 
-                string probability = "Reduction.: " + General.MyRound(CMLine.Probability * 100, 2).ToString() + " %";
+                string probability = General.MyRound(CMLine.Probability * 100, 2).ToString() + " %";
 
-                Popin = new Popin(GridPaintLines, pointToShowPopup, "CM: " + CMLine.ShortName, probability, Value)
-                {
-                    Visibility = Visibility.Visible
-                };
-                if ((Boolean)Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(CMLine.ID)[DT_CounterM.ENABLED])
+                //Popin = new Popin(GridPaintLines, pointToShowPopup, "CM: " + CMLine.ShortName, probability, Value)
+                //{
+                //    Visibility = Visibility.Visible
+                //};
+                MostrarPopCMWindow(pointToShowPopup, CMLine.ShortName, probability, Value);
+                if ((bool)Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(CMLine.ID)[DT_CounterM.ENABLED])
                 {
                     ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.DisableValue;
                 }
@@ -1229,13 +1263,13 @@ namespace EnsureRisk.Classess
             {
                 CMLeave.StrokeThickness = 2;
             }
-
-            if (Popin != null)
-            {
-                Popin.Visibility = Visibility.Collapsed;
-                GridPaintLines.Children.Remove(Popin);
-                Popin = null;
-            }
+            OcultarPopCMWindow();
+            //if (Popin != null)
+            //{
+            //    Popin.Visibility = Visibility.Collapsed;
+            //    GridPaintLines.Children.Remove(Popin);
+            //    Popin = null;
+            //}
         }
 
         private void Cmline_MouseDown(object sender, MouseButtonEventArgs e)
@@ -1861,6 +1895,19 @@ namespace EnsureRisk.Classess
         {
             ((MainWindow)MyWindow).LSelected = Line_Selected.ShortName;
             ((MainWindow)MyWindow).TSelected = Line_Selected.IsCM ? "Counter Measure" : "Risk";
+            ((MainWindow)MyWindow).ShowCMData = Line_Selected != null && Line_Selected.IsCM;
+            ((MainWindow)MyWindow).ShowRiskData = Line_Selected != null && !Line_Selected.IsCM;
+            if (Line_Selected != null)
+            {
+                if (!Line_Selected.IsCM)
+                {
+                    ((MainWindow)MyWindow).UpdateRiskTabInformation();
+                }
+                else
+                {
+                    ((MainWindow)MyWindow).UpdateCMTabInformation();
+                }
+            }
         }
 
         private void Risk_MouseLeave(object sender, MouseEventArgs e)
@@ -1883,12 +1930,13 @@ namespace EnsureRisk.Classess
                 Line_Created.IsDiagonal = false;
                 Line_Created.NewDrawAtPoint(Line_Created.StartDrawPoint);
             }
-            if (Popin != null)
-            {
-                GridPaintLines.Children.Remove(Popin);
-                Popin.Visibility = Visibility.Collapsed;
-                Popin = null;
-            }
+            OcultarPopWindow();
+            //if (Popin != null)
+            //{
+            //    GridPaintLines.Children.Remove(Popin);
+            //    Popin.Visibility = Visibility.Collapsed;
+            //    Popin = null;
+            //}
         }
 
         private void Risk_MouseHover(object sender, MouseEventArgs e)
@@ -1903,7 +1951,7 @@ namespace EnsureRisk.Classess
                 TheLine = (RiskPolyLine)sender;
             }
             SetMaxThickness(TheLine);
-            RiskEnter(TheLine, new Point(e.GetPosition(GridPaintLines).X, e.GetPosition(GridPaintLines).Y));
+            RiskEnter(TheLine, new Point(e.GetPosition(TheMainGrid).X, e.GetPosition(TheMainGrid).Y));
         }
 
         private void Segment_MouseHover(object sender, MouseEventArgs e)
@@ -1943,16 +1991,17 @@ namespace EnsureRisk.Classess
                     {
                         decimal el = TheLine.AcLike;
                         decimal valor = TheLine.AcValue;
-                        string AcumValue = StringResources.ACUM_VALUE + General.MyRound(valor, 4);
+                        string AcumValue = General.MyRound(valor, 4).ToString();
                         string Valuee = "";
-                        Valuee = StringResources.VALUE + General.MyRound(TheLine.OwnValue, 2).ToString();
-                        string ED = StringResources.ACUM_DAMAGE + General.MyRound(TheLine.AcDamage, 4);
-                        string probability = StringResources.PROBABILITY + General.MyRound(TheLine.Probability * 100, 2).ToString() + " %";
-                        string EL = StringResources.ACUM_LIKELIHOOD + General.MyRound(el * 100, 2).ToString() + " %";
-                        Popin = new Popin(GridPaintLines, pointToShowPopup, "Risk: " + TheLine.ShortName, probability, EL, Valuee, AcumValue, ED)
-                        {
-                            Visibility = Visibility.Visible
-                        };
+                        Valuee = General.MyRound(TheLine.OwnValue, 2).ToString();
+                        string ED = General.MyRound(TheLine.AcDamage, 4).ToString();
+                        string probability = General.MyRound(TheLine.Probability * 100, 2).ToString() + " %";
+                        string EL = General.MyRound(el * 100, 2).ToString() + " %";
+                        //Popin = new Popin(GridPaintLines, pointToShowPopup, "Risk: " + TheLine.ShortName, probability, EL, Valuee, AcumValue, ED)
+                        //{
+                        //    Visibility = Visibility.Visible
+                        //};
+                        MostrarPopWindow(pointToShowPopup, TheLine.ShortName, probability, Valuee, ED, AcumValue, EL);
                         if ((bool)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheLine.ID)[DT_Risk.ENABLED])
                         {
                             ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;

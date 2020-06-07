@@ -228,7 +228,7 @@ namespace EnsureRisk.Windows
                     TextFather.Text = DsCM.Tables[DT_Risk.TABLE_NAME].Rows.Find(RiskPadre.ID)[DT_Risk.NAMESHORT].ToString();
                     if (CMRow[DT_CounterM.ID_WBS] != DBNull.Value)
                     {
-                        ID_WBS = (Int32)CMRow[DT_Risk.ID_WBS];
+                        ID_WBS = (int)CMRow[DT_Risk.ID_WBS];
                     }
                     foreach (DataRow item in DsCM.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + RiskTreeID))
                     {

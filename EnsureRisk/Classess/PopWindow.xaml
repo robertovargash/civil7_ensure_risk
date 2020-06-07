@@ -8,14 +8,14 @@
              mc:Ignorable="d" 
              VerticalAlignment="Top" HorizontalAlignment="Left" Background="Transparent" RenderTransformOrigin="0.0,0.0">
     <Grid Background="Transparent">
-        <Border CornerRadius="20" Background="#FF134E86">
+        <Border CornerRadius="10" Background="#FF134E86">
             <Grid x:Name="GridBorder">
                 <StackPanel Orientation="Vertical">
                     <Grid x:Name="GridRisk" MaxHeight="200" >
                         <StackPanel Orientation="Horizontal" Margin="10 5 10 0">
                             <md:PackIcon Kind="RenameBox"/>
-                            <TextBlock Text="Risk Name: " TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
-                            <TextBlock x:Name="TextRiskName" Text="(Risk Name)" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
+                            <TextBlock Text="Risk Name: " TextWrapping="Wrap" VerticalAlignment="Top" Foreground="White"/>
+                            <TextBlock x:Name="TextRiskName" Text="(Risk Name)" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White" MaxWidth="400"/>
                         </StackPanel>                       
                     </Grid>
                     <Grid x:Name="GridProbability" >
@@ -47,7 +47,7 @@
                         </StackPanel>
                     </Grid>
                     <Grid x:Name="GridED" >
-                        <StackPanel Orientation="Horizontal" Margin="10 5 10 0" >
+                        <StackPanel Orientation="Horizontal" Margin="10 5 10 5" >
                             <md:PackIcon Kind="WarningOctagram"/>
                             <TextBlock Text="Acum. Dam: " TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="TextAcumDamage" Text="(ED)" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>

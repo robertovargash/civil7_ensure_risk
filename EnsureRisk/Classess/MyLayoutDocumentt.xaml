@@ -22,6 +22,8 @@
                         </Grid>
                     </Grid>
                 </ScrollViewer>
+                <local:PopWindow x:Name="MyPopWindow" Visibility="Collapsed" Panel.ZIndex="1" Grid.Row="0"/>
+                <local:PopCMWindow x:Name="MyPopCMWindow" Visibility="Collapsed" Panel.ZIndex="1" Grid.Row="0"/>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

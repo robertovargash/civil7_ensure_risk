@@ -247,14 +247,30 @@
                         <xcad:LayoutAnchorable ContentId="properties" x:Name="LayoutProperties"  Title="Properties"  CanHide="true" CanClose="False" AutoHideWidth="240">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" >
                                 <StackPanel Orientation="Vertical">
-                                    <WrapPanel x:Name="WrapRisk">
-                                        <ComboBox md:HintAssist.Hint="Risk" Height="42" Margin="10" x:Name="TextRisk" md:HintAssist.IsFloating="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" IsEditable="True" Width="200" Text="Este"/>
-                                        <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" HorizontalAlignment="Stretch" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" x:Name="TextRiskDetail" TextWrapping="Wrap" TextAlignment="Justify" VerticalScrollBarVisibility="Auto" />
-                                        <TextBox md:HintAssist.Hint="Probability(%)" Margin="10" md:HintAssist.IsFloating="True" Width="150" Text="" IsEnabled="False" Height="42"/>
+                                    <WrapPanel x:Name="WrapRisk" Visibility="{Binding Path = ShowRiskData, Converter={StaticResource BoolToVisConverter} }">
+                                        <StackPanel Orientation="Vertical" >
+                                            <TextBox TabIndex="1" IsEnabled="{Binding Path = HasAccess}" Width="200" KeyUp="RiskName_KeyUp" md:HintAssist.Hint="Risk Name" md:HintAssist.IsFloating="True" x:Name="TextRisk" MaxLength="250"  TextWrapping="Wrap"  VerticalAlignment="Top" LostFocus="TextRisk_LostFocus" MaxLines="1" TextOptions.TextHintingMode="Animated" TextChanged="RiskName_TextChanged">
+                                                <TextBox.Text>
+                                                    <Binding Path="RiskLineName" UpdateSourceTrigger="PropertyChanged">
+                                                        <Binding.ValidationRules>
+                                                            <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                            <Border Width="200" Height="60" BorderBrush="Black"  BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                    <StackPanel Name="RiskresultStack"></StackPanel>
+                                                </ScrollViewer>
+                                            </Border>
+                                        </StackPanel>
+
+                                        <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" HorizontalAlignment="Stretch" IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" x:Name="TextRiskDetail" TextWrapping="Wrap" TextAlignment="Justify" VerticalScrollBarVisibility="Auto" LostFocus="TextRiskDetail_LostFocus"/>
+                                        <TextBox md:HintAssist.Hint="Probability(%)" x:Name="TextProbability" Text="{Binding Path = Probability}" Margin="10" md:HintAssist.IsFloating="True" Width="150" IsEnabled="False" Height="42"/>
                                         <TabControl>
                                             <TabItem Header="Values" Name="tabValues" >
                                                 <Grid Background="#FFE5E5E5">
-                                                    <DataGrid TabIndex="4" Name="dgTopRisk" Margin="1,1,34,3" AutoGenerateColumns="False" >
+                                                    <DataGrid TabIndex="4" x:Name="DgRiskDamages" Margin="1,1,0,0" AutoGenerateColumns="False" SelectedCellsChanged="DgRiskDamages_SelectedCellsChanged" CellEditEnding="DgRiskDamages_CellEditEnding" SelectionChanged="DgRiskDamages_SelectionChanged">
                                                         <DataGrid.Resources>
                                                             <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                                                 <Setter Property="Padding" Value="-2"/>
@@ -271,7 +287,7 @@
                                                             <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding Path= Damage}" Width="*" IsReadOnly="True"/>
                                                             <DataGridTextColumn x:Name="TopValue" Header="Value" EditingElementStyle="{StaticResource errorStyle}" Width="*" IsReadOnly="False">
                                                                 <DataGridTextColumn.Binding>
-                                                                    <Binding Path="value" UpdateSourceTrigger="LostFocus">
+                                                                    <Binding Path="value" UpdateSourceTrigger="PropertyChanged">
                                                                         <Binding.ValidationRules>
                                                                             <classes:NegativeValidation ValidationStep="UpdatedValue" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
                                                                         </Binding.ValidationRules>
@@ -283,17 +299,17 @@
                                                 </Grid>
                                             </TabItem>
                                             <TabItem Header="WBS" Name="tabWBS" >
-                                                <Grid Background="#FFE5E5E5" Name="gridTabWBS">
-                                                    <Button Name="BtnAddWBSRisk"  IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" md:ShadowAssist.ShadowDepth="Depth5">
+                                                <Grid Background="#FFE5E5E5" Name="gridRiskWBS">
+                                                    <Button Name="BtnAddWBSRisk" Click="BtnAddWBSRisk_Click" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="45" md:ShadowAssist.ShadowDepth="Depth5">
                                                         <md:PackIcon Kind="Plus"/>
                                                     </Button>
-                                                    <Button x:Name="BtnDelWBSRisk"  IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" md:ShadowAssist.ShadowDepth="Depth5">
+                                                    <Button x:Name="BtnDelWBSRisk" Click="BtnDelWBSRisk_Click" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="45" md:ShadowAssist.ShadowDepth="Depth5">
                                                         <md:PackIcon Kind="Minus"/>
                                                     </Button>
-                                                    <Button x:Name="BtnSetPrimary"  IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignFloatingActionMiniAccentButton}" ToolTip="Set Primary WBS" Margin="15,89,0,0" VerticalAlignment="Top" md:ShadowAssist.ShadowDepth="Depth5" >
+                                                    <Button x:Name="BtnSetPrimary" Click="BtnSetPrimary_Click" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignFloatingActionMiniAccentButton}" ToolTip="Set Primary WBS" Margin="15,89,0,0" VerticalAlignment="Top" md:ShadowAssist.ShadowDepth="Depth5" >
                                                         <md:PackIcon Kind="Key"/>
                                                     </Button>
-                                                    <DataGrid Name="dgWBS" CanUserDeleteRows="False" Margin="71,5,40,2" AutoGenerateColumns="False">
+                                                    <DataGrid Name="DgRiskWBS" CanUserDeleteRows="False" Margin="71,5,0,0" AutoGenerateColumns="False" SelectedCellsChanged="DgRiskWBS_SelectedCellsChanged" CellEditEnding="DgRiskWBS_CellEditEnding" SelectionChanged="DgRiskWBS_SelectionChanged">
                                                         <DataGrid.Resources>
                                                             <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                                                 <Setter Property="Padding" Value="-2"/>
@@ -309,7 +325,7 @@
                                                             <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= Nivel}" Width="100" IsReadOnly="True"/>
                                                             <DataGridTextColumn x:Name="WBS" Header="WBS Name" Binding="{Binding Path= WBS_Name}" Width="*" IsReadOnly="True"/>
                                                             <DataGridTextColumn x:Name="WBSUser" Header="User" Binding="{Binding Path= userName}" Width="*" IsReadOnly="True"/>
-                                                            <DataGridTextColumn x:Name="WBProbability" Header="Prob (%)" Width="*"  EditingElementStyle="{StaticResource errorStyle}" IsReadOnly="false">
+                                                            <DataGridTextColumn x:Name="WBProbability" Header="Prob (%)" Width="*"  EditingElementStyle="{StaticResource errorStyle}" IsReadOnly="false" >
                                                                 <DataGridTextColumn.Binding>
                                                                     <Binding Path="probability" UpdateSourceTrigger="LostFocus">
                                                                         <Binding.ValidationRules>
@@ -325,13 +341,13 @@
                                             </TabItem>
                                             <TabItem Header="Roles" Name="tabRoles">
                                                 <Grid Background="#FFE5E5E5" Name="gridTabRoles" IsEnabled="{Binding Path = HasAccess}">
-                                                    <Button Name="BtnAddRiskRole"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" md:ShadowAssist.ShadowDepth="Depth5">
+                                                    <Button Name="BtnAddRiskRole" Click="BtnAddRiskRole_Click" HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" md:ShadowAssist.ShadowDepth="Depth5">
                                                         <md:PackIcon Kind="Plus"/>
                                                     </Button>
-                                                    <Button x:Name="BtnDelRiskRole" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" md:ShadowAssist.ShadowDepth="Depth5">
+                                                    <Button x:Name="BtnDelRiskRole" Click="BtnDelRiskRole_Click" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" md:ShadowAssist.ShadowDepth="Depth5">
                                                         <md:PackIcon Kind="Minus"/>
                                                     </Button>
-                                                    <DataGrid TabIndex="5" Name="dgRoles" Margin="71,5,40,2" AutoGenerateColumns="False" IsReadOnly="True">
+                                                    <DataGrid TabIndex="5" Name="DgRiskRoles" Margin="71,5,0,0" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False">
                                                         <DataGrid.Columns>
                                                             <DataGridTextColumn x:Name="Role" Header="Role" Binding="{Binding Path= Role}" Width="*"/>
                                                         </DataGrid.Columns>
@@ -341,14 +357,22 @@
                                         </TabControl>
 
                                     </WrapPanel>
-                                    <WrapPanel x:Name="WrapCM">
-                                        <ComboBox md:HintAssist.Hint="CounterMeasure" Height="42" x:Name="TextCM" Margin="10" md:HintAssist.IsFloating="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" IsEditable="True" Width="200" Text="Este"/>
-                                        <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" HorizontalAlignment="Stretch" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" x:Name="TextCMDetail" TextWrapping="Wrap" TextAlignment="Justify" VerticalScrollBarVisibility="Auto" />
-                                        <TextBox md:HintAssist.Hint="Risk Reduction(%)" Margin="10" md:HintAssist.IsFloating="True" Width="150" Text="" IsEnabled="False" Height="42"/>
+                                    <WrapPanel x:Name="WrapCM" Visibility="{Binding Path = ShowCMData, Converter={StaticResource BoolToVisConverter} }" >
+                                        <TextBox md:HintAssist.Hint="CounterMeasure" Height="42" x:Name="TextCM" Margin="10" md:HintAssist.IsFloating="True" Width="200" LostFocus="TextCM_LostFocus" TextChanged="TextCM_TextChanged">
+                                            <TextBox.Text>
+                                                <Binding Path="CMLIne" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Stretch" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" x:Name="TextCMDetail" TextWrapping="Wrap" TextAlignment="Justify" VerticalScrollBarVisibility="Auto" LostFocus="TextCMDetail_LostFocus"/>
+                                        <TextBox md:HintAssist.Hint="Risk Reduction(%)" Margin="10" x:Name="TextRReduction" md:HintAssist.IsFloating="True" Width="150" Text="{Binding Path = RiskReduction}" IsEnabled="False" Height="42"/>
                                         <TabControl >
                                             <TabItem Header="Values" Name="tabCMValues" >
                                                 <Grid Background="#FFE5E5E5">
-                                                    <DataGrid Name="dgCMDamages" Margin="1,1,34,3"  AutoGenerateColumns="False">
+                                                    <DataGrid Name="dgCMDamages" Margin="1,1,0,0"  AutoGenerateColumns="False" SelectedCellsChanged="DgCMDamages_SelectedCellsChanged" CellEditEnding="DgCMDamages_CellEditEnding" SelectionChanged="DgCMDamages_SelectionChanged">
                                                         <DataGrid.Resources>
                                                             <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                                                 <Setter Property="Padding" Value="-2"/>
@@ -378,16 +402,16 @@
                                             </TabItem>
                                             <TabItem Header="WBS" Name="tabWBSCM" >
                                                 <Grid Background="#FFE5E5E5" Name="gridTabWBSCM" >
-                                                    <Button Name="BtnAddWBSCM" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47"  md:ShadowAssist.ShadowDepth="Depth5">
+                                                    <Button Name="BtnAddWBSCM" IsEnabled="{Binding Path = HasAccess}" Click="BtnAddWBSCM_Click" HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47"  md:ShadowAssist.ShadowDepth="Depth5">
                                                         <md:PackIcon Kind="Plus"/>
                                                     </Button>
-                                                    <Button x:Name="BtnDelWBSCM" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47"  md:ShadowAssist.ShadowDepth="Depth5">
+                                                    <Button x:Name="BtnDelWBSCM" IsEnabled="{Binding Path = HasAccess}" Click="BtnDelWBSCM_Click" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47"  md:ShadowAssist.ShadowDepth="Depth5">
                                                         <md:PackIcon Kind="Minus"/>
                                                     </Button>
-                                                    <Button x:Name="BtnSetPrimaryCM" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignFloatingActionAccentButton}" ToolTip="Set Primary WBS" Margin="15,89,0,0" VerticalAlignment="Top" Width="47"  md:ShadowAssist.ShadowDepth="Depth5" Height="44">
+                                                    <Button x:Name="BtnSetPrimaryCM" IsEnabled="{Binding Path = HasAccess}" Click="BtnSetPrimaryCM_Click" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignFloatingActionAccentButton}" ToolTip="Set Primary WBS" Margin="15,89,0,0" VerticalAlignment="Top" Width="47"  md:ShadowAssist.ShadowDepth="Depth5" Height="44">
                                                         <md:PackIcon Kind="Key"/>
                                                     </Button>
-                                                    <DataGrid Name="dgWBSCM" CanUserDeleteRows="False" Margin="71,5,40,2" AutoGenerateColumns="False">
+                                                    <DataGrid Name="dgWBSCM" CanUserDeleteRows="False" Margin="71,5,0,0" AutoGenerateColumns="False" SelectedCellsChanged="DgWBSCM_SelectedCellsChanged" CellEditEnding="DgWBSCM_CellEditEnding" SelectionChanged="DgWBSCM_SelectionChanged">
                                                         <DataGrid.Resources>
                                                             <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                                                 <Setter Property="Padding" Value="-2"/>
@@ -419,13 +443,13 @@
                                             </TabItem>
                                             <TabItem Header="Roles" Name="tabRolesCM" >
                                                 <Grid Background="#FFE5E5E5" Name="gridTabRolesCM" IsEnabled="{Binding Path = HasAccess}">
-                                                    <Button Name="BtnAddRoleCM"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" md:ShadowAssist.ShadowDepth="Depth5">
+                                                    <Button Name="BtnAddRoleCM"  HorizontalAlignment="Left" Click="BtnAddRoleCM_Click" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" md:ShadowAssist.ShadowDepth="Depth5">
                                                         <md:PackIcon Kind="Plus"/>
                                                     </Button>
-                                                    <Button x:Name="BtnDelRoleCM" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" md:ShadowAssist.ShadowDepth="Depth5">
+                                                    <Button x:Name="BtnDelRoleCM" HorizontalAlignment="Left" Click="BtnDelRoleCM_Click" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" md:ShadowAssist.ShadowDepth="Depth5">
                                                         <md:PackIcon Kind="Minus"/>
                                                     </Button>
-                                                    <DataGrid Name="dgRolesCM" Margin="71,5,40,2" AutoGenerateColumns="False" IsReadOnly="True">
+                                                    <DataGrid Name="dgRolesCM" Margin="71,5,0,0" AutoGenerateColumns="False" IsReadOnly="True" CanUserDeleteRows="False">
                                                         <DataGrid.Columns>
                                                             <DataGridTextColumn x:Name="RoleCM" Header="Role" Binding="{Binding Path= Role}" Width="*"/>
                                                         </DataGrid.Columns>
@@ -566,7 +590,7 @@
                                     <DataGrid Grid.Row="2" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" VerticalAlignment="Stretch" 
                                               AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False" Grid.ColumnSpan="2" MouseLeave="DgRisksCross_MouseLeave" 
                                               SelectedCellsChanged="DgRisksCross_SelectedCellsChanged" LostFocus="DgRisksCross_LostFocus" CanUserDeleteRows="False" SelectionChanged="DgRisksCross_SelectionChanged" 
-                                              CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True" CanUserAddRows="False">
+                                              CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True" CanUserAddRows="False" BorderThickness="3">
                                     </DataGrid>
                                 </Grid>
                             </xcad:LayoutAnchorable>

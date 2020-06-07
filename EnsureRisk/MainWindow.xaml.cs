@@ -44,9 +44,32 @@ namespace EnsureRisk
         int idwbsfilter = -1;
         private string line_Selected = "None";
         private string type_selected = "None";
+        private string _riskshortName = "";
+        private string _cmshortName = "";
+        private bool showCMData = false;
+        private bool showRiskData = false;
+        private bool EditandoRisk;
+        private bool SeleccionandoRisk;       
+        private bool hasAccess;
+        private decimal probability;
+        private decimal riskreduction;
         private readonly string diagramName = "None";
         private MyLayoutDocumentt theCurrentLayout;
+        public string RiskLineName { get { return _riskshortName; } set { _riskshortName = value; OnPropertyChanged("RiskLineName"); } }
+        public string CMLineName { get { return _cmshortName; } set { _cmshortName = value; OnPropertyChanged("CMLineName"); } }
+        public bool HasAccess
+        {
+            get
+            {
+                return hasAccess;
+            }
 
+            set
+            {
+                hasAccess = value;
+                OnPropertyChanged("HasAccess");
+            }
+        }
         public MyLayoutDocumentt TheCurrentLayout
         {
             get
@@ -98,6 +121,46 @@ namespace EnsureRisk
             {
                 type_selected = value;
                 OnPropertyChanged("TSelected");
+            }
+        }
+
+        public bool ShowCMData
+        {
+            get { return showCMData; }
+            set
+            {
+                showCMData = value;
+                OnPropertyChanged("ShowCMData");
+            }
+        }
+
+        public decimal RiskReduction
+        {
+            get { return riskreduction; }
+            set
+            {
+                riskreduction = value;
+                OnPropertyChanged("RiskReduction");
+            }
+        }
+
+        public decimal Probability
+        {
+            get { return probability; }
+            set
+            {
+                probability = value;
+                OnPropertyChanged("Probability");
+            }
+        }
+
+        public bool ShowRiskData
+        {
+            get { return showRiskData; }
+            set
+            {
+                showRiskData = value;
+                OnPropertyChanged("ShowRiskData");
             }
         }
 
@@ -189,6 +252,30 @@ namespace EnsureRisk
         public DataSet DsWBS { get; set; }
         public DataSet DsGroupRisk { get; set; }
         public DataSet DsGroupCM { get; set; }
+
+        public DataView DvRiskWBS { get; set; }
+        public DataView DvRoleRisk { get; set; }
+        public DataRow Selected_RiskRoleRow { get; set; }
+        public DataRow Selected_Risk_WBS_Row { get; set; }
+        public DataRow Selected_CM_WBS_Row { get; set; }
+        public DataRow Selected_CM_Role_Row { get; set; }
+        public DataView DvRoleCM { get; set; }
+        public DataView DVCMWBS { get; set; }
+        public DataView DvRiskDamages { get; set; }
+        public DataView DvCM_Damages { get; set; }
+        #endregion
+
+        #region RiskDataTables
+        public DataTable Risk_DamageTable { get; set; }
+        public DataTable Risk_WBS_Table { get; set; }
+        public DataTable WBS_RISK_Damage_Table { get; set; }
+        public DataTable Risk_RoleTable { get; set; }
+
+        public DataTable CM_Table { get; set; }
+        public DataTable CM_DamageTable { get; set; }
+        public DataTable CM_WBS_Table { get; set; }
+        public DataTable WBS_CM_Damage_Table { get; set; }        
+        public DataTable CM_RoleTable { get; set; }
         #endregion
 
         #region DecimalUIConverterParams
@@ -200,10 +287,6 @@ namespace EnsureRisk
         private int Indexx = 0;
         public string LoginUser { get; set; }
         public int IdProject { get; set; }
-        //public int IdWBSFilter { get; set; } = -1;
-
-        //private bool DiagramAsTree = false;
-
         public const string CONNECTION = "ConnectionServer.xml";
         #endregion
 
@@ -238,6 +321,10 @@ namespace EnsureRisk
         public bool IS_REPEATING_NAME { get; set; } = false;
         public bool IS_DELETING_WBS { get; private set; } = false;
         public bool IS_LOGIN { get; private set; } = false;
+        public bool IS_DELETING_RISK_ROLE_ROW { get; private set; } = false;
+        public bool IS_DELETING_Risk_WBS_ROW { get; private set; } = false;
+        public bool IS_DELETING_CM_WBS { get; private set; } = false;
+        public bool IS_DELETING_CM_ROLE { get; private set; } = false;
         #endregion
 
         public int DiagramID { get; private set; } = 0;
@@ -262,12 +349,6 @@ namespace EnsureRisk
                 {
                     DataTable TableColors = new DataTable();
                     TableColors.ReadXml("Color.xml");
-                    //bool start = (bool)TableColors.Select().First()["StartLogo"];
-                    //if (start)
-                    //{
-                    //    WindowOpening op = new WindowOpening();
-                    //    op.ShowDialog();
-                    //}                
                     WindowOpening op = new WindowOpening();
                     op.ShowDialog();
                     TableColors.Dispose();
@@ -277,12 +358,15 @@ namespace EnsureRisk
                     WindowOpening op = new WindowOpening();
                     op.ShowDialog();
                 }
-                //P = new DataCurrenDiagram();               
                 InitializeComponent();
-                //buttonCantidad.DataContext = this;
-                //buttonCantidadCM.DataContext = this;
-                //TextLineSelected.DataContext = this;
-                //TextLineType.DataContext = this;
+                WrapCM.DataContext = this;
+                WrapRisk.DataContext = this;
+                TextRisk.DataContext = this;
+                TextCM.DataContext = this;
+                TextRiskDetail.DataContext = this;
+                TextCMDetail.DataContext = this;
+                TextProbability.DataContext = this;
+                TextRReduction.DataContext = this;
                 CbFilterWBSRisk.DataContext = this;
                 CbFilterWBSCM.DataContext = this;
                 WSRisk = new ServiceRiskController.WebServiceRisk();
@@ -2584,7 +2668,7 @@ namespace EnsureRisk
                     Posicion = (int)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.POSITION],
                     Icon = Icon,
                     ChildrenLines = TreeOperation.GetOnlyMyChildrenWithCM(TheCurrentLayout.Line_Selected),
-                    MyRisks = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Clone(),
+                    MyRisks = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Copy(),
                 };
                 formRisk.HasAccess = TheCurrentLayout.FullAccess(TheCurrentLayout.Line_Selected);
                 if (TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains(TheCurrentLayout.Line_Selected.ID))
@@ -2622,6 +2706,826 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
+
+        #region TabEditingRisk
+        public void UpdateRiskTabInformation()
+        {
+            if (TheCurrentLayout != null)
+            {
+                if (TheCurrentLayout.Line_Selected != null)
+                {
+                    Risk_DamageTable = TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Copy();
+                    CM_DamageTable = TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Copy();
+                    WBS_RISK_Damage_Table = TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Copy();
+                    WBS_CM_Damage_Table = TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Copy();
+                    Risk_WBS_Table = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Copy();
+                    CM_WBS_Table = TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Copy();
+                    Risk_RoleTable = TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Copy();
+                    CM_RoleTable = TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Copy();
+                    HasAccess = TheCurrentLayout.FullAccess(TheCurrentLayout.Line_Selected);
+                    DataRow RiskRow = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID);
+                    RiskLineName = RiskRow[DT_Risk.NAMESHORT].ToString();
+                    TextRiskDetail.Text = RiskRow[DT_Risk.COMMENTS].ToString();
+
+                    DvRiskWBS = Risk_WBS_Table.DefaultView;
+                    DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
+                    DgRiskWBS.ItemsSource = DvRiskWBS;
+
+                    DvRoleRisk = Risk_RoleTable.DefaultView;
+                    DvRoleRisk.RowFilter = DT_Role_Risk.ID_RISK + " = " + RiskRow[DT_Risk.ID];
+                    DgRiskRoles.ItemsSource = DvRoleRisk;
+
+                    DvRiskDamages = WBS_RISK_Damage_Table.DefaultView;
+
+                    DvRiskDamages.RowFilter = DT_WBS_RISK_DAMAGE.ID_RISK + " = " + RiskRow[DT_Risk.ID];
+                    if (DsWBS.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.USERNAME + " = '" + LoginUser + "'").Any())
+                    {
+                        string filter = "";
+                        DataRow[] item = DsWBS.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.USERNAME + " = '" + LoginUser + "'");
+                        for (int i = 0; i < item.Count(); i++)
+                        {
+                            if (i == 0)
+                            {
+                                filter += " AND (" + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + item[i][DT_WBS.ID_WBS];
+                            }
+                            else
+                            {
+                                filter += " OR " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + item[i][DT_WBS.ID_WBS];
+                            }
+                        }
+                        filter += ")";
+                        DvRiskDamages.RowFilter += filter;
+                    }
+                    DgRiskDamages.ItemsSource = DvRiskDamages;
+                    CalculateProbability(RiskRow);
+                }
+            }
+        }
+
+        private void CalculateProbability(DataRow RiskRow)
+        {
+            try
+            {
+                List<decimal> Probabilities = new List<decimal>();
+                foreach (DataRow item in Risk_WBS_Table.Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+                {
+                    if (WBS_isSheet((int)item[DT_RISK_WBS.ID_WBS]))
+                    {
+                        if (item[DT_RISK_WBS.PROBABILITY] == DBNull.Value)
+                        {
+                            Probabilities.Add(100);
+                        }
+                        else
+                        {
+                            if ((decimal)item[DT_RISK_WBS.PROBABILITY] >= 0 && (decimal)item[DT_RISK_WBS.PROBABILITY] <= 100)
+                            {
+                                Probabilities.Add((decimal)item[DT_RISK_WBS.PROBABILITY]);
+                            }
+                            else
+                            {
+                                decimal originalValue = (decimal)TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Find(new object[] { item[DT_RISK_WBS.ID_RISK], item[DT_RISK_WBS.ID_WBS] })[DT_RISK_WBS.PROBABILITY];
+                                Probabilities.Add(originalValue);
+                                MostrarErrorDialog("Risk Probability Value can't be less than 0 or higher to 100. No changes apply");
+                                item[DT_RISK_WBS.PROBABILITY] = originalValue;
+                            }
+                        }
+                    }
+                }
+                if (Probabilities.Count > 0)
+                {
+                    Probability = Probabilities.Sum() / Probabilities.Count;
+                }
+                else
+                {
+                    Probability = 100;
+                }
+                RiskRow[DT_Risk.PROBABILITY] = Probability;
+                foreach (DataRow item in Risk_DamageTable.Select(DT_Risk_Damages.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+                {
+                    item[DT_Risk_Damages.PROBABILITY] = RiskRow[DT_Risk.PROBABILITY];
+                }
+                TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Merge(Risk_WBS_Table);
+                TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Merge(Risk_DamageTable);
+               
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void TextRisk_LostFocus(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    if (EditandoRisk)
+                    {
+                        if (!SeleccionandoRisk)
+                        {
+                            RiskresultStack.Visibility = Visibility.Collapsed;
+                            EditandoRisk = false;
+                        }
+                    }
+                    if (TextRisk.Text != string.Empty)
+                    {
+                        if (TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + DiagramID + " and " + DT_Risk.NAMESHORT + " = '" + TextRisk.Text + "' and " + DT_Risk.ID + " <> " + TheCurrentLayout.Line_Selected.ID).Any())
+                        {
+                            if (new WindowMessageYesNo("The name [" + TextRisk.Text + "] Already exists in this diagram. Do you want to use it again?").ShowDialog() == true)
+                            {
+                                TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.NAMESHORT] = TextRisk.Text;
+                                foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID))
+                                {
+                                    item[DT_Risk_Damages.RISK_NAMESHORT] = TextRisk.Text;
+                                }
+                                TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                                TheCurrentLayout.DrawNumbers();
+                                TheCurrentLayout.UpdateLinesValues();
+                                TheCurrentLayout.SetLinesThickness();
+                                CruzarTablaRisk(TheCurrentLayout.Ds);
+                            }
+                            else
+                            {
+                                TextRisk.Text = TheCurrentLayout.Line_Selected.ShortName;
+                            }
+                        }
+                        else
+                        {
+                            TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.NAMESHORT] = TextRisk.Text;
+                            foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID))
+                            {
+                                item[DT_Risk_Damages.RISK_NAMESHORT] = TextRisk.Text;
+                            }
+                            TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                            TheCurrentLayout.DrawNumbers();
+                            TheCurrentLayout.UpdateLinesValues();
+                            TheCurrentLayout.SetLinesThickness();
+                            CruzarTablaRisk(TheCurrentLayout.Ds);
+                        }
+                    }
+                    else
+                    {
+                        MostrarErrorDialog("Risk name can't be empty!");
+
+                        UpdateRiskTabInformation();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void TextRiskDetail_LostFocus(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.COMMENTS] = TextRiskDetail.Text;
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        #region DgRiskWBS_Events
+        private void DgRiskWBS_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    CalculateProbability(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TheCurrentLayout.DrawNumbers();
+                    TheCurrentLayout.UpdateLinesValues();
+                    TheCurrentLayout.SetLinesThickness();
+                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void DgRiskWBS_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    CalculateProbability(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TheCurrentLayout.DrawNumbers();
+                    TheCurrentLayout.UpdateLinesValues();
+                    TheCurrentLayout.SetLinesThickness();
+                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void DgRiskWBS_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    CalculateProbability(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TheCurrentLayout.DrawNumbers();
+                    TheCurrentLayout.UpdateLinesValues();
+                    TheCurrentLayout.SetLinesThickness();
+                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+        #endregion
+
+        private void BtnAddWBSRisk_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    DataRow RiskRow = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID);
+                    int ID_PROJECT = (int)TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram)[DT_Diagram.ID_PROJECT];
+                    ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS();
+                    DataTable roleCodif = ws.GetAllWBSFiltered(new object[] { }).Tables[DT_WBS.TABLE_NAME].Copy();
+                    ws.Dispose();
+                    WindowSelection frmSelection = new WindowSelection();
+                    if (TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + (int)RiskRow[DT_Risk.ID]).Count() > 0)
+                    {
+                        frmSelection.Dt = General.DeleteExists(roleCodif, TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + (int)RiskRow[DT_Risk.ID]).CopyToDataTable(), DT_WBS.ID_WBS);
+                    }
+                    else
+                    {
+                        frmSelection.Dt = roleCodif;
+                    }
+                    foreach (DataRow item in frmSelection.Dt.Rows)
+                    {
+                        item[DT_WBS.WBS_NAME] = item[DT_WBS.WBS_NAME].ToString().Insert(0, TreeOperation.Spaces(item[DT_WBS.NIVEL].ToString().Split('.').Count() - 1));
+                        item[DT_WBS.NIVEL] = item[DT_WBS.NIVEL].ToString().Insert(0, TreeOperation.Spaces(item[DT_WBS.NIVEL].ToString().Split('.').Count() - 1));
+                    }
+                    frmSelection.DcolumToShow = new string[] { DT_WBS.NIVEL, DT_WBS.WBS_NAME, DT_WBS.USERNAME };
+                    frmSelection.DcolumToShowAlias = new string[] { "Level", DT_WBS.WBS_NAME, "User Owner" };
+                    frmSelection.Title = "WBS";
+                    frmSelection.P.FilterString = "WBS Name";
+                    frmSelection.ColumnToFilter = DT_WBS.WBS_NAME;
+                    if (frmSelection.ShowDialog() == true)
+                    {
+                        foreach (DataRow itemWBS in frmSelection.RowsSelected)//Por cada WBS seleccionado lo agrega al riesgo
+                        {
+                            DataRow drRiskWBS = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].NewRow();
+                            drRiskWBS[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
+                            drRiskWBS[DT_RISK_WBS.RISK] = TextRisk.Text;
+                            drRiskWBS[DT_RISK_WBS.WBS] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart();
+                            drRiskWBS[DT_RISK_WBS.ID_WBS] = itemWBS[DT_WBS.ID_WBS];
+                            drRiskWBS[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
+                            drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = false;
+                            drRiskWBS[DT_RISK_WBS.PRIMARY] = "";
+                            drRiskWBS[DT_RISK_WBS.USERNAME] = itemWBS[DT_WBS.USERNAME];
+                            drRiskWBS[DT_RISK_WBS.PROBABILITY] = 100;
+                            TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Add(drRiskWBS);
+                            foreach (DataRow itemAncestors in BuscarAncestros((int)itemWBS[DT_WBS.ID_WBS], DsWBS.Tables[DT_WBS.TABLE_NAME].Clone()).Rows)
+                            {
+                                if (!(TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Contains(new object[] { RiskRow[DT_Risk.ID], itemAncestors[DT_WBS.ID_WBS] })))
+                                {
+                                    DataRow drRiskWBSi = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].NewRow();
+                                    drRiskWBSi[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
+                                    drRiskWBSi[DT_RISK_WBS.RISK] = TextRisk.Text;
+                                    drRiskWBSi[DT_RISK_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
+                                    drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
+                                    drRiskWBSi[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
+                                    drRiskWBSi[DT_RISK_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
+                                    drRiskWBSi[DT_RISK_WBS.IS_PRIMARY] = false;
+                                    drRiskWBSi[DT_RISK_WBS.PRIMARY] = "";
+                                    drRiskWBSi[DT_RISK_WBS.PROBABILITY] = 100;
+                                    TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Add(drRiskWBSi);
+                                }
+                            }
+                            foreach (var itemLines in TreeOperation.GetOnlyMyChildrenWithCM(TheCurrentLayout.Line_Selected))
+                            {
+                                if (itemLines.IsCM)
+                                {
+                                    if (!(TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Contains(new object[] { itemLines.ID, itemWBS[DT_WBS.ID_WBS] })))
+                                    {
+                                        DataRow drCMWBS = TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].NewRow();
+                                        drCMWBS[DT_CM_WBS.ID_CM] = itemLines.ID;
+                                        drCMWBS[DT_CM_WBS.CM] = itemLines.ShortName;
+                                        drCMWBS[DT_CM_WBS.WBS] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart();
+                                        drCMWBS[DT_CM_WBS.ID_WBS] = itemWBS[DT_WBS.ID_WBS];
+                                        drCMWBS[DT_CM_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
+                                        drCMWBS[DT_CM_WBS.USERNAME] = itemWBS[DT_WBS.USERNAME];
+                                        drCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
+                                        drCMWBS[DT_CM_WBS.PRIMARY] = "";
+                                        TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Add(drCMWBS);
+                                    }
+                                    foreach (DataRow itemWBSCM in TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Select(DT_CM_WBS.ID_CM + " = " + itemLines.ID))
+                                    {
+                                        if (WBS_isSheet((int)itemWBSCM[DT_CM_WBS.ID_WBS]))
+                                        {
+                                            foreach (DataRow itemDamage in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + itemLines.ID))
+                                            {
+                                                if (!(TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemWBSCM[DT_CM_WBS.ID_WBS], itemDamage[DT_CounterM_Damage.ID_DAMAGE], itemLines.ID })))
+                                                {
+                                                    DataRow drWBS_CM_Damage = TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
+                                                    drWBS_CM_Damage[DT_WBS_CM_Damage.ID_CM] = itemLines.ID;
+                                                    drWBS_CM_Damage[DT_WBS_CM_Damage.ID_WBS] = itemWBSCM[DT_CM_WBS.ID_WBS];
+                                                    drWBS_CM_Damage[DT_WBS_CM_Damage.ID_DAMAGE] = itemDamage[DT_CounterM_Damage.ID_DAMAGE];
+                                                    drWBS_CM_Damage[DT_WBS_CM_Damage.DAMAGE] = itemDamage[DT_CounterM_Damage.DAMAGE];
+                                                    drWBS_CM_Damage[DT_WBS_CM_Damage.VALUE] = 0;
+                                                    drWBS_CM_Damage[DT_WBS_CM_Damage.WBS] = itemWBSCM[DT_CM_WBS.WBS];
+                                                    TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(drWBS_CM_Damage);
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                    //Buscando los ancestros para c/u de los wbs del cm
+                                    foreach (DataRow itemCMWBSi in TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Select(DT_CM_WBS.ID_CM + " = " + itemLines.ID))
+                                    {
+                                        foreach (DataRow itemAncestors in BuscarAncestros((int)itemCMWBSi[DT_CM_WBS.ID_WBS], DsWBS.Tables[DT_WBS.TABLE_NAME].Clone()).Rows)
+                                        {
+                                            if (!(TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Contains(new object[] { itemLines.ID, itemAncestors[DT_WBS.ID_WBS] })))
+                                            {
+                                                DataRow drCMWBS = TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].NewRow();
+                                                drCMWBS[DT_CM_WBS.ID_CM] = itemLines.ID;
+                                                drCMWBS[DT_CM_WBS.CM] = itemLines.ShortName;
+                                                drCMWBS[DT_CM_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
+                                                drCMWBS[DT_CM_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
+                                                drCMWBS[DT_CM_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
+                                                drCMWBS[DT_CM_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
+                                                drCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
+                                                drCMWBS[DT_CM_WBS.PRIMARY] = "";
+                                                TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Add(drCMWBS);
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (!(TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Contains(new object[] { itemLines.ID, itemWBS[DT_WBS.ID_WBS] })))
+                                    {
+                                        DataRow drRiskWBSS = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].NewRow();
+                                        drRiskWBSS[DT_RISK_WBS.ID_RISK] = itemLines.ID;
+                                        drRiskWBSS[DT_RISK_WBS.RISK] = itemLines.ShortName;
+                                        drRiskWBSS[DT_RISK_WBS.WBS] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart();
+                                        drRiskWBSS[DT_RISK_WBS.ID_WBS] = itemWBS[DT_WBS.ID_WBS];
+                                        drRiskWBSS[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
+                                        drRiskWBSS[DT_RISK_WBS.USERNAME] = itemWBS[DT_WBS.USERNAME];
+                                        drRiskWBSS[DT_RISK_WBS.IS_PRIMARY] = false;
+                                        drRiskWBSS[DT_RISK_WBS.PRIMARY] = "";
+                                        drRiskWBSS[DT_RISK_WBS.PROBABILITY] = 100;
+                                        TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Add(drRiskWBSS);
+                                    }
+                                    foreach (DataRow itemWBSRisk in TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + itemLines.ID))
+                                    {
+                                        if (WBS_isSheet((int)itemWBSRisk[DT_RISK_WBS.ID_WBS]))
+                                        {
+                                            foreach (DataRow itemDamage in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + itemLines.ID))
+                                            {
+                                                if (!(TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { itemWBSRisk[DT_RISK_WBS.ID_WBS], itemDamage[DT_Risk_Damages.ID_DAMAGE], itemLines.ID })))
+                                                {
+                                                    DataRow drWBS_RISK_Damage = TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
+                                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_RISK] = itemLines.ID;
+                                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_WBS] = itemWBSRisk[DT_RISK_WBS.ID_WBS];
+                                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = itemDamage[DT_Risk_Damages.ID_DAMAGE];
+                                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.DAMAGE] = itemDamage[DT_Risk_Damages.DAMAGE];
+                                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
+                                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.WBS] = itemWBSRisk[DT_RISK_WBS.WBS];
+                                                    TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(drWBS_RISK_Damage);
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                    foreach (DataRow itemRISKWBSi in TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + itemLines.ID))
+                                    {
+                                        foreach (DataRow itemAncestors in BuscarAncestros((int)itemRISKWBSi[DT_RISK_WBS.ID_WBS], DsWBS.Tables[DT_WBS.TABLE_NAME].Clone()).Rows)
+                                        {
+                                            if (!(TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Contains(new object[] { itemLines.ID, itemAncestors[DT_WBS.ID_WBS] })))
+                                            {
+                                                DataRow drRiskWBSi = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].NewRow();
+                                                drRiskWBSi[DT_RISK_WBS.ID_RISK] = itemLines.ID;
+                                                drRiskWBSi[DT_RISK_WBS.RISK] = itemLines.ShortName;
+                                                drRiskWBSi[DT_RISK_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
+                                                drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
+                                                drRiskWBSi[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
+                                                drRiskWBSi[DT_RISK_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
+                                                drRiskWBSi[DT_RISK_WBS.IS_PRIMARY] = false;
+                                                drRiskWBSi[DT_RISK_WBS.PRIMARY] = "";
+                                                drRiskWBSi[DT_RISK_WBS.PROBABILITY] = 100;
+                                                Risk_WBS_Table.Rows.Add(drRiskWBSi);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+
+                        foreach (DataRow itemWBS in TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+                        {
+                            if (WBS_isSheet((int)itemWBS[DT_RISK_WBS.ID_WBS]))
+                            {
+                                foreach (DataRow itemDamage in Risk_DamageTable.Select(DT_Risk_Damages.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+                                {
+                                    if (!(TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { itemWBS[DT_RISK_WBS.ID_WBS], itemDamage[DT_Risk_Damages.ID_DAMAGE], RiskRow[DT_Risk.ID] })))
+                                    {
+                                        DataRow drWBS_RISK_Damage = TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
+                                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_RISK] = RiskRow[DT_Risk.ID];
+                                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_WBS] = itemWBS[DT_RISK_WBS.ID_WBS];
+                                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = itemDamage[DT_Risk_Damages.ID_DAMAGE];
+                                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.DAMAGE] = itemDamage[DT_Risk_Damages.DAMAGE];
+                                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
+                                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.WBS] = itemWBS[DT_RISK_WBS.WBS];
+                                        TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(drWBS_RISK_Damage);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }               
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        public DataTable BuscarAncestros(int idWBS, DataTable dtWBSAncestors)
+        {
+            if (TengoPadre(idWBS))
+            {
+                dtWBSAncestors.ImportRow(BuscarMiPadre(idWBS));
+                return BuscarAncestros((int)BuscarMiPadre(idWBS)[DT_WBS.ID_WBS], dtWBSAncestors);
+            }
+            else
+            {
+                return dtWBSAncestors;
+            }
+        }
+
+        private bool TengoPadre(int idWBS)
+        {
+
+            return DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + idWBS).Any();
+        }
+        private DataRow BuscarMiPadre(int idWBS)
+        {
+            int idPadre = (int)DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + idWBS).First()[DT_WBS_STRUCTURE.ID_FATHER];
+            return DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idPadre);
+        }
+
+        private void BtnDelWBSRisk_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Selected_Risk_WBS_Row = DvRiskWBS[DgRiskWBS.SelectedIndex].Row;
+                IS_DELETING_Risk_WBS_ROW = true;
+                MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_Risk_WBS_Row[DT_RISK_WBS.WBS].ToString() + "]?");
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING_Risk_WBS_ROW = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void Delete_RISK_WBS_Row(DataRow fila)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    foreach (var itemLines in TreeOperation.GetOnlyMyChildrenWithCM(TheCurrentLayout.Line_Selected))
+                    {
+                        if (itemLines.IsCM)
+                        {//AQUI PROBLEMAS CON EL ROWSTATE
+                            foreach (DataRow itemC in TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Select(DT_WBS_CM_Damage.ID_CM + " = " + itemLines.ID + " AND " + DT_WBS_CM_Damage.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
+                            {
+                                itemC.Delete();
+                            }
+                            if (TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Contains(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }))
+                            {
+                                TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Find(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }).Delete();
+                            }
+                        }
+                        else
+                        {
+                            foreach (DataRow itemC in TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + itemLines.ID + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
+                            {
+                                itemC.Delete();
+                            }
+                            if (TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Contains(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }))
+                            {
+                                TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Rows.Find(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }).Delete();
+                            }
+                        }
+                    }
+                    foreach (DataRow itemC in TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
+                    {
+                        itemC.Delete();
+                    }
+                    fila.Delete();
+                    foreach (var item in TreeOperation.GetOnlyMyChildrenWithCM(TheCurrentLayout.Line_Selected))
+                    {
+                        RefreshDamageValues(item.ID, item.IsCM);
+                    }
+                    IS_DELETING_Risk_WBS_ROW = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING_Risk_WBS_ROW = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void RefreshDamageValues(int id, bool isCM)
+        {
+            if (isCM)
+            {
+                foreach (DataRow itemDamage in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + id))
+                {//primero recorro los Daños de los riesgos
+                    decimal valor = 0;
+                    foreach (DataRow itemWBS in TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Select(DT_WBS_CM_Damage.ID_CM + " = " + id + " AND " + DT_WBS_CM_Damage.ID_DAMAGE + " = " + itemDamage[DT_CounterM_Damage.ID_DAMAGE]))
+                    {//y despues para  sumarlos todos en un mismo daño y encontrar el AD
+                        valor += (decimal)itemWBS[DT_WBS_CM_Damage.VALUE];
+                    }
+                    itemDamage[DT_CounterM_Damage.VALUE] = valor;
+                }
+            }
+            else
+            {
+                foreach (DataRow itemDamage in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + id))
+                {//primero recorro los Daños de los riesgos
+                    decimal valor = 0;
+                    foreach (DataRow itemWBS in TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID + " AND " + DT_WBS_RISK_DAMAGE.ID_DAMAGE + " = " + itemDamage[DT_Risk_Damages.ID_DAMAGE]))
+                    {//y despues para  sumarlos todos en un mismo daño y encontrar el AD
+                        valor += (decimal)itemWBS[DT_WBS_RISK_DAMAGE.VALUE];
+                    }
+                    itemDamage[DT_Risk_Damages.VALUE] = valor;
+                }
+            }
+        }
+
+        private void BtnSetPrimary_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (DgRiskWBS.SelectedIndex >= 0)
+                {
+                    if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                    {
+                        foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID))
+                        {
+                            item[DT_RISK_WBS.IS_PRIMARY] = false;
+                            item[DT_RISK_WBS.PRIMARY] = "";
+                        }
+                        DvRiskWBS[DgRiskWBS.SelectedIndex].Row[DT_RISK_WBS.IS_PRIMARY] = true;
+                        DvRiskWBS[DgRiskWBS.SelectedIndex].Row[DT_RISK_WBS.PRIMARY] = "PRIMARY";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }       
+
+        private void RefreshRiskDamageValues(DataRow RiskRow)
+        {
+            foreach (DataRow itemDamage in Risk_DamageTable.Select(DT_Risk_Damages.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+            {//primero recorro los Daños de los riesgos
+                decimal valor = 0;
+                foreach (DataRow itemWBS in WBS_RISK_Damage_Table.Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " AND " + DT_WBS_RISK_DAMAGE.ID_DAMAGE + " = " + itemDamage[DT_Risk_Damages.ID_DAMAGE]))
+                {//y despues para  sumarlos todos en un mismo daño y encontrar el AD
+                    if ((decimal)itemWBS[DT_WBS_RISK_DAMAGE.VALUE] >= 0)
+                    {
+                        valor += (decimal)itemWBS[DT_WBS_RISK_DAMAGE.VALUE];
+                    }
+                    else
+                    {
+                        MostrarErrorDialog("Value can't be negative!!!");
+                        valor += (decimal)TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Find(new object[] { itemWBS[DT_WBS_RISK_DAMAGE.ID_WBS], itemWBS[DT_WBS_RISK_DAMAGE.ID_DAMAGE], itemWBS[DT_WBS_RISK_DAMAGE.ID_RISK] })[DT_WBS_RISK_DAMAGE.VALUE];
+                    }
+                }
+                itemDamage[DT_Risk_Damages.VALUE] = valor;
+            }
+            TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Merge(WBS_RISK_Damage_Table);
+            TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Merge(Risk_DamageTable);
+        }
+
+        #region DgRiskDamages_Events
+        private void DgRiskDamages_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    RefreshRiskDamageValues(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TheCurrentLayout.DrawNumbers();
+                    TheCurrentLayout.UpdateLinesValues();
+                    TheCurrentLayout.SetLinesThickness();
+                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void DgRiskDamages_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    RefreshRiskDamageValues(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TheCurrentLayout.DrawNumbers();
+                    TheCurrentLayout.UpdateLinesValues();
+                    TheCurrentLayout.SetLinesThickness();
+                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void DgRiskDamages_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    RefreshRiskDamageValues(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TheCurrentLayout.DrawNumbers();
+                    TheCurrentLayout.UpdateLinesValues();
+                    TheCurrentLayout.SetLinesThickness();
+                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+        #endregion
+
+        private void BtnAddRiskRole_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    DataRow RiskRow = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID);
+                    ServiceRoleController.WebServiceRole ws = new ServiceRoleController.WebServiceRole();
+                    DataTable roleCodif = ws.GetRolesData().Tables[DT_Role.ROLE_TABLE].Copy();
+                    ws.Dispose();
+                    WindowSelection frmSelection = new WindowSelection();
+                    if (TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + (int)RiskRow[DT_Risk.ID]).Count() > 0)
+                    {
+                        frmSelection.Dt = General.DeleteExists(roleCodif, TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + (int)RiskRow[DT_Risk.ID]).CopyToDataTable(), DT_Role.IDROL_COLUMN);
+                    }
+                    else
+                    {
+                        frmSelection.Dt = roleCodif;
+                    }
+
+                    frmSelection.DcolumToShow = new string[] { DT_Role.ROLE_COLUM };
+                    frmSelection.DcolumToShowAlias = new string[] { DT_Role.ROLE_COLUM };
+                    frmSelection.Title = DT_Role.ROLE_COLUM;
+                    frmSelection.P.FilterString = "Role Name";
+                    frmSelection.ColumnToFilter = DT_Role.ROLE_COLUM;
+                    if (frmSelection.ShowDialog() == true)
+                    {
+                        foreach (DataRow itemRole in frmSelection.RowsSelected)
+                        {
+                            DataRow drRole = TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                            drRole[DT_Role_Risk.ID_RISK] = RiskRow[DT_Risk.ID];
+                            drRole[DT_Role_Risk.NAME_SHORT] = TextRisk.Text;
+                            drRole[DT_Role_Risk.Role] = itemRole[DT_Role.ROLE_COLUM];
+                            drRole[DT_Role_Risk.IDROL_COLUMN] = itemRole[DT_Role.IDROL_COLUMN];
+                            TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRole);
+                            foreach (var item in TreeOperation.GetOnlyMyChildrenWithCM(TheCurrentLayout.Line_Selected))
+                            {
+                                if (item.IsCM)
+                                {
+                                    if (!(TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Rows.Contains(new object[] { item.ID, itemRole[DT_Role.IDROL_COLUMN] })))
+                                    {
+                                        DataRow drRoleCM = TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].NewRow();
+                                        drRoleCM[DT_Role_CM.ID_CM] = item.ID;
+                                        drRoleCM[DT_Role_CM.NAME_SHORT] = item.ShortName;
+                                        drRoleCM[DT_Role_CM.Role] = itemRole[DT_Role.ROLE_COLUM];
+                                        drRoleCM[DT_Role_CM.IDROL_COLUMN] = itemRole[DT_Role.IDROL_COLUMN];
+                                        TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Rows.Add(drRoleCM);
+                                    }
+                                }
+                                else
+                                {
+                                    if (!(TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { item.ID, itemRole[DT_Role.IDROL_COLUMN] })))
+                                    {
+                                        DataRow drRoleRisk = TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                                        drRoleRisk[DT_Role_Risk.ID_RISK] = item.ID;
+                                        drRoleRisk[DT_Role_Risk.NAME_SHORT] = item.ShortName;
+                                        drRoleRisk[DT_Role_Risk.Role] = itemRole[DT_Role.ROLE_COLUM];
+                                        drRoleRisk[DT_Role_Risk.IDROL_COLUMN] = itemRole[DT_Role.IDROL_COLUMN];
+                                        TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRoleRisk);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }                    
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void BtnDelRiskRole_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+            if (DgRiskRoles.SelectedIndex >= 0)
+            {
+                Selected_RiskRoleRow = DvRoleRisk[DgRiskRoles.SelectedIndex].Row;
+                if (Selected_RiskRoleRow[DT_Role_Risk.Role].ToString() != "Administrator")
+                {
+                    IS_DELETING_RISK_ROLE_ROW = true;
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_RiskRoleRow[DT_Role_Risk.Role].ToString() + "]?");
+                }
+                else
+                {
+                    MostrarErrorDialog("'Administrator' role can't be deleted!");
+                }
+            }
+        }
+
+        private void Delete_Role(DataRow fila)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    foreach (var item in TreeOperation.GetOnlyMyChildrenWithCM(TheCurrentLayout.Line_Selected))
+                    {
+                        if (item.IsCM)
+                        {
+                            if (TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Rows.Contains(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }))
+                            {
+                                TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Rows.Find(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }).Delete();
+                            }
+                        }
+                        else
+                        {
+                            if (TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }))
+                            {
+                                TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Find(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }).Delete();
+                            }
+                        }
+                    }
+                    fila.Delete();
+                    IS_DELETING_RISK_ROLE_ROW = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING_RISK_ROLE_ROW = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        #endregion
 
         private void DeleteRisk()
         {
@@ -3326,6 +4230,568 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
+
+        #region TabEditCM
+        public void UpdateCMTabInformation()
+        {
+            if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+            {
+                Risk_DamageTable = TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Copy();
+                CM_DamageTable = TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Copy();
+                WBS_RISK_Damage_Table = TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Copy();
+                WBS_CM_Damage_Table = TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Copy();
+                Risk_WBS_Table = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Copy();
+                CM_WBS_Table = TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Copy();
+                Risk_RoleTable = TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Copy();
+                CM_RoleTable = TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Copy();
+
+                DataRow CMRow = TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID);
+                CMLineName = CMRow[DT_CounterM.NAMESHORT].ToString();
+                TextCMDetail.Text = CMRow[DT_CounterM.DETAIL].ToString();
+                HasAccess = TheCurrentLayout.FullAccess(TheCurrentLayout.Line_Selected);
+                DvRoleCM = CM_RoleTable.DefaultView;
+                DvRoleCM.RowFilter = DT_Role_CM.ID_CM + " = " + CMRow[DT_CounterM.ID];
+                dgRolesCM.ItemsSource = DvRoleCM;
+
+                DVCMWBS = CM_WBS_Table.DefaultView;
+                dgWBSCM.ItemsSource = DVCMWBS;
+                DVCMWBS.RowFilter = DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID];
+
+                DvCM_Damages = WBS_CM_Damage_Table.DefaultView;
+
+                DvCM_Damages.RowFilter = DT_WBS_CM_Damage.ID_CM + " = " + CMRow[DT_CounterM.ID];
+                if (DsWBS.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.USERNAME + " = '" + LoginUser + "'").Any())
+                {
+                    string filter = "";
+                    DataRow[] item = DsWBS.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.USERNAME + " = '" + LoginUser + "'");
+                    for (int i = 0; i < item.Count(); i++)
+                    {
+                        if (i == 0)
+                        {
+                            filter += " AND (" + DT_WBS_CM_Damage.ID_WBS + " = " + item[i][DT_WBS.ID_WBS];
+                        }
+                        else
+                        {
+                            filter += " OR " + DT_WBS_CM_Damage.ID_WBS + " = " + item[i][DT_WBS.ID_WBS];
+                        }
+                    }
+                    filter += ")";
+                    DvCM_Damages.RowFilter += filter;
+                }
+                dgCMDamages.ItemsSource = DvCM_Damages;
+                CalculateRiskReduction(CMRow);
+            }
+        }
+
+        private void TextCM_LostFocus(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    if (TextCM.Text != string.Empty)
+                    {
+                        if (TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + DiagramID + " and " + DT_CounterM.NAMESHORT + " = '" + TextCM.Text + "' and " + DT_CounterM.ID + " <> " + TheCurrentLayout.Line_Selected.ID).Any())
+                        {
+                            if (new WindowMessageYesNo("The name [" + TextCM.Text + "] Already exists in this diagram. Do you want to use it again?").ShowDialog() == true)
+                            {
+
+                                TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_CounterM.NAMESHORT] = TextCM.Text;
+                                foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + TheCurrentLayout.Line_Selected.ID))
+                                {
+                                    item[DT_CounterM_Damage.COUNTERM_NAMESHORT] = TextCM.Text;
+                                }
+                                TheCurrentLayout.DrawNumbers();
+                                TheCurrentLayout.UpdateLinesValues();
+                                TheCurrentLayout.SetLinesThickness();
+                                CruzarTablaRisk(TheCurrentLayout.Ds);
+                                CruzarTablaCM(TheCurrentLayout.Ds);
+                            }
+                            else
+                            {
+                                TextCM.Text = TheCurrentLayout.Line_Selected.ShortName;
+                            }
+                        }
+                        else
+                        {
+
+                            TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_CounterM.NAMESHORT] = TextCM.Text;
+                            foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + TheCurrentLayout.Line_Selected.ID))
+                            {
+                                item[DT_CounterM_Damage.COUNTERM_NAMESHORT] = TextCM.Text;
+                            }
+                            TheCurrentLayout.DrawNumbers();
+                            TheCurrentLayout.UpdateLinesValues();
+                            TheCurrentLayout.SetLinesThickness();
+                            CruzarTablaRisk(TheCurrentLayout.Ds);
+                            CruzarTablaCM(TheCurrentLayout.Ds);
+                        }
+                    }
+                    else
+                    {
+                        MostrarErrorDialog("CM name can't be empty!");
+                        UpdateCMTabInformation();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void TextCMDetail_LostFocus(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_CounterM.DETAIL] = TextCMDetail.Text;
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void RefreshCMDamageValues(DataRow CMRow)
+        {
+            foreach (DataRow itemDamage in CM_DamageTable.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CMRow[DT_CounterM.ID]))
+            {//primero recorro los Daños de los riesgos
+                decimal valor = 0;
+                foreach (DataRow itemWBS in WBS_CM_Damage_Table.Select(DT_WBS_CM_Damage.ID_CM + " = " + CMRow[DT_CounterM.ID] + " AND " + DT_WBS_CM_Damage.ID_DAMAGE + " = " + itemDamage[DT_CounterM_Damage.ID_DAMAGE]))
+                {//y despues para  sumarlos todos en un mismo daño y encontrar el AD.
+                    if ((decimal)itemWBS[DT_WBS_CM_Damage.VALUE] >= 0)
+                    {
+                        valor += (decimal)itemWBS[DT_WBS_CM_Damage.VALUE];
+                    }
+                    else
+                    {
+                        MostrarErrorDialog("Value can't be negative!!!");
+                        valor += (decimal)TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Find(new object[] { itemWBS[DT_WBS_CM_Damage.ID_WBS], itemWBS[DT_WBS_CM_Damage.ID_DAMAGE], itemWBS[DT_WBS_CM_Damage.ID_CM] })[DT_WBS_CM_Damage.VALUE];
+
+                    }
+                }
+                itemDamage[DT_CounterM_Damage.VALUE] = valor;
+            }
+            TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Merge(WBS_CM_Damage_Table);
+            TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Merge(CM_DamageTable);
+
+        }
+
+        #region  DgCMDamages_events
+        private void DgCMDamages_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    RefreshCMDamageValues(TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)); 
+                    TheCurrentLayout.DrawNumbers();
+                    TheCurrentLayout.UpdateLinesValues();
+                    TheCurrentLayout.SetLinesThickness();
+                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                    CruzarTablaCM(TheCurrentLayout.Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void DgCMDamages_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            try
+            {
+                RefreshCMDamageValues(TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                TheCurrentLayout.DrawNumbers();
+                TheCurrentLayout.UpdateLinesValues();
+                TheCurrentLayout.SetLinesThickness();
+                CruzarTablaRisk(TheCurrentLayout.Ds);
+                CruzarTablaCM(TheCurrentLayout.Ds);
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void DgCMDamages_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                RefreshCMDamageValues(TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                TheCurrentLayout.DrawNumbers();
+                TheCurrentLayout.UpdateLinesValues();
+                TheCurrentLayout.SetLinesThickness();
+                CruzarTablaRisk(TheCurrentLayout.Ds);
+                CruzarTablaCM(TheCurrentLayout.Ds);
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+        #endregion
+
+        #region DgWBSCM_Events
+        private void CalculateRiskReduction(DataRow CMRow)
+        {
+            try
+            {
+                List<decimal> Probabilities = new List<decimal>();
+                foreach (DataRow item in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
+                {
+                    if (WBS_isSheet((int)item[DT_CM_WBS.ID_WBS]))
+                    {
+                        if (item[DT_CM_WBS.PROBABILITY] == DBNull.Value)
+                        {
+                            Probabilities.Add(0);
+                        }
+                        else
+                        {
+                            if ((decimal)item[DT_CM_WBS.PROBABILITY] >= 0 && (decimal)item[DT_CM_WBS.PROBABILITY] <= 100)
+                            {
+                                Probabilities.Add((decimal)item[DT_CM_WBS.PROBABILITY]);
+                            }
+                            else
+                            {
+                                decimal originalValue = (decimal)TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Find(new object[] { item[DT_CM_WBS.ID_CM], item[DT_CM_WBS.ID_WBS] })[DT_CM_WBS.PROBABILITY];
+                                Probabilities.Add(originalValue);
+                                MostrarErrorDialog("Risk Reduction must be between 0 and 100");
+                                item[DT_CM_WBS.PROBABILITY] = originalValue;
+                            }
+                        }
+                    }
+                }
+                if (Probabilities.Count > 0)
+                {
+                    RiskReduction = Probabilities.Sum() / Probabilities.Count;
+                }
+                else
+                {
+                    RiskReduction = 0;
+                }
+                CMRow[DT_CounterM.PROBABILITY] = RiskReduction;
+                foreach (DataRow item in CM_DamageTable.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CMRow[DT_CounterM.ID]))
+                {
+                    item[DT_CounterM_Damage.RISK_REDUCTION] = CMRow[DT_CounterM.PROBABILITY];
+                }
+                TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Merge(CM_WBS_Table);
+                TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Merge(CM_DamageTable);
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void DgWBSCM_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    CalculateRiskReduction(TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TheCurrentLayout.DrawNumbers();
+                    TheCurrentLayout.UpdateLinesValues();
+                    TheCurrentLayout.SetLinesThickness();
+                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                    CruzarTablaCM(TheCurrentLayout.Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void DgWBSCM_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    CalculateRiskReduction(TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TheCurrentLayout.DrawNumbers();
+                    TheCurrentLayout.UpdateLinesValues();
+                    TheCurrentLayout.SetLinesThickness();
+                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                    CruzarTablaCM(TheCurrentLayout.Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void DgWBSCM_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    CalculateRiskReduction(TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
+                    TheCurrentLayout.DrawNumbers();
+                    TheCurrentLayout.UpdateLinesValues();
+                    TheCurrentLayout.SetLinesThickness();
+                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                    CruzarTablaCM(TheCurrentLayout.Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+        #endregion
+
+        private void BtnAddWBSCM_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+
+                }
+                ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS();
+                DataTable roleCodif = ws.GetAllWBS().Tables[DT_WBS.TABLE_NAME].Copy();
+                ws.Dispose();
+                WindowSelection frmSelection = new WindowSelection();
+                if (TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Select(DT_CM_WBS.ID_CM + " = " +  TheCurrentLayout.Line_Selected.ID).Count() > 0)
+                {
+                    frmSelection.Dt = General.DeleteExists(roleCodif, TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Select(DT_CM_WBS.ID_CM + " = " + TheCurrentLayout.Line_Selected.ID).CopyToDataTable(), DT_WBS.ID_WBS);
+                }
+                else
+                {
+                    frmSelection.Dt = roleCodif;
+                }
+
+                frmSelection.DcolumToShow = new string[] { DT_WBS.NIVEL, DT_WBS.WBS_NAME };
+                frmSelection.DcolumToShowAlias = new string[] { "Level", DT_WBS.WBS_NAME };
+                frmSelection.Title = "WBS";
+
+                frmSelection.P.FilterString = "WBS";
+                frmSelection.ColumnToFilter = DT_WBS.WBS_NAME;
+                if (frmSelection.ShowDialog() == true)
+                {
+                    foreach (DataRow item in frmSelection.RowsSelected)
+                    {
+                        DataRow drCMWBS = TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].NewRow();
+                        drCMWBS[DT_CM_WBS.ID_CM] = TheCurrentLayout.Line_Selected.ID;
+                        drCMWBS[DT_CM_WBS.CM] = TextCM.Text;
+                        drCMWBS[DT_CM_WBS.WBS] = item[DT_WBS.WBS_NAME].ToString().TrimStart();
+                        drCMWBS[DT_CM_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
+                        drCMWBS[DT_CM_WBS.NIVEL] = item[DT_WBS.NIVEL].ToString().TrimStart();
+                        drCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
+                        drCMWBS[DT_CM_WBS.PRIMARY] = "";
+                        drCMWBS[DT_CM_WBS.USERNAME] = item[DT_WBS.USERNAME];
+                        drCMWBS[DT_CM_WBS.PROBABILITY] = 0;
+                        TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Add(drCMWBS);
+                    }
+                    foreach (DataRow itemRISKWBSi in TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Select(DT_CM_WBS.ID_CM + " = " + TheCurrentLayout.Line_Selected.ID))
+                    {
+                        foreach (DataRow itemAncestors in BuscarAncestros((int)itemRISKWBSi[DT_RISK_WBS.ID_WBS], DsWBS.Tables[DT_WBS.TABLE_NAME].Clone()).Rows)
+                        {
+                            if (!(TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Contains(new object[] { TheCurrentLayout.Line_Selected.ID, itemAncestors[DT_WBS.ID_WBS] })))
+                            {
+                                DataRow drRiskWBSi = TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].NewRow();
+                                drRiskWBSi[DT_CM_WBS.ID_CM] = TheCurrentLayout.Line_Selected.ID;
+                                drRiskWBSi[DT_CM_WBS.CM] = TextCM.Text;
+                                drRiskWBSi[DT_CM_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
+                                drRiskWBSi[DT_CM_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
+                                drRiskWBSi[DT_CM_WBS.NIVEL] = itemAncestors[DT_WBS.NIVEL].ToString().TrimStart();
+                                drRiskWBSi[DT_CM_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
+                                drRiskWBSi[DT_CM_WBS.IS_PRIMARY] = false;
+                                drRiskWBSi[DT_CM_WBS.PRIMARY] = "";
+                                drRiskWBSi[DT_CM_WBS.PROBABILITY] = 0;
+                                TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Rows.Add(drRiskWBSi);
+                            }
+                        }
+                    }
+                    foreach (DataRow itemWBS in TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Select(DT_CM_WBS.ID_CM + " = " + TheCurrentLayout.Line_Selected.ID))
+                    {
+                        if (WBS_isSheet((int)itemWBS[DT_CM_WBS.ID_WBS]))
+                        {
+                            foreach (DataRow itemDamage in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + TheCurrentLayout.Line_Selected.ID))
+                            {
+                                DataRow drWBS_CM_Damage = TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
+                                drWBS_CM_Damage[DT_WBS_CM_Damage.ID_CM] = TheCurrentLayout.Line_Selected.ID;
+                                drWBS_CM_Damage[DT_WBS_CM_Damage.ID_WBS] = itemWBS[DT_RISK_WBS.ID_WBS];
+                                drWBS_CM_Damage[DT_WBS_CM_Damage.ID_DAMAGE] = itemDamage[DT_Risk_Damages.ID_DAMAGE];
+                                drWBS_CM_Damage[DT_WBS_CM_Damage.DAMAGE] = itemDamage[DT_Risk_Damages.DAMAGE];
+                                drWBS_CM_Damage[DT_WBS_CM_Damage.VALUE] = 0;
+                                drWBS_CM_Damage[DT_WBS_CM_Damage.WBS] = itemWBS[DT_RISK_WBS.WBS];
+                                if (!(TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemWBS[DT_CM_WBS.ID_WBS], itemDamage[DT_CounterM_Damage.ID_DAMAGE], TheCurrentLayout.Line_Selected.ID })))
+                                {
+                                    TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(drWBS_CM_Damage);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+
+        }
+
+        private void BtnDelWBSCM_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (dgWBSCM.SelectedIndex >= 0)
+                {
+                    Selected_CM_WBS_Row = DVCMWBS[dgWBSCM.SelectedIndex].Row;
+                    IS_DELETING_CM_WBS = true;
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_CM_WBS_Row[DT_CM_WBS.WBS].ToString() + "]?");
+                }
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING_CM_WBS = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void Delete_WBS(DataRow fila)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    foreach (DataRow itemR in (TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Select(DT_WBS_CM_Damage.ID_WBS + " = " + fila[DT_WBS.ID_WBS] + " AND " + DT_WBS_CM_Damage.ID_CM + " = " + TheCurrentLayout.Line_Selected.ID)))
+                    {
+                        itemR.Delete();
+                    }
+                    fila.Delete();
+                    IS_DELETING_WBS = false;
+                }                
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING_WBS = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+
+        private void BtnSetPrimaryCM_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    if (dgWBSCM.SelectedIndex >= 0)
+                    {
+                        foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Select(DT_CM_WBS.ID_CM + " = " + TheCurrentLayout.Line_Selected.ID))
+                        {
+                            item[DT_CM_WBS.IS_PRIMARY] = false;
+                            item[DT_CM_WBS.PRIMARY] = "";
+                        }
+                        DVCMWBS[dgWBSCM.SelectedIndex].Row[DT_CM_WBS.IS_PRIMARY] = true;
+                        DVCMWBS[dgWBSCM.SelectedIndex].Row[DT_CM_WBS.PRIMARY] = "PRIMARY";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void BtnAddRoleCM_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                {
+                    ServiceRoleController.WebServiceRole ws = new ServiceRoleController.WebServiceRole();
+                    DataTable roleCodif = ws.GetRolesData().Tables[DT_Role.ROLE_TABLE].Copy();
+                    ws.Dispose();
+                    WindowSelection frmSelection = new WindowSelection();
+                    if (TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Select(DT_Role_CM.ID_CM + " = " + TheCurrentLayout.Line_Selected.ID).Count() > 0)
+                    {
+                        frmSelection.Dt = General.DeleteExists(roleCodif, TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Select(DT_Role_CM.ID_CM + " = " + TheCurrentLayout.Line_Selected.ID).CopyToDataTable(), DT_Role.IDROL_COLUMN);
+                    }
+                    else
+                    {
+                        frmSelection.Dt = roleCodif;
+                    }
+
+                    frmSelection.DcolumToShow = new string[] { DT_Role.ROLE_COLUM };
+                    frmSelection.DcolumToShowAlias = new string[] { DT_Role.ROLE_COLUM };
+                    frmSelection.P.FilterString = DT_Role.ROLE_COLUM;
+                    frmSelection.ColumnToFilter = DT_Role.ROLE_COLUM;
+                    frmSelection.Title = DT_Role.ROLE_COLUM;
+
+                    if (frmSelection.ShowDialog() == true)
+                    {
+                        foreach (DataRow item in frmSelection.RowsSelected)
+                        {
+                            DataRow drRole = TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].NewRow();
+                            drRole[DT_Role_CM.ID_CM] = TheCurrentLayout.Line_Selected.ID;
+                            drRole[DT_Role_CM.NAME_SHORT] = TextCM.Text;
+                            drRole[DT_Role_CM.Role] = item[DT_Role.ROLE_COLUM];
+                            drRole[DT_Role_CM.IDROL_COLUMN] = item[DT_Role.IDROL_COLUMN];
+                            TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Rows.Add(drRole);
+                        }
+                    }
+                }                
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+
+        }
+
+        private void Delete_CM_Role(DataRow fila)
+        {
+            try
+            {
+                fila.Delete();
+                IS_DELETING_CM_ROLE = false;
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING_CM_ROLE = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void BtnDelRoleCM_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (dgRolesCM.SelectedIndex >= 0)
+                {
+                    Selected_CM_Role_Row = DvRoleCM[dgRolesCM.SelectedIndex].Row;
+                    if (Selected_CM_Role_Row[DT_Role_CM.Role].ToString() != "Administrator")
+                    {
+                        IS_DELETING_CM_ROLE = true;
+                        MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_CM_Role_Row[DT_Role_CM.Role].ToString() + "]?");
+                    }
+                    else
+                    {
+                        MostrarErrorDialog("'Administrator' role can't be deleted!");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                IS_DELETING_CM_ROLE = false;
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+
+        #endregion
 
         private void DeleteCM()
         {
@@ -4318,7 +5784,7 @@ namespace EnsureRisk
             }
             catch (Exception ex)
             {
-                MostrarErrorDialog(ex.Message + "-CruzandoTablaRisk");
+                MostrarErrorDialog(ex.Message + "- CruzandoTablaRisk");
             }
         }
         
@@ -5713,32 +7179,6 @@ namespace EnsureRisk
 
         #region AppEvents
 
-
-        /// <summary>
-        /// Return to the Main Diagram 
-        /// </summary>
-        private void BtnBackward_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                TheCurrentLayout.IsScoping = false;
-                TheCurrentLayout.DropLines();
-                TheCurrentLayout.DropRectangles();
-                TheCurrentLayout.LoadLines();
-                TheCurrentLayout.LoadRectangles();
-                TheCurrentLayout.DrawNumbers();
-                ///*BtnBackward*/.Visibility = Visibility.Hidden;
-                //TextDiagram.Text = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
-                TheCurrentLayout.Title = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
-                TextProbabilityChange(TheCurrentLayout.MainLine);
-                TheCurrentLayout.SetLinesThickness();
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
         private void CbProjects_DropDownClosed(object sender, EventArgs e)
         {
             try
@@ -6164,16 +7604,16 @@ namespace EnsureRisk
                 {
                     if (riskDataGrid.SelectedItem is DataRowView)
                     {
-                        if (((DataRowView)riskDataGrid.SelectedItem).Row[DT_Risk.ID] is int)
+                        if (((DataRowView)riskDataGrid.SelectedItem).Row[DT_Risk.ID] is int rowRiskID)
                         {
-                            TheCurrentLayout.Line_Selected = TheCurrentLayout.LinesList.Find(item => (item.ID == (int)((DataRowView)riskDataGrid.SelectedItem).Row[DT_Risk.ID]));
+                            TheCurrentLayout.Line_Selected = TheCurrentLayout.LinesList.Find(item => (item.ID == rowRiskID));
                             TheCurrentLayout.RiskLeave();
                             TheCurrentLayout.RiskEnter(TheCurrentLayout.Line_Selected, TheCurrentLayout.Line_Selected.Points[TheCurrentLayout.Line_Selected.Points.Count - 1]);
                             TheCurrentLayout.BrigIntoViewSelectedRiskPolyline(TheCurrentLayout.Line_Selected);
                             TheCurrentLayout.UpdateSelectedPolyLineVisualInfo();
                             bool access = TheCurrentLayout.FullAccess(TheCurrentLayout.Line_Selected);
                             ColumnasTextoRiskReadOnly(access, riskDataGrid);
-                            if (IdWBSFilter != -1 && UsuarioUsaWBSRisk((int)((DataRowView)riskDataGrid.SelectedItem).Row[DT_Risk.ID]))
+                            if (IdWBSFilter != -1 && UsuarioUsaWBSRisk(rowRiskID))
                             {
                                 ColumnasNumerosRiskReadOnly(true, riskDataGrid);
                             }
@@ -6900,6 +8340,74 @@ namespace EnsureRisk
                         IS_REPEATING_NAME = false;
                         Selected_DataGrid.CancelEdit(DataGridEditingUnit.Cell);
                     }
+                    if (IS_REOPEN_DIAGRAM)
+                    {
+                        IS_REOPEN_DIAGRAM = false;
+                    }
+                    if (IS_DELETING_DIAGRAM)
+                    {
+                        IS_DELETING_DIAGRAM = false;
+                    }
+                    if (IS_DELETING_RISK)
+                    {
+                        IS_DELETING_RISK = false;
+                    }
+                    if (IS_DELETING_CM)
+                    {
+                        IS_DELETING_CM = false;
+                    }
+                    if (IS_IMPORTING_PROJECT)
+                    {
+                        IS_IMPORTING_PROJECT = false;
+                    }
+                    if (IS_DELETING_GROUP_CM)
+                    {
+                        IS_DELETING_GROUP_CM=false;
+                    }
+                    if (IS_REMOVING_GROUP_FILTER)
+                    {
+                        IS_REMOVING_GROUP_FILTER = false;
+                    }
+                    if (IS_REMOVING_GROUP)
+                    {
+                        IS_REMOVING_GROUP = false;
+                    }
+                    if (IS_DELETING_GROUP_TAB)
+                    {
+                        IS_DELETING_GROUP_TAB = false;
+                    }
+                    if (IS_REMOVING_TABLE_ROW)
+                    {
+                        IS_DELETING_GROUP_TAB = false;
+                    }
+                    if (IS_SAVING_DATA)
+                    {
+                        IS_SAVING_DATA = false;
+                    }
+                    if (IS_DELETING_WBS)
+                    {
+                        IS_DELETING_WBS = false;
+                    }
+                    if (IS_REPEATING_NAME)
+                    {
+                        IS_REPEATING_NAME = false;
+                    }
+                    if (IS_DELETING_RISK_ROLE_ROW)
+                    {
+                        IS_DELETING_RISK_ROLE_ROW = false;
+                    }
+                    if (IS_DELETING_Risk_WBS_ROW)
+                    {
+                        IS_DELETING_Risk_WBS_ROW = false;
+                    }
+                    if (IS_DELETING_CM_WBS)
+                    {
+                        IS_DELETING_CM_WBS = false;
+                    }
+                    if (IS_DELETING_CM_ROLE)
+                    {
+                        IS_DELETING_CM_ROLE = false;
+                    }
                     return;
                 }
                 if (Equals(eventArgs.Parameter, true))
@@ -6955,6 +8463,22 @@ namespace EnsureRisk
                     if (IS_REPEATING_NAME)
                     {
                         IS_REPEATING_NAME = false;
+                    }
+                    if (IS_DELETING_RISK_ROLE_ROW)
+                    {
+                        Delete_Role(Selected_RiskRoleRow);
+                    }
+                    if (IS_DELETING_Risk_WBS_ROW)
+                    {
+                        Delete_RISK_WBS_Row(Selected_Risk_WBS_Row);
+                    }
+                    if (IS_DELETING_CM_WBS)
+                    {
+                        Delete_WBS(Selected_CM_WBS_Row);
+                    }
+                    if (IS_DELETING_CM_ROLE)
+                    {
+                        Delete_CM_Role(Selected_CM_Role_Row);
                     }
                 }
             }
@@ -7136,6 +8660,88 @@ namespace EnsureRisk
             }
         }
 
+        private void RiskName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            RiskLineName = TextRisk.Text;
+        }
+
+        private void RiskName_KeyUp(object sender, KeyEventArgs e)
+        {
+            EditandoRisk = true;
+            RiskresultStack.Visibility = Visibility.Visible;
+            bool found = false;
+            var border = (RiskresultStack.Parent as ScrollViewer).Parent as System.Windows.Controls.Border;
+
+            string query = (sender as TextBox).Text;
+
+            if (query.Length == 0)
+            {
+                // Clear   
+                RiskresultStack.Children.Clear();
+                border.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                border.Visibility = Visibility.Visible;
+            }
+
+            // Clear the list   
+            RiskresultStack.Children.Clear();
+
+            // Add the result   
+            foreach (DataRow obj in TheCurrentLayout.Ds.Tables[DT_DefaulRisk.Risk_TABLA].Rows)
+            {
+                if (obj[DT_DefaulRisk.RISK_NAME_COLUMNA].ToString().ToLower().StartsWith(query.ToLower()))
+                {
+                    // The word starts with this... Autocomplete must work   
+                    AddRiskItem(obj[DT_DefaulRisk.RISK_NAME_COLUMNA].ToString());
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                RiskresultStack.Children.Add(new TextBlock() { Text = "No results found." });
+            }
+        }
+
+        private void AddRiskItem(string text)
+        {
+            TextBlock block = new TextBlock
+            {
+                Text = text,
+                Margin = new Thickness(2, 3, 2, 3),
+                Cursor = Cursors.Hand
+            };
+
+            block.MouseLeftButtonUp += (sender, e) =>
+            {
+                TextRisk.Text = (sender as TextBlock).Text;
+                RiskresultStack.Visibility = Visibility.Collapsed;
+            };
+
+            block.MouseEnter += (sender, e) =>
+            {
+                TextBlock b = sender as TextBlock;
+                b.Background = Brushes.PeachPuff;
+                SeleccionandoRisk = true;
+            };
+
+            block.MouseLeave += (sender, e) =>
+            {
+                TextBlock b = sender as TextBlock;
+                b.Background = Brushes.Transparent;
+                SeleccionandoRisk = false;
+            };
+
+            RiskresultStack.Children.Add(block);
+        }
+
+        private void TextCM_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CMLineName = TextCM.Text;
+        }
+        
         private void BtnDeselect_Click(object sender, RoutedEventArgs e)
         {
             try

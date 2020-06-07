@@ -2,6 +2,8 @@
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System;
+using System.Windows;
 
 namespace EnsureRisk.Classess
 {
@@ -70,6 +72,28 @@ namespace EnsureRisk.Classess
                 }
             }
             return new ValidationResult(false, "Insert a number");
+        }
+    }
+
+    public class BooleanToVisibilityConverter : IValueConverter
+    {
+        public Visibility TrueValue { get; set; } = Visibility.Visible;
+        public Visibility FalseValue { get; set; } = Visibility.Collapsed;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool bValue = false;
+            if (value is bool)
+            {
+                bValue = (bool)value;
+            }
+
+            return (bValue) ? TrueValue : FalseValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value as Visibility? == TrueValue;
         }
     }
 }
