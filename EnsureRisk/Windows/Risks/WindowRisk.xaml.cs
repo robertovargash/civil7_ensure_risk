@@ -227,7 +227,7 @@ namespace EnsureRisk.Windows
                     rowTop[DT_Risk_Damages.GROUPE_NAME] = "None";
                     rowTop[DT_Risk_Damages.RISK_NAMESHORT] = "";
                     rowTop[DT_Risk_Damages.FATHER] = RowFather[DT_Risk.NAMESHORT].ToString();
-                    rowTop[DT_Risk_Damages.STATUS] = isEnabled ? "Activated" : "No Activated";
+                    rowTop[DT_Risk_Damages.STATUS] = isEnabled;
                     rowTop[DT_Risk_Damages.ID_FATHER] = RiskRow[DT_Risk.IDRISK_FATHER];
                     rowTop[DT_Risk_Damages.RISK_TREE] = Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(RiskTreeID)[DT_Diagram.DIAGRAM_NAME].ToString();
                     rowTop[DT_Risk_Damages.IS_ROOT] = false;

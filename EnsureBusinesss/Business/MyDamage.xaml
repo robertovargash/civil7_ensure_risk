@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:EnsureBusinesss.Business"
              mc:Ignorable="d" 
               RenderTransformOrigin="0,0" Width="250" Height="90" HorizontalAlignment="Left" VerticalAlignment="Top">
-    <Grid Name="gridContanerLabels" Background="Transparent">
+    <Grid Name="gridContanerLabels" Background="Transparent" Cursor="Hand">
         <Border Name="myBorder" Background="Beige" CornerRadius="10">
             <Grid Margin="3">
                 <Grid.RowDefinitions>
@@ -15,8 +15,8 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Name="HeaderValue" Text="Cost ($)" Grid.Row="0" VerticalAlignment="Center"/>
-                <TextBlock Name="CalculatedValue" Text="Total Value" Grid.Row="1" VerticalAlignment="Center"/>
-                <TextBlock Name="ExpectedDamage" Text="Acum. Value" Grid.Row="2" VerticalAlignment="Center"/>
+                <TextBlock Name="CalculatedValue" Text="Acum. Value" Grid.Row="1" VerticalAlignment="Center"/>
+                <TextBlock Name="ExpectedDamage" Text="Acum. Dam" Grid.Row="2" VerticalAlignment="Center"/>
             </Grid>
         </Border>
     </Grid>

@@ -31,6 +31,7 @@ using Xceed.Wpf.AvalonDock.Layout;
 using Xceed.Wpf.AvalonDock;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.Windows.Controls.Primitives;
 //using System.Windows.Forms;
 
 namespace EnsureRisk
@@ -1562,358 +1563,7 @@ namespace EnsureRisk
         /// <summary>
         /// Descontinuado pero no lo borro para hacer el otro asincronico
         /// </summary>
-        //private async Task ImportarExcel(DataSet dsImporting, Excel.Application Aplicacion)
-        //{
-        //    using (System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
-        //    {
-        //        if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-        //        {
-        //            WindowText wt = new WindowText
-        //            {
-        //                MyTitle = "Key Word for Disable"
-        //            };
-        //            wt.txtKeyword.Focus();
-        //            if (wt.ShowDialog() == true)
-        //            {
-        //                //importante Yordan, desde aca
-        //                DataRow drDiagrams = dsImporting.Tables[DT_Diagram.TABLE_NAME].NewRow();
-        //                Cursor = Cursors.No;
-        //                //p.ProgressVisible = true;
-        //                TheProgress.Visibility = Visibility.Visible;
-        //                HabilitarBotones(false);
-
-        //                await Task.Run(() =>
-        //                {
-        //                    Excel.Workbook Libro = Aplicacion.Workbooks.Open(ofd.FileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
-        //                    Excel._Worksheet Hoja = (Excel._Worksheet)Libro.Sheets[1];
-        //                    Excel.Range Rango = Hoja.UsedRange;
-
-        //                    int rowCount = Rango.Rows.Count;
-        //                    int colCount = Rango.Columns.Count;
-        //                    List<HeaderExcelContent> listaHeader = new List<HeaderExcelContent>();
-        //                    //int filaHeader = 0;
-        //                    //int rowHeader = 2;
-        //                    int rowHeader = 0;
-        //                    for (int col = 1; col <= colCount; col++)
-        //                    {
-        //                        for (int row = 1; row <= rowCount; row++)
-        //                        {
-        //                            if (Rango.Cells[row, col] != null && Rango.Cells[row, col].Value2 != null)
-        //                            {
-        //                                rowHeader = row;
-        //                                row = rowCount + 1;
-        //                            }
-        //                        }
-        //                        if (Rango.Cells[rowHeader, col] != null && Rango.Cells[rowHeader, col].Value2 != null)
-        //                        {
-        //                            listaHeader.Add(new HeaderExcelContent(Rango.Cells[rowHeader, col].Value2.ToString(), col));
-        //                        }
-        //                    }
-        //                    DataSet dsClasification = new DataSet();
-        //                    ServiceClasifications.WebServiceClasificator wsClasification = new ServiceClasifications.WebServiceClasificator();
-        //                    dsClasification = wsClasification.GetAllClasifications();
-        //                    WindowHeaderClasification whc = new WindowHeaderClasification
-        //                    {
-        //                        MyDataset = dsClasification.Copy(),
-        //                        MyList = listaHeader
-        //                    };
-        //                    if (whc.ShowDialog() == true)
-        //                    {
-
-        //                    }
-        //                    //int rowToStart = 3;  
-        //                    int rowToStart = rowHeader + 1;
-        //                    //columna 2: IdRiesgo
-        //                    int colIdRisk = 2;
-        //                    //columna 3: Shortname
-        //                    int colShortRisk = 3;
-        //                    //Columna 18: idHijo
-        //                    int colIdHijo = 18;
-        //                    //Columna 20-21-22 va a details
-        //                    int[] colRiskDetail = new int[] { 20, 21, 22 };
-        //                    //28-34 damages
-        //                    int colminDamage = 28; int colmaxDamage = 34;
-        //                    //35 IDRISK
-
-        //                    //36-37 idCM y ShortnameCM
-        //                    int colCmShort = 35; int colCMDetail = 36; int colStatus = 40;
-        //                    //columna 41: Probabilidad
-        //                    int colProb = 41;
-        //                    //var idrisk = Rango.Cells[3, 2].Value2;
-        //                    //var idcm = Rango.Cells[3, 36].Value2;
-
-        //                    ServiceTopRiskController.WebServiceTopRisk wstop = new ServiceTopRiskController.WebServiceTopRisk();
-        //                    dsImporting.Tables[DT_Damage.TopRisk_TABLA].Merge(wstop.GetAllTopRisk().Tables[DT_Damage.TopRisk_TABLA]);
-        //                    //drDiagrams = Ds.Tables[DT_RiskTree.RiskTree_TABLA].NewRow();
-        //                    drDiagrams[DT_Diagram.DIAGRAM_NAME] = "Imported Diagram at " + DateTime.Now;
-        //                    drDiagrams[DT_Diagram.ID_DIAGRAM] = 0000;
-        //                    drDiagrams[DT_Diagram.ID_PROJECT] = IdProject;
-        //                    dsImporting.Tables[DT_Diagram.TABLE_NAME].Rows.Add(drDiagrams);
-        //                    for (int j = colminDamage; j <= colmaxDamage; j++)//por cada columna de Damages
-        //                    {
-        //                        if (Rango.Cells[rowHeader, j] != null && Rango.Cells[rowHeader, j].Value2 != null)
-        //                        {
-        //                            string TopRisk = Rango.Cells[rowHeader, j].Value2.ToString();//separo el daño de la UM
-        //                                                                                         //string Damage = TopRisk.Split(new char[] { '(', ')' })[0];
-        //                                                                                         //string UM = TopRisk.Split(new char[] { '(', ')' })[1];
-        //                            if (!(dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + TopRisk + "'").Any()))//si el nombre del daño no existe 
-        //                            {
-        //                                DataRow drDamage = dsImporting.Tables[DT_Damage.TopRisk_TABLA].NewRow();//creo un nuevo daño
-        //                                drDamage[DT_Damage.TOP_RISK_COLUMN] = TopRisk;
-
-        //                                drDamage[DT_Damage.COLORID_COLUMNA] = System.Drawing.Color.Blue.ToArgb().ToString();
-        //                                dsImporting.Tables[DT_Damage.TopRisk_TABLA].Rows.Add(drDamage);
-
-        //                                DataRow drDamage_Diagram = dsImporting.Tables[DT_Diagram_Damages.TABLENAME].NewRow();//y creo un nuevo diagrama con los daños que acabo de crear
-        //                                drDamage_Diagram[DT_Diagram_Damages.ID_DAMAGE] = drDamage[DT_Damage.ID_COLUMNA];
-        //                                drDamage_Diagram[DT_Diagram_Damages.COLOR] = drDamage[DT_Damage.COLORID_COLUMNA];
-        //                                drDamage_Diagram[DT_Diagram_Damages.RISK_TREE] = "Imported Diagram";
-        //                                drDamage_Diagram[DT_Diagram_Damages.UM] = "UM";
-        //                                drDamage_Diagram[DT_Diagram_Damages.ID_RISKTREE] = drDiagrams[DT_Diagram.ID_DIAGRAM];
-        //                                drDamage_Diagram[DT_Diagram_Damages.DAMAGE] = TopRisk;
-        //                                dsImporting.Tables[DT_Diagram_Damages.TABLENAME].Rows.Add(drDamage_Diagram);
-        //                            }
-        //                            else
-        //                            {
-        //                                DataRow drDamage_Diagram = dsImporting.Tables[DT_Diagram_Damages.TABLENAME].NewRow();//y creo un nuevo diagrama con los daños que acabo de crear
-        //                                drDamage_Diagram[DT_Diagram_Damages.ID_DAMAGE] = dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + TopRisk + "'").First()[DT_Damage.ID_COLUMNA];
-        //                                drDamage_Diagram[DT_Diagram_Damages.COLOR] = dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + TopRisk + "'").First()[DT_Damage.COLORID_COLUMNA];
-        //                                drDamage_Diagram[DT_Diagram_Damages.RISK_TREE] = "Imported Diagram";
-        //                                drDamage_Diagram[DT_Diagram_Damages.UM] = "UM";
-        //                                drDamage_Diagram[DT_Diagram_Damages.ID_RISKTREE] = drDiagrams[DT_Diagram.ID_DIAGRAM];
-        //                                drDamage_Diagram[DT_Diagram_Damages.DAMAGE] = TopRisk;
-        //                                dsImporting.Tables[DT_Diagram_Damages.TABLENAME].Rows.Add(drDamage_Diagram);
-        //                            }
-        //                        }
-        //                    }
-        //                    //BUsco el diagrama que acabo de insertar, para agregarle el riesgo padre, para agregarle los riesgos y sus dannos
-        //                    DataRow theDiagram = dsImporting.Tables[DT_Diagram.TABLE_NAME].Rows.Find(0000);
-        //                    //creo un riesgo root
-        //                    DataRow drRisk = dsImporting.Tables[DT_Risk.TABLE_NAME].NewRow();
-        //                    drRisk[DT_Risk.ID] = 0000;
-        //                    drRisk[DT_Risk.NAMESHORT] = "Root " + theDiagram[DT_Diagram.DIAGRAM_NAME];
-        //                    drRisk[DT_Risk.COMMENTS] = "Total Risk " + theDiagram[DT_Diagram.DIAGRAM_NAME];
-        //                    drRisk[DT_Risk.IS_ROOT] = true;
-
-        //                    drRisk[DT_Risk.ISCOLLAPSED] = false;
-        //                    drRisk[DT_Risk.ENABLED] = true;
-        //                    drRisk[DT_Risk.FROM_TOP] = false;
-        //                    drRisk[DT_Risk.PROBABILITY] = 100;
-        //                    drRisk[DT_Risk.POSITION] = 0;
-        //                    drRisk[DT_Risk.ID_DIAGRAM] = theDiagram[DT_Diagram.ID_DIAGRAM];
-        //                    dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
-
-        //                    //Asignarle al riesgo Root el rol admin
-        //                    DataRow drRiskRole = dsImporting.Tables[DT_Role_Risk.TABLENAME].NewRow();
-        //                    drRiskRole[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
-        //                    drRiskRole[DT_Role_Risk.IDROL_COLUMN] = 101;
-        //                    dsImporting.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRiskRole);
-
-        //                    //por cada daño del diagrama
-        //                    foreach (DataRow itemDiagramDamage in dsImporting.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + theDiagram[DT_Diagram.ID_DIAGRAM]))
-        //                    {
-        //                        //darle valor 0, porque es la raiz
-        //                        DataRow drRiskDamage = dsImporting.Tables[DT_Risk_Damages.TABLENAME].NewRow();
-        //                        drRiskDamage[DT_Risk_Damages.ID_DAMAGE] = itemDiagramDamage[DT_Diagram_Damages.ID_DAMAGE];
-        //                        drRiskDamage[DT_Risk_Damages.ID_RISK] = drRisk[DT_Risk.ID];
-        //                        drRiskDamage[DT_Risk_Damages.ID_RISK_TREE] = theDiagram[DT_Diagram.ID_DIAGRAM];
-        //                        drRiskDamage[DT_Risk_Damages.VALUE] = 0;
-        //                        dsImporting.Tables[DT_Risk_Damages.TABLENAME].Rows.Add(drRiskDamage);
-        //                    }
-        //                    //Recorrer el Excel solo para llenar los riesgos
-        //                    for (int i = rowToStart; i <= rowCount; i++)
-        //                    {
-        //                        DataRow drRiskN = dsImporting.Tables[DT_Risk.TABLE_NAME].NewRow();
-        //                        if (Rango.Cells[i, colIdRisk] != null && Rango.Cells[i, colIdRisk].Value2 != null)
-        //                        {
-        //                            drRiskN[DT_Risk.ID] = Convert.ToInt32(((object)Rango.Cells[i, colIdRisk].Value2).ToString().Split(new char[] { '-' })[1]);
-        //                            if (Rango.Cells[i, colIdRisk] != null && Rango.Cells[i, colIdRisk].Value2 != null)
-        //                            {
-        //                                drRiskN[DT_Risk.NAMESHORT] = Rango.Cells[i, colIdRisk].Value2;
-        //                            }
-        //                            if (Rango.Cells[i, colShortRisk] != null && Rango.Cells[i, colShortRisk].Value2 != null)
-        //                            {
-        //                                drRiskN[DT_Risk.NAMESHORT] = drRiskN[DT_Risk.NAMESHORT] + " " + Rango.Cells[i, colShortRisk].Value2;
-        //                            }
-        //                            if (Rango.Cells[i, colRiskDetail[0]] != null && Rango.Cells[i, colRiskDetail[0]].Value2 != null)
-        //                            {
-        //                                drRiskN[DT_Risk.COMMENTS] = Rango.Cells[rowHeader, colRiskDetail[0]].Value2 + ": " + Rango.Cells[i, colRiskDetail[0]].Value2;
-        //                            }
-        //                            for (int k = 1; k < colRiskDetail.Length; k++)
-        //                            {
-        //                                if (Rango.Cells[i, colRiskDetail[k]] != null && Rango.Cells[i, colRiskDetail[k]].Value2 != null)
-        //                                {
-        //                                    drRiskN[DT_Risk.COMMENTS] = drRiskN[DT_Risk.COMMENTS].ToString() + "\n"
-        //                                    + Rango.Cells[rowHeader, colRiskDetail[k]].Value2 + ": " + Rango.Cells[i, colRiskDetail[k]].Value2;
-        //                                }
-        //                            }
-        //                            drRiskN[DT_Risk.IS_ROOT] = false;
-        //                            drRiskN[DT_Risk.ISCOLLAPSED] = false;
-        //                            drRiskN[DT_Risk.ENABLED] = true;
-        //                            drRiskN[DT_Risk.POSITION] = 0;
-        //                            drRiskN[DT_Risk.FROM_TOP] = false;
-        //                            drRiskN[DT_Risk.ID_DIAGRAM] = theDiagram[DT_Diagram.ID_DIAGRAM];
-
-        //                            if (Rango.Cells[i, colIdHijo] != null && Rango.Cells[i, colProb].Value2 != null)
-        //                            {
-        //                                drRiskN[DT_Risk.PROBABILITY] = Convert.ToDecimal(Rango.Cells[i, colProb].Value2);
-        //                            }
-        //                            else
-        //                            {
-        //                                drRiskN[DT_Risk.PROBABILITY] = 0;
-        //                            }
-
-        //                            drRiskN[DT_Risk.IDRISK_FATHER] = drRisk[DT_Risk.ID];
-        //                            DataRow drStructure = dsImporting.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
-        //                            drStructure[DT_RiskStructure.IDRISK] = drRiskN[DT_Risk.ID];
-        //                            drStructure[DT_RiskStructure.IDRISK_FATHER] = drRisk[DT_Risk.ID];
-        //                            dsImporting.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(drStructure);
-
-        //                            for (int j = colminDamage; j <= colmaxDamage; j++)
-        //                            {//por cada Damage, del Diagrama, le agrega el valor al riesgo
-        //                                if (Rango.Cells[rowHeader, j] != null && Rango.Cells[rowHeader, j].Value2 != null)
-        //                                {
-        //                                    string TopRisk = Rango.Cells[rowHeader, j].Value2.ToString();
-        //                                    DataRow drRiskDamageN = dsImporting.Tables[DT_Risk_Damages.TABLENAME].NewRow();
-        //                                    drRiskDamageN[DT_Risk_Damages.ID_DAMAGE] = dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + TopRisk + "'").First()[DT_Damage.ID_COLUMNA];
-        //                                    drRiskDamageN[DT_Risk_Damages.ID_RISK] = drRiskN[DT_Risk.ID];
-        //                                    drRiskDamageN[DT_Risk_Damages.ID_RISK_TREE] = theDiagram[DT_Diagram.ID_DIAGRAM];
-        //                                    if (Rango.Cells[i, j] != null && Rango.Cells[i, j].Value2 != null)
-        //                                    {
-        //                                        drRiskDamageN[DT_Risk_Damages.VALUE] = Convert.ToDecimal(Rango.Cells[i, j].Value2.ToString());
-        //                                    }
-        //                                    else
-        //                                    {
-        //                                        drRiskDamageN[DT_Risk_Damages.VALUE] = 0;
-        //                                    }
-        //                                    dsImporting.Tables[DT_Risk_Damages.TABLENAME].Rows.Add(drRiskDamageN);
-        //                                }
-        //                            }
-        //                            //por cada riesgo, le agrega el rol admin
-        //                            DataRow drRiskRoleN = dsImporting.Tables[DT_Role_Risk.TABLENAME].NewRow();
-        //                            drRiskRoleN[DT_Role_Risk.ID_RISK] = drRiskN[DT_Risk.ID];
-        //                            drRiskRoleN[DT_Role_Risk.IDROL_COLUMN] = 101;
-        //                            dsImporting.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRiskRoleN);
-        //                            dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRiskN);
-        //                        }
-
-        //                    }
-
-        //                    for (int i = rowToStart; i <= rowCount; i++)
-        //                    {//ajustando estructura
-        //                        if (Rango.Cells[i, colIdHijo] != null && Rango.Cells[i, colIdHijo].Value2 != null && Rango.Cells[i, colIdRisk] != null && Rango.Cells[i, colIdRisk].Value2 != null)
-        //                        {
-        //                            int idHijo = Convert.ToInt32(((object)Rango.Cells[i, colIdHijo].Value2).ToString().Split(new char[] { '-' })[1]);
-        //                            int idPadre = Convert.ToInt32(((object)Rango.Cells[i, colIdRisk].Value2).ToString().Split(new char[] { '-' })[1]);
-        //                            if (dsImporting.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + idHijo).Any())
-        //                            {
-        //                                dsImporting.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + idHijo).First()[DT_RiskStructure.IDRISK_FATHER] = idPadre;
-        //                            }
-        //                        }
-        //                    }
-        //                    for (int i = rowToStart; i <= rowCount; i++)
-        //                    {//agregando CM
-        //                        if (Rango.Cells[i, colCMDetail] != null && Rango.Cells[i, colCMDetail].Value2 != null && Rango.Cells[i, colCmShort] != null && Rango.Cells[i, colCmShort].Value2 != null)
-        //                        {
-        //                            DataRow drCM = dsImporting.Tables[DT_CounterM.TABLE_NAME].NewRow();
-        //                            drCM[DT_CounterM.ID_RISK_TREE] = theDiagram[DT_Diagram.ID_DIAGRAM];
-        //                            drCM[DT_CounterM.DETAIL] = Rango.Cells[i, colCMDetail].Value2;
-        //                            if (Rango.Cells[i, colStatus] != null && Rango.Cells[i, colStatus].Value2 != null)
-        //                            {
-        //                                if (wt.KeyWord == ((object)Rango.Cells[i, colStatus].Value2).ToString())
-        //                                {
-        //                                    drCM[DT_CounterM.ENABLED] = false;
-        //                                }
-        //                                else
-        //                                {
-        //                                    drCM[DT_CounterM.ENABLED] = true;
-        //                                }
-        //                            }
-        //                            else
-        //                            {
-        //                                drCM[DT_CounterM.ENABLED] = true;
-        //                            }
-        //                            drCM[DT_CounterM.DIAGONAL] = false;
-        //                            drCM[DT_CounterM.FROM_TOP] = true;
-        //                            drCM[DT_CounterM.NAMESHORT] = Rango.Cells[i, colCmShort].Value2;
-        //                            drCM[DT_CounterM.POSITION] = 0;
-        //                            drCM[DT_CounterM.PROBABILITY] = 0;
-        //                            if (Rango.Cells[i, colIdRisk] != null && Rango.Cells[i, colIdRisk].Value2 != null)
-        //                            {
-        //                                drCM[DT_CounterM.ID_RISK] = Convert.ToInt32(((object)Rango.Cells[i, colIdRisk].Value2).ToString().Split(new char[] { '-' })[1]);
-        //                            }
-        //                            else
-        //                            {
-        //                                drCM[DT_CounterM.ID_RISK] = dsImporting.Tables[DT_CounterM.TABLE_NAME].Rows[dsImporting.Tables[DT_CounterM.TABLE_NAME].Rows.Count - 1][DT_CounterM.ID_RISK];
-        //                            }
-
-        //                            for (int j = colminDamage; j <= colmaxDamage; j++)
-        //                            {//por cada Damage, del Diagrama, le agrega el valor a la CM
-        //                                if (Rango.Cells[rowHeader, j] != null && Rango.Cells[rowHeader, j].Value2 != null)
-        //                                {
-        //                                    string TopRisk = Rango.Cells[rowHeader, j].Value2.ToString();
-        //                                    DataRow drCM_Damage = dsImporting.Tables[DT_CounterM_Damage.TABLENAME].NewRow();
-        //                                    drCM_Damage[DT_CounterM_Damage.ID_DAMAGE] = dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + TopRisk + "'").First()[DT_Damage.ID_COLUMNA];
-        //                                    drCM_Damage[DT_CounterM_Damage.ID_COUNTERM] = drCM[DT_CounterM.ID];
-        //                                    drCM_Damage[DT_CounterM_Damage.ID_RISK_TREE] = theDiagram[DT_Diagram.ID_DIAGRAM];
-        //                                    drCM_Damage[DT_CounterM_Damage.VALUE] = 0;
-        //                                    dsImporting.Tables[DT_CounterM_Damage.TABLENAME].Rows.Add(drCM_Damage);
-        //                                }
-        //                            }
-        //                            DataRow drRoleCM = dsImporting.Tables[DT_Role_CM.TABLENAME].NewRow();
-        //                            drRoleCM[DT_Role_CM.ID_CM] = drCM[DT_CounterM.ID];
-        //                            drRoleCM[DT_Role_CM.IDROL_COLUMN] = 101;
-        //                            dsImporting.Tables[DT_Role_CM.TABLENAME].Rows.Add(drRoleCM);
-        //                            dsImporting.Tables[DT_CounterM.TABLE_NAME].Rows.Add(drCM);
-        //                        }
-        //                    }
-        //                    //textProgress.Text = "Finishing...";
-        //                    if (Libro != null)
-        //                    {
-        //                        Libro.Close();
-        //                        Aplicacion.Quit();
-
-        //                        Marshal.ReleaseComObject(Hoja);
-        //                        Marshal.ReleaseComObject(Libro);
-        //                        Marshal.ReleaseComObject(Aplicacion);
-        //                    }
-        //                });
-
-        //                //Hasta aca yordan, todo esto pasa en memoria
-        //                this.Dispatcher.Invoke(() =>
-        //                {
-        //                    if (dsImporting.HasChanges())
-        //                    {
-        //                        //Cursor = Cursors.Wait;
-        //                        ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk();
-        //                        DataSet temp = new DataSet();
-        //                        temp = dsImporting.GetChanges();
-        //                        temp = ws.SaveRisk(temp);
-        //                        dsImporting.Merge(temp);
-        //                        dsImporting.AcceptChanges();
-        //                        //textProgress.Text = "Ordering...";
-        //                        ServiceRiskController.WebServiceRisk tws = new ServiceRiskController.WebServiceRisk();
-        //                        UserDataSet dsT1 = new UserDataSet();
-        //                        dsT1.Merge(tws.GetRiskTreeID(new object[] { (int)drDiagrams[DT_Diagram.ID_DIAGRAM] }));
-        //                        TreeOperation.AjustarPosicionHijos(TreeOperation.LoadLines(dsT1, (int)drDiagrams[DT_Diagram.ID_DIAGRAM]).Find(x => x.IsRoot == true), dsImporting);
-        //                        DataSet tempi = new DataSet();
-        //                        tempi = dsImporting.GetChanges();
-        //                        tempi = tws.SaveRisk(tempi);
-        //                        dsImporting.Merge(tempi);
-        //                        dsImporting.AcceptChanges();
-        //                        RefreshData();
-        //                        //p.ProgressVisible = false;
-        //                        TheProgress.Visibility = Visibility.Hidden;
-        //                        Cursor = Cursors.Arrow;
-        //                        new WindowAlert("Importation file success!!").ShowDialog();
-        //                        HabilitarBotones(true);
-        //                    }
-        //                });
-        //            }
-        //        }
-        //    }
-        //}
-        
+       
         private async Task FillDataTableToExcelAsync(DataSet dsImporting, bool isCustom)
         {
             using (System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
@@ -3844,7 +3494,7 @@ namespace EnsureRisk
                         topR[DT_Risk_Damages.PROBABILITY] = drRisk[DT_Risk.PROBABILITY];
                         topR[DT_Risk_Damages.RISK_NAMESHORT] = drRisk[DT_Risk.NAMESHORT];
                         topR[DT_Risk_Damages.RISK_TREE] = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME];
-                        topR[DT_Risk_Damages.STATUS] = (bool)drRisk[DT_Risk.ISCOLLAPSED] ? "Activated" : "Non Activated";
+                        topR[DT_Risk_Damages.STATUS] = drRisk[DT_Risk.ENABLED];
                         TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Add(topR);
                     }
                 }
@@ -3920,7 +3570,7 @@ namespace EnsureRisk
                             drDamage[DT_Risk_Damages.PROBABILITY] = itemRisk[DT_Risk.PROBABILITY];
                             drDamage[DT_Risk_Damages.RISK_NAMESHORT] = itemRisk[DT_Risk.NAMESHORT];
                             drDamage[DT_Risk_Damages.RISK_TREE] = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME];
-                            drDamage[DT_Risk_Damages.STATUS] = (bool)itemRisk[DT_Risk.ENABLED] || itemRisk[DT_Risk.ENABLED] == DBNull.Value ? "Activated" : "Non Activated";
+                            drDamage[DT_Risk_Damages.STATUS] = itemRisk[DT_Risk.ENABLED];
                             TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Add(drDamage);
                         }
                     }
@@ -3942,7 +3592,7 @@ namespace EnsureRisk
                             drDamage[DT_CounterM_Damage.ID_GROUPE] = itemCM[DT_CounterM.ID_GROUPE];
                             drDamage[DT_CounterM_Damage.RISK] = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(itemCM[DT_CounterM.ID_RISK])[DT_Risk.NAMESHORT];
                             drDamage[DT_CounterM_Damage.RISK_REDUCTION] = itemCM[DT_CounterM.PROBABILITY];
-                            drDamage[DT_CounterM_Damage.STATUS] = (bool)itemCM[DT_CounterM.ENABLED] ? "Activated" : "Non Activated";
+                            drDamage[DT_CounterM_Damage.STATUS] = itemCM[DT_CounterM.ENABLED];
 
                             TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Add(drDamage);
                         }
@@ -4103,10 +3753,8 @@ namespace EnsureRisk
                     TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.ENABLED] = false;
                     foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + Risk.ID))
                     {
-                        damageRow[DT_Risk_Damages.STATUS] = "Non Activated";
+                        damageRow[DT_Risk_Damages.STATUS] = false;
                     }
-                    //(TheCurrentLayout.LinesList.Find(item => (item.ID == Risk.ID))).DrawEntireLine("(Disabled)" + TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.NAMESHORT].ToString());
-                    //(CurrentLayout.LinesList.Find(item => (item.ID == Risk.ID))).Stroke = new SolidColorBrush(Colors.Gray);
                     (TheCurrentLayout.LinesList.Find(item => (item.ID == Risk.ID))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
                     (TheCurrentLayout.LinesList.Find(item => (item.ID == Risk.ID))).IsActivated = false;
                     foreach (var itemi in Risk.Children)
@@ -4120,7 +3768,7 @@ namespace EnsureRisk
                             TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(itemi.ID)[DT_CounterM.ENABLED] = false;
                             foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + itemi.ID))
                             {
-                                damageRow[DT_CounterM_Damage.STATUS] = "Non Activated";
+                                damageRow[DT_CounterM_Damage.STATUS] = false;
                             }
                         }
                     }
@@ -4130,11 +3778,9 @@ namespace EnsureRisk
                     TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.ENABLED] = true;
                     foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + Risk.ID))
                     {
-                        damageRow[DT_Risk_Damages.STATUS] = "Activated";
+                        damageRow[DT_Risk_Damages.STATUS] = true;
                     }
                     System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
-                    //(TheCurrentLayout.LinesList.Find(item => (item.ID == Risk.ID))).DrawEntireLine(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.NAMESHORT].ToString());
-                    //(CurrentLayout.LinesList.Find(item => (item.ID == Risk.ID))).Stroke = new SolidColorBrush(Color.FromArgb(drawingCColor.A, drawingCColor.R, drawingCColor.G, drawingCColor.B));
                     (TheCurrentLayout.LinesList.Find(item => (item.ID == Risk.ID))).SetColor(new SolidColorBrush(System.Windows.Media.Color.FromArgb(drawingCColor.A, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
                     (TheCurrentLayout.LinesList.Find(item => (item.ID == Risk.ID))).IsActivated = true;
 
@@ -4896,11 +4542,9 @@ namespace EnsureRisk
                     TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_CounterM.ENABLED] = false;
                     foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cm_Selected.ID))
                     {
-                        damageRow[DT_CounterM_Damage.STATUS] = "Non Activated";
+                        damageRow[DT_CounterM_Damage.STATUS] = false;
                     }
                     TheCurrentLayout.LinesListCMState[Convert.ToInt32(cm_Selected.ID)] = false;
-                    //(TheCurrentLayout.LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).DrawEntireLine("(Disabled)" + TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_CounterM.NAMESHORT]);
-                    //(CurrentLayout.LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).Stroke = new SolidColorBrush(Colors.Gray);
                     (TheCurrentLayout.LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
                     (TheCurrentLayout.LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).IsActivated = false;
                     result = false;
@@ -4912,11 +4556,9 @@ namespace EnsureRisk
                         TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_CounterM.ENABLED] = true;
                         foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cm_Selected.ID))
                         {
-                            damageRow[DT_CounterM_Damage.STATUS] = "Activated";
+                            damageRow[DT_CounterM_Damage.STATUS] = true;
                         }
                         TheCurrentLayout.LinesListCMState[Convert.ToInt32(cm_Selected.ID)] = true;
-                        //(TheCurrentLayout.LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).DrawEntireLine(TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_CounterM.NAMESHORT].ToString());
-                        //(CurrentLayout.LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).Stroke = new SolidColorBrush(Colors.Black);
                         (TheCurrentLayout.LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Black));
                         (TheCurrentLayout.LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).IsActivated = true;
                         result = true;
@@ -5547,7 +5189,7 @@ namespace EnsureRisk
             {
                 foreach (var item in dg.Columns)
                 {
-                    if (item.Header.ToString() == "Risk")
+                    if (item.Header.ToString() == "Risk" || item.Header.ToString() == "Active?")
                     {
                         item.IsReadOnly = !flag;
                         break;
@@ -5566,7 +5208,7 @@ namespace EnsureRisk
             {
                 foreach (var item in dg.Columns)
                 {
-                    if (item.Header.ToString() != "Risk" && item.Header.ToString() != "WBS Name" && item.Header.ToString() != "User" && item.Header.ToString() != "Father" && item.Header.ToString() != "Status")
+                    if (item.Header.ToString() != "Risk" && item.Header.ToString() != "WBS Name" && item.Header.ToString() != "User" && item.Header.ToString() != "Father" && item.Header.ToString() != "Active?")
                     {
                         item.IsReadOnly = !flag;
                     }
@@ -5665,14 +5307,18 @@ namespace EnsureRisk
                         }
                     }
                     Dt_Cross_Risk.AcceptChanges();
+
                     dgRisksCross.Columns.Clear();
                     dgRisksCross.AutoGenerateColumns = false;
                     //Adding the columns to cross table
                     Style styleText = new Style();
                     Setter set1 = new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap);
                     Setter set2 = new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Left);
+                    
                     styleText.Setters.Add(set1);
                     styleText.Setters.Add(set2);
+
+                    Style styleCheck = new Style();
                     for (int i = 0; i < Dt_Cross_Risk.Columns.Count; i++)
                     {
                         DataGridTextColumn column = new DataGridTextColumn();
@@ -5694,14 +5340,14 @@ namespace EnsureRisk
                                 break;
                             case "nameShort":
                                 column.Header = "Risk";
-                                column.Binding = new Binding(Dt_Cross_Risk.Columns[i].ToString());
+                                column.Binding = new Binding(Dt_Cross_Risk.Columns[i].ToString());                                
                                 column.ElementStyle = styleText;                                
                                 column.IsReadOnly = true;
                                 column.MinWidth = 100;
                                 column.MaxWidth = 300;
                                 dgRisksCross.Columns.Add(column);
                                 break;
-                            case "WBS Name":
+                            case "WBSName":
                                 column.Header = "WBS Name";
                                 column.Binding = new Binding(Dt_Cross_Risk.Columns[i].ToString());
                                 column.ElementStyle = styleText;
@@ -5728,13 +5374,33 @@ namespace EnsureRisk
                                 column.MaxWidth = 300;
                                 dgRisksCross.Columns.Add(column);
                                 break;
-                            case "Status":
-                                column.Header = "Status";
-                                column.Binding = new Binding(Dt_Cross_Risk.Columns[i].ToString());
-                                column.IsReadOnly = true;
-                                column.MinWidth = 100;
-                                column.MaxWidth = 300;
-                                dgRisksCross.Columns.Add(column);
+                            case DT_Risk_Damages.STATUS:
+                                DataGridCheckBoxColumn chkcolumn = new DataGridCheckBoxColumn()
+                                {
+                                    Header = "Active?",
+                                    Binding = new Binding("Enabled"),
+                                    IsReadOnly = false,
+                                    MinWidth = 100,
+                                    MaxWidth = 300
+                                };
+                                DataGridTemplateColumn dgtmp = new DataGridTemplateColumn()
+                                {
+                                    Header = "Active?",
+                                    IsReadOnly = true,
+                                    MinWidth = 100,
+                                    MaxWidth = 300
+                                };
+                                dgtmp.CellTemplate = new DataTemplate();
+                                var fef = new FrameworkElementFactory(typeof(ToggleButton));
+                                fef.SetBinding(StyleProperty, new Binding() { Source = new Style(typeof(ToggleButton), ((ToggleButton)FindResource("togleStyle")).Style) });
+                                fef.SetBinding(ContentProperty, new Binding() { Source = "x" });
+                                fef.SetBinding(ToggleButton.IsCheckedProperty, new Binding("Enabled"));
+                                fef.SetBinding(WidthProperty, new Binding() { Source = 25 });
+                                fef.SetBinding(HeightProperty, new Binding() { Source = 25 });
+                                fef.AddHandler(ToggleButton.CheckedEvent, new RoutedEventHandler(RiskToggleButtonChecked));
+                                fef.AddHandler(ToggleButton.UncheckedEvent, new RoutedEventHandler(RiskToggleButtonUnChecked));
+                                dgtmp.CellTemplate.VisualTree = fef;
+                                dgRisksCross.Columns.Add(dgtmp);
                                 break;
                             case "GroupeName":
                                 break;
@@ -5779,7 +5445,9 @@ namespace EnsureRisk
                     TreeOperation.OrderTableHierarquical(Dt_Cross_Risk, TheCurrentLayout.LinesList, DT_Risk_Damages.ID_RISK);
                     DV_CrossRisk = new DataView(Dt_Cross_Risk);
                     dgRisksCross.ItemsSource = DV_CrossRisk;
+                    dgRisksCross.DataContext = DV_CrossRisk;
                     FillTableGroup(myDs);
+                    CleanDynamicColumns(dgRisksCross);
                 }
             }
             catch (Exception ex)
@@ -5787,7 +5455,85 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message + "- CruzandoTablaRisk");
             }
         }
-        
+
+        private void CleanDynamicColumns(DataGrid dataGrid)
+        {
+            int i = 0;
+            while (i < dataGrid.Columns.Count)
+            {
+                if (dataGrid.Columns[i].Header.ToString() != "Probability (%)" && dataGrid.Columns[i].Header.ToString() != "Risk" && dataGrid.Columns[i].Header.ToString() != "WBS Name"
+                    && dataGrid.Columns[i].Header.ToString() != "User" && dataGrid.Columns[i].Header.ToString() != "Father" && dataGrid.Columns[i].Header.ToString() != "Active?")
+                {
+                    dataGrid.Columns.RemoveAt(i);
+                    i--;
+                }
+                i++;
+            }
+        }
+
+        public void RiskToggleButtonChecked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //TheDataRowVieww = (DataRowView)((ToggleButton)e.Source).DataContext;
+                int riskID = (int)((DataRowView)((ToggleButton)e.Source).DataContext).Row[DT_Risk.ID]; 
+                TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(riskID)[DT_Risk.ENABLED] = true;
+                foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + riskID))
+                {
+                    damageRow[DT_Risk_Damages.STATUS] = true;
+                }
+                System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
+
+                (TheCurrentLayout.LinesList.Find(item => (item.ID == riskID))).SetColor(new SolidColorBrush(System.Windows.Media.Color.FromArgb(drawingCColor.A, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
+                (TheCurrentLayout.LinesList.Find(item => (item.ID == riskID))).IsActivated = true;
+
+                foreach (var itemi in TheCurrentLayout.LinesList.Find(item => (item.ID == riskID)).Children)
+                {
+                    if (itemi.IsCM)
+                    {
+                        DisableCounterMeasure(itemi, true, !TheCurrentLayout.LinesListCMState[Convert.ToInt32(itemi.ID)]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        public void RiskToggleButtonUnChecked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int riskID = (int)((DataRowView)((ToggleButton)e.Source).DataContext).Row[DT_Risk.ID];
+                TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(riskID)[DT_Risk.ENABLED] = false;
+                foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_RISK + " = " + riskID))
+                {
+                    damageRow[DT_Risk_Damages.STATUS] = false;
+                }
+                (TheCurrentLayout.LinesList.Find(item => (item.ID == riskID))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
+                (TheCurrentLayout.LinesList.Find(item => (item.ID == riskID))).IsActivated = false;
+                foreach (var itemi in TheCurrentLayout.LinesList.Find(item => (item.ID == riskID)).Children)
+                {
+                    if (itemi.IsCM)
+                    {
+                        itemi.IsActivated = false;
+                        itemi.SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
+                        (TheCurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
+                        (TheCurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).IsActivated = false;
+                        TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(itemi.ID)[DT_CounterM.ENABLED] = false;
+                        foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + itemi.ID))
+                        {
+                            damageRow[DT_CounterM_Damage.STATUS] = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
 
         public void CruzarTablaCM(DataSet myDs)
         {
@@ -5901,12 +5647,31 @@ namespace EnsureRisk
                             dgCrossCM.Columns.Add(column);
                             break;
                         case DT_CounterM_Damage.STATUS:
-                            column.Header = "Status";
-                            column.Binding = new Binding(Dt_Cross_CM.Columns[i].ToString());
-                            column.IsReadOnly = true;
-                            column.MinWidth = 100;
-                            column.MaxWidth = 300;
-                            dgCrossCM.Columns.Add(column);
+                            //DataGridCheckBoxColumn chkcolumn = new DataGridCheckBoxColumn()
+                            //{
+                            //    Header = "Status",
+                            //    Binding = new Binding("Enabled"),
+                            //    MinWidth = 100,
+                            //    MaxWidth = 300
+                            //};
+                            DataGridTemplateColumn dgtmp = new DataGridTemplateColumn()
+                            {
+                                Header = "Active?",
+                                IsReadOnly = true,
+                                MinWidth = 100,
+                                MaxWidth = 300
+                            };
+                            dgtmp.CellTemplate = new DataTemplate();
+                            var fef = new FrameworkElementFactory(typeof(ToggleButton));
+                            fef.SetBinding(StyleProperty, new Binding() { Source = new Style(typeof(ToggleButton), ((ToggleButton)FindResource("togleStyle")).Style) });
+                            fef.SetBinding(ContentProperty, new Binding() { Source = "x" });
+                            fef.SetBinding(ToggleButton.IsCheckedProperty, new Binding("Enabled"));
+                            fef.SetBinding(WidthProperty, new Binding() { Source = 25 });
+                            fef.SetBinding(HeightProperty, new Binding() { Source = 25 });
+                            fef.AddHandler(ToggleButton.CheckedEvent, new RoutedEventHandler(CMToggleButtonChecked));
+                            fef.AddHandler(ToggleButton.UncheckedEvent, new RoutedEventHandler(CMToggleButtonUnChecked));
+                            dgtmp.CellTemplate.VisualTree = fef;
+                            dgCrossCM.Columns.Add(dgtmp);
                             break;
                         case DT_CounterM_Damage.GROUPENAME:
                             break;
@@ -5948,6 +5713,51 @@ namespace EnsureRisk
                 FillTableGroup(myDs);
             }
         }
+
+        public void CMToggleButtonChecked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int cmID = (int)((DataRowView)((ToggleButton)e.Source).DataContext).Row[DT_CounterM.ID];
+                TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cmID)[DT_CounterM.ENABLED] = true;
+                foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cmID))
+                {
+                    damageRow[DT_CounterM_Damage.STATUS] = true;
+                }
+                TheCurrentLayout.LinesListCMState[Convert.ToInt32(cmID)] = true;
+                (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Black));
+
+                (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).IsActivated = true;
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        public void CMToggleButtonUnChecked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int cmID = (int)((DataRowView)((ToggleButton)e.Source).DataContext).Row[DT_CounterM.ID];
+                if (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM)).Father.IsActivated) // si el padre esta disabled no habilito cm
+                {
+                    TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cmID)[DT_CounterM.ENABLED] = false;
+                    foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cmID))
+                    {
+                        damageRow[DT_CounterM_Damage.STATUS] = false;
+                    }
+                    TheCurrentLayout.LinesListCMState[Convert.ToInt32(cmID)] = false;
+                    (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
+                    (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).IsActivated = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
 
         private List<LineGroup> ListaIdGroup(List<RiskPolyLine> listaRisk)
         {
@@ -6596,7 +6406,7 @@ namespace EnsureRisk
                 top[DT_Risk_Damages.PROBABILITY] = drRisk[DT_Risk.PROBABILITY];
                 top[DT_Risk_Damages.RISK_NAMESHORT] = drRisk[DT_Risk.NAMESHORT];
                 top[DT_Risk_Damages.RISK_TREE] = dsResult.Tables[DT_Diagram.TABLE_NAME].Rows.Find(idDiagram)[DT_Diagram.DIAGRAM_NAME];
-                top[DT_Risk_Damages.STATUS] = (bool)drRisk[DT_Risk.ENABLED] || drRisk[DT_Risk.ENABLED] == DBNull.Value ? "Activated" : "Non activated";
+                top[DT_Risk_Damages.STATUS] = drRisk[DT_Risk.ENABLED];
                 top[DT_Risk_Damages.ID_DAMAGE] = itemi[DT_Risk_Damages.ID_DAMAGE];
                 top[DT_Risk_Damages.VALUE] = itemi[DT_Risk_Damages.VALUE];
                 top[DT_Risk_Damages.TOP_RISK] = itemi[DT_Risk_Damages.TOP_RISK];
@@ -7607,9 +7417,9 @@ namespace EnsureRisk
                         if (((DataRowView)riskDataGrid.SelectedItem).Row[DT_Risk.ID] is int rowRiskID)
                         {
                             TheCurrentLayout.Line_Selected = TheCurrentLayout.LinesList.Find(item => (item.ID == rowRiskID));
-                            TheCurrentLayout.RiskLeave();
-                            TheCurrentLayout.RiskEnter(TheCurrentLayout.Line_Selected, TheCurrentLayout.Line_Selected.Points[TheCurrentLayout.Line_Selected.Points.Count - 1]);
+                            TheCurrentLayout.RiskLeave();                            
                             TheCurrentLayout.BrigIntoViewSelectedRiskPolyline(TheCurrentLayout.Line_Selected);
+                            TheCurrentLayout.RiskEnter(TheCurrentLayout.Line_Selected, TheCurrentLayout.Line_Selected.Points[TheCurrentLayout.Line_Selected.Points.Count - 1], false);
                             TheCurrentLayout.UpdateSelectedPolyLineVisualInfo();
                             bool access = TheCurrentLayout.FullAccess(TheCurrentLayout.Line_Selected);
                             ColumnasTextoRiskReadOnly(access, riskDataGrid);
@@ -7627,7 +7437,7 @@ namespace EnsureRisk
             }
             catch (Exception ex)
             {
-                MostrarErrorDialog(ex.Message + "Cambiando bando");
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -7641,8 +7451,9 @@ namespace EnsureRisk
                     {
                         TheCurrentLayout.Line_Selected = TheCurrentLayout.LinesList.Find(item => (item.ID == (int)((DataRowView)cmDataGrid.SelectedItem).Row[DT_CounterM.ID]));
                         TheCurrentLayout.CMLeave(TheCurrentLayout.Line_Selected);
-                        TheCurrentLayout.CMEnter(TheCurrentLayout.Line_Selected, TheCurrentLayout.Line_Selected.Points[TheCurrentLayout.Line_Selected.Points.Count - 1]);
                         TheCurrentLayout.BrigIntoViewSelectedRiskPolyline(TheCurrentLayout.Line_Selected);
+                        TheCurrentLayout.CMEnter(TheCurrentLayout.Line_Selected, TheCurrentLayout.Line_Selected.Points[TheCurrentLayout.Line_Selected.Points.Count - 1], false);
+
                         TheCurrentLayout.UpdateSelectedPolyLineVisualInfo();
                         bool access = TheCurrentLayout.FullAccess(TheCurrentLayout.Line_Selected);
                         ColumnasTextoCMReadOnly(access, cmDataGrid);
@@ -7702,6 +7513,44 @@ namespace EnsureRisk
                         }
                     }
                 }
+                if (e.EditAction == DataGridEditAction.Commit && e.Column is DataGridCheckBoxColumn chkcolumn)
+                {
+                    Binding b = chkcolumn.Binding as Binding;
+                    bool? checkeddd = (e.EditingElement as CheckBox).IsChecked;
+                    if (b.Path.Path == "Enabled")
+                    {
+                        if (sender is DataGrid cmDataGrid && cmDataGrid.SelectedItem != null)
+                        {
+                            int cmID = (int)((DataRowView)cmDataGrid.SelectedItem).Row[DT_CounterM.ID];
+                            if (checkeddd.HasValue && checkeddd.Value)
+                            {
+                                TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cmID)[DT_CounterM.ENABLED] = false;
+                                foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cmID))
+                                {
+                                    damageRow[DT_CounterM_Damage.STATUS] = false;
+                                }
+                                TheCurrentLayout.LinesListCMState[Convert.ToInt32(cmID)] = false;
+                                (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
+                                (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).IsActivated = false;
+                            }
+                            else
+                            {
+                                if (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM)).Father.IsActivated) // si el padre esta disabled no habilito cm
+                                {
+                                    TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cmID)[DT_CounterM.ENABLED] = true;
+                                    foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cmID))
+                                    {
+                                        damageRow[DT_CounterM_Damage.STATUS] = true;
+                                    }
+                                    TheCurrentLayout.LinesListCMState[Convert.ToInt32(cmID)] = true;
+                                    (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Black));
+                                    (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).IsActivated = true;
+                                }
+                            }
+                        }
+                    }
+                }
+
             }
             catch (Exception ex)
             {

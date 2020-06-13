@@ -18,7 +18,7 @@ namespace DataMapping.Data
         public const string RISK_REDUCTION = "RiskReduction";
         public const string GROUPENAME = "GroupeName";
         public const string RISK = "Risk";
-        public const string STATUS = "Status";
+        public const string STATUS = "Enabled";
         public const string IDRISK = "idRisk";
         public const string ID_GROUPE = "idGroupe";
         public const string ID_WBS = "idWBS";
@@ -43,7 +43,7 @@ namespace DataMapping.Data
             Columns.Add(RISK_REDUCTION, typeof(decimal));
             Columns.Add(RISK, typeof(string));
             Columns.Add(GROUPENAME, typeof(string));
-            Columns.Add(STATUS, typeof(string));
+            Columns.Add(STATUS, typeof(bool));
             Columns.Add(VALUE, typeof(decimal));
             Columns.Add(ID_RISK_TREE, typeof(int));
             Columns.Add(IDRISK, typeof(int));

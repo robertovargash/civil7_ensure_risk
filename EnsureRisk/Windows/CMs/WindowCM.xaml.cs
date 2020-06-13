@@ -130,7 +130,7 @@ namespace EnsureRisk.Windows
                         rowTop[DT_CounterM_Damage.RISK_REDUCTION] = 0;
                         rowTop[DT_CounterM_Damage.GROUPENAME] = "None";
                         rowTop[DT_CounterM_Damage.RISK] = TextFather.Text;
-                        rowTop[DT_CounterM_Damage.STATUS] = "Activated";
+                        rowTop[DT_CounterM_Damage.STATUS] = true;
                         rowTop[DT_CounterM_Damage.IDRISK] = CMRow[DT_CounterM.ID_RISK];
                         CM_Damage_Table.Rows.Add(rowTop);
                     }
@@ -245,7 +245,7 @@ namespace EnsureRisk.Windows
                             rowTop[DT_CounterM_Damage.RISK_REDUCTION] = 0;
                             rowTop[DT_CounterM_Damage.GROUPENAME] = "None";
                             rowTop[DT_CounterM_Damage.RISK] = CMRow[DT_CounterM.RISK_NAMESHORT];
-                            rowTop[DT_CounterM_Damage.STATUS] = (Boolean)CMRow[DT_CounterM.ENABLED] ? "Activated" : "Non Activated";
+                            rowTop[DT_CounterM_Damage.STATUS] = CMRow[DT_CounterM.ENABLED];
                             rowTop[DT_CounterM_Damage.IDRISK] = CMRow[DT_CounterM.ID_RISK];
                             CM_Damage_Table.Rows.Add(rowTop);
                         }

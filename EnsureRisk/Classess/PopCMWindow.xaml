@@ -8,28 +8,28 @@
              mc:Ignorable="d" 
              VerticalAlignment="Top" HorizontalAlignment="Left" Background="Transparent" RenderTransformOrigin="0.0,0.0">
     <Grid Background="Transparent">
-        <Border CornerRadius="10" Background="#FF134E86">
+        <Border CornerRadius="10" Background="#FFCDC3B5">
             <Grid x:Name="GridBorder">
                 <StackPanel Orientation="Vertical">
                     <Grid x:Name="GridRisk" MaxHeight="200" >
                         <StackPanel Orientation="Horizontal" Margin="10 5 10 0">
                             <md:PackIcon Kind="RenameBox"/>
-                            <TextBlock Text="CM Name: " TextWrapping="Wrap" VerticalAlignment="Top" Foreground="White"/>
-                            <TextBlock x:Name="TextRiskName" Text="(Risk Name)" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White" MaxWidth="400"/>
+                            <TextBlock Text="CM Name: " TextWrapping="Wrap" VerticalAlignment="Top"/>
+                            <TextBlock x:Name="TextRiskName" Text="(Risk Name)" TextWrapping="Wrap" VerticalAlignment="Center" MaxWidth="400"/>
                         </StackPanel>
                     </Grid>
                     <Grid x:Name="GridProbability" >
                         <StackPanel Orientation="Horizontal" Margin="10 5 10 0">
-                            <md:PackIcon Kind="WarningDecagram"/>
-                            <TextBlock Text="Risk Red.: " TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
-                            <TextBlock x:Name="TextProb" Text="(Prob)" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
+                            <md:PackIcon Kind="Percent"/>
+                            <TextBlock Text="Risk Red.: " TextWrapping="Wrap" VerticalAlignment="Center" />
+                            <TextBlock x:Name="TextProb" Text="(Prob)" TextWrapping="Wrap" VerticalAlignment="Center" />
                         </StackPanel>
                     </Grid>
                     <Grid x:Name="GridValue" >
                         <StackPanel Orientation="Horizontal" Margin="10 5 10 5">
                             <md:PackIcon Kind="Variable"/>
-                            <TextBlock Text="Value: " TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
-                            <TextBlock x:Name="TextValue" Text="(Value)" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White"/>
+                            <TextBlock Text="Value: " TextWrapping="Wrap" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TextValue" Text="(Value)" TextWrapping="Wrap" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>

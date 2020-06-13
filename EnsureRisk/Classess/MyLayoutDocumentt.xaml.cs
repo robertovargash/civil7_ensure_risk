@@ -160,6 +160,7 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
+                //((MainWindow)MyWindow).IS_SAVING_DATA = false;
                 MostrarDialog(ex.Message);
             }
         }
@@ -175,7 +176,6 @@ namespace EnsureRisk.Classess
             MyPopWindow.TextAcumValue.Text = acumValue;
             MyPopWindow.TextEL.Text = EL;
         }
-
 
         public void OcultarPopWindow()
         {
@@ -195,7 +195,6 @@ namespace EnsureRisk.Classess
         {
             MyPopCMWindow.Visibility = Visibility.Collapsed;
         }
-
 
         public void Scope()
         {
@@ -333,8 +332,25 @@ namespace EnsureRisk.Classess
                         TreeOperation.MoveEntireTree(LinesList, 0, (int)(Math.Ceiling(Math.Abs(firstY.Points[0].Y) / 210) * 210), Rectangles);
                     }
                 }
-                GridPaintLines.Width = LinesList.OrderByDescending(rl => rl.Points[1].X).First().Points[1].X + 500;
-                GridPaintLines.Height = LinesList.OrderByDescending(rl => rl.Points[1].Y).First().Points[1].Y + 300;
+
+
+                int cantidadRectangulos = Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram).Length;
+                double altoRectangulos = cantidadRectangulos * 30;
+                double anchoRectangulos = cantidadRectangulos * 15;
+
+                double altoLineas = LinesList.OrderByDescending(rl => rl.Points[1].Y).First().Points[1].Y;
+                double anchoLineas = LinesList.OrderByDescending(rl => rl.Points[1].X).First().Points[1].X;
+                double valorMasAlto = (altoRectangulos > (altoLineas / 2)) ? (altoRectangulos * 2) : altoLineas;
+
+                GridPaintLines.Height = valorMasAlto + 300;
+                GridPaintLines.Width = anchoLineas + anchoRectangulos + 300;
+
+                if (altoRectangulos > (altoLineas / 2))
+                {
+                    double desplY = altoRectangulos - (altoLineas / 2);
+                    TreeOperation.MoveEntireTree(LinesList, 0, (int)desplY, Rectangles);
+                }
+
             }
             catch (Exception ex)
             {
@@ -344,6 +360,89 @@ namespace EnsureRisk.Classess
 
         //TODO: PINTA LOS RECTANGULOS
         public void LoadRectangles()
+        {
+            try
+            {
+                RiskPolyLine MyMainLine = IsScoping ? LinesList.Find(x => x.ID == ScopeLine.ID) : MainLine;
+                Rectangles = new List<MyDamage>();
+                DataRow[] thisTopRisk = Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram);
+
+                double puntoinicialY = MyMainLine.Points[1].Y - 15;
+                puntoinicialY -= thisTopRisk.Length * 30;
+                double puntoinicialX = MyMainLine.Points[1].X - 5 + General.MaxThickness;
+                puntoinicialX += thisTopRisk.Length * 15;
+
+                //foreach (DataRow item in thisTopRisk)
+                for (int i = thisTopRisk.Length - 1; i >= 0; i--)
+                {
+                    DataRow item = thisTopRisk[i];
+                    System.Drawing.Color colorete = System.Drawing.Color.FromArgb(int.Parse(item[DT_Diagram_Damages.COLOR].ToString()));
+                    Color mediaColor = Color.FromArgb(colorete.A, colorete.R, colorete.G, colorete.B);
+
+                    MyDamage rectangle = new MyDamage(GridPaintLines, new Point(puntoinicialX, puntoinicialY),
+                                                        item[DT_Diagram_Damages.DAMAGE].ToString() + " (" + item[DT_Diagram_Damages.UM].ToString() + ")",
+                                                        StringResources.ACUM_VALUE + "(" + item[DT_Diagram_Damages.UM].ToString() + ") :",
+                                                        StringResources.ACUM_DAMAGE, mediaColor, (int)item[DT_Diagram_Damages.ID_DAMAGE], item[DT_Diagram_Damages.UM].ToString());
+
+                    rectangle.MouseDown += MyDamage_MouseDown;
+                    Rectangles.Add(rectangle);
+                    puntoinicialY += 30;
+                    puntoinicialX -= 15;
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+
+        public void ReLoadRectangles()
+        {
+            try
+            {
+                RiskPolyLine MyMainLine = IsScoping ? LinesList.Find(x => x.ID == ScopeLine.ID) : MainLine;
+
+                MyDamage[] MyRectangles = new MyDamage[Rectangles.Count];
+                Rectangles.CopyTo(MyRectangles);
+                Rectangles.Clear();
+
+                double puntoinicialY = MyMainLine.Points[1].Y - 15;
+                puntoinicialY -= MyRectangles.Length * 30;
+                double puntoinicialX = MyMainLine.Points[1].X - 5 + General.MaxThickness;
+                puntoinicialX += MyRectangles.Length * 15;
+
+                //for (int i = MyRectangles.Length - 1; i >= 0; i--)
+                for (int i = 0; i < MyRectangles.Length; i++)
+                    {
+                    MyDamage item = MyRectangles[i];
+                    Color mediaColor = item.Colorr;
+
+                    MyDamage rectangle = new MyDamage(GridPaintLines, new Point(puntoinicialX, puntoinicialY),
+                                                        item.HeadeValue.Text,
+                                                        item.CalculateValue.Text,
+                                                        StringResources.ACUM_DAMAGE, mediaColor, item.ID_TopRisk, item.UM);
+
+                    rectangle.MouseDown += MyDamage_MouseDown;
+                    Rectangles.Add(rectangle);
+                    puntoinicialY += 30;
+                    puntoinicialX -= 15;
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Version anterior, carga los rectangulos en una fila vertical
+        /// </summary>
+        public void LoadRectanglesVertical()
         {
             try
             {
@@ -361,10 +460,12 @@ namespace EnsureRisk.Classess
                     new Point(MyMainLine.Points[1].X + 5 + General.MaxThickness, puntoinicialY),
                     item[DT_Diagram_Damages.DAMAGE].ToString() + " (" + item[DT_Diagram_Damages.UM].ToString() + ")",
                     StringResources.ACUM_VALUE + "(" + item[DT_Diagram_Damages.UM].ToString() + ") :",
-                    StringResources.ACUM_DAMAGE, mediaColor, (Int32)item[DT_Diagram_Damages.ID_DAMAGE], item[DT_Diagram_Damages.UM].ToString());
+                    StringResources.ACUM_DAMAGE, mediaColor, (int)item[DT_Diagram_Damages.ID_DAMAGE], item[DT_Diagram_Damages.UM].ToString());
 
+                    rectangle.MouseDown += MyDamage_MouseDown;
                     Rectangles.Add(rectangle);
                     puntoinicialY += 90;
+
                 }
             }
             catch (Exception ex)
@@ -372,7 +473,6 @@ namespace EnsureRisk.Classess
                 MostrarDialog(ex.Message);
             }
         }
-
         public void DrawNumbers()
         {
             try
@@ -486,7 +586,6 @@ namespace EnsureRisk.Classess
 
                 MainLine.MouseUp += MainLine_MouseUp;
                 MainLine.MyName.MouseUp += MainLine_MouseUp;
-
                 MainLine.MouseEnter += MainLine_MouseEnter;
                 MainLine.MouseLeave += MainLine_MouseLeave;
                 MainLine.IdRiskFather = 0;
@@ -526,7 +625,7 @@ namespace EnsureRisk.Classess
                 {
                     TheLine = (RiskPolyLine)sender;
                 }
-                SetMaxThickness(TheLine);
+                SetLineThickness(TheLine);
             }
             catch (Exception ex)
             {
@@ -593,6 +692,8 @@ namespace EnsureRisk.Classess
         {
             try
             {
+                //((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines.Children.Clear();
+
                 LinesListCMState.Clear();
                 if (CbFilterTopR.SelectedIndex >= 0)
                 {
@@ -776,7 +877,7 @@ namespace EnsureRisk.Classess
                         {
                             return AcumDamage + CalculateAcumDamageRisk(hijo, IdDamageSelected);
                         }
-                    }                    
+                    }
                 }
                 return AcumDamage;
             }
@@ -792,12 +893,47 @@ namespace EnsureRisk.Classess
             {
                 if (!item.IsCM)
                 {
-                    item.AcLike = General.AcumulatedLikelihood(item);
-                    item.AcValue = General.CalculateTopRiskTreeValue(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID),
+                    decimal al = General.AcumulatedLikelihood(item);
+                    decimal valor = General.CalculateTopRiskTreeValue(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID),
                         Ds.Tables[DT_Risk.TABLE_NAME], IdDamageSelected, Ds.Tables[DT_Risk_Damages.TABLENAME],
                             Ds.Tables[DT_CounterM.TABLE_NAME], Ds.Tables[DT_CounterM_Damage.TABLENAME]);
-                    item.OwnValue = CalculateOwnValueRisk(item.ID, IdDamageSelected);
-                    item.AcDamage = CalculateAcumDamageRisk(item, IdDamageSelected); ;
+                    decimal myvalue = 0;
+                    if (Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Contains(new object[] { item.ID, IdDamageSelected }))
+                    {
+                        myvalue = (decimal)Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { item.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
+                    }
+                    decimal AcumDamage = 0;
+                    foreach (var itemI in TreeOperation.GetMeAndMyChildrenWithCM(item))
+                    {
+                        if (itemI.IsActivated)
+                        {
+                            decimal value = 0;
+                            if (itemI.IsCM)
+                            {
+                                if (itemI.IsActivated)
+                                {
+                                    if (Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
+                                    {
+                                        value = (decimal)Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_CounterM_Damage.VALUE];
+                                    }
+                                    AcumDamage += value;
+                                }
+                            }
+                            else
+                            {
+                                if (Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
+                                {
+                                    value = (decimal)Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
+                                }
+                                AcumDamage += value * General.AcumulatedLikelihood(itemI);
+                            }
+                        }
+                    }
+
+                    item.AcLike = al;
+                    item.AcValue = valor;
+                    item.OwnValue = myvalue;
+                    item.AcDamage = AcumDamage;
                 }
             }
         }
@@ -1186,15 +1322,15 @@ namespace EnsureRisk.Classess
         {
             if (sender is RiskPolyLine CMHoover)
             {
-                CMEnter(CMHoover, new Point(e.GetPosition(TheMainGrid).X, e.GetPosition(TheMainGrid).Y));
+                CMEnter(CMHoover, new Point(e.GetPosition(TheMainGrid).X, e.GetPosition(TheMainGrid).Y), true);
             }
             if (sender is LabelPolyLine CMLabelHoover)
             {
-                CMEnter(CMLabelHoover.Line, new Point(e.GetPosition(TheMainGrid).X, e.GetPosition(TheMainGrid).Y));
+                CMEnter(CMLabelHoover.Line, new Point(e.GetPosition(TheMainGrid).X, e.GetPosition(TheMainGrid).Y), true);
             }
         }
 
-        public void CMEnter(RiskPolyLine CMLine, Point pointToShowPopup)
+        public void CMEnter(RiskPolyLine CMLine, Point pointToShowPopup, bool showPopup)
         {
             try
             {
@@ -1209,7 +1345,6 @@ namespace EnsureRisk.Classess
                 {
                     valor = 0;
                 }
-
                 string Value = General.MyRound(valor, 4).ToString();
 
                 string probability = General.MyRound(CMLine.Probability * 100, 2).ToString() + " %";
@@ -1218,7 +1353,14 @@ namespace EnsureRisk.Classess
                 //{
                 //    Visibility = Visibility.Visible
                 //};
-                MostrarPopCMWindow(pointToShowPopup, CMLine.ShortName, probability, Value);
+                if (!showPopup)
+                {
+                    MostrarPopCMWindow(new Point(pointToShowPopup.X - ScrollGridPaint.ContentHorizontalOffset,pointToShowPopup.Y - ScrollGridPaint.ContentVerticalOffset), CMLine.ShortName, probability, Value);
+                }
+                else
+                {
+                    MostrarPopCMWindow(pointToShowPopup, CMLine.ShortName, probability, Value);
+                }
                 if ((bool)Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(CMLine.ID)[DT_CounterM.ENABLED])
                 {
                     ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.DisableValue;
@@ -1950,19 +2092,19 @@ namespace EnsureRisk.Classess
             {
                 TheLine = (RiskPolyLine)sender;
             }
-            SetMaxThickness(TheLine);
-            RiskEnter(TheLine, new Point(e.GetPosition(TheMainGrid).X, e.GetPosition(TheMainGrid).Y));
+            SetLineThickness(TheLine);
+            RiskEnter(TheLine, new Point(e.GetPosition(TheMainGrid).X, e.GetPosition(TheMainGrid).Y), true);
         }
 
         private void Segment_MouseHover(object sender, MouseEventArgs e)
         {
             SegmentPolyLine TheLine;
             TheLine = (SegmentPolyLine)sender;
-            SetMaxThickness(TheLine.Father);
-            RiskEnter(TheLine.Father, new Point(e.GetPosition(GridPaintLines).X, e.GetPosition(GridPaintLines).Y));
+            SetLineThickness(TheLine.Father);
+            RiskEnter(TheLine.Father, new Point(e.GetPosition(TheMainGrid).X, e.GetPosition(TheMainGrid).Y), true);
         }
 
-        private void SetMaxThickness(RiskPolyLine TheLine)
+        private void SetLineThickness(RiskPolyLine TheLine)
         {
             if (TheLine != null)
             {
@@ -1975,7 +2117,7 @@ namespace EnsureRisk.Classess
             }
         }
 
-        public void RiskEnter(RiskPolyLine TheLine, Point pointToShowPopup)
+        public void RiskEnter(RiskPolyLine TheLine, Point pointToShowPopup, bool showPopup)
         {
             try
             {
@@ -1989,19 +2131,20 @@ namespace EnsureRisk.Classess
                     }
                     else
                     {
-                        decimal el = TheLine.AcLike;
-                        decimal valor = TheLine.AcValue;
-                        string AcumValue = General.MyRound(valor, 4).ToString();
-                        string Valuee = "";
-                        Valuee = General.MyRound(TheLine.OwnValue, 2).ToString();
+                        string AcumValue = General.MyRound(TheLine.AcValue, 4).ToString();
+                        string Valuee = General.MyRound(TheLine.OwnValue, 2).ToString();
                         string ED = General.MyRound(TheLine.AcDamage, 4).ToString();
                         string probability = General.MyRound(TheLine.Probability * 100, 2).ToString() + " %";
-                        string EL = General.MyRound(el * 100, 2).ToString() + " %";
-                        //Popin = new Popin(GridPaintLines, pointToShowPopup, "Risk: " + TheLine.ShortName, probability, EL, Valuee, AcumValue, ED)
-                        //{
-                        //    Visibility = Visibility.Visible
-                        //};
-                        MostrarPopWindow(pointToShowPopup, TheLine.ShortName, probability, Valuee, ED, AcumValue, EL);
+                        string EL = General.MyRound(TheLine.AcLike * 100, 2).ToString() + " %";
+                        if (!showPopup)
+                        {
+                            Point point = new Point(pointToShowPopup.X - ScrollGridPaint.ContentHorizontalOffset, pointToShowPopup.Y - ScrollGridPaint.ContentVerticalOffset);
+                            MostrarPopWindow(point, TheLine.ShortName, probability, Valuee, ED, AcumValue, EL);
+                        }
+                        else
+                        {
+                            MostrarPopWindow(pointToShowPopup, TheLine.ShortName, probability, Valuee, ED, AcumValue, EL);
+                        }
                         if ((bool)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheLine.ID)[DT_Risk.ENABLED])
                         {
                             ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
@@ -2557,7 +2700,7 @@ namespace EnsureRisk.Classess
                             //TreeOperation.FixMainLine(LinesList, MainLine);
                             FixDrawPanel();
                             SetLinesThickness();
-                        }                            
+                        }
                     }
                     DrawFishBone();
                 }
@@ -3262,6 +3405,89 @@ namespace EnsureRisk.Classess
             catch (Exception ex)
             {
                 MostrarDialog(ex.Message);
+            }
+        }
+
+        private void MyDamage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+            try
+            {
+                if (LinesList.Count > 0)
+                {
+                    IdDamageSelected = (int)((MyDamage)sender).ID_TopRisk;
+                    int index = Rectangles.FindIndex(x => x.ID_TopRisk.Equals(IdDamageSelected));
+
+                    System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Risk_Damages.COLOR].ToString()));
+
+                    foreach (RiskPolyLine item in LinesList)
+                    {
+                        if (Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).Any())
+                        {
+                            if (!(item.IsCM))
+                            {
+                                if (item.IsActivated)
+                                {
+                                    if (item.IsRoot)
+                                    {
+                                        item.SetColor(new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B)));
+                                    }
+                                    else
+                                    {
+                                        if (TengoPermiso(item))
+                                        {
+                                            item.SetColor(new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B)));
+                                        }
+                                        else
+                                        {
+                                            item.SetColor(new SolidColorBrush(Color.FromArgb(80, drawColor.R, drawColor.G, drawColor.B)));
+                                        }
+                                    }
+                                    item.UpdateSegmentsStroke();
+                                }
+                            }
+                        }
+                    }
+                    UpdateLinesValues();
+                    SetLinesThickness();
+
+                    //IdDamageSelected
+                    //Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected)
+                    //Rectangle r = Rectangles.Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).First();
+
+                    MoveElementsInArray(Rectangles, Rectangles.Count, index);
+                    ReLoadRectangles();
+                    DrawNumbers();
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arr"> lista de damage</param>
+        /// <param name="n"> longitud del array</param>
+        /// <param name="k"> posicion hasta la cual se va a mover el array, es el damage seleccionado</param>
+        public void MoveElementsInArray(List<MyDamage> lista, int n, int k)
+        {
+            MyDamage[] arr = lista.ToArray();
+            //for (int i = 0; i < k; i++)
+            for (int i = k; i < n - 1; i++)
+                {
+                // acomodo uno en cada iteracion
+                MyDamage elem = arr[n-1];
+                for (int j = n-1; j >= 1; j--)
+                    arr[j] = arr[j - 1];
+                arr[0] = elem;
+            }
+            Rectangles.Clear();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                Rectangles.Add(arr[i]);
             }
         }
     }

@@ -14,7 +14,7 @@ namespace DataMapping.Data
         public const string RISK_NAMESHORT = "nameShort";
         public const string VALUE = "value";
         public const string FATHER = "Father";
-        public const string STATUS = "Status";
+        public const string STATUS = "Enabled";
         public const string PROBABILITY = "probability";
         public const string ID_RISK_TREE = "idRiskTree";
 
@@ -40,7 +40,7 @@ namespace DataMapping.Data
             PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(int));
             Columns.Add(RISK_NAMESHORT, typeof(string));
             Columns.Add(FATHER, typeof(string));
-            Columns.Add(STATUS, typeof(string));
+            Columns.Add(STATUS, typeof(bool));
             Columns.Add(PROBABILITY, typeof(decimal));
             Columns.Add(TOP_RISK, typeof(string));
             Columns.Add(DAMAGE, typeof(string));

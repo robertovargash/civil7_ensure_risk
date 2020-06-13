@@ -189,7 +189,7 @@
             <Slider x:Key="CommonSlider"/>
             <ComboBox x:Key="CommonCB"/>
             <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Key="Delete" Content="{md:PackIcon Kind=Delete}" ToolTip="Remove this group"/>
-            
+            <ToggleButton x:Key="togleStyle" Style="{StaticResource MaterialDesignActionToggleButton}" Content="{md:PackIcon Kind=Close}"/>
         </ResourceDictionary>
     </Window.Resources>
     <Window.CommandBindings>
@@ -360,7 +360,7 @@
                                     <WrapPanel x:Name="WrapCM" Visibility="{Binding Path = ShowCMData, Converter={StaticResource BoolToVisConverter} }" >
                                         <TextBox md:HintAssist.Hint="CounterMeasure" Height="42" x:Name="TextCM" Margin="10" md:HintAssist.IsFloating="True" Width="200" LostFocus="TextCM_LostFocus" TextChanged="TextCM_TextChanged">
                                             <TextBox.Text>
-                                                <Binding Path="CMLIne" UpdateSourceTrigger="PropertyChanged">
+                                                <Binding Path="CMLineName" UpdateSourceTrigger="PropertyChanged">
                                                     <Binding.ValidationRules>
                                                         <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
                                                     </Binding.ValidationRules>
@@ -460,33 +460,6 @@
 
                                     </WrapPanel>
                                 </StackPanel>
-                                <!--<Grid>
-                                    --><!--<Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="110"/>
-                                        <RowDefinition Height="100"/>
-                                        <RowDefinition Height="200"/>
-                                    </Grid.RowDefinitions>-->
-                                    
-                                    <!--<GroupBox Grid.Row="2" Header="Element Selected">
-                                        <StackPanel>
-                                            <TextBlock x:Name="TextLineSelected" Text="{Binding Path=LSelected}" TextAlignment="Justify" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" />
-                                            <Separator/>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="Type: " TextAlignment="Justify" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                                <TextBlock x:Name="TextLineType" Text="{Binding Path = TSelected}" TextAlignment="Justify" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </GroupBox>
-                                    <GroupBox x:Name="cbDiagramValues" Header="Diagram Values" Height="183"  VerticalAlignment="Bottom" Grid.Row="3">
-                                        <Grid>
-                                            <TextBox x:Name="TextDiagram" Height="30" Margin="3,31,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsEnabled="False" TextAlignment="Right"/>
-                                            <TextBox x:Name="TextProbability" Height="31" Margin="3,98,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsEnabled="False" TextOptions.TextHintingMode="Animated" HorizontalContentAlignment="Stretch" TextAlignment="Right"/>
-                                            <Label x:Name="LabelDiagram" Content="Diagram Name" HorizontalAlignment="Left" Margin="4,5,0,0" VerticalAlignment="Top" />
-                                            <Label x:Name="LabelProbability" Content="Acum. Likelihood:" HorizontalAlignment="Left" Margin="3,71,0,0" VerticalAlignment="Top"/>
-                                        </Grid>
-                                    </GroupBox>--><!--
-                                </Grid>-->
                             </ScrollViewer>
                         </xcad:LayoutAnchorable>
                         <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" IsVisibleChanged="AnchorWBSList_IsVisibleChanged" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
@@ -504,10 +477,6 @@
                                             <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnSettings" Click="BtnDeselect_Click" Content="{md:PackIcon Kind=Settings}" Width="32" Height="32" ToolTip="WBS Settings"/>
                                         </StackPanel>
                                     </md:PopupBox>
-                                    <!--<Button x:Name="BtnAddWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Add}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" ToolTip="Add WBS" Click="BtnAddWBS_Click"/>
-                                    <Button x:Name="BtnCollapseWBS" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=ContentCopy}" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" ToolTip="Collapse All" Click="BtnCollapse_Click"/>
-                                    <Button x:Name="BtnDeselect" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=ArrowBack}" HorizontalAlignment="Left"  Margin="100,0,0,0" VerticalAlignment="Top" ToolTip="DeSelect" Click="BtnDeselect_Click"/>
-                                    <Button x:Name="BtnSettings" Style="{DynamicResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=Settings}" HorizontalAlignment="Left"  Margin="145,0,0,0" VerticalAlignment="Top" ToolTip="WBS Settings" Click="BtnDeselect_Click"/>-->
                                 </Grid>
                                 <Grid Grid.Row="1">
                                     <TreeView Name="TreeViewWBS"/>
@@ -590,7 +559,7 @@
                                     <DataGrid Grid.Row="2" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" VerticalAlignment="Stretch" 
                                               AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False" Grid.ColumnSpan="2" MouseLeave="DgRisksCross_MouseLeave" 
                                               SelectedCellsChanged="DgRisksCross_SelectedCellsChanged" LostFocus="DgRisksCross_LostFocus" CanUserDeleteRows="False" SelectionChanged="DgRisksCross_SelectionChanged" 
-                                              CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True" CanUserAddRows="False" BorderThickness="3">
+                                              CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True" CanUserAddRows="False" ItemsSource="{Binding}" VerticalContentAlignment="Center" >
                                     </DataGrid>
                                 </Grid>
                             </xcad:LayoutAnchorable>
