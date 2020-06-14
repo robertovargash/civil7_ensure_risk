@@ -8,6 +8,7 @@
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:classess="clr-namespace:EnsureRisk.Classess"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:decimalconv="clr-namespace:EnsureRisk.DataBinding"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Medium"
@@ -189,7 +190,11 @@
             <Slider x:Key="CommonSlider"/>
             <ComboBox x:Key="CommonCB"/>
             <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Key="Delete" Content="{md:PackIcon Kind=Delete}" ToolTip="Remove this group"/>
-            <ToggleButton x:Key="togleStyle" Style="{StaticResource MaterialDesignActionToggleButton}" Content="{md:PackIcon Kind=Close}"/>
+            <ToggleButton x:Key="togleStyle" Style="{StaticResource MaterialDesignActionToggleButton}" Content="{md:PackIcon Kind=Close}"/>           
+            <Style x:Key="TextStyle">
+                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                <Setter Property="TextBlock.TextAlignment" Value="Justify"/>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Window.CommandBindings>
@@ -249,7 +254,7 @@
                                 <StackPanel Orientation="Vertical">
                                     <WrapPanel x:Name="WrapRisk" Visibility="{Binding Path = ShowRiskData, Converter={StaticResource BoolToVisConverter} }">
                                         <StackPanel Orientation="Vertical" >
-                                            <TextBox TabIndex="1" IsEnabled="{Binding Path = HasAccess}" Width="200" KeyUp="RiskName_KeyUp" md:HintAssist.Hint="Risk Name" md:HintAssist.IsFloating="True" x:Name="TextRisk" MaxLength="250"  TextWrapping="Wrap"  VerticalAlignment="Top" LostFocus="TextRisk_LostFocus" MaxLines="1" TextOptions.TextHintingMode="Animated" TextChanged="RiskName_TextChanged">
+                                            <TextBox TabIndex="1" x:Name="TextRisk" IsEnabled="{Binding Path = HasAccess}" Width="200" KeyUp="RiskName_KeyUp" md:HintAssist.Hint="Risk Name" md:HintAssist.IsFloating="True" MaxLength="250"  TextWrapping="Wrap"  VerticalAlignment="Top" LostFocus="TextRisk_LostFocus" MaxLines="1" TextOptions.TextHintingMode="Animated" TextChanged="RiskName_TextChanged">
                                                 <TextBox.Text>
                                                     <Binding Path="RiskLineName" UpdateSourceTrigger="PropertyChanged">
                                                         <Binding.ValidationRules>
@@ -266,7 +271,10 @@
                                         </StackPanel>
 
                                         <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" HorizontalAlignment="Stretch" IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" x:Name="TextRiskDetail" TextWrapping="Wrap" TextAlignment="Justify" VerticalScrollBarVisibility="Auto" LostFocus="TextRiskDetail_LostFocus"/>
-                                        <TextBox md:HintAssist.Hint="Probability(%)" x:Name="TextProbability" Text="{Binding Path = Probability}" Margin="10" md:HintAssist.IsFloating="True" Width="150" IsEnabled="False" Height="42"/>
+                                        <TextBox md:HintAssist.Hint="Probability(%)" x:Name="TextProbability" Text="{Binding Path = Probability,
+                                                                            Converter={x:Static decimalconv:DecimalUIConverter.Instance},
+                                                                         ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
+                                                                        ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}" Margin="10" md:HintAssist.IsFloating="True" Width="150" IsEnabled="False" Height="42"/>
                                         <TabControl>
                                             <TabItem Header="Values" Name="tabValues" >
                                                 <Grid Background="#FFE5E5E5">
@@ -368,7 +376,10 @@
                                             </TextBox.Text>
                                         </TextBox>
                                         <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Stretch" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" x:Name="TextCMDetail" TextWrapping="Wrap" TextAlignment="Justify" VerticalScrollBarVisibility="Auto" LostFocus="TextCMDetail_LostFocus"/>
-                                        <TextBox md:HintAssist.Hint="Risk Reduction(%)" Margin="10" x:Name="TextRReduction" md:HintAssist.IsFloating="True" Width="150" Text="{Binding Path = RiskReduction}" IsEnabled="False" Height="42"/>
+                                        <TextBox md:HintAssist.Hint="Risk Reduction(%)" Margin="10" x:Name="TextRReduction" md:HintAssist.IsFloating="True" Width="150" Text="{Binding Path = RiskReduction,
+                                                                            Converter={x:Static decimalconv:DecimalUIConverter.Instance},
+                                                                         ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
+                                                                        ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}" IsEnabled="False" Height="42"/>
                                         <TabControl >
                                             <TabItem Header="Values" Name="tabCMValues" >
                                                 <Grid Background="#FFE5E5E5">
@@ -523,7 +534,6 @@
                                             <Button x:Name="ImportExcel" ToolTip="Load from Excel" HorizontalAlignment="Left" Click="ImportExcel_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=FileExcel}" md:ShadowAssist.ShadowDepth="Depth5"/>
                                         </StackPanel>
                                     </Grid>
-
                                 </Grid>
                                 <!--</ScrollViewer>-->
                             </xcad:LayoutAnchorable>
@@ -560,6 +570,33 @@
                                               AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False" Grid.ColumnSpan="2" MouseLeave="DgRisksCross_MouseLeave" 
                                               SelectedCellsChanged="DgRisksCross_SelectedCellsChanged" LostFocus="DgRisksCross_LostFocus" CanUserDeleteRows="False" SelectionChanged="DgRisksCross_SelectionChanged" 
                                               CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True" CanUserAddRows="False" ItemsSource="{Binding}" VerticalContentAlignment="Center" >
+                                       
+                                        <DataGrid.Columns>
+                                            <DataGridTemplateColumn x:Name="RiskEnabled" Header="Active?">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ToggleButton Unchecked="RiskToggleButtonUnChecked" Width="20" Height="20" IsEnabled="{Binding Path=HasAccess}" Checked="RiskToggleButtonChecked" Style="{StaticResource MaterialDesignActionToggleButton}" IsChecked="{Binding Path= Enabled}">
+                                                            <ToggleButton.Content>
+                                                                <md:PackIcon Kind="Close" Width="20" Height="20"/>
+                                                            </ToggleButton.Content>
+                                                            <md:ToggleButtonAssist.OnContent>
+                                                                <md:PackIcon Kind="Check" Width="20" Height="20"/>
+                                                            </md:ToggleButtonAssist.OnContent>
+                                                        </ToggleButton>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn x:Name="RiskName" Header="Risk" ElementStyle="{StaticResource TextStyle}" Binding="{Binding Path= nameShort}" MinWidth="100" MaxWidth="300"/>
+                                            <DataGridTextColumn x:Name="RiskFather" Header="Father" Binding="{Binding Path= Father}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+                                            <DataGridTextColumn x:Name="RiskWBSName" Header="WBS Name" Binding="{Binding Path= WBSName}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+                                            <DataGridTextColumn x:Name="RiskuserName" Header="User" Binding="{Binding Path= userName}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+                                            <DataGridTextColumn x:Name="RiskProbability" Header="Probability (%)" 
+                                                                Binding="{Binding Path= probability,Converter={x:Static decimalconv:DecimalUIConverter.Instance},
+                                                                         ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
+                                                                        ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}"
+                                                                MinWidth="100" MaxWidth="300"/>
+
+                                        </DataGrid.Columns>
                                     </DataGrid>
                                 </Grid>
                             </xcad:LayoutAnchorable>
@@ -594,7 +631,34 @@
                                     </ComboBox>
                                     <DataGrid Grid.Row="2" x:Name="dgCrossCM" HorizontalAlignment="Stretch" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
                                               VerticalAlignment="Stretch" AutoGenerateColumns="False" 
-                                              CanUserSortColumns="True" CanUserReorderColumns="True"  IsReadOnly="False"  Grid.ColumnSpan="2" MouseLeave="DgCrossCM_MouseLeave" SelectedCellsChanged="DgCrossCM_SelectedCellsChanged" LostFocus="DgCrossCM_LostFocus" CanUserDeleteRows="False" SelectionChanged="DgCrossCM_SelectionChanged" CellEditEnding="DgCrossCM_CellEditEnding" CanUserAddRows="False"/>
+                                              CanUserSortColumns="True" CanUserReorderColumns="True"  IsReadOnly="False"  Grid.ColumnSpan="2" MouseLeave="DgCrossCM_MouseLeave" SelectedCellsChanged="DgCrossCM_SelectedCellsChanged" LostFocus="DgCrossCM_LostFocus" CanUserDeleteRows="False" SelectionChanged="DgCrossCM_SelectionChanged" CellEditEnding="DgCrossCM_CellEditEnding" CanUserAddRows="False">
+                                        <DataGrid.Columns>
+                                            <DataGridTemplateColumn x:Name="CMEnabled" Header="Active?">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ToggleButton Unchecked="CMToggleButtonUnChecked" Width="20" Height="20" IsEnabled="{Binding Path=HasAccess}" Checked="CMToggleButtonChecked" Style="{StaticResource MaterialDesignActionToggleButton}" IsChecked="{Binding Path= Enabled}">
+                                                            <ToggleButton.Content>
+                                                                <md:PackIcon Kind="Close" Width="20" Height="20"/>
+                                                            </ToggleButton.Content>
+                                                            <md:ToggleButtonAssist.OnContent>
+                                                                <md:PackIcon Kind="Check" Width="20" Height="20"/>
+                                                            </md:ToggleButtonAssist.OnContent>
+                                                        </ToggleButton>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn x:Name="CMName" Header="Counter M." ElementStyle="{StaticResource TextStyle}" Binding="{Binding Path= nameShort}" MinWidth="100" MaxWidth="300"/>
+                                            <DataGridTextColumn x:Name="CMFather" Header="Risk" Binding="{Binding Path= Risk}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+                                            <DataGridTextColumn x:Name="CMWBSName" Header="WBS Name" Binding="{Binding Path= WBSName}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+                                            <DataGridTextColumn x:Name="CMuserName" Header="User" Binding="{Binding Path= userName}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+                                            <DataGridTextColumn x:Name="CMRiskRed" Header="Risk Reduct. (%)" 
+                                                                Binding="{Binding Path= RiskReduction,Converter={x:Static decimalconv:DecimalUIConverter.Instance},
+                                                                         ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
+                                                                        ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}"
+                                                                MinWidth="100" MaxWidth="300"/>
+
+                                        </DataGrid.Columns>
+                                    </DataGrid>
                                 </Grid>
                             </xcad:LayoutAnchorable>
                             <xcad:LayoutAnchorable x:Name="AnchorGroupRisk"  Title="Groups"  CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Groups" AutoHideWidth="300" FloatingWidth="300">

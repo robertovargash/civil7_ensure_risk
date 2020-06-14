@@ -85,6 +85,7 @@ namespace EnsureRisk
             }
         }
 
+
         public int IdWBSFilter
         {
             get { return idwbsfilter; }
@@ -370,6 +371,7 @@ namespace EnsureRisk
                 TextRReduction.DataContext = this;
                 CbFilterWBSRisk.DataContext = this;
                 CbFilterWBSCM.DataContext = this;
+                //dgRisksCross.DataContext = this;
                 WSRisk = new ServiceRiskController.WebServiceRisk();
                 DsMain = new UserDataSet();
                 AccessList = new List<int>();
@@ -5189,7 +5191,7 @@ namespace EnsureRisk
             {
                 foreach (var item in dg.Columns)
                 {
-                    if (item.Header.ToString() == "Risk" || item.Header.ToString() == "Active?")
+                    if (item.Header.ToString() == "Risk")
                     {
                         item.IsReadOnly = !flag;
                         break;
@@ -5307,147 +5309,14 @@ namespace EnsureRisk
                         }
                     }
                     Dt_Cross_Risk.AcceptChanges();
-
-                    dgRisksCross.Columns.Clear();
+                    CleanDynamicRiskColumns(dgRisksCross);
                     dgRisksCross.AutoGenerateColumns = false;
-                    //Adding the columns to cross table
-                    Style styleText = new Style();
-                    Setter set1 = new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap);
-                    Setter set2 = new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Left);
-                    
-                    styleText.Setters.Add(set1);
-                    styleText.Setters.Add(set2);
-
-                    Style styleCheck = new Style();
-                    for (int i = 0; i < Dt_Cross_Risk.Columns.Count; i++)
-                    {
-                        DataGridTextColumn column = new DataGridTextColumn();
-                        switch (Dt_Cross_Risk.Columns[i].ToString())
-                        {
-                            case "probability":
-                                Binding probabilityBinding = new Binding(Dt_Cross_Risk.Columns[i].ToString())
-                                {
-                                    Converter = new DecimalUIConverter(),
-                                    ConverterCulture = CultureInfo.CurrentUICulture,
-                                    ConverterParameter = decimalConfig
-                                };
-                                column.Header = "Probability (%)";
-                                column.Binding = probabilityBinding;
-                                column.IsReadOnly = true;
-                                column.MinWidth = 100;
-                                column.MaxWidth = 300;
-                                dgRisksCross.Columns.Add(column);
-                                break;
-                            case "nameShort":
-                                column.Header = "Risk";
-                                column.Binding = new Binding(Dt_Cross_Risk.Columns[i].ToString());                                
-                                column.ElementStyle = styleText;                                
-                                column.IsReadOnly = true;
-                                column.MinWidth = 100;
-                                column.MaxWidth = 300;
-                                dgRisksCross.Columns.Add(column);
-                                break;
-                            case "WBSName":
-                                column.Header = "WBS Name";
-                                column.Binding = new Binding(Dt_Cross_Risk.Columns[i].ToString());
-                                column.ElementStyle = styleText;
-                                column.IsReadOnly = true;
-                                column.MinWidth = 100;
-                                column.MaxWidth = 300;
-                                dgRisksCross.Columns.Add(column);
-                                break;
-                            case "userName":
-                                column.Header = "User";
-                                column.Binding = new Binding(Dt_Cross_Risk.Columns[i].ToString());
-                                column.ElementStyle = styleText;
-                                column.IsReadOnly = true;
-                                column.MinWidth = 100;
-                                column.MaxWidth = 300;
-                                dgRisksCross.Columns.Add(column);
-                                break;
-                            case "Father":
-                                column.Header = "Father";
-                                column.Binding = new Binding(Dt_Cross_Risk.Columns[i].ToString());
-                                column.ElementStyle = styleText;
-                                column.IsReadOnly = true;
-                                column.MinWidth = 100;
-                                column.MaxWidth = 300;
-                                dgRisksCross.Columns.Add(column);
-                                break;
-                            case DT_Risk_Damages.STATUS:
-                                DataGridCheckBoxColumn chkcolumn = new DataGridCheckBoxColumn()
-                                {
-                                    Header = "Active?",
-                                    Binding = new Binding("Enabled"),
-                                    IsReadOnly = false,
-                                    MinWidth = 100,
-                                    MaxWidth = 300
-                                };
-                                DataGridTemplateColumn dgtmp = new DataGridTemplateColumn()
-                                {
-                                    Header = "Active?",
-                                    IsReadOnly = true,
-                                    MinWidth = 100,
-                                    MaxWidth = 300
-                                };
-                                dgtmp.CellTemplate = new DataTemplate();
-                                var fef = new FrameworkElementFactory(typeof(ToggleButton));
-                                fef.SetBinding(StyleProperty, new Binding() { Source = new Style(typeof(ToggleButton), ((ToggleButton)FindResource("togleStyle")).Style) });
-                                fef.SetBinding(ContentProperty, new Binding() { Source = "x" });
-                                fef.SetBinding(ToggleButton.IsCheckedProperty, new Binding("Enabled"));
-                                fef.SetBinding(WidthProperty, new Binding() { Source = 25 });
-                                fef.SetBinding(HeightProperty, new Binding() { Source = 25 });
-                                fef.AddHandler(ToggleButton.CheckedEvent, new RoutedEventHandler(RiskToggleButtonChecked));
-                                fef.AddHandler(ToggleButton.UncheckedEvent, new RoutedEventHandler(RiskToggleButtonUnChecked));
-                                dgtmp.CellTemplate.VisualTree = fef;
-                                dgRisksCross.Columns.Add(dgtmp);
-                                break;
-                            case "GroupeName":
-                                break;
-                            case "idWBS":
-                                break;
-                            case "idRiskTree":
-                                break;
-                            case "IDFather":
-                                break;
-                            case "details":
-                                break;
-                            case "TopRisk":
-                                break;
-                            case "Color":
-                                break;
-                            case "RiskTree":
-                                break;
-                            case "isRoot":
-                                break;
-                            case "idTopRisk":
-                                break;
-                            case "idRisk":
-                                break;
-                            case "idGroupe":
-                                break;
-                            default:
-                                Binding columnBinding = new Binding(Dt_Cross_Risk.Columns[i].ToString());
-                                if (Dt_Cross_Risk.Columns[i].DataType.Equals(typeof(decimal)))
-                                {
-                                    columnBinding.Converter = new DecimalUIConverter();
-                                    columnBinding.ConverterCulture = CultureInfo.CurrentUICulture;
-                                    columnBinding.ConverterParameter = decimalConfig;
-                                }
-                                column.Header = Dt_Cross_Risk.Columns[i].ToString();
-                                column.Binding = columnBinding;
-                                column.IsReadOnly = true;
-                                column.MinWidth = 100;
-                                dgRisksCross.Columns.Add(column);
-                                break;
-                        }
-                    }
+                    AddDynamicRiskColumns();
                     TreeOperation.OrderTableHierarquical(Dt_Cross_Risk, TheCurrentLayout.LinesList, DT_Risk_Damages.ID_RISK);
                     DV_CrossRisk = new DataView(Dt_Cross_Risk);
                     dgRisksCross.ItemsSource = DV_CrossRisk;
-                    dgRisksCross.DataContext = DV_CrossRisk;
+                    //dgRisksCross.DataContext = DV_CrossRisk;
                     FillTableGroup(myDs);
-                    CleanDynamicColumns(dgRisksCross);
                 }
             }
             catch (Exception ex)
@@ -5456,7 +5325,69 @@ namespace EnsureRisk
             }
         }
 
-        private void CleanDynamicColumns(DataGrid dataGrid)
+        private void AddDynamicRiskColumns()
+        {
+            for (int i = 0; i < Dt_Cross_Risk.Columns.Count; i++)
+            {
+                DataGridTextColumn column = new DataGridTextColumn();
+                switch (Dt_Cross_Risk.Columns[i].ToString())
+                {
+                    case "probability":                       
+                        break;
+                    case "nameShort":
+                        break;
+                    case "WBSName":
+                        break;
+                    case "userName":
+                        break;
+                    case "Father":
+                        break;
+                    case DT_Risk_Damages.STATUS:
+                        break;
+                    case "GroupeName":
+                        break;
+                    case "idWBS":
+                        break;
+                    case "idRiskTree":
+                        break;
+                    case "IDFather":
+                        break;
+                    case "details":
+                        break;
+                    case "TopRisk":
+                        break;
+                    case "Color":
+                        break;
+                    case "RiskTree":
+                        break;
+                    case "isRoot":
+                        break;
+                    case "idTopRisk":
+                        break;
+                    case "idRisk":
+                        break;
+                    case "idGroupe":
+                        break;
+                    default:
+                        Binding columnBinding = new Binding(Dt_Cross_Risk.Columns[i].ToString());
+                        if (Dt_Cross_Risk.Columns[i].DataType.Equals(typeof(decimal)))
+                        {
+                            columnBinding.Converter = new DecimalUIConverter();
+                            columnBinding.ConverterCulture = CultureInfo.CurrentUICulture;
+                            columnBinding.ConverterParameter = decimalConfig;
+                        }
+                        column.Header = Dt_Cross_Risk.Columns[i].ToString();
+                        column.Binding = columnBinding;
+                        column.IsReadOnly = true;
+                        column.MinWidth = 100;
+                        dgRisksCross.Columns.Add(column);
+                        break;
+                }
+            }
+
+        }
+
+        private void CleanDynamicRiskColumns(DataGrid dataGrid)
         {
             int i = 0;
             while (i < dataGrid.Columns.Count)
@@ -5582,135 +5513,85 @@ namespace EnsureRisk
                     }
                 }
                 Dt_Cross_CM.AcceptChanges();
-                dgCrossCM.Columns.Clear();
+                //dgCrossCM.Columns.Clear();
+                CleanDynamicCMColumns(dgCrossCM);
                 dgCrossCM.AutoGenerateColumns = false;
-
-                Style styleText = new Style();
-                Setter set1 = new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap);
-                Setter set2 = new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Left);
-                styleText.Setters.Add(set1);
-                styleText.Setters.Add(set2);
-
-                //dgSelection.columns
-                for (int i = 0; i < Dt_Cross_CM.Columns.Count; i++)
-                {
-                    DataGridTextColumn column = new DataGridTextColumn();
-                    switch (Dt_Cross_CM.Columns[i].ToString())
-                    {
-                        case DT_CounterM_Damage.RISK_REDUCTION:
-                            Binding riskReductionBinding = new Binding(Dt_Cross_CM.Columns[i].ToString())
-                            {
-                                Converter = new DecimalUIConverter(),
-                                ConverterCulture = CultureInfo.CurrentUICulture,
-                                ConverterParameter = decimalConfig
-                            };
-                            column.MinWidth = 100;
-                            column.Header = "Risk Reduction(%)";
-                            column.Binding = riskReductionBinding;
-                            column.IsReadOnly = true;
-                            dgCrossCM.Columns.Add(column);
-                            break;
-                        case DT_CounterM_Damage.COUNTERM_NAMESHORT:
-                            column.Header = "Counter M.";
-                            column.ElementStyle = styleText;
-                            column.Binding = new Binding(Dt_Cross_CM.Columns[i].ToString());
-                            column.IsReadOnly = true;
-                            column.MinWidth = 100;
-                            column.MaxWidth = 300;
-                            dgCrossCM.Columns.Add(column);
-                            break;
-                        case "WBS Name":
-                            column.Header = "WBS Name";
-                            column.Binding = new Binding(Dt_Cross_CM.Columns[i].ToString());
-                            column.ElementStyle = styleText;
-                            column.IsReadOnly = true;
-                            column.MinWidth = 100;
-                            column.MaxWidth = 300;
-                            dgCrossCM.Columns.Add(column);
-                            break;
-                        case "userName":
-                            column.Header = "User";
-                            column.Binding = new Binding(Dt_Cross_CM.Columns[i].ToString());
-                            column.ElementStyle = styleText;
-                            column.IsReadOnly = true;
-                            column.MinWidth = 100;
-                            column.MaxWidth = 300;
-                            dgCrossCM.Columns.Add(column);
-                            break;
-                        case DT_CounterM_Damage.RISK:
-                            column.Header = "Risk";
-                            column.ElementStyle = styleText;
-                            column.Binding = new Binding(Dt_Cross_CM.Columns[i].ToString());
-                            column.IsReadOnly = true;
-                            column.MinWidth = 100;
-                            column.MaxWidth = 300;
-                            dgCrossCM.Columns.Add(column);
-                            break;
-                        case DT_CounterM_Damage.STATUS:
-                            //DataGridCheckBoxColumn chkcolumn = new DataGridCheckBoxColumn()
-                            //{
-                            //    Header = "Status",
-                            //    Binding = new Binding("Enabled"),
-                            //    MinWidth = 100,
-                            //    MaxWidth = 300
-                            //};
-                            DataGridTemplateColumn dgtmp = new DataGridTemplateColumn()
-                            {
-                                Header = "Active?",
-                                IsReadOnly = true,
-                                MinWidth = 100,
-                                MaxWidth = 300
-                            };
-                            dgtmp.CellTemplate = new DataTemplate();
-                            var fef = new FrameworkElementFactory(typeof(ToggleButton));
-                            fef.SetBinding(StyleProperty, new Binding() { Source = new Style(typeof(ToggleButton), ((ToggleButton)FindResource("togleStyle")).Style) });
-                            fef.SetBinding(ContentProperty, new Binding() { Source = "x" });
-                            fef.SetBinding(ToggleButton.IsCheckedProperty, new Binding("Enabled"));
-                            fef.SetBinding(WidthProperty, new Binding() { Source = 25 });
-                            fef.SetBinding(HeightProperty, new Binding() { Source = 25 });
-                            fef.AddHandler(ToggleButton.CheckedEvent, new RoutedEventHandler(CMToggleButtonChecked));
-                            fef.AddHandler(ToggleButton.UncheckedEvent, new RoutedEventHandler(CMToggleButtonUnChecked));
-                            dgtmp.CellTemplate.VisualTree = fef;
-                            dgCrossCM.Columns.Add(dgtmp);
-                            break;
-                        case DT_CounterM_Damage.GROUPENAME:
-                            break;
-                        case "idWBS":
-                            break;
-                        case "idCounterM":
-                            break;
-                        case "idTopRisk":
-                            break;
-                        case "TopRisk":
-                            break;
-                        case "Color":
-                            break;
-                        case "idRiskTree":
-                            break;
-                        case "idRisk":
-                            break;
-                        case "idGroupe":
-                            break;
-                        default:
-                            Binding columnBinding = new Binding(Dt_Cross_CM.Columns[i].ToString());
-                            if (Dt_Cross_CM.Columns[i].DataType.Equals(typeof(decimal)))
-                            {
-                                columnBinding.Converter = new DecimalUIConverter();
-                                columnBinding.ConverterCulture = CultureInfo.CurrentUICulture;
-                                columnBinding.ConverterParameter = decimalConfig;
-                            }
-                            column.Header = Dt_Cross_CM.Columns[i].ToString();
-                            column.Binding = columnBinding;
-                            column.IsReadOnly = true;
-                            column.MinWidth = 100;
-                            dgCrossCM.Columns.Add(column);
-                            break;
-                    }
-                }
+                AddDynamicCMColumns();
                 TreeOperation.OrderTableHierarquical(Dt_Cross_CM, TheCurrentLayout.LinesList, DT_CounterM_Damage.ID_COUNTERM);
                 DV_Cross_CM = new DataView(Dt_Cross_CM);
                 dgCrossCM.ItemsSource = DV_Cross_CM;
                 FillTableGroup(myDs);
+            }
+        }
+
+        private void AddDynamicCMColumns()
+        {
+            for (int i = 0; i < Dt_Cross_CM.Columns.Count; i++)
+            {
+                DataGridTextColumn column = new DataGridTextColumn();
+                switch (Dt_Cross_CM.Columns[i].ToString())
+                {
+                    case DT_CounterM_Damage.RISK_REDUCTION:
+                        break;
+                    case DT_CounterM_Damage.COUNTERM_NAMESHORT:
+                        break;
+                    case "WBS Name":
+                        break;
+                    case "userName":
+                        break;
+                    case DT_CounterM_Damage.RISK:
+                        break;
+                    case DT_CounterM_Damage.STATUS:
+                        break;
+                    case DT_CounterM_Damage.GROUPENAME:
+                        break;
+                    case "idWBS":
+                        break;
+                    case "idCounterM":
+                        break;
+                    case "idTopRisk":
+                        break;
+                    case "TopRisk":
+                        break;
+                    case "Color":
+                        break;
+                    case "idRiskTree":
+                        break;
+                    case "idRisk":
+                        break;
+                    case "idGroupe":
+                        break;
+                    default:
+                        Binding columnBinding = new Binding(Dt_Cross_CM.Columns[i].ToString());
+                        if (Dt_Cross_CM.Columns[i].DataType.Equals(typeof(decimal)))
+                        {
+                            columnBinding.Converter = new DecimalUIConverter();
+                            columnBinding.ConverterCulture = CultureInfo.CurrentUICulture;
+                            columnBinding.ConverterParameter = decimalConfig;
+                        }
+                        column.Header = Dt_Cross_CM.Columns[i].ToString();
+                        column.Binding = columnBinding;
+                        column.IsReadOnly = true;
+                        column.MinWidth = 100;
+                        dgCrossCM.Columns.Add(column);
+                        break;
+                }
+            }
+
+        }
+
+        private void CleanDynamicCMColumns(DataGrid dataGrid)
+        {
+            int i = 0;
+            while (i < dataGrid.Columns.Count)
+            {
+                if (dataGrid.Columns[i].Header.ToString() != "Risk Reduction(%)" && dataGrid.Columns[i].Header.ToString() != "Counter M." && dataGrid.Columns[i].Header.ToString() != "WBS Name"
+                    && dataGrid.Columns[i].Header.ToString() != "User" && dataGrid.Columns[i].Header.ToString() != "Risk" && dataGrid.Columns[i].Header.ToString() != "Active?")
+                {
+                    dataGrid.Columns.RemoveAt(i);
+                    i--;
+                }
+                i++;
             }
         }
 
