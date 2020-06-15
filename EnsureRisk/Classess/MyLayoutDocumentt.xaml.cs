@@ -2832,12 +2832,14 @@ namespace EnsureRisk.Classess
                 {
                     if (!(CbFilterTopR.SelectedValue is null))
                     {
-                        IdDamageSelected = (Int32)CbFilterTopR.SelectedValue;
-                        System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (Int32)CbFilterTopR.SelectedValue).First()[DT_Risk_Damages.COLOR].ToString()));
+                        IdDamageSelected = (int)CbFilterTopR.SelectedValue;
+                        System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (int)CbFilterTopR.SelectedValue).First()[DT_Risk_Damages.COLOR].ToString()));
+
+                        int index = Rectangles.FindIndex(x => x.ID_TopRisk.Equals(IdDamageSelected));
 
                         foreach (RiskPolyLine item in LinesList)
                         {
-                            if (Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (Int32)CbFilterTopR.SelectedValue).Any())
+                            if (Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (int)CbFilterTopR.SelectedValue).Any())
                             {
                                 if (!(item.IsCM))
                                 {
@@ -2865,6 +2867,9 @@ namespace EnsureRisk.Classess
                         }
                         UpdateLinesValues();
                         SetLinesThickness();
+                        MoveElementsInArray(Rectangles, Rectangles.Count, index);
+                        ReLoadRectangles();
+                        DrawNumbers();
                     }
                 }
             }
@@ -2873,6 +2878,7 @@ namespace EnsureRisk.Classess
                 MostrarDialog(ex.Message);
             }
         }
+
 
         #region TextChangeName
         private void TextChangeName_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
