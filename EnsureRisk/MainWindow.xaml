@@ -14,7 +14,7 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        x:Class="EnsureRisk.MainWindow"           
+        x:Class="EnsureRisk.MainWindow" 
         mc:Ignorable="d"
         Title="Ensure Risk" Height="715.725" Width="1385" WindowStartupLocation="CenterScreen" WindowState="Maximized" 
         Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown"  MouseMove="Window_MouseMove" Closing="Window_Closing">
@@ -295,7 +295,9 @@
                                                             <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding Path= Damage}" Width="*" IsReadOnly="True"/>
                                                             <DataGridTextColumn x:Name="TopValue" Header="Value" EditingElementStyle="{StaticResource errorStyle}" Width="*" IsReadOnly="False">
                                                                 <DataGridTextColumn.Binding>
-                                                                    <Binding Path="value" UpdateSourceTrigger="PropertyChanged">
+                                                                    <Binding Path="value" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
+                                                                         ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}"
+                                                                        ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                                                         <Binding.ValidationRules>
                                                                             <classes:NegativeValidation ValidationStep="UpdatedValue" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
                                                                         </Binding.ValidationRules>
@@ -335,7 +337,9 @@
                                                             <DataGridTextColumn x:Name="WBSUser" Header="User" Binding="{Binding Path= userName}" Width="*" IsReadOnly="True"/>
                                                             <DataGridTextColumn x:Name="WBProbability" Header="Prob (%)" Width="*"  EditingElementStyle="{StaticResource errorStyle}" IsReadOnly="false" >
                                                                 <DataGridTextColumn.Binding>
-                                                                    <Binding Path="probability" UpdateSourceTrigger="LostFocus">
+                                                                    <Binding Path="probability" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
+                                                                         ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}"
+                                                                        ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                                                         <Binding.ValidationRules>
                                                                             <classes:NegativePlusValidation ValidationStep="UpdatedValue" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
                                                                         </Binding.ValidationRules>
@@ -400,7 +404,9 @@
                                                             <DataGridTextColumn x:Name="DamageName" Header="Damage" Binding="{Binding Path= Damage}" Width="*"/>
                                                             <DataGridTextColumn x:Name="CMDamageValue" Header="Value" Width="*">
                                                                 <DataGridTextColumn.Binding>
-                                                                    <Binding Path="value" UpdateSourceTrigger="LostFocus">
+                                                                    <Binding Path="value" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
+                                                                         ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}"
+                                                                        ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                                                         <Binding.ValidationRules>
                                                                             <classes:NegativeValidation ValidationStep="UpdatedValue" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
                                                                         </Binding.ValidationRules>
@@ -440,7 +446,9 @@
                                                             <DataGridTextColumn x:Name="WBSUserCM" Header="User" Binding="{Binding Path= userName}" Width="*" IsReadOnly="True"/>
                                                             <DataGridTextColumn x:Name="WBSProbCM" Header="Risk Red.(%)" Width="100" IsReadOnly="False">
                                                                 <DataGridTextColumn.Binding>
-                                                                    <Binding Path="probability" UpdateSourceTrigger="LostFocus">
+                                                                    <Binding Path="probability" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
+                                                                         ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}"
+                                                                        ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                                                         <Binding.ValidationRules>
                                                                             <classes:NegativePlusValidation ValidationStep="UpdatedValue" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
                                                                         </Binding.ValidationRules>
@@ -527,7 +535,6 @@
                                             </DataGrid.Columns>
                                         </DataGrid>
                                         <StackPanel HorizontalAlignment="Left"  Margin="1,0,0,0" VerticalAlignment="Top" Width="50">
-                                            <!--<Button ToolTip="Go Back!!"  x:Name="BtnBackward"  HorizontalAlignment="Left"  Click="BtnBackward_Click" Content="{md:PackIcon Kind=StepBackward}" md:ShadowAssist.ShadowDepth="Depth5"/>-->
                                             <Button x:Name="AddTree" ToolTip="Add New Diagram" HorizontalAlignment="Left" Click="AddTree_Click" Margin="0,20,0,0" Content="{md:PackIcon Kind=Plus  }" md:ShadowAssist.ShadowDepth="Depth5"/>
                                             <Button x:Name="EditTree" ToolTip="Load and Edit Diagram" HorizontalAlignment="Left" Click="EditTree_Click" Margin="0,20,0,0" Content="{md:PackIcon Kind=Pencil}" md:ShadowAssist.ShadowDepth="Depth5"/>
                                             <Button x:Name="RemoveTree" ToolTip="Remove Diagram" HorizontalAlignment="Left" Click="RemoveTree_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=Delete}" md:ShadowAssist.ShadowDepth="Depth5"/>
@@ -651,7 +658,7 @@
                                             <DataGridTextColumn x:Name="CMFather" Header="Risk" Binding="{Binding Path= Risk}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
                                             <DataGridTextColumn x:Name="CMWBSName" Header="WBS Name" Binding="{Binding Path= WBSName}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
                                             <DataGridTextColumn x:Name="CMuserName" Header="User" Binding="{Binding Path= userName}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
-                                            <DataGridTextColumn x:Name="CMRiskRed" Header="Risk Reduct. (%)" 
+                                            <DataGridTextColumn x:Name="CMRiskRed" Header="Risk Reduction(%)"
                                                                 Binding="{Binding Path= RiskReduction,Converter={x:Static decimalconv:DecimalUIConverter.Instance},
                                                                          ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
                                                                         ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}"

@@ -37,6 +37,8 @@ namespace EnsureRisk.DataBinding
         public static readonly DecimalUIConverter Instance = new DecimalUIConverter();
         public static readonly DecimalUIConverterParams ConverterParams = new DecimalUIConverterParams(Properties.Settings.Default.DecimalsStringFormat, Properties.Settings.Default.DecimalFractionalDigits);
         public static readonly CultureInfo CultureInfo = CultureInfo.CurrentUICulture;
+        public static readonly string DecimalStringFormat = Properties.Settings.Default.DecimalsStringFormat;
+        public static readonly int DecimalFractionalDigits = Properties.Settings.Default.DecimalFractionalDigits;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
