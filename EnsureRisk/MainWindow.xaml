@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:EnsureRisk"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:classess="clr-namespace:EnsureRisk.Classess"
+        xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:decimalconv="clr-namespace:EnsureRisk.DataBinding"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -565,7 +566,7 @@
                                             <md:PackIcon Kind="Close" Opacity=".56" />
                                         </Button>
                                     </Grid>
-                                    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" Grid.Row="1" SelectedValue="{Binding Path=IdWBSFilter}"  md:ComboBoxAssist.ClassicMode="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed"  VerticalAlignment="Top" HorizontalAlignment="Left" SelectionChanged="CbFilterWBSRisk_SelectionChanged" >
+                                    <ComboBox x:Name="CbFilterWBSRisk" ItemsSource="{Binding DvCBWBS}" Margin="5" DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" SelectedValue="{Binding Path=IdWBSFilter}"  md:ComboBoxAssist.ClassicMode="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed"  VerticalAlignment="Top" HorizontalAlignment="Left" SelectionChanged="CbFilterWBSRisk_SelectionChanged" >
                                         <md:HintAssist.Hint>
                                             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
                                                 <md:PackIcon Kind="FileTree" />
@@ -576,7 +577,7 @@
                                     <DataGrid Grid.Row="2" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" VerticalAlignment="Stretch" 
                                               AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False" Grid.ColumnSpan="2" MouseLeave="DgRisksCross_MouseLeave" 
                                               SelectedCellsChanged="DgRisksCross_SelectedCellsChanged" LostFocus="DgRisksCross_LostFocus" CanUserDeleteRows="False" SelectionChanged="DgRisksCross_SelectionChanged" 
-                                              CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True" CanUserAddRows="False" ItemsSource="{Binding}" VerticalContentAlignment="Center" >
+                                              CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True" CanUserAddRows="False" ItemsSource="{Binding DV_CrossRisk}" VerticalContentAlignment="Center" >
                                        
                                         <DataGrid.Columns>
                                             <DataGridTemplateColumn x:Name="RiskEnabled" Header="Active?">
@@ -628,7 +629,7 @@
                                             <md:PackIcon Kind="Close" Opacity=".56"  />
                                         </Button>
                                     </Grid>
-                                    <ComboBox x:Name="CbFilterWBSCM" Margin="5" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" SelectedIndex="{Binding Path=SelectedIndex, Source=CbFilterWBSRisk, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <ComboBox x:Name="CbFilterWBSCM" Margin="5" ItemsSource="{Binding DvCBWBS}" DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" SelectedIndex="{Binding Path=SelectedIndex, Source=CbFilterWBSRisk, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed" VerticalAlignment="Top" HorizontalAlignment="Left">
                                         <md:HintAssist.Hint>
                                             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
                                                 <md:PackIcon Kind="FileTree" />
@@ -638,7 +639,9 @@
                                     </ComboBox>
                                     <DataGrid Grid.Row="2" x:Name="dgCrossCM" HorizontalAlignment="Stretch" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
                                               VerticalAlignment="Stretch" AutoGenerateColumns="False" 
-                                              CanUserSortColumns="True" CanUserReorderColumns="True"  IsReadOnly="False"  Grid.ColumnSpan="2" MouseLeave="DgCrossCM_MouseLeave" SelectedCellsChanged="DgCrossCM_SelectedCellsChanged" LostFocus="DgCrossCM_LostFocus" CanUserDeleteRows="False" SelectionChanged="DgCrossCM_SelectionChanged" CellEditEnding="DgCrossCM_CellEditEnding" CanUserAddRows="False">
+                                              CanUserSortColumns="True" CanUserReorderColumns="True"  IsReadOnly="False"  Grid.ColumnSpan="2" MouseLeave="DgCrossCM_MouseLeave" 
+                                              SelectedCellsChanged="DgCrossCM_SelectedCellsChanged" LostFocus="DgCrossCM_LostFocus" CanUserDeleteRows="False" 
+                                              SelectionChanged="DgCrossCM_SelectionChanged" CellEditEnding="DgCrossCM_CellEditEnding" CanUserAddRows="False" ItemsSource="{Binding DV_Cross_CM}">
                                         <DataGrid.Columns>
                                             <DataGridTemplateColumn x:Name="CMEnabled" Header="Active?">
                                                 <DataGridTemplateColumn.CellTemplate>

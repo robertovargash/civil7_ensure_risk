@@ -49,6 +49,10 @@ namespace EnsureRisk
         private string _cmshortName = "";
         private bool showCMData = false;
         private bool showRiskData = false;
+        private DataView dvCBWBS;
+        private DataView dv_CrossRisk;
+        private DataView dv_Cross_CM;
+        public DataView DvCBWBS { get { return dvCBWBS; } set { dvCBWBS = value; OnPropertyChanged("DvCBWBS"); } }
         private bool EditandoRisk;
         private bool SeleccionandoRisk;       
         private bool hasAccess;
@@ -247,8 +251,8 @@ namespace EnsureRisk
         public DataView DVRisk_Tree { get; set; }
         public DataTable Dt_Cross_Risk { get; set; }
         public DataTable Dt_Cross_CM { get; set; }
-        public DataView DV_CrossRisk { get; set; }
-        public DataView DV_Cross_CM { get; set; }
+        public DataView DV_CrossRisk { get { return dv_CrossRisk; } set { dv_CrossRisk = value; OnPropertyChanged("DV_CrossRisk"); } }
+        public DataView DV_Cross_CM { get { return dv_Cross_CM; } set { dv_Cross_CM = value; OnPropertyChanged("DV_Cross_CM"); } }
         public DataView DV_WBS { get; set; }
         public DataSet DsMain { get; set; }
         public DataSet DsWBS { get; set; }
@@ -371,7 +375,8 @@ namespace EnsureRisk
                 TextRReduction.DataContext = this;
                 CbFilterWBSRisk.DataContext = this;
                 CbFilterWBSCM.DataContext = this;
-                //dgRisksCross.DataContext = this;
+                dgRisksCross.DataContext = this;
+                dgCrossCM.DataContext = this;
                 WSRisk = new ServiceRiskController.WebServiceRisk();
                 DsMain = new UserDataSet();
                 AccessList = new List<int>();
@@ -5314,7 +5319,7 @@ namespace EnsureRisk
                     AddDynamicRiskColumns();
                     TreeOperation.OrderTableHierarquical(Dt_Cross_Risk, TheCurrentLayout.LinesList, DT_Risk_Damages.ID_RISK);
                     DV_CrossRisk = new DataView(Dt_Cross_Risk);
-                    dgRisksCross.ItemsSource = DV_CrossRisk;
+                    //dgRisksCross.ItemsSource = DV_CrossRisk;
                     //dgRisksCross.DataContext = DV_CrossRisk;
                     FillTableGroup(myDs);
                 }
@@ -5519,7 +5524,8 @@ namespace EnsureRisk
                 AddDynamicCMColumns();
                 TreeOperation.OrderTableHierarquical(Dt_Cross_CM, TheCurrentLayout.LinesList, DT_CounterM_Damage.ID_COUNTERM);
                 DV_Cross_CM = new DataView(Dt_Cross_CM);
-                dgCrossCM.ItemsSource = DV_Cross_CM;
+                //dgCrossCM.ItemsSource = DV_Cross_CM;
+                
                 FillTableGroup(myDs);
             }
         }
@@ -7629,15 +7635,14 @@ namespace EnsureRisk
             try
             {
                 using (DataTable WBSHijos = new DataTable("WBSHojas"))
-                {
-                    string wbscolumname = "User-WBS";
+                {                    
                     DataColumn idwbsColumn = new DataColumn(DT_WBS.ID_WBS, typeof(int));
-                    DataColumn WbsColumn = new DataColumn(wbscolumname, typeof(string));
+                    DataColumn WbsColumn = new DataColumn(DT_WBS.USER_WBS, typeof(string));
                     WBSHijos.Columns.Add(idwbsColumn);
                     WBSHijos.Columns.Add(WbsColumn);
                     DataRow drWBSHijos = WBSHijos.NewRow();
                     drWBSHijos[DT_WBS.ID_WBS] = -1;
-                    drWBSHijos[wbscolumname] = "General-All";
+                    drWBSHijos[DT_WBS.USER_WBS] = "General-All";
                     WBSHijos.Rows.Add(drWBSHijos);
                     foreach (DataRow wbsRow in DsWBS.Tables[DT_WBS.TABLE_NAME].Rows)
                     {
@@ -7645,25 +7650,18 @@ namespace EnsureRisk
                         {
                             drWBSHijos = WBSHijos.NewRow();
                             drWBSHijos[DT_WBS.ID_WBS] = wbsRow[DT_WBS.ID_WBS];
-                            drWBSHijos[wbscolumname] = wbsRow[DT_WBS.USERNAME] + "-" + wbsRow[DT_WBS.NIVEL] + wbsRow[DT_WBS.WBS_NAME];
+                            drWBSHijos[DT_WBS.USER_WBS] = wbsRow[DT_WBS.USERNAME] + "-" + wbsRow[DT_WBS.NIVEL] + wbsRow[DT_WBS.WBS_NAME];
                             WBSHijos.Rows.Add(drWBSHijos);
                         }
                     }
+                    DvCBWBS = WBSHijos.DefaultView;
                     if (CbFilterWBSRisk != null)
                     {
-                        CbFilterWBSRisk.SelectedValuePath = DT_WBS.ID_WBS;
-                        CbFilterWBSRisk.ItemsSource = WBSHijos.DefaultView;
-                        CbFilterWBSRisk.DisplayMemberPath = wbscolumname;
                         CbFilterWBSRisk.SelectedIndex = 0;
-                        IdWBSFilter = -1;
                     }
                     if (CbFilterWBSCM != null)
                     {
-                        CbFilterWBSCM.SelectedValuePath = DT_WBS.ID_WBS;
-                        CbFilterWBSCM.ItemsSource = WBSHijos.DefaultView;
-                        CbFilterWBSCM.DisplayMemberPath = wbscolumname;
                         CbFilterWBSCM.SelectedIndex = 0;
-                        IdWBSFilter = -1;
                     }
                 }
             }
@@ -8356,7 +8354,6 @@ namespace EnsureRisk
             {
                 if (cbsender.SelectedValue != null)
                 {
-                    IdWBSFilter = (int)cbsender.SelectedValue;
                     if (TheCurrentLayout != null)
                     {
                         CruzarTablaRisk(TheCurrentLayout.Ds);

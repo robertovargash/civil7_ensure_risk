@@ -14,6 +14,7 @@ namespace DataMapping.Data
         public const string IDPROJECT = "idProject";
         //public const string IS_MANAGER = "isManager";
         public const string USERNAME = "userName";
+        public const string USER_WBS = "User-WBS";
 
         public DT_WBS() : base()
         {

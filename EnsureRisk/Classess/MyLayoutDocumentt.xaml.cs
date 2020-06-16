@@ -30,14 +30,23 @@ namespace EnsureRisk.Classess
     /// <summary>
     /// Interaction logic for MyLayoutDocumentt.xaml
     /// </summary>
-    public partial class MyLayoutDocumentt : LayoutDocument
+    public partial class MyLayoutDocumentt : LayoutDocument, INotifyPropertyChanged
     {
         public string LoginUser { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
         public double Main_Y { get; set; }
         public Point PointSelected { get; set; }
-        public int IdDamageSelected { get; set; }
+        public int idDamageSelected;
+        private DataView dvDamage;
+        public DataView  DvDamage { get { return dvDamage; } set { dvDamage = value; OnPropertyChanged("DvDamage"); } }
+        public int IdDamageSelected { get { return idDamageSelected; } set { idDamageSelected = value; OnPropertyChanged("IdDamageSelected"); } }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
         #region Booleans
         public bool IsScoping { get; set; }
         public bool MoviendoRisk { get; set; }
@@ -122,6 +131,7 @@ namespace EnsureRisk.Classess
             exportToExcelWorker.ProgressChanged += ExportToExcelWorker_ProgressChanged;
             exportToExcelWorker.RunWorkerCompleted += ExportToExcelWorker_RunWorkerCompleted;
             this.Closing += MyLayoutDocument_Closed;
+            CbFilterTopR.DataContext = this;
         }
 
         public void MostrarYesNo(string text)
@@ -298,11 +308,11 @@ namespace EnsureRisk.Classess
                 DataRow[] thisTopRisk = Ds.Tables[DT_Diagram_Damages.TABLENAME]
                         .Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram);
 
-                CbFilterTopR.SelectedValuePath = DT_Diagram_Damages.ID_DAMAGE;
-                CbFilterTopR.ItemsSource = thisTopRisk.CopyToDataTable().DefaultView;
-                CbFilterTopR.DisplayMemberPath = DT_Diagram_Damages.DAMAGE;
+                //CbFilterTopR.SelectedValuePath = DT_Diagram_Damages.ID_DAMAGE;
+                DvDamage = thisTopRisk.CopyToDataTable().DefaultView;
+                //CbFilterTopR.ItemsSource = thisTopRisk.CopyToDataTable().DefaultView;
+                //CbFilterTopR.DisplayMemberPath = DT_Diagram_Damages.DAMAGE;
                 CbFilterTopR.SelectedIndex = 0;
-                IdDamageSelected = (int)CbFilterTopR.SelectedValue;
             }
             catch (Exception ex)
             {
@@ -533,7 +543,7 @@ namespace EnsureRisk.Classess
             {
                 if (!(CbFilterTopR.SelectedValue is null))
                 {
-                    IdDamageSelected = (int)CbFilterTopR.SelectedValue;
+                    //IdDamageSelected = IdDamageSelected;
                     if (IdDamageSelected != 0)
                     {
                         General.UpdateThickness(LinesList);
@@ -755,7 +765,7 @@ namespace EnsureRisk.Classess
 
                             riskLine.Expand.MouseLeftButtonDown += Expand_MouseLeftButtonDown;
 
-                            if (Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Contains(new object[] { riskLine.ID, (Int32)CbFilterTopR.SelectedValue }))
+                            if (Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Contains(new object[] { riskLine.ID, IdDamageSelected }))
                             {
                                 riskLine.OwnValue = (decimal)Ds.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { riskLine.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
                             }
@@ -1337,9 +1347,9 @@ namespace EnsureRisk.Classess
                 CMLine.StrokeThickness = 3;
                 CMLine.StrokeThickness = 3;
                 decimal valor;
-                if (Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Contains(new object[] { CMLine.ID, (Int32)CbFilterTopR.SelectedValue }))
+                if (Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Contains(new object[] { CMLine.ID, IdDamageSelected }))
                 {
-                    valor = (decimal)Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Find(new object[] { CMLine.ID, (Int32)CbFilterTopR.SelectedValue })[DT_CounterM_Damage.VALUE];
+                    valor = (decimal)Ds.Tables[DT_CounterM_Damage.TABLENAME].Rows.Find(new object[] { CMLine.ID, IdDamageSelected })[DT_CounterM_Damage.VALUE];
                 }
                 else
                 {
@@ -1897,7 +1907,7 @@ namespace EnsureRisk.Classess
                             }
                             else
                             {
-                                System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (Int32)CbFilterTopR.SelectedValue).First()[DT_Risk_Damages.COLOR].ToString()));
+                                System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Risk_Damages.COLOR].ToString()));
                                 if (TengoPermiso(Line_Selected) && FullAccess(Line_Selected))
                                 {
                                     Line_Selected.SetMenu(MenuRisk);
@@ -2832,14 +2842,13 @@ namespace EnsureRisk.Classess
                 {
                     if (!(CbFilterTopR.SelectedValue is null))
                     {
-                        IdDamageSelected = (int)CbFilterTopR.SelectedValue;
-                        System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (int)CbFilterTopR.SelectedValue).First()[DT_Risk_Damages.COLOR].ToString()));
+                        System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Risk_Damages.COLOR].ToString()));
 
                         int index = Rectangles.FindIndex(x => x.ID_TopRisk.Equals(IdDamageSelected));
 
                         foreach (RiskPolyLine item in LinesList)
                         {
-                            if (Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + (int)CbFilterTopR.SelectedValue).Any())
+                            if (Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).Any())
                             {
                                 if (!(item.IsCM))
                                 {
