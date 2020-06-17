@@ -292,8 +292,8 @@
                                                             </Style>
                                                         </DataGrid.Resources>
                                                         <DataGrid.Columns>
-                                                            <DataGridTextColumn x:Name="WBSn" Header="WBS" Binding="{Binding Path= WBSName}" Width="*" IsReadOnly="True"/>
-                                                            <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding Path= Damage}" Width="*" IsReadOnly="True"/>
+                                                            <DataGridTextColumn x:Name="WBSn" Header="WBS" Binding="{Binding {x:Static data:DT_WBS_RISK_DAMAGE.WBS}}" Width="*" IsReadOnly="True"/>
+                                                            <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_WBS_RISK_DAMAGE.DAMAGE}}" Width="*" IsReadOnly="True"/>
                                                             <DataGridTextColumn x:Name="TopValue" Header="Value" EditingElementStyle="{StaticResource errorStyle}" Width="*" IsReadOnly="False">
                                                                 <DataGridTextColumn.Binding>
                                                                     <Binding Path="value" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
@@ -333,9 +333,9 @@
                                                             </Style>
                                                         </DataGrid.Resources>
                                                         <DataGrid.Columns>
-                                                            <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= Nivel}" Width="100" IsReadOnly="True"/>
-                                                            <DataGridTextColumn x:Name="WBS" Header="WBS Name" Binding="{Binding Path= WBS_Name}" Width="*" IsReadOnly="True"/>
-                                                            <DataGridTextColumn x:Name="WBSUser" Header="User" Binding="{Binding Path= userName}" Width="*" IsReadOnly="True"/>
+                                                            <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding  {x:Static data:DT_RISK_WBS.NIVEL}}" Width="100" IsReadOnly="True"/>
+                                                            <DataGridTextColumn x:Name="WBS" Header="WBS Name" Binding="{Binding {x:Static data:DT_RISK_WBS.WBS}}" Width="*" IsReadOnly="True"/>
+                                                            <DataGridTextColumn x:Name="WBSUser" Header="User" Binding="{Binding {x:Static data:DT_RISK_WBS.USERNAME}}" Width="*" IsReadOnly="True"/>
                                                             <DataGridTextColumn x:Name="WBProbability" Header="Prob (%)" Width="*"  EditingElementStyle="{StaticResource errorStyle}" IsReadOnly="false" >
                                                                 <DataGridTextColumn.Binding>
                                                                     <Binding Path="probability" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
@@ -362,7 +362,7 @@
                                                     </Button>
                                                     <DataGrid TabIndex="5" Name="DgRiskRoles" Margin="71,5,0,0" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False">
                                                         <DataGrid.Columns>
-                                                            <DataGridTextColumn x:Name="Role" Header="Role" Binding="{Binding Path= Role}" Width="*"/>
+                                                            <DataGridTextColumn x:Name="Role" Header="Role" Binding="{Binding {x:Static data:DT_Role_Risk.Role}}" Width="*"/>
                                                         </DataGrid.Columns>
                                                     </DataGrid>
                                                 </Grid>
@@ -401,8 +401,8 @@
                                                             </Style>
                                                         </DataGrid.Resources>
                                                         <DataGrid.Columns>
-                                                            <DataGridTextColumn x:Name="WBSName" Header="WBS" Binding="{Binding Path= WBSName}" Width="*"/>
-                                                            <DataGridTextColumn x:Name="DamageName" Header="Damage" Binding="{Binding Path= Damage}" Width="*"/>
+                                                            <DataGridTextColumn x:Name="WBSName" Header="WBS" Binding="{Binding {x:Static data:DT_WBS_CM_Damage.WBS}}" Width="*"/>
+                                                            <DataGridTextColumn x:Name="DamageName" Header="Damage" Binding="{Binding {x:Static data:DT_WBS_CM_Damage.DAMAGE}}" Width="*"/>
                                                             <DataGridTextColumn x:Name="CMDamageValue" Header="Value" Width="*">
                                                                 <DataGridTextColumn.Binding>
                                                                     <Binding Path="value" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
@@ -442,11 +442,11 @@
                                                             </Style>
                                                         </DataGrid.Resources>
                                                         <DataGrid.Columns>
-                                                            <DataGridTextColumn x:Name="LevelCM" Header="Level" Binding="{Binding Path= Nivel}" Width="100" IsReadOnly="True"/>
-                                                            <DataGridTextColumn x:Name="WBSCM" Header="WBS Name" Binding="{Binding Path= WBS_Name}" Width="*" IsReadOnly="True"/>
-                                                            <DataGridTextColumn x:Name="WBSUserCM" Header="User" Binding="{Binding Path= userName}" Width="*" IsReadOnly="True"/>
+                                                            <DataGridTextColumn x:Name="LevelCM" Header="Level" Binding="{Binding  {x:Static data:DT_CM_WBS.NIVEL}}" Width="100" IsReadOnly="True"/>
+                                                            <DataGridTextColumn x:Name="WBSCM" Header="WBS Name" Binding="{Binding  {x:Static data:DT_CM_WBS.WBS}}" Width="*" IsReadOnly="True"/>
+                                                            <DataGridTextColumn x:Name="WBSUserCM" Header="User" Binding="{Binding  {x:Static data:DT_CM_WBS.USERNAME}}" Width="*" IsReadOnly="True"/>
                                                             <DataGridTextColumn x:Name="WBSProbCM" Header="Risk Red.(%)" Width="100" IsReadOnly="False">
-                                                                <DataGridTextColumn.Binding>
+                                                                <DataGridTextColumn.Binding >
                                                                     <Binding Path="probability" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
                                                                          ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}"
                                                                         ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
@@ -471,7 +471,7 @@
                                                     </Button>
                                                     <DataGrid Name="dgRolesCM" Margin="71,5,0,0" AutoGenerateColumns="False" IsReadOnly="True" CanUserDeleteRows="False">
                                                         <DataGrid.Columns>
-                                                            <DataGridTextColumn x:Name="RoleCM" Header="Role" Binding="{Binding Path= Role}" Width="*"/>
+                                                            <DataGridTextColumn x:Name="RoleCM" Header="Role" Binding="{Binding {x:Static data:DT_Role_CM.Role}}" Width="*"/>
                                                         </DataGrid.Columns>
                                                     </DataGrid>
                                                 </Grid>
@@ -594,16 +594,15 @@
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTextColumn x:Name="RiskName" Header="Risk" ElementStyle="{StaticResource TextStyle}" Binding="{Binding Path= nameShort}" MinWidth="100" MaxWidth="300"/>
-                                            <DataGridTextColumn x:Name="RiskFather" Header="Father" Binding="{Binding Path= Father}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
-                                            <DataGridTextColumn x:Name="RiskWBSName" Header="WBS Name" Binding="{Binding Path= WBSName}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
-                                            <DataGridTextColumn x:Name="RiskuserName" Header="User" Binding="{Binding Path= userName}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+                                            <DataGridTextColumn x:Name="RiskName" Header="Risk" Binding="{Binding {x:Static data:DT_Risk_Damages.RISK_NAMESHORT}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300"/>
+                                            <DataGridTextColumn x:Name="RiskFather" Header="Father" Binding="{Binding {x:Static data:DT_Risk_Damages.FATHER}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+                                            <DataGridTextColumn x:Name="RiskWBSName" Header="WBS Name" Binding="{Binding {x:Static data:DT_Risk_Damages.WBS_NAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+                                            <DataGridTextColumn x:Name="RiskuserName" Header="User" Binding="{Binding {x:Static data:DT_Risk_Damages.USERNAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
                                             <DataGridTextColumn x:Name="RiskProbability" Header="Probability (%)" 
-                                                                Binding="{Binding Path= probability,Converter={x:Static decimalconv:DecimalUIConverter.Instance},
+                                                                Binding="{Binding {x:Static data:DT_Risk_Damages.PROBABILITY},Converter={x:Static decimalconv:DecimalUIConverter.Instance},
                                                                          ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
                                                                         ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}"
                                                                 MinWidth="100" MaxWidth="300"/>
-
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </Grid>
@@ -657,12 +656,12 @@
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTextColumn x:Name="CMName" Header="Counter M." ElementStyle="{StaticResource TextStyle}" Binding="{Binding Path= nameShort}" MinWidth="100" MaxWidth="300"/>
-                                            <DataGridTextColumn x:Name="CMFather" Header="Risk" Binding="{Binding Path= Risk}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
-                                            <DataGridTextColumn x:Name="CMWBSName" Header="WBS Name" Binding="{Binding Path= WBSName}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
-                                            <DataGridTextColumn x:Name="CMuserName" Header="User" Binding="{Binding Path= userName}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+                                            <DataGridTextColumn x:Name="CMName" Header="Counter M." Binding="{Binding {x:Static data:DT_CounterM_Damage.COUNTERM_NAMESHORT}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300"/>
+                                            <DataGridTextColumn x:Name="CMFather" Header="Risk" Binding="{Binding {x:Static data:DT_CounterM_Damage.RISK}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+                                            <DataGridTextColumn x:Name="CMWBSName" Header="WBS Name" Binding="{Binding {x:Static data:DT_CounterM_Damage.WBS_NAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+                                            <DataGridTextColumn x:Name="CMuserName" Header="User" Binding="{Binding {x:Static data:DT_CounterM_Damage.USERNAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
                                             <DataGridTextColumn x:Name="CMRiskRed" Header="Risk Reduction(%)"
-                                                                Binding="{Binding Path= RiskReduction,Converter={x:Static decimalconv:DecimalUIConverter.Instance},
+                                                                Binding="{Binding {x:Static data:DT_CounterM_Damage.RISK_REDUCTION},Converter={x:Static decimalconv:DecimalUIConverter.Instance},
                                                                          ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
                                                                         ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}"
                                                                 MinWidth="100" MaxWidth="300"/>

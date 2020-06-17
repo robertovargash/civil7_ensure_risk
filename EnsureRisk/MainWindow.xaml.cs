@@ -5541,9 +5541,9 @@ namespace EnsureRisk
                         break;
                     case DT_CounterM_Damage.COUNTERM_NAMESHORT:
                         break;
-                    case "WBS Name":
+                    case DT_CounterM_Damage.WBS_NAME:
                         break;
-                    case "userName":
+                    case DT_CounterM_Damage.USERNAME:
                         break;
                     case DT_CounterM_Damage.RISK:
                         break;
