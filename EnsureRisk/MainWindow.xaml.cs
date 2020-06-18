@@ -2949,13 +2949,14 @@ namespace EnsureRisk
                 {
                     if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
                     {
-                        foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID))
+                        foreach (DataRow item in DvRiskWBS.Table.Select(DT_RISK_WBS.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID))
                         {
                             item[DT_RISK_WBS.IS_PRIMARY] = false;
                             item[DT_RISK_WBS.PRIMARY] = "";
                         }
                         DvRiskWBS[DgRiskWBS.SelectedIndex].Row[DT_RISK_WBS.IS_PRIMARY] = true;
                         DvRiskWBS[DgRiskWBS.SelectedIndex].Row[DT_RISK_WBS.PRIMARY] = "PRIMARY";
+                        TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Merge(DvRiskWBS.Table);
                     }
                 }
             }
@@ -4342,13 +4343,14 @@ namespace EnsureRisk
                 {
                     if (dgWBSCM.SelectedIndex >= 0)
                     {
-                        foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Select(DT_CM_WBS.ID_CM + " = " + TheCurrentLayout.Line_Selected.ID))
+                        foreach (DataRow item in DVCMWBS.Table.Select(DT_CM_WBS.ID_CM + " = " + TheCurrentLayout.Line_Selected.ID))
                         {
                             item[DT_CM_WBS.IS_PRIMARY] = false;
                             item[DT_CM_WBS.PRIMARY] = "";
                         }
                         DVCMWBS[dgWBSCM.SelectedIndex].Row[DT_CM_WBS.IS_PRIMARY] = true;
                         DVCMWBS[dgWBSCM.SelectedIndex].Row[DT_CM_WBS.PRIMARY] = "PRIMARY";
+                        TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Merge(DVCMWBS.Table);
                     }
                 }
             }
