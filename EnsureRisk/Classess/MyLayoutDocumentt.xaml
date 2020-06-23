@@ -1,14 +1,17 @@
 ﻿<xcad:LayoutDocument x:Class="EnsureRisk.Classess.MyLayoutDocumentt"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"                    
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"      
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Medium"
+             TextElement.FontSize="14"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EnsureRisk.Classess"
              xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
              xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
              mc:Ignorable="d" CanMove="True" CanClose="True" CanFloat="True" IsActiveChanged="LayoutDocument_IsActiveChanged">
-    <Grid MouseDown="LayoutDocument_MouseDown">
+    <Grid MouseDown="LayoutDocument_MouseDown" Background="Green">
         <Button x:Name="BtnUndoneScope" Panel.ZIndex="1" Click="BtnUndoneScope_Click" Visibility="Collapsed" Content="{md:PackIcon Kind=UndoVariant}" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
         <Grid x:Name="TheTopGrid" Background="Red" MouseDown="LayoutDocument_MouseDown">
             <Grid x:Name="TheMainGrid" Background="White" MouseDown="LayoutDocument_MouseDown">

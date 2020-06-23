@@ -25,7 +25,9 @@ namespace EnsureRisk.Windows
     public partial class WindowSelectTopRisk : Window, INotifyPropertyChanged
     {
         private string _um;
+        private string damage;
         public string UM { get { return _um; } set { _um = value; OnPropertyChanged("UM"); } }
+        public string DAMAGE { get { return damage; } set { damage = value; OnPropertyChanged("DAMAGE"); } }
         public DataRow Drow { get; set; }
         public DataTable TopRiskTable { get; set; }
         public WindowSelectTopRisk()
@@ -52,6 +54,7 @@ namespace EnsureRisk.Windows
             BtnCancel.Content = StringResources.CancelButton;
             Title = StringResources.SelectTopRiskTitle;
             TextUnit.DataContext = this;
+            TextTopRisk.DataContext = this;
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -71,7 +74,6 @@ namespace EnsureRisk.Windows
                     DcolumToShow = new string[] { DT_Damage.TOP_RISK_COLUMN },
                     DcolumToShowAlias = new string[] { "Damage" },
                     ColumnToFilter = DT_Damage.TOP_RISK_COLUMN,
-
                     Title = "Damages"
                 };
                 frmSelection.P.FilterString = "Damage";
@@ -79,7 +81,7 @@ namespace EnsureRisk.Windows
                 {
                     Drow[DT_Diagram_Damages.ID_DAMAGE] = frmSelection.Dt.Rows[0][DT_Damage.ID_COLUMNA];
                     Drow[DT_Diagram_Damages.COLOR] = frmSelection.Dt.Rows[0][DT_Damage.COLORID_COLUMNA];
-                    TextTopRisk.Text = frmSelection.Dt.Rows[0][DT_Diagram_Damages.DAMAGE].ToString();
+                    DAMAGE = frmSelection.Dt.Rows[0][DT_Diagram_Damages.DAMAGE].ToString();
                 }
                 else
                 {
@@ -90,7 +92,7 @@ namespace EnsureRisk.Windows
                         {
                             Drow[DT_Diagram_Damages.ID_DAMAGE] = frmSelection.RowsSelected[0][DT_Damage.ID_COLUMNA];
                             Drow[DT_Diagram_Damages.COLOR] = frmSelection.RowsSelected[0][DT_Damage.COLORID_COLUMNA];
-                            TextTopRisk.Text = frmSelection.RowsSelected[0][DT_Diagram_Damages.DAMAGE].ToString();
+                            DAMAGE = frmSelection.RowsSelected[0][DT_Diagram_Damages.DAMAGE].ToString();
                         }
                     }
                 }
@@ -107,10 +109,10 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                if (TextTopRisk.Text != "" || UM != "")
+                if (DAMAGE != "" || UM != "")
                 {
-                    Drow[DT_Diagram_Damages.DAMAGE] = TextTopRisk.Text;
-                    Drow[DT_Diagram_Damages.UM] = TextUnit.Text;
+                    Drow[DT_Diagram_Damages.DAMAGE] = DAMAGE;
+                    Drow[DT_Diagram_Damages.UM] = UM;
                     this.DialogResult = true;
                 }
                 else

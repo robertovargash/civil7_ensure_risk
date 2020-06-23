@@ -543,6 +543,13 @@ namespace EnsureRisk
             //}            
         }
 
+        private void OptionMiniMap_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            AnchorMiniMap.IsVisible = true;
+            AnchorMiniMap.IsSelected = true;
+        }
+
+
         private void LoginCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try
@@ -8470,7 +8477,8 @@ namespace EnsureRisk
         {
             CMLineName = TextCM.Text;
         }
-        
+
+       
         private void BtnDeselect_Click(object sender, RoutedEventArgs e)
         {
             try

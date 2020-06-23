@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using EnsureRisk.Windows;
+using System.Windows.Controls;
+using EnsureRisk.Classess;
 
 namespace EnsureRisk.DataBinding
 {
@@ -39,6 +42,7 @@ namespace EnsureRisk.DataBinding
         public static readonly CultureInfo CultureInfo = CultureInfo.CurrentUICulture;
         public static readonly string DecimalStringFormat = Properties.Settings.Default.DecimalsStringFormat;
         public static readonly int DecimalFractionalDigits = Properties.Settings.Default.DecimalFractionalDigits;
+        public static Collection<ValidationRule> collection = new Collection<ValidationRule>() { new NegativePlusValidation() { ValidationStep = ValidationStep.UpdatedValue} };
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

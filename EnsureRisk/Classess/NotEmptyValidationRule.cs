@@ -53,7 +53,6 @@ namespace EnsureRisk.Classess
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-
             DataRowView course = ((BindingExpression)value).DataItem as DataRowView;
 
             if (course.Row["probability"] is decimal)

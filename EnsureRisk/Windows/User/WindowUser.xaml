@@ -5,6 +5,7 @@
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         x:Class="EnsureRisk.Windows.WindowUser"
+        xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -66,7 +67,7 @@
                             </Button>
                             <DataGrid Name="dgRoles" HorizontalAlignment="Left" Height="157" Margin="83,3,0,0" VerticalAlignment="Top" Width="274" AutoGenerateColumns="False" IsReadOnly="True">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn x:Name="Role" Header="Role" Binding="{Binding Path= Role}" Width="*"/>
+                                    <DataGridTextColumn x:Name="Role" Header="Role" Binding="{Binding {x:Static data:DT_User_Role.ROLE}}" Width="*"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
@@ -81,7 +82,7 @@
                             </Button>
                             <DataGrid Name="dgWBS" HorizontalAlignment="Left" Height="157" Margin="83,3,0,0" VerticalAlignment="Top" Width="274" AutoGenerateColumns="False" IsReadOnly="True">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn x:Name="WBSName" Header="WBS Name" Binding="{Binding Path= WBSName}" Width="*"/>
+                                    <DataGridTextColumn x:Name="WBSName" Header="WBS Name" Binding="{Binding {x:Static data:DT_WBS.WBS_NAME}}" Width="*"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>

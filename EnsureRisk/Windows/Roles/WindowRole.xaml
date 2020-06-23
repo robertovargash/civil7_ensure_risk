@@ -10,6 +10,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
         xmlns:local="clr-namespace:EnsureRisk.Windows"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d"
@@ -28,7 +29,7 @@
         </TextBox>
         <DataGrid Name="dgOperation" HorizontalAlignment="Left" Height="244" Margin="71,82,0,0" VerticalAlignment="Top" Width="284" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn x:Name="colOperation" Header="Operation" Binding="{Binding Path= Operation}" Width="*"/>
+                <DataGridTextColumn x:Name="colOperation" Header="Operation" Binding="{Binding {x:Static data:DT_OperationRole.OPERATION_COLUMN}}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button Name="BtnAdd" Style="{DynamicResource MaterialDesignRaisedButton}"  HorizontalAlignment="Left"  Margin="11,97,0,0" VerticalAlignment="Top" Click="BtnAdd_Click" TabIndex="2" md:ShadowAssist.ShadowDepth="Depth5">

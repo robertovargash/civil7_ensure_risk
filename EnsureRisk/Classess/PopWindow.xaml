@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              VerticalAlignment="Top" HorizontalAlignment="Left" Background="Transparent" RenderTransformOrigin="0.0,0.0">
     <Grid Background="Transparent">
-        <Border CornerRadius="10" Background="#FFCDC3B5">
+        <Border CornerRadius="10" Background="#FFCDC3B5" >
             <Grid x:Name="GridBorder">
                 <StackPanel Orientation="Vertical">
                     <Grid x:Name="GridRisk" MaxHeight="200" >
