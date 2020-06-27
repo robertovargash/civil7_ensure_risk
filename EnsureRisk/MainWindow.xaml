@@ -6,11 +6,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EnsureRisk"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:rec="clr-namespace:EnsureRisk.Resources"
         xmlns:classess="clr-namespace:EnsureRisk.Classess"
         xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:decimalconv="clr-namespace:EnsureRisk.DataBinding"
-        xmlns:Theme="http://materialdesigninxaml.net/winfx/xaml/themes"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Medium"
@@ -308,11 +308,18 @@
             <xcad:DockingManager.DocumentHeaderTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <md:PackIcon Kind="FileDocument"  Margin="0,0,4,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Title}" Name="headerDrawPanel" VerticalAlignment="Center"/>
+                        <md:PackIcon Kind="FileDocument"  Margin="0,0,4,0" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        <TextBlock Text="{Binding Title}" Name="headerDrawPanel" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
                     </StackPanel>
                 </DataTemplate>
-            </xcad:DockingManager.DocumentHeaderTemplate>            
+            </xcad:DockingManager.DocumentHeaderTemplate>
+            <xcad:DockingManager.AnchorableHeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Title}" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </xcad:DockingManager.AnchorableHeaderTemplate>
             <xcad:LayoutRoot x:Name="_layoutRoot">
                 <xcad:LayoutPanel Orientation="Horizontal">
                     <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200" >
@@ -598,7 +605,7 @@
                                     </md:PopupBox>
                                 </Grid>
                                 <Grid Grid.Row="1">
-                                    <TreeView Name="TreeViewWBS"/>
+                                    <TreeView Name="TreeViewWBS" Foreground="{DynamicResource MaterialDesignBody}"/>
                                 </Grid>
                             </Grid>
                         </xcad:LayoutAnchorable>
@@ -806,6 +813,7 @@
                 </ToolBarTray>
                 <Menu>
                     <MenuItem ToolTip="Start" x:Name="StartMenu" Icon="{md:PackIcon Kind=DotsVertical}">
+                        <!--<MenuItem x:Name="LoginMenuItem" Header="{x:Static rec:Recursos.LoginMenu}" Command="local:CustomCommands.Login" Icon="{md:PackIcon Kind=Lock}" InputGestureText="Ctrl+L"/>-->
                         <MenuItem x:Name="LoginMenuItem" Header="Login" Command="local:CustomCommands.Login" Icon="{md:PackIcon Kind=Lock}" InputGestureText="Ctrl+L"/>
                         <MenuItem x:Name="MenuItemNewProject" Header="Project List" Command="local:CustomCommands.Project" Icon="{md:PackIcon Kind=FileMultiple}" InputGestureText="Ctrl+J"/>
                         <MenuItem x:Name="MenuItemUserList" Header="User List" Command="local:CustomCommands.User" Icon="{md:PackIcon Kind=Users}" InputGestureText="Ctrl+U"/>

@@ -882,9 +882,8 @@ namespace EnsureBusinesss
             {
                 throw new Exception(ex.Message);
             }
-        }
+        }      
 
-      
         private static int NivelesVerticalesTotal(RiskPolyLine line, bool IsDiagonal)
         {
             int result = 0;

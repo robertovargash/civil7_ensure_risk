@@ -237,7 +237,8 @@ namespace EnsureBusinesss.Business
                 Text = ShortName,
                 ContextMenu = Menu,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                Foreground = new SolidColorBrush(Colors.Black)
             };
             MyName.TextTrimming = TextTrimming.CharacterEllipsis;
             MyName.TextWrapping = TextWrapping.Wrap;

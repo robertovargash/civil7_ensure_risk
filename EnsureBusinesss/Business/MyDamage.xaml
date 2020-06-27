@@ -14,9 +14,9 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Name="HeaderValue" Text="Cost ($)" Grid.Row="0" VerticalAlignment="Center"/>
-                <TextBlock Name="CalculatedValue" Text="Acum. Value" Grid.Row="1" VerticalAlignment="Center"/>
-                <TextBlock Name="ExpectedDamage" Text="Acum. Dam" Grid.Row="2" VerticalAlignment="Center"/>
+                <TextBlock Name="HeaderValue" Text="Cost ($)" Grid.Row="0" VerticalAlignment="Center" Foreground="Black"/>
+                <TextBlock Name="CalculatedValue" Text="Acum. Value" Grid.Row="1" VerticalAlignment="Center" Foreground="Black"/>
+                <TextBlock Name="ExpectedDamage" Text="Acum. Dam" Grid.Row="2" VerticalAlignment="Center" Foreground="Black"/>
             </Grid>
         </Border>
     </Grid>

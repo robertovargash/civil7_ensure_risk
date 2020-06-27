@@ -32,6 +32,7 @@ using Xceed.Wpf.AvalonDock;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Windows.Controls.Primitives;
+using System.Windows.Markup;
 //using System.Windows.Forms;
 
 namespace EnsureRisk
@@ -457,6 +458,7 @@ namespace EnsureRisk
                 cbLanguage.DisplayMemberPath = DT_Language.LANGUAJE_COLUMN;
                 cbLanguage.SelectedIndex = 0;
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo((string)cbLanguage.SelectedValue);
+                Thread.CurrentThread.CurrentCulture = new CultureInfo((string)cbLanguage.SelectedValue);
                 ChangeLanguage();
                 CbProjects_DropDownClosed(sender, e);
             }
@@ -6907,6 +6909,7 @@ namespace EnsureRisk
             try
             {
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo((string)cbLanguage.SelectedValue);
+                Thread.CurrentThread.CurrentCulture = new CultureInfo((string)cbLanguage.SelectedValue);
                 ChangeLanguage();
                 switch (cbLanguage.Text)
                 {
@@ -6926,6 +6929,8 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
+
+
 
         #region DataGridEvents
 
@@ -7685,52 +7690,39 @@ namespace EnsureRisk
             TreeViewWBS.Items.Clear();
             foreach (DataRow item in BuscarWBSSinPadre(ds))
             {
-                MyTreeItem tItem = new MyTreeItem
+
+                MyTreeViewItem tItem = new MyTreeViewItem
                 {
                     IsExpanded = true,
                     MyID = (int)item[DT_WBS.ID_WBS]
                 };
-                PannelWBS panel = new PannelWBS((int)item[DT_WBS.ID_WBS])
-                {
-                    MyText = item[DT_WBS.NIVEL] + " " + item[DT_WBS.WBS_NAME] + " [" + item[DT_WBS.USERNAME] + "]",
-                    MyBtnStyle = ((Button)FindResource("Delete")).Style,
-                    Orientation = Orientation.Horizontal
-                };
+                tItem.TextWBS.Text = item[DT_WBS.NIVEL] + " " + item[DT_WBS.WBS_NAME] + " [" + item[DT_WBS.USERNAME] + "]";
+                tItem.BtnEye.Click += BtnEye_Click;
+                tItem.BtnDelete.Click += BtnDelete_Click;
+                tItem.BtnEdit.Click += BtnEdit_Click;
+                tItem.BtnEye.IdWBS = tItem.BtnDelete.IdWBS = tItem.BtnEdit.IdWBS = tItem.MyID;
 
-                panel.BtnEye.Click += BtnEye_Click;
-                panel.BtnDelete.Click += BtnDelete_Click;
-                panel.BtnEdit.Click += BtnEdit_Click;
-                panel.BtnEye.Style = panel.BtnEdit.Style = panel.BtnDelete.Style = ((Button)FindResource("Delete")).Style;
-                panel.SetText(item[DT_WBS.NIVEL] + " " + item[DT_WBS.WBS_NAME] + " [" + item[DT_WBS.USERNAME] + "]");
-                tItem.Header = panel;
                 TreeViewWBS.Items.Add(tItem);
-                panel.EnableBtns(LoginUser == item[DT_WBS.USERNAME].ToString());
+                tItem.EnableBtns(LoginUser == item[DT_WBS.USERNAME].ToString());
                 BuscarHijosWBS(ds, (int)item[DT_WBS.ID_WBS], tItem, LoginUser == item[DT_WBS.USERNAME].ToString());
             }
         }
 
-        public void BuscarHijosWBS(DataSet ds, int idFather, MyTreeItem treeItem, bool habilita)
+        public void BuscarHijosWBS(DataSet ds, int idFather, MyTreeViewItem treeItem, bool habilita)
         {
             foreach (DataRow item in ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + idFather))
             {
-                MyTreeItem tItem = new MyTreeItem
+                MyTreeViewItem tItem = new MyTreeViewItem
                 {
                     IsExpanded = true,
                     MyID = (int)item[DT_WBS_STRUCTURE.ID_CHILD]
                 };
-                PannelWBS panel = new PannelWBS((int)item[DT_WBS_STRUCTURE.ID_CHILD])
-                {
-                    MyText = item[DT_WBS_STRUCTURE.CNIVEL] + " " + item[DT_WBS_STRUCTURE.CHILD] + " [" + item[DT_WBS_STRUCTURE.CHILD_USER] + "]",
-                    MyBtnStyle = ((Button)FindResource("Delete")).Style,
-                    MyID = (int)item[DT_WBS_STRUCTURE.ID_CHILD],
-                    Orientation = Orientation.Horizontal
-                };
-                panel.BtnEye.Click += BtnEye_Click;
-                panel.BtnDelete.Click += BtnDelete_Click;
-                panel.BtnEdit.Click += BtnEdit_Click;
-                panel.BtnEye.Style = panel.BtnEdit.Style = panel.BtnDelete.Style = ((Button)FindResource("Delete")).Style;
-                panel.SetText(item[DT_WBS_STRUCTURE.CNIVEL] + " " + item[DT_WBS_STRUCTURE.CHILD] + " [" + item[DT_WBS_STRUCTURE.CHILD_USER] + "]");
-                tItem.Header = panel;
+                tItem.TextWBS.Text = item[DT_WBS_STRUCTURE.CNIVEL] + " " + item[DT_WBS_STRUCTURE.CHILD] + " [" + item[DT_WBS_STRUCTURE.CHILD_USER] + "]";
+                tItem.BtnEye.Click += BtnEye_Click;
+                tItem.BtnDelete.Click += BtnDelete_Click;
+                tItem.BtnEdit.Click += BtnEdit_Click;
+                tItem.BtnEye.IdWBS = tItem.BtnDelete.IdWBS = tItem.BtnEdit.IdWBS = tItem.MyID;
+
                 treeItem.Items.Add(tItem);
                 if (habilita)
                 {
@@ -7741,13 +7733,13 @@ namespace EnsureRisk
                     bool vari = false;
                     if (LoginUser == item[DT_WBS_STRUCTURE.CHILD_USER].ToString())
                     {
-                        panel.EnableBtns(true);
+                        tItem.EnableBtns(true);
                         vari = true;
                         BuscarHijosWBS(ds, (int)item[DT_WBS_STRUCTURE.ID_CHILD], tItem, vari);
                     }
                     else
                     {
-                        panel.EnableBtns(false);
+                        tItem.EnableBtns(false);
                         vari = false;
                         BuscarHijosWBS(ds, (int)item[DT_WBS_STRUCTURE.ID_CHILD], tItem, vari);
                     }
@@ -8502,5 +8494,9 @@ namespace EnsureRisk
         #endregion       
 
         #endregion
+    }
+    class Lang: DependencyObject
+    {
+
     }
 }

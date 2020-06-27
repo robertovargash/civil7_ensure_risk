@@ -26,9 +26,9 @@
                         </Grid>
                     </Grid>
                 </ScrollViewer>
-                <local:PopWindow x:Name="MyPopWindow" Visibility="Collapsed" Panel.ZIndex="1" Grid.Row="0"/>
-                <local:PopCMWindow x:Name="MyPopCMWindow" Visibility="Collapsed" Panel.ZIndex="1" Grid.Row="0"/>
-                <Grid Grid.Row="1">
+                <local:PopWindow x:Name="MyPopWindow" Visibility="Collapsed" Panel.ZIndex="1" Grid.Row="0" Foreground="Black"/>
+                <local:PopCMWindow x:Name="MyPopCMWindow" Visibility="Collapsed" Panel.ZIndex="1" Grid.Row="0" Foreground="Black"/>
+                <Grid Grid.Row="1" Background="{DynamicResource MaterialDesignPaper}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
