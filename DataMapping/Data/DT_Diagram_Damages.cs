@@ -11,7 +11,7 @@ namespace DataMapping.Data
         public const string DAMAGE = "TopRisk";
         public const string COLOR= "Color";
         public const string RISK_TREE = "RiskTree";
-        public const string UM = "UM";
+        //public const string UM = "UM";
 
         public DT_Diagram_Damages():base()
         {
@@ -27,7 +27,7 @@ namespace DataMapping.Data
             Columns.Add(RISK_TREE, typeof(string));
             Columns.Add(DAMAGE, typeof(string));
             Columns.Add(COLOR, typeof(string));
-            Columns.Add(UM, typeof(string));
+            //Columns.Add(UM, typeof(string));
             PrimaryKey = PK_COLUMN;
         }
         public static DataTable Create()
