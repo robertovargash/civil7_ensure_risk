@@ -44,13 +44,11 @@
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonCM" Click="MenuCM_Click" Content="{md:PackIcon Kind=Minus}" Width="32" Height="32"/>
                     </MenuItem.Header>
                 </MenuItem>
-
                 <MenuItem Height="35" x:Name="MenuZoom">
                     <MenuItem.Header>
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtomZoom" Click="Scope_Click" Content="{md:PackIcon Kind=Loupe}" Width="32" Height="32"/>
                     </MenuItem.Header>
                 </MenuItem>
-
                 <MenuItem Height="35" x:Name="MenuCopy">
                     <MenuItem.Header>
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonCopy" Click="ButtonCopy_Click" Content="{md:PackIcon Kind=ContentCopy}" Width="32" Height="32"/>

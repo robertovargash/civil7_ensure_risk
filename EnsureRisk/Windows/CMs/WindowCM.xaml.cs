@@ -125,7 +125,7 @@ namespace EnsureRisk.Windows
                         rowTop[DT_CounterM_Damage.ID_COUNTERM] = CMRow[DT_CounterM.ID];
                         rowTop[DT_CounterM_Damage.VALUE] = 0;
                         rowTop[DT_CounterM_Damage.TOP_RISK] = item[DT_Diagram_Damages.DAMAGE];
-                        rowTop[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString() + "(" + item[DT_Diagram_Damages.UM] + ")";
+                        rowTop[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString();
                         rowTop[DT_CounterM_Damage.ID_RISK_TREE] = RiskTreeID;
                         rowTop[DT_CounterM_Damage.RISK_REDUCTION] = 0;
                         rowTop[DT_CounterM_Damage.GROUPENAME] = "None";
@@ -240,7 +240,7 @@ namespace EnsureRisk.Windows
                             rowTop[DT_CounterM_Damage.ID_COUNTERM] = CMRow[DT_CounterM.ID];
                             rowTop[DT_CounterM_Damage.VALUE] = 0;
                             rowTop[DT_CounterM_Damage.TOP_RISK] = item[DT_Diagram_Damages.DAMAGE];
-                            rowTop[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString() + "(" + item[DT_Diagram_Damages.UM] + ")";
+                            rowTop[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString();
                             rowTop[DT_CounterM_Damage.ID_RISK_TREE] = RiskTreeID;
                             rowTop[DT_CounterM_Damage.RISK_REDUCTION] = 0;
                             rowTop[DT_CounterM_Damage.GROUPENAME] = "None";

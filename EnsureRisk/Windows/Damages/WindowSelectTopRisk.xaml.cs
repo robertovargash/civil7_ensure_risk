@@ -26,7 +26,6 @@ namespace EnsureRisk.Windows
     {
         private string _um;
         private string damage;
-        public string UM { get { return _um; } set { _um = value; OnPropertyChanged("UM"); } }
         public string DAMAGE { get { return damage; } set { damage = value; OnPropertyChanged("DAMAGE"); } }
         public DataRow Drow { get; set; }
         public DataTable TopRiskTable { get; set; }
@@ -50,10 +49,8 @@ namespace EnsureRisk.Windows
         public void ChangeLanguage()
         {
             MaterialDesignThemes.Wpf.HintAssist.SetHint(TextTopRisk, StringResources.TopRiskText);
-            MaterialDesignThemes.Wpf.HintAssist.SetHint(TextUnit, StringResources.UnitText);
             BtnCancel.Content = StringResources.CancelButton;
             Title = StringResources.SelectTopRiskTitle;
-            TextUnit.DataContext = this;
             TextTopRisk.DataContext = this;
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -109,10 +106,9 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                if (DAMAGE != "" || UM != "")
+                if (DAMAGE != "")
                 {
                     Drow[DT_Diagram_Damages.DAMAGE] = DAMAGE;
-                    Drow[DT_Diagram_Damages.UM] = UM;
                     this.DialogResult = true;
                 }
                 else
@@ -134,7 +130,6 @@ namespace EnsureRisk.Windows
 
         private void TextUnit_TextChanged(object sender, TextChangedEventArgs e)
         {
-            UM = TextUnit.Text;
         }
     }
 }

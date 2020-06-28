@@ -220,7 +220,7 @@ namespace EnsureRisk.Windows
                     rowTop[DT_Risk_Damages.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
                     rowTop[DT_Risk_Damages.ID_RISK] = RiskRow[DT_Risk.ID];
                     rowTop[DT_Risk_Damages.ID_RISK_TREE] = RiskTreeID;
-                    rowTop[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString() + "(" + item[DT_Diagram_Damages.UM] + ")";
+                    rowTop[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString();
                     rowTop[DT_Risk_Damages.VALUE] = 0;
                     rowTop[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.DAMAGE];
                     rowTop[DT_Risk_Damages.PROBABILITY] = useProbability ? Probability : 0;

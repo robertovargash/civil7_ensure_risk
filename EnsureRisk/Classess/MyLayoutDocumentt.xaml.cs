@@ -390,9 +390,9 @@ namespace EnsureRisk.Classess
                     Color mediaColor = Color.FromArgb(colorete.A, colorete.R, colorete.G, colorete.B);
 
                     MyDamage rectangle = new MyDamage(GridPaintLines, new Point(puntoinicialX, puntoinicialY),
-                                                        item[DT_Diagram_Damages.DAMAGE].ToString() + " (" + item[DT_Diagram_Damages.UM].ToString() + ")",
-                                                        StringResources.ACUM_VALUE + "(" + item[DT_Diagram_Damages.UM].ToString() + ") :",
-                                                        StringResources.ACUM_DAMAGE, mediaColor, (int)item[DT_Diagram_Damages.ID_DAMAGE], item[DT_Diagram_Damages.UM].ToString());
+                                                        item[DT_Diagram_Damages.DAMAGE].ToString(),
+                                                        StringResources.ACUM_VALUE,
+                                                        StringResources.ACUM_DAMAGE, mediaColor, (int)item[DT_Diagram_Damages.ID_DAMAGE]);
 
                     rectangle.MouseDown += MyDamage_MouseDown;
                     Rectangles.Add(rectangle);
@@ -433,7 +433,7 @@ namespace EnsureRisk.Classess
                     MyDamage rectangle = new MyDamage(GridPaintLines, new Point(puntoinicialX, puntoinicialY),
                                                         item.HeadeValue.Text,
                                                         item.CalculateValue.Text,
-                                                        StringResources.ACUM_DAMAGE, mediaColor, item.ID_TopRisk, item.UM);
+                                                        StringResources.ACUM_DAMAGE, mediaColor, item.ID_TopRisk);
 
                     rectangle.MouseDown += MyDamage_MouseDown;
                     Rectangles.Add(rectangle);
@@ -468,9 +468,9 @@ namespace EnsureRisk.Classess
 
                     MyDamage rectangle = new MyDamage(GridPaintLines,
                     new Point(MyMainLine.Points[1].X + 5 + General.MaxThickness, puntoinicialY),
-                    item[DT_Diagram_Damages.DAMAGE].ToString() + " (" + item[DT_Diagram_Damages.UM].ToString() + ")",
-                    StringResources.ACUM_VALUE + "(" + item[DT_Diagram_Damages.UM].ToString() + ") :",
-                    StringResources.ACUM_DAMAGE, mediaColor, (int)item[DT_Diagram_Damages.ID_DAMAGE], item[DT_Diagram_Damages.UM].ToString());
+                    item[DT_Diagram_Damages.DAMAGE].ToString(),
+                    StringResources.ACUM_VALUE,
+                    StringResources.ACUM_DAMAGE, mediaColor, (int)item[DT_Diagram_Damages.ID_DAMAGE]);
 
                     rectangle.MouseDown += MyDamage_MouseDown;
                     Rectangles.Add(rectangle);
@@ -526,7 +526,7 @@ namespace EnsureRisk.Classess
                                 }
                             }
                         }
-                        item.CalculateValue.Text = StringResources.ACUM_VALUE + "(" + item.UM + ") : " + General.MyRound(RiskValue, 2).ToString();
+                        item.CalculateValue.Text = StringResources.ACUM_VALUE + General.MyRound(RiskValue, 2).ToString();
                         item.ExpecteDamage.Text = StringResources.ACUM_DAMAGE + General.MyRound(AcumDamage, 2).ToString();
                     }
                 }

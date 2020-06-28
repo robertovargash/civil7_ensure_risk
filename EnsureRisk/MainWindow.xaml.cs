@@ -33,7 +33,6 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
-//using System.Windows.Forms;
 
 namespace EnsureRisk
 {
@@ -246,6 +245,8 @@ namespace EnsureRisk
         #region Lists       
         public List<int> AccessList { get; set; }
         public List<Node> Nodos = new List<Node>();
+        //public List<RiskPolyLine> ListCopy { get; set; }
+        public RiskPolyLine GlobalCopyLine { get; set; }
         #endregion     
 
         #region DataManagers
@@ -259,7 +260,6 @@ namespace EnsureRisk
         public DataSet DsWBS { get; set; }
         public DataSet DsGroupRisk { get; set; }
         public DataSet DsGroupCM { get; set; }
-
         public DataView DvRiskWBS { get; set; }
         public DataView DvRoleRisk { get; set; }
         public DataRow Selected_RiskRoleRow { get; set; }
@@ -318,7 +318,7 @@ namespace EnsureRisk
         public bool IS_DELETING_DIAGRAM { get; set; } = false;
         public bool IS_DELETING_RISK { get; set; } = false;
         public bool IS_DELETING_CM { get; set; } = false;
-        public bool IS_IMPORTING_PROJECT { get; set; } = false;
+        //public bool IS_IMPORTING_PROJECT { get; set; } = false;
         public bool IS_DELETING_GROUP_CM { get; set; } = false;
         public bool IS_DELETING_GROUP_TAB { get; set; } = false;
         public bool IS_REMOVING_GROUP_FILTER { get; set; } = false;
@@ -493,15 +493,15 @@ namespace EnsureRisk
         /// <summary>
         /// AutoFix the Grid Area acording with the Tree Diagram sizes.
         /// </summary>
-        private void CalculateGridSize()
-        {
-            // tree sizes are 0-based, so add 1
-            //var treeWidth = Tree.Width + 1;
-            //var treeHeight = Tree.Height + 1;
+        //private void CalculateGridSize()
+        //{
+        //    // tree sizes are 0-based, so add 1
+        //    //var treeWidth = Tree.Width + 1;
+        //    //var treeHeight = Tree.Height + 1;
 
-            //GridPaintLines.Width = ((treeWidth * NODE_WIDTH) + ((treeWidth + 1) * NODE_MARGIN_X));
-            //GridPaintLines.Height = (treeHeight * NODE_HEIGHT) + ((treeHeight + 1) * NODE_MARGIN_Y);
-        }
+        //    //GridPaintLines.Width = ((treeWidth * NODE_WIDTH) + ((treeWidth + 1) * NODE_MARGIN_X));
+        //    //GridPaintLines.Height = (treeHeight * NODE_HEIGHT) + ((treeHeight + 1) * NODE_MARGIN_Y);
+        //}
 
         #region MenuItem------------------------------------------
 
@@ -958,7 +958,6 @@ namespace EnsureRisk
                 newTreeDamage[DT_Diagram_Damages.ID_DAMAGE] = drDiagramDamage[DT_Diagram_Damages.ID_DAMAGE];
                 newTreeDamage[DT_Diagram_Damages.ID_RISKTREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
                 newTreeDamage[DT_Diagram_Damages.RISK_TREE] = drDiagram[DT_Diagram.DIAGRAM_NAME];
-                newTreeDamage[DT_Diagram_Damages.UM] = drDiagramDamage[DT_Diagram_Damages.UM];
                 dsResult.Tables[DT_Diagram_Damages.TABLENAME].Rows.Add(newTreeDamage);
             }
         }
@@ -1450,7 +1449,7 @@ namespace EnsureRisk
                     {
                         DataRow drDamage = ds.Tables[DT_Risk_Damages.TABLENAME].NewRow();
                         drDamage[DT_Risk_Damages.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
-                        drDamage[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString() + "(" + item[DT_Diagram_Damages.UM].ToString() + ")";
+                        drDamage[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString();
                         drDamage[DT_Risk_Damages.VALUE] = 0;
                         drDamage[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.DAMAGE];
                         drDamage[DT_Risk_Damages.ID_RISK] = itemRisk[DT_Risk.ID];
@@ -1465,7 +1464,7 @@ namespace EnsureRisk
                     {
                         DataRow drDamage = ds.Tables[DT_CounterM_Damage.TABLENAME].NewRow();
                         drDamage[DT_CounterM_Damage.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
-                        drDamage[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString() + "(" + item[DT_Diagram_Damages.UM].ToString() + ")";
+                        drDamage[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString();
                         drDamage[DT_CounterM_Damage.VALUE] = 0;
                         drDamage[DT_CounterM_Damage.TOP_RISK] = item[DT_Diagram_Damages.DAMAGE];
                         drDamage[DT_CounterM_Damage.ID_COUNTERM] = itemCM[DT_CounterM.ID];
@@ -2049,7 +2048,6 @@ namespace EnsureRisk
                 drDamage_Diagram[DT_Diagram_Damages.ID_DAMAGE] = drDamage[DT_Damage.ID_COLUMNA];
                 drDamage_Diagram[DT_Diagram_Damages.COLOR] = drDamage[DT_Damage.COLORID_COLUMNA];
                 drDamage_Diagram[DT_Diagram_Damages.RISK_TREE] = "Imported Diagram";
-                drDamage_Diagram[DT_Diagram_Damages.UM] = "UM";
                 drDamage_Diagram[DT_Diagram_Damages.ID_RISKTREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
                 drDamage_Diagram[DT_Diagram_Damages.DAMAGE] = Damage;
                 dsImporting.Tables[DT_Diagram_Damages.TABLENAME].Rows.Add(drDamage_Diagram);
@@ -2060,7 +2058,6 @@ namespace EnsureRisk
                 drDamage_Diagram[DT_Diagram_Damages.ID_DAMAGE] = dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + Damage + "'").First()[DT_Damage.ID_COLUMNA];
                 drDamage_Diagram[DT_Diagram_Damages.COLOR] = dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + Damage + "'").First()[DT_Damage.COLORID_COLUMNA];
                 drDamage_Diagram[DT_Diagram_Damages.RISK_TREE] = "Imported Diagram";
-                drDamage_Diagram[DT_Diagram_Damages.UM] = "UM";
                 drDamage_Diagram[DT_Diagram_Damages.ID_RISKTREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
                 drDamage_Diagram[DT_Diagram_Damages.DAMAGE] = Damage;
                 dsImporting.Tables[DT_Diagram_Damages.TABLENAME].Rows.Add(drDamage_Diagram);
@@ -3487,7 +3484,6 @@ namespace EnsureRisk
                         DataRow drTop = TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLENAME].NewRow();
                         drTop[DT_Diagram_Damages.ID_RISKTREE] = TheCurrentLayout.ID_Diagram;
                         drTop[DT_Diagram_Damages.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
-                        drTop[DT_Diagram_Damages.UM] = item[DT_Diagram_Damages.UM];
                         drTop[DT_Diagram_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE];
                         drTop[DT_Diagram_Damages.COLOR] = item[DT_Diagram_Damages.COLOR];
                         TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLENAME].Rows.Add(drTop);
@@ -3501,7 +3497,7 @@ namespace EnsureRisk
                         topR[DT_Risk_Damages.ID_RISK] = drRisk[DT_Risk.ID];
                         topR[DT_Risk_Damages.VALUE] = 0;
                         topR[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.DAMAGE];
-                        topR[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString() + "(" + item[DT_Diagram_Damages.UM].ToString() + ")";
+                        topR[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString();
                         topR[DT_Risk_Damages.FATHER] = TheCurrentLayout.Line_Selected.ShortName;
                         topR[DT_Risk_Damages.GROUPE_NAME] = drRisk[DT_Risk.GROUPE_NAME];
                         topR[DT_Risk_Damages.ID_FATHER] = TheCurrentLayout.Line_Selected.ID;
@@ -3570,7 +3566,7 @@ namespace EnsureRisk
                         {
                             DataRow drDamage = TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].NewRow();
                             drDamage[DT_Risk_Damages.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
-                            drDamage[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString() + "(" + item[DT_Diagram_Damages.UM].ToString() + ")";
+                            drDamage[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString();
                             drDamage[DT_Risk_Damages.VALUE] = 0;
                             drDamage[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.DAMAGE];
                             drDamage[DT_Risk_Damages.ID_RISK] = itemRisk[DT_Risk.ID];
@@ -3597,7 +3593,7 @@ namespace EnsureRisk
                         {
                             DataRow drDamage = TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].NewRow();
                             drDamage[DT_CounterM_Damage.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
-                            drDamage[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString() + "(" + item[DT_Diagram_Damages.UM].ToString() + ")";
+                            drDamage[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString();
                             drDamage[DT_CounterM_Damage.VALUE] = 0;
                             drDamage[DT_CounterM_Damage.TOP_RISK] = item[DT_Diagram_Damages.DAMAGE];
                             drDamage[DT_CounterM_Damage.ID_COUNTERM] = itemCM[DT_CounterM.ID];
@@ -3627,11 +3623,9 @@ namespace EnsureRisk
                 TheCurrentLayout.SetLinesThickness();
                 CruzarTablaRisk(TheCurrentLayout.Ds);
                 CruzarTablaCM(TheCurrentLayout.Ds);
-                IS_IMPORTING_PROJECT = false;
             }
             catch (Exception ex)
             {
-                IS_IMPORTING_PROJECT = false;
                 MostrarErrorDialog(ex.Message);
             }            
         }
@@ -3719,8 +3713,7 @@ namespace EnsureRisk
 
                     DrDannosImportados = ImportDS.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + InternalDiagramID);
                     DrMisDannos = TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram);
-                    MostrarDialogYesNo("The Diagram to import have different Damages than Current Diagram. Do you want import it anyway?");
-                    IS_IMPORTING_PROJECT = true;                    
+                    ConcatProjects(DrImportRisk, DrDannosImportados, DrMisDannos, ImportDS);
                 }
             }
             catch (Exception ex)
@@ -4596,9 +4589,10 @@ namespace EnsureRisk
         {
             try
             {
-                //DsMain = CurrentLayout.Ds;
-                WindowGroupe wg = new WindowGroupe();
-                wg.DT_Groups = TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Copy();
+                WindowGroupe wg = new WindowGroupe
+                {
+                    DT_Groups = TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Copy()
+                };
                 wg.ShowDialog();
                 if (wg.DialogResult == true)
                 {
@@ -6814,16 +6808,16 @@ namespace EnsureRisk
         /// <summary>
         /// Build a diagram as a tree
         /// </summary>
-        private TreeNodeModel<Node> Build_Tree(List<Node> data)
-        {
-            var root = data.FirstOrDefault(p => p.ParentId == 0);
-            var rootTreeNode = new TreeNodeModel<Node>(root, null);
+        //private TreeNodeModel<Node> Build_Tree(List<Node> data)
+        //{
+        //    var root = data.FirstOrDefault(p => p.ParentId == 0);
+        //    var rootTreeNode = new TreeNodeModel<Node>(root, null);
 
-            // add tree node children recursively
-            rootTreeNode.Children = GetChildNodes(data, rootTreeNode);
+        //    // add tree node children recursively
+        //    rootTreeNode.Children = GetChildNodes(data, rootTreeNode);
 
-            return rootTreeNode;
-        }
+        //    return rootTreeNode;
+        //}
 
         private void DrawNode(TreeNodeModel<Node> node, System.Windows.Media.Color color)
         {
@@ -8085,10 +8079,6 @@ namespace EnsureRisk
                     {
                         IS_DELETING_CM = false;
                     }
-                    if (IS_IMPORTING_PROJECT)
-                    {
-                        IS_IMPORTING_PROJECT = false;
-                    }
                     if (IS_DELETING_GROUP_CM)
                     {
                         IS_DELETING_GROUP_CM=false;
@@ -8156,10 +8146,6 @@ namespace EnsureRisk
                     if (IS_DELETING_CM)
                     {
                         DeleteCM();
-                    }
-                    if (IS_IMPORTING_PROJECT)
-                    {
-                        ConcatProjects(DrImportRisk, DrDannosImportados, DrMisDannos, ImportDS);
                     }
                     if (IS_DELETING_GROUP_CM)
                     {

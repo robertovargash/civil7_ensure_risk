@@ -23,15 +23,6 @@
                 </Binding>
             </TextBox.Text>
         </TextBox>
-        <TextBox md:HintAssist.Hint="Unit" md:HintAssist.IsFloating="True" TextChanged="TextUnit_TextChanged" Name="TextUnit" HorizontalAlignment="Left" Height="39" Margin="48,75,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="257" TabIndex="2">
-            <TextBox.Text>
-                <Binding Path="UM" UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
-                    </Binding.ValidationRules>
-                </Binding>
-            </TextBox.Text>
-        </TextBox>
         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" Name="BtnSelect" HorizontalAlignment="Left"  Margin="323,23,0,0" VerticalAlignment="Top" Click="BtnSelect_Click" ToolTip="Select a Top  Risk" Height="45" Width="45" TabIndex="1" md:ShadowAssist.ShadowDepth="Depth5">
             <md:PackIcon Kind="DotsHorizontal"/>
         </Button>

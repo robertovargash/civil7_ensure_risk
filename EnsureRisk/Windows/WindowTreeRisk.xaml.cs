@@ -10,6 +10,7 @@ using System.Data;
 using DataMapping.Data;
 using EnsureBusinesss;
 using EnsureRisk.Resources;
+using EnsureRisk.Windows.Damages;
 
 namespace EnsureRisk.Windows
 {
@@ -88,19 +89,11 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                WindowSelectTopRisk frm = new WindowSelectTopRisk
+                WindowSelectDamageDiagram frm = new WindowSelectDamageDiagram
                 {
                     Drow = TopRiskTable.NewRow(),
                     Icon = Icon
                 };
-                if (TopRiskTable.Select(DT_Diagram_Damages.ID_RISKTREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]).Any())
-                {
-                    frm.TopRiskTable = TopRiskTable.Select(DT_Diagram_Damages.ID_RISKTREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]).CopyToDataTable();
-                }
-                else
-                {
-                    frm.TopRiskTable = TopRiskTable.Clone();
-                }
                 if (frm.ShowDialog() == true)
                 {
                     frm.Drow[DT_Diagram_Damages.ID_RISKTREE] = DRow[DT_Diagram.ID_DIAGRAM];
@@ -133,8 +126,7 @@ namespace EnsureRisk.Windows
                         itemi.Delete();
                     }
                 }
-
-                TopRiskTable.Rows[dgTopRisk.SelectedIndex].Delete();
+                Dv.Delete(dgTopRisk.SelectedIndex);
             }
             IS_DELETING = false;
         }
@@ -161,17 +153,23 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                if (TextName.Text != "")
+                if (TopRiskTable.Select(DT_Diagram_Damages.ID_RISKTREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]).Any())
                 {
-                    DRow[DT_Diagram.DIAGRAM_NAME] = TextName.Text;
-                    DRow[DT_Diagram.ID_PROJECT] = IDProject;
-                    this.DialogResult = true;
+                    if (TextName.Text != "")
+                    {
+                        DRow[DT_Diagram.DIAGRAM_NAME] = TextName.Text;
+                        DRow[DT_Diagram.ID_PROJECT] = IDProject;
+                        this.DialogResult = true;
+                    }
+                    else
+                    {
+                        MostrarErrorDialog(StringResources.FIELD_REQUIRED);
+                    }
                 }
                 else
                 {
-                    MostrarErrorDialog(StringResources.FIELD_REQUIRED);
+                    MostrarErrorDialog("You must select at least one Damage!!!");
                 }
-
             }
             catch (Exception ex)
             {
@@ -202,6 +200,7 @@ namespace EnsureRisk.Windows
         private void TextName_TextChanged(object sender, TextChangedEventArgs e)
         {
             DName = TextName.Text;
+
         }
     }
 }

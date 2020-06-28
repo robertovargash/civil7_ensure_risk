@@ -29,7 +29,6 @@
         <DataGrid x:Name="dgTopRisk" HorizontalAlignment="Left" CanUserAddRows="False" CanUserDeleteRows="False" Height="244" Margin="101,70,0,0" VerticalAlignment="Top" Width="284" AutoGenerateColumns="False"  CanUserSortColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="cTopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_Diagram_Damages.DAMAGE}}" Width="*" IsReadOnly="True" />
-                <DataGridTextColumn x:Name="cUnit" Header="Unit" Binding="{Binding {x:Static data:DT_Diagram_Damages.UM}}" Width="*" IsReadOnly="False"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button x:Name="BtnAdd"  HorizontalAlignment="Left"  Margin="42,85,0,0" VerticalAlignment="Top"  Click="BtnAdd_Click" TabIndex="2" md:ShadowAssist.ShadowDepth="Depth5">

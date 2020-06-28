@@ -1,0 +1,73 @@
+﻿<Window x:Class="EnsureRisk.Windows.Damages.WindowSelectDamageDiagram"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EnsureRisk.Windows.Damages"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
+        Title="Select a Damage" Height="238.2" Width="354.2" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" >
+    <Grid>
+        <Grid.RowDefinitions>            
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                <Separator Margin="10" Visibility="Hidden"/>
+                <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Damage" Name="TextTopRisk" MinWidth="250" MaxWidth="300" 
+                          ItemsSource="{Binding DamageTable.DefaultView}" SelectedValuePath="{x:Static data:DT_Damage.ID_COLUMNA}" 
+                          DisplayMemberPath="{x:Static data:DT_Damage.TOP_RISK_COLUMN}" IsEditable="True" TextBoxBase.TextChanged="TextTopRisk_TextChanged" 
+                          SelectionChanged="TextTopRisk_SelectionChanged" SelectedValue="{Binding SelectedDamage}">
+                    <ComboBox.Text>
+                        <Binding Path="DAMAGE" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </ComboBox.Text>
+                </ComboBox>
+                <Separator Margin="10" Visibility="Hidden"/>
+                <TextBlock Text="Select a color:"/>
+                <xctk:ColorPicker x:Name="colorPiker" VerticalAlignment="Top" HorizontalAlignment="Center" Height="35" Width="250" />
+            </StackPanel>
+        </Grid>
+        <Grid  Grid.Row="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Name="BtnOK" Content="OK" VerticalAlignment="Center" HorizontalAlignment="Right" Height="33"  Width="90" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Separator Margin="20" Visibility="Hidden"/>
+                <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Center"  Height="33"  Width="90" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Separator Margin="5" Visibility="Hidden"/>
+            </StackPanel>
+        </Grid>
+        <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog" Grid.RowSpan="2">
+            <md:DialogHost.DialogContent >
+                <StackPanel Margin="15">
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="ErrorOutline" Width="30" Height="50"/>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="ERROR!!!" TextAlignment="Justify"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Expander HorizontalAlignment="Stretch" Header="Expand for details" IsExpanded="True">
+                            <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                                <TextBlock x:Name="TextMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                            CLOSE
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </md:DialogHost.DialogContent>
+        </md:DialogHost>
+    </Grid>
+</Window>

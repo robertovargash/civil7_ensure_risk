@@ -1331,3 +1331,5 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Cl
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.Recursos.resources
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.Recursos.ES-ES.resources
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\EnsureRisk.Resources.Recursos.EN-US.resources
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Damages\WindowSelectDamageDiagram.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Damages\WindowSelectDamageDiagram.baml
