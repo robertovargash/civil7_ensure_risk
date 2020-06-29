@@ -319,7 +319,7 @@
                 </DataTemplate>
             </xcad:DockingManager.AnchorableHeaderTemplate>
             <xcad:LayoutRoot x:Name="_layoutRoot">
-                <xcad:LayoutPanel Orientation="Horizontal">
+                <xcad:LayoutPanel Orientation="Horizontal">                    
                     <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200" >
                         <xcad:LayoutAnchorable ContentId="properties" x:Name="LayoutProperties"  Title="Properties"  CanHide="true" CanClose="False" AutoHideWidth="240">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" >
@@ -369,8 +369,7 @@
                                                                     <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_WBS_RISK_DAMAGE.DAMAGE}}" Width="*" IsReadOnly="True"/>
                                                                     <DataGridTextColumn x:Name="TopValue" Header="Value" EditingElementStyle="{StaticResource errorStyle}" Width="*" IsReadOnly="False">
                                                                         <DataGridTextColumn.Binding>
-                                                                            <Binding Path="value" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"  ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
-                                                                                
+                                                                            <Binding Path="value" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"  ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">                                                                                
                                                                                 <Binding.ValidationRules >
                                                                                     <classes:NegativeValidation ValidationStep="UpdatedValue" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
                                                                                 </Binding.ValidationRules>
@@ -834,8 +833,8 @@
                 </Menu>
             </StackPanel>
         </Grid>
-        <Image x:Name="ImageLanguage" Source="Images/English.png" HorizontalAlignment="Left" Margin="16,6,0,4" Width="25" RenderTransformOrigin="0.5,0.5"/>
-        <ComboBox x:Name="cbLanguage" HorizontalAlignment="left" Margin="58,3,0,0" Width="162" HorizontalContentAlignment="Center" VerticalAlignment="Center" DropDownClosed="CbLanguage_DropDownClosed"/>
+        <Image x:Name="ImageLanguage" Visibility="Collapsed" Source="Images/English.png" HorizontalAlignment="Left" Margin="16,6,0,4" Width="25" RenderTransformOrigin="0.5,0.5"/>
+        <ComboBox x:Name="cbLanguage" Visibility="Collapsed" HorizontalAlignment="left" Margin="58,3,0,0" Width="162" HorizontalContentAlignment="Center" VerticalAlignment="Center" DropDownClosed="CbLanguage_DropDownClosed"/>
         <Grid Grid.Row="2">
             <ProgressBar Name="TheProgress" IsIndeterminate="True" Visibility="Hidden"/>
         </Grid>

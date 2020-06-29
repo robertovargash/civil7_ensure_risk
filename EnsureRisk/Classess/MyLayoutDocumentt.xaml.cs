@@ -3433,11 +3433,11 @@ namespace EnsureRisk.Classess
                     IdDamageSelected = (int)((MyDamage)sender).ID_TopRisk;
                     int index = Rectangles.FindIndex(x => x.ID_TopRisk.Equals(IdDamageSelected));
 
-                    System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Risk_Damages.COLOR].ToString()));
+                    System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Diagram_Damages.COLOR].ToString()));
 
                     foreach (RiskPolyLine item in LinesList)
                     {
-                        if (Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).Any())
+                        if (Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_DAMAGE + " = " + IdDamageSelected).Any())
                         {
                             if (!(item.IsCM))
                             {

@@ -92,7 +92,8 @@ namespace EnsureRisk.Windows
                 WindowSelectDamageDiagram frm = new WindowSelectDamageDiagram
                 {
                     Drow = TopRiskTable.NewRow(),
-                    Icon = Icon
+                    Icon = Icon,
+                    DamageDiagramTable = TopRiskTable.Copy()
                 };
                 if (frm.ShowDialog() == true)
                 {

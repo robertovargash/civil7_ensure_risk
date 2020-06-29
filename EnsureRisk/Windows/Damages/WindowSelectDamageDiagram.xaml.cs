@@ -1,4 +1,5 @@
 ﻿using DataMapping.Data;
+using EnsureBusinesss;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,6 +29,7 @@ namespace EnsureRisk.Windows.Damages
         public int SelectedDamage { get { return selectedDamage; } set { selectedDamage = value; OnPropertyChanged("SelectedDamage"); } }
         public string DAMAGE { get { return damage; } set { damage = value; OnPropertyChanged("DAMAGE"); } }
         public DataRow Drow { get; set; }
+        public DataTable DamageDiagramTable { get; set; }
         public DataTable DamageTable { get { return dtDamage; } set { dtDamage = value; OnPropertyChanged("DamageTable"); } }
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string property)
@@ -48,10 +50,18 @@ namespace EnsureRisk.Windows.Damages
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
-            DataSet ds = ws.GetAllTopRisk();
-            DamageTable = ds.Tables[DT_Damage.TopRisk_TABLA].Copy();
-            ws.Dispose();
+            try
+            {
+                ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
+                DataSet ds = ws.GetAllTopRisk();
+                DamageTable = ds.Tables[DT_Damage.TopRisk_TABLA].Copy();
+                ws.Dispose();
+                DamageTable = General.DeleteExists(DamageTable, DamageDiagramTable, DT_Diagram_Damages.ID_DAMAGE);
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
         }
 
         private void BtnOK_Click(object sender, RoutedEventArgs e)
@@ -64,6 +74,7 @@ namespace EnsureRisk.Windows.Damages
                     {
                         Drow[DT_Diagram_Damages.DAMAGE] = DAMAGE;
                         Drow[DT_Diagram_Damages.ID_DAMAGE] = SelectedDamage;
+                        Drow[DT_Diagram_Damages.COLOR] = DamageTable.Rows.Find(SelectedDamage)[DT_Damage.COLORID_COLUMNA];
                     }
                     else
                     {

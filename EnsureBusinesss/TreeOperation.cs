@@ -179,7 +179,7 @@ namespace EnsureBusinesss
                 CreateRiskUntilLine(Line, idFather, drRisk, Ds);
                 foreach (var item in Line.Children)
                 {
-                    CreateCopyOfLine(item, (Int32)drRisk[DT_Risk.ID], Ds);
+                    CreateCopyOfLine(item, (int)drRisk[DT_Risk.ID], Ds);
                 }
             }
         }

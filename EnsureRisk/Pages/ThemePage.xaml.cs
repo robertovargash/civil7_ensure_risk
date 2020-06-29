@@ -24,15 +24,13 @@ namespace EnsureRisk.Pages
         }
         public void ChangeLanguage()
         {
-            MaterialDesignThemes.Wpf.HintAssist.SetHint(ColorThemeText, StringResources.ColorThemeLabel);
-            MaterialDesignThemes.Wpf.HintAssist.SetHint(ColorContentText, StringResources.ColorContentLabel);
             BtnSet.Content = StringResources.SetButton;
         }
         private void cbTheme_DropDownClosed(object sender, EventArgs e)
         {
             try
             {
-                string Theme = (String)cbTheme.SelectedItem;
+                string Theme = (string)cbTheme.SelectedItem;
                 Application.Current.Resources.MergedDictionaries[0].Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme." + Theme + ".xaml", UriKind.RelativeOrAbsolute);
             }
             catch (Exception ex)
@@ -45,7 +43,7 @@ namespace EnsureRisk.Pages
         {
             try
             {
-                string Color = (String)cbColors.SelectedItem;
+                string Color = (string)cbColors.SelectedItem;
                 Application.Current.Resources.MergedDictionaries[2].Source = new Uri("pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor." + Color + ".xaml", UriKind.RelativeOrAbsolute);
             }
             catch (Exception ex)
@@ -90,7 +88,7 @@ namespace EnsureRisk.Pages
                     TableColors.ReadXml(COLOR);
                     cbTheme.Text = TableColors.Select().First()["Theme"].ToString();
                     cbColors.Text = TableColors.Select().First()["Color"].ToString();
-                    Togle.IsChecked = (Boolean)TableColors.Select().First()["StartLogo"];
+                    Togle.IsChecked = (bool)TableColors.Select().First()["StartLogo"];
                 }
             }
             catch (Exception ex)
