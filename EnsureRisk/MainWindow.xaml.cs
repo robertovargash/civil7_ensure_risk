@@ -928,15 +928,17 @@ namespace EnsureRisk
                 {
                     TheProgress.Visibility = Visibility.Visible;
                     DataRow currentDiagram = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram);
-                    WindowSaveAs wsas = new WindowSaveAs
-                    {
-                        DiagramName = currentDiagram[DT_Diagram.DIAGRAM_NAME].ToString()
-                    };
-                    if (wsas.ShowDialog() == true)
-                    {
-                        HabilitarBotones(false);
-                        SalvandoAs(currentDiagram, wsas.DiagramName);
-                    }
+                    //WindowSaveAs wsas = new WindowSaveAs
+                    //{
+                    //    DiagramName = currentDiagram[DT_Diagram.DIAGRAM_NAME].ToString()
+                    //};
+                    //if (wsas.ShowDialog() == true)
+                    //{
+                    //    HabilitarBotones(false);
+                    //    SalvandoAs(currentDiagram, currentDiagram[DT_Diagram.DIAGRAM_NAME].ToString());
+                    //}
+                    HabilitarBotones(false);
+                    SalvandoAs(currentDiagram, currentDiagram[DT_Diagram.DIAGRAM_NAME].ToString());
                 }
             }
             catch (Exception ex)
@@ -1127,8 +1129,8 @@ namespace EnsureRisk
                     ws.Dispose();
                     RefreshData();
                     Cursor = Cursors.Arrow;
-                    MostrarInfoDialog("Data saved successfully!!!");
-                    OpenSavedDiagram(drDiagram, DsMain);                    
+                    //MostrarInfoDialog("Data saved successfully!!!");
+                    OpenSavedDiagram();                    
                 }
                 IS_SAVING_DATA = false;
                 TheProgress.Visibility = Visibility.Hidden;
@@ -1143,29 +1145,19 @@ namespace EnsureRisk
             }
         }
 
-        public void OpenSavedDiagram(DataRow dataRow, DataSet dsToDiagram)
+        public void OpenSavedDiagram()
         {
-            MyLayoutDocumentt myly = new MyLayoutDocumentt()
+            try
             {
-                SaveAsClosing = true,
-                MenuRisk = MenuRisk,
-                MenuRiskLimited = MenuRiskLimited,
-                MenuMainRisk = MenuMainRisk,
-                Ds = dsToDiagram.Copy(),
-                MenuCM = MenuCM,
-                LoginUser = LoginUser,
-                MyWindow = this,
-                MenuGroupCM = MenuGroupCM,
-                MenuGroupRisk = MenuGroupRisk,
-                MenuGroupMixed = MenuGroupMixed
-            };
-            myly.DrDiagram = dataRow;
-            myly.ID_Diagram = (int)dataRow[DT_Diagram.ID_DIAGRAM];
-            myly.Title = dataRow[DT_Diagram.DIAGRAM_NAME].ToString();
-            LayoutDocumentPanel.Children.Add(myly);
-            OpenedDocuments.Add(myly);
-            TheCurrentLayout = myly;
-            CambiosVisuales();
+                OpenDiagramFromDiagramList(DVRisk_Tree.Count - 1);
+            }
+            catch (Exception ex)
+            {
+                IS_SAVING_DATA = false;
+                TheProgress.Visibility = Visibility.Hidden;
+                HabilitarBotones(true);
+                MostrarErrorDialog(ex.Message);
+            }
         }
 
         #endregion
@@ -1264,6 +1256,63 @@ namespace EnsureRisk
 
         }
 
+        private void OpenDiagramFromDiagramList(int indexx)
+        {
+            DiagramID = 0;
+            DiagramID = (int)DVRisk_Tree[indexx].Row[DT_Diagram.ID_DIAGRAM];
+            MyLayoutDocumentt openDoc = OpenedDocuments.FirstOrDefault(docu => docu.ID_Diagram == (int)DVRisk_Tree[indexx][DT_Diagram.ID_DIAGRAM]);
+
+            if (openDoc != null)
+            {
+                MostrarDialogYesNo("This diagram is already opened. Do you want to open it as New Diagram?");
+                IS_REOPEN_DIAGRAM = true;
+            }
+            else
+            {
+                MyLayoutDocumentt myly = new MyLayoutDocumentt
+                {
+                    SaveAsClosing = true,
+                    MenuRisk = MenuRisk,
+                    MenuMainRisk = MenuMainRisk,
+                    MenuRiskLimited = MenuRiskLimited,
+                    Ds = DsMain.Copy(),
+                    MenuCM = MenuCM,
+                    LoginUser = LoginUser,
+                    MyWindow = this,
+                    MenuGroupCM = MenuGroupCM,
+                    MenuGroupRisk = MenuGroupRisk,
+                    MenuGroupMixed = MenuGroupMixed
+                };
+                WindowTreeRisk riskTree = new WindowTreeRisk
+                {
+                    Operation = General.UPDATE,
+                    TopRiskTable = myly.Ds.Tables[DT_Diagram_Damages.TABLENAME].Copy(),
+                    DRow = myly.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(DVRisk_Tree[indexx].Row[DT_Diagram.ID_DIAGRAM]),
+                    Icon = Icon,
+                    IDProject = IdProject,
+                    CM_TopRisk = myly.Ds.Tables[DT_CounterM_Damage.TABLENAME].Copy(),
+                    Risk_TopRisk = myly.Ds.Tables[DT_Risk_Damages.TABLENAME].Copy()
+                };
+                if (riskTree.ShowDialog() == true)
+                {
+                    DVRisk_Tree[indexx].Row[DT_Diagram.DIAGRAM_NAME] = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
+                    myly.Ds.Tables[DT_Diagram_Damages.TABLENAME].Merge(riskTree.TopRiskTable);
+                    myly.Ds.Tables[DT_CounterM_Damage.TABLENAME].Merge(riskTree.CM_TopRisk);
+                    myly.Ds.Tables[DT_Risk_Damages.TABLENAME].Merge(riskTree.Risk_TopRisk);
+                    myly.ID_Diagram = DiagramID;
+                    SetNewDamageToEntireTree(myly.ID_Diagram, myly.Ds);
+                    TheProgress.Visibility = Visibility.Visible;
+                    HabilitarBotones(false);
+                    myly.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
+                    LayoutDocumentPanel.Children.Add(myly);
+                    OpenedDocuments.Add(myly);
+                    TheCurrentLayout = myly;
+                    CambiosVisuales();
+                }
+            }
+           
+        }
+
         /// <summary>
         /// Load an existing Diagram to change it
         /// </summary>        
@@ -1273,58 +1322,7 @@ namespace EnsureRisk
             {
                 if (dgTreeDiagrams.SelectedIndex >= 0)
                 {
-                    DiagramID = 0;
-                    DiagramID = (int)DVRisk_Tree[Indexx].Row[DT_Diagram.ID_DIAGRAM];
-                    MyLayoutDocumentt openDoc = OpenedDocuments.FirstOrDefault(docu => docu.ID_Diagram == (int)DVRisk_Tree[Indexx][DT_Diagram.ID_DIAGRAM]);
-
-                    if (openDoc != null)
-                    {
-                        MostrarDialogYesNo("This diagram is already opened. Do you want to open it as New Diagram?");
-                        IS_REOPEN_DIAGRAM = true;
-                    }
-                    else
-                    {
-                        MyLayoutDocumentt myly = new MyLayoutDocumentt
-                        {
-                            SaveAsClosing = true,
-                            MenuRisk = MenuRisk,
-                            MenuMainRisk = MenuMainRisk,
-                            MenuRiskLimited = MenuRiskLimited,
-                            Ds = DsMain.Copy(),
-                            MenuCM = MenuCM,
-                            LoginUser = LoginUser,
-                            MyWindow = this,
-                            MenuGroupCM = MenuGroupCM,
-                            MenuGroupRisk = MenuGroupRisk,
-                            MenuGroupMixed = MenuGroupMixed
-                        };
-                        WindowTreeRisk riskTree = new WindowTreeRisk
-                        {
-                            Operation = General.UPDATE,
-                            TopRiskTable = myly.Ds.Tables[DT_Diagram_Damages.TABLENAME].Copy(),
-                            DRow = myly.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(DVRisk_Tree[Indexx].Row[DT_Diagram.ID_DIAGRAM]),
-                            Icon = Icon,
-                            IDProject = IdProject,
-                            CM_TopRisk = myly.Ds.Tables[DT_CounterM_Damage.TABLENAME].Copy(),
-                            Risk_TopRisk = myly.Ds.Tables[DT_Risk_Damages.TABLENAME].Copy()
-                        };
-                        if (riskTree.ShowDialog() == true)
-                        {
-                            DVRisk_Tree[Indexx].Row[DT_Diagram.DIAGRAM_NAME] = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
-                            myly.Ds.Tables[DT_Diagram_Damages.TABLENAME].Merge(riskTree.TopRiskTable);
-                            myly.Ds.Tables[DT_CounterM_Damage.TABLENAME].Merge(riskTree.CM_TopRisk);
-                            myly.Ds.Tables[DT_Risk_Damages.TABLENAME].Merge(riskTree.Risk_TopRisk);
-                            myly.ID_Diagram = DiagramID;
-                            SetNewDamageToEntireTree(myly.ID_Diagram, myly.Ds);
-                            TheProgress.Visibility = Visibility.Visible;
-                            HabilitarBotones(false);
-                            myly.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
-                            LayoutDocumentPanel.Children.Add(myly);
-                            OpenedDocuments.Add(myly);
-                            TheCurrentLayout = myly;
-                            CambiosVisuales();
-                        }
-                    }
+                    OpenDiagramFromDiagramList(Indexx);
                 }
             }
             catch (Exception ex)
@@ -3584,6 +3582,7 @@ namespace EnsureRisk
                         DrMisDannos = TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram);
                         ConcatProjects(DrImportRisk, DrDannosImportados, DrMisDannos, ImportDS, GlobalCopyLine);
                         GlobalListCopy = new List<RiskPolyLine>();
+                        OpenedDocuments.Find(diagram => diagram.ID_Diagram == InternalDiagramID).Copiando = false;
                     }
                     
                     TheCurrentLayout.DropLines();
