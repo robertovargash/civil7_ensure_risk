@@ -352,7 +352,7 @@
                                                 <Expander HorizontalAlignment="Stretch" Header="Risk Values" IsExpanded="True">
                                                     <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
                                                         <Grid Background="#FFE5E5E5">
-                                                            <DataGrid TabIndex="4" x:Name="DgRiskDamages" Margin="1,1,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" SelectedCellsChanged="DgRiskDamages_SelectedCellsChanged" CellEditEnding="DgRiskDamages_CellEditEnding" SelectionChanged="DgRiskDamages_SelectionChanged" CanUserDeleteRows="False" CanUserAddRows="False">
+                                                            <DataGrid TabIndex="4" x:Name="DgRiskDamages" ItemsSource="{Binding DvRiskDamages}" Margin="1,1,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" SelectedCellsChanged="DgRiskDamages_SelectedCellsChanged" CellEditEnding="DgRiskDamages_CellEditEnding" SelectionChanged="DgRiskDamages_SelectionChanged" CanUserDeleteRows="False" CanUserAddRows="False">
                                                                 <DataGrid.Resources>
                                                                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                                                         <Setter Property="Padding" Value="-2"/>
@@ -394,7 +394,7 @@
                                                             <Button x:Name="BtnSetPrimary" Click="BtnSetPrimary_Click" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignFloatingActionMiniAccentButton}" ToolTip="Set Primary WBS" Margin="15,89,0,0" VerticalAlignment="Top" md:ShadowAssist.ShadowDepth="Depth5" >
                                                                 <md:PackIcon Kind="Key"/>
                                                             </Button>
-                                                            <DataGrid Name="DgRiskWBS" Margin="71,5,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" SelectedCellsChanged="DgRiskWBS_SelectedCellsChanged" CellEditEnding="DgRiskWBS_CellEditEnding" SelectionChanged="DgRiskWBS_SelectionChanged" CanUserAddRows="False" CanUserDeleteRows="False">
+                                                            <DataGrid Name="DgRiskWBS" ItemsSource="{Binding DvRiskWBS}" Margin="71,5,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" SelectedCellsChanged="DgRiskWBS_SelectedCellsChanged" CellEditEnding="DgRiskWBS_CellEditEnding" SelectionChanged="DgRiskWBS_SelectionChanged" CanUserAddRows="False" CanUserDeleteRows="False">
                                                                 <DataGrid.Resources>
                                                                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                                                         <Setter Property="Padding" Value="-2"/>
@@ -413,7 +413,6 @@
                                                                     <DataGridTextColumn x:Name="WBSUser" Header="User" Binding="{Binding {x:Static data:DT_RISK_WBS.USERNAME}}" Width="*" IsReadOnly="True"/>
                                                                     <DataGridTextColumn x:Name="WBProbability" Header="Prob (%)" Width="*" EditingElementStyle="{StaticResource errorStyle}" IsReadOnly="false" >
                                                                         <DataGridTextColumn.Binding>
-                                                                            <!--<Binding Path="{x:Static data:DT_RISK_WBS.PROBABILITY}" UpdateSourceTrigger="LostFocus"--> 
                                                                             <Binding Path="probability" UpdateSourceTrigger="LostFocus" 
                                                                         Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
                                                                          ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}"
@@ -424,7 +423,6 @@
                                                                             </Binding>
                                                                         </DataGridTextColumn.Binding>
                                                                     </DataGridTextColumn>
-                                                                    <!--<DataGridTextColumn x:Name="PRIMARY" Header="Primary" Binding="{Binding {x:Static data:DT_RISK_WBS.PRIMARY}}" Width="100" Foreground="#FFF30808" FontWeight="Bold" IsReadOnly="True"/>-->
                                                                     <DataGridTemplateColumn x:Name="RISKPRIMARY" Header="Primary">
                                                                         <DataGridTemplateColumn.CellTemplate>
                                                                             <DataTemplate>
@@ -447,7 +445,7 @@
                                                             <Button x:Name="BtnDelRiskRole" Click="BtnDelRiskRole_Click" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" md:ShadowAssist.ShadowDepth="Depth5">
                                                                 <md:PackIcon Kind="Minus"/>
                                                             </Button>
-                                                            <DataGrid TabIndex="5" Name="DgRiskRoles" Margin="71,5,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}"  AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False">
+                                                            <DataGrid TabIndex="5" Name="DgRiskRoles" ItemsSource="{Binding DvRoleRisk}" Margin="71,5,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}"  AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False">
                                                                 <DataGrid.Columns>
                                                                     <DataGridTextColumn x:Name="Role" Header="Role" Binding="{Binding {x:Static data:DT_Role_Risk.Role}}" Width="*"/>
                                                                 </DataGrid.Columns>
@@ -478,7 +476,7 @@
                                                 <Expander HorizontalAlignment="Stretch" Header="CM Values" IsExpanded="True">
                                                     <StackPanel Orientation="Vertical" Margin="24,8,24,16">
                                                         <Grid Background="#FFE5E5E5">
-                                                            <DataGrid Name="dgCMDamages" Margin="1,1,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" SelectedCellsChanged="DgCMDamages_SelectedCellsChanged" CellEditEnding="DgCMDamages_CellEditEnding" SelectionChanged="DgCMDamages_SelectionChanged" CanUserDeleteRows="False" CanUserAddRows="False">
+                                                            <DataGrid Name="dgCMDamages" ItemsSource="{Binding DvCM_Damages}" Margin="1,1,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" SelectedCellsChanged="DgCMDamages_SelectedCellsChanged" CellEditEnding="DgCMDamages_CellEditEnding" SelectionChanged="DgCMDamages_SelectionChanged" CanUserDeleteRows="False" CanUserAddRows="False">
                                                                 <DataGrid.Resources>
                                                                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                                                         <Setter Property="Padding" Value="-2"/>
@@ -522,7 +520,7 @@
                                                             <Button x:Name="BtnSetPrimaryCM" IsEnabled="{Binding Path = HasAccess}" Click="BtnSetPrimaryCM_Click" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignFloatingActionAccentButton}" ToolTip="Set Primary WBS" Margin="15,89,0,0" VerticalAlignment="Top" Width="47"  md:ShadowAssist.ShadowDepth="Depth5" Height="44">
                                                                 <md:PackIcon Kind="Key"/>
                                                             </Button>
-                                                            <DataGrid Name="dgWBSCM" CanUserDeleteRows="False" Margin="71,5,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" SelectedCellsChanged="DgWBSCM_SelectedCellsChanged" CellEditEnding="DgWBSCM_CellEditEnding" SelectionChanged="DgWBSCM_SelectionChanged" CanUserAddRows="False">
+                                                            <DataGrid Name="dgWBSCM" ItemsSource="{Binding DVCMWBS}" CanUserDeleteRows="False" Margin="71,5,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" SelectedCellsChanged="DgWBSCM_SelectedCellsChanged" CellEditEnding="DgWBSCM_CellEditEnding" SelectionChanged="DgWBSCM_SelectionChanged" CanUserAddRows="False">
                                                                 <DataGrid.Resources>
                                                                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                                                         <Setter Property="Padding" Value="-2"/>
@@ -571,7 +569,7 @@
                                                             <Button x:Name="BtnDelRoleCM" HorizontalAlignment="Left" Click="BtnDelRoleCM_Click" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" md:ShadowAssist.ShadowDepth="Depth5">
                                                                 <md:PackIcon Kind="Minus"/>
                                                             </Button>
-                                                            <DataGrid Name="dgRolesCM" Margin="71,5,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False">
+                                                            <DataGrid Name="dgRolesCM" ItemsSource="{Binding DvRoleCM}" Margin="71,5,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False">
                                                                 <DataGrid.Columns>
                                                                     <DataGridTextColumn x:Name="RoleCM" Header="Role" Binding="{Binding {x:Static data:DT_Role_CM.Role}}" Width="*"/>
                                                                 </DataGrid.Columns>

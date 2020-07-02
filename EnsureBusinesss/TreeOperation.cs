@@ -166,6 +166,7 @@ namespace EnsureBusinesss
                         drCM[DT_CounterM.ID_WBS] = drWBS[DT_RISK_WBS.ID_WBS];
                         drCM[DT_CounterM.WBS_NAME] = drWBS[DT_CM_WBS.NIVEL] + " " + drWBS[DT_CM_WBS.WBS];
                     }
+                    Line.ID = (int)drCM[DT_CounterM.ID];
                 }
                 else
                 {

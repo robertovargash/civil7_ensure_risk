@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Xml.Linq;
 using EnsureBusinesss.Properties;
 using EnsureBusinesss.Business;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace EnsureBusinesss
 {
@@ -241,6 +242,19 @@ namespace EnsureBusinesss
                 }
                 dtWBS.Rows.Find(item[DT_WBS.ID_WBS]).Delete();
             }
+        }
+
+        public static int ConvertToInt(string word)
+        {
+            string valuestr = "";
+            foreach (var item in word)
+            {
+                if (Versioned.IsNumeric(item))
+                {
+                    valuestr += item.ToString();
+                }
+            }
+            return Convert.ToInt32(valuestr);
         }
 
         public static List<DataRow> MyWBSChildren(DataRow drFather, DataTable dtWBS, DataTable dtStructure)
