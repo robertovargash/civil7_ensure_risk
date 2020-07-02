@@ -326,7 +326,13 @@
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel Orientation="Vertical" x:Name="WrapRisk" Visibility="{Binding Path = ShowRiskData, Converter={StaticResource BoolToVisConverter} }">
                                         <StackPanel Orientation="Vertical" >
-                                            <TextBox TabIndex="1" x:Name="TextRisk" IsEnabled="{Binding Path = HasAccess}" Width="300" KeyUp="RiskName_KeyUp" md:HintAssist.Hint="Risk Name" md:HintAssist.IsFloating="True" MaxLength="250"  TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" LostFocus="TextRisk_LostFocus" MaxLines="1" TextOptions.TextHintingMode="Animated" TextChanged="RiskName_TextChanged">
+                                            <TextBox TabIndex="1" x:Name="TextRisk" IsEnabled="{Binding Path = HasAccess}"
+                                                     Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" 
+                                                     HorizontalAlignment="Stretch"
+                                                     KeyUp="RiskName_KeyUp" MinWidth="150" TextAlignment="Justify" VerticalScrollBarVisibility="Auto"
+                                                     md:HintAssist.Hint="Risk Name" md:HintAssist.IsFloating="True" MaxLength="250" 
+                                                     TextWrapping="Wrap" LostFocus="TextRisk_LostFocus" 
+                                                     TextOptions.TextHintingMode="Animated" TextChanged="RiskName_TextChanged">
                                                 <TextBox.Text>
                                                     <Binding Path="RiskLineName" UpdateSourceTrigger="PropertyChanged">
                                                         <Binding.ValidationRules>
@@ -335,14 +341,17 @@
                                                     </Binding>
                                                 </TextBox.Text>
                                             </TextBox>
-                                            <Border Width="200" Height="60" BorderBrush="Black"  BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                            <Border Width="{Binding ElementName=TextRisk,Path=Width}" MaxHeight="160" HorizontalAlignment="Stretch" BorderBrush="Black"  BorderThickness="0" Margin="10,0,10,10">
                                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                                                     <StackPanel Name="RiskresultStack"></StackPanel>
                                                 </ScrollViewer>
                                             </Border>
                                         </StackPanel>
 
-                                        <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" HorizontalAlignment="Stretch" MinWidth="150" IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" x:Name="TextRiskDetail" TextWrapping="Wrap" TextAlignment="Justify" VerticalScrollBarVisibility="Auto" LostFocus="TextRiskDetail_LostFocus"/>
+                                        <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" HorizontalAlignment="Stretch" MinWidth="150" 
+                                                 IsEnabled="{Binding Path = HasAccess}" 
+                                                 md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" x:Name="TextRiskDetail" TextWrapping="Wrap" 
+                                                 TextAlignment="Justify" VerticalScrollBarVisibility="Auto" LostFocus="TextRiskDetail_LostFocus"/>
                                         <TextBox md:HintAssist.Hint="Probability(%)" x:Name="TextProbability" Text="{Binding Path = Probability,
                                                                             Converter={x:Static decimalconv:DecimalUIConverter.Instance},
                                                                          ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
@@ -457,7 +466,10 @@
                                         </md:Card>
                                     </StackPanel>
                                     <StackPanel Orientation="Vertical" x:Name="WrapCM" Visibility="{Binding Path = ShowCMData, Converter={StaticResource BoolToVisConverter}}" >
-                                        <TextBox md:HintAssist.Hint="CounterMeasure" Height="42" x:Name="TextCM" Margin="10" HorizontalAlignment="Left" md:HintAssist.IsFloating="True" Width="300" LostFocus="TextCM_LostFocus" TextChanged="TextCM_TextChanged">
+                                        <TextBox md:HintAssist.Hint="CounterMeasure" x:Name="TextCM" Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" 
+                                                 HorizontalAlignment="Stretch" MinWidth="150" TextAlignment="Justify" VerticalScrollBarVisibility="Auto"
+                                                 md:HintAssist.IsFloating="True" TextWrapping="Wrap" TextOptions.TextHintingMode="Animated"
+                                                 LostFocus="TextCM_LostFocus" TextChanged="TextCM_TextChanged">
                                             <TextBox.Text>
                                                 <Binding Path="CMLineName" UpdateSourceTrigger="PropertyChanged">
                                                     <Binding.ValidationRules>
@@ -466,7 +478,9 @@
                                                 </Binding>
                                             </TextBox.Text>
                                         </TextBox>
-                                        <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" MinWidth="150" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Stretch" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" x:Name="TextCMDetail" TextWrapping="Wrap" TextAlignment="Justify" VerticalScrollBarVisibility="Auto" LostFocus="TextCMDetail_LostFocus"/>
+                                        <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" MinWidth="150" HorizontalAlignment="Stretch"
+                                                 IsEnabled="{Binding Path = HasAccess}"  md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" 
+                                                 x:Name="TextCMDetail" TextWrapping="Wrap" TextAlignment="Justify" VerticalScrollBarVisibility="Auto" LostFocus="TextCMDetail_LostFocus"/>
                                         <TextBox md:HintAssist.Hint="Risk Reduction(%)" Margin="10" x:Name="TextRReduction" md:HintAssist.IsFloating="True" HorizontalAlignment="Left" Width="150" Text="{Binding Path = RiskReduction,
                                                                             Converter={x:Static decimalconv:DecimalUIConverter.Instance},
                                                                          ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
