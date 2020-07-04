@@ -1,16 +1,14 @@
 ﻿using DataMapping.Data;
-//using EnsureRisk.Export.Contract;
 using EnsureRisk.Export.Trader;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.VisualBasic.FileIO;
+using DocumentFormat.OpenXml;
 
 namespace EnsureRisk.Export
 {
@@ -47,9 +45,10 @@ namespace EnsureRisk.Export
         private const string CMStatus = "CM Status";
         #endregion
 
+
         private void ExportDataSet(DataSet ds, string destination)
         {
-            using (var workbook = SpreadsheetDocument.Create(destination, DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook))
+            using (var workbook = SpreadsheetDocument.Create(destination, SpreadsheetDocumentType.Workbook))
             {
                 var workbookPart = workbook.AddWorkbookPart();
                 workbook.WorkbookPart.Workbook = new Workbook
@@ -72,44 +71,105 @@ namespace EnsureRisk.Export
                     }
 
                     Sheet sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = table.TableName };
+
                     sheets.Append(sheet);
 
                     Row headerRow = new Row();
 
-                    List<DataColumn> columns = new List<DataColumn>();
+                    List<DataColumn> dataColumnsList = new List<DataColumn>();
                     foreach (DataColumn column in table.Columns)
                     {
-                        columns.Add(new DataColumn(column.ColumnName, column.DataType));
+                        Run run1 = new Run();
+                        run1.Append(new Text(column.ColumnName));
+                        //create runproperties and append a "Bold" to them
+                        RunProperties run1Properties = new RunProperties();
+                        run1Properties.Append(new Bold());
+                        //set the first runs RunProperties to the RunProperties containing the bold
+                        run1.RunProperties = run1Properties;
+
+                        dataColumnsList.Add(new DataColumn(column.ColumnName, column.DataType));
                         Cell cell = new Cell
                         {
-                            DataType = CellValues.String,
-                            CellValue = new CellValue(column.ColumnName)                            
+                            DataType = CellValues.InlineString
                         };
-                        
-                        headerRow.AppendChild(cell);                       
+                        InlineString inlineString = new InlineString();
+                        inlineString.Append(run1);
+                        cell.Append(inlineString);
+                        headerRow.AppendChild(cell);
                     }
-                    sheetData.AppendChild(headerRow);
 
+                    sheetData.AppendChild(headerRow);
                     foreach (DataRow dsrow in table.Rows)
                     {
                         Row newRow = new Row();
-                        foreach (var col in columns)
+                        foreach (var col in dataColumnsList)
                         {
                             Cell cell = new Cell
                             {
                                 DataType = CellValues.String,
-                                CellValue = new CellValue(dsrow[col.ColumnName].ToString())
+                                CellValue = new CellValue(dsrow[col.ColumnName].ToString()),
+                                StyleIndex = Convert.ToUInt32(1)
                             };
                             if (col.DataType == typeof(decimal))
                             {
                                 cell.DataType = CellValues.Number;
                             }
-                            newRow.AppendChild(cell);               
+                            newRow.AppendChild(cell);
                         }
                         sheetData.AppendChild(newRow);
                     }
+
                 }
+                AddStyleSheet(workbook);
             }
+        }
+
+
+        private WorkbookStylesPart AddStyleSheet(SpreadsheetDocument spreadsheet)
+        {
+            WorkbookStylesPart stylesheet = spreadsheet.WorkbookPart.AddNewPart<WorkbookStylesPart>();
+            Stylesheet workbookstylesheet = new Stylesheet();
+
+            // <Fonts>
+            Font font0 = new Font();            // Default font
+            Fonts fonts = new Fonts();          // <APPENDING Fonts>
+            fonts.Append(font0);
+
+            // <Fills>
+            Fill fill0 = new Fill();            // Default fill
+            Fills fills = new Fills();          // <APPENDING Fills>
+            fills.Append(fill0);
+
+            // <Borders>
+            Border border0 = new Border();      // Defualt border
+            Borders borders = new Borders();    // <APPENDING Borders>
+            borders.Append(border0);
+
+            // <CellFormats>
+            CellFormat cellformat0 = new CellFormat()   // Default style : Mandatory
+            {
+                FontId = 0,
+                FillId = 0,
+                BorderId = 0
+            };
+            CellFormat cellformat1 = new CellFormat(new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Top  });          // Style with textwrap set
+
+            // <APPENDING CellFormats>
+            CellFormats cellformats = new CellFormats();
+            cellformats.Append(cellformat0);
+            cellformats.Append(cellformat1);
+
+            // Append FONTS, FILLS , BORDERS & CellFormats to stylesheet <Preserve the ORDER>
+            workbookstylesheet.Append(fonts);
+            workbookstylesheet.Append(fills);
+            workbookstylesheet.Append(borders);
+            workbookstylesheet.Append(cellformats);
+
+            // Finalize
+            stylesheet.Stylesheet = workbookstylesheet;
+            stylesheet.Stylesheet.Save();
+
+            return stylesheet;
         }
 
         public ExportRiskTree(RiskTreeDataSetTrader riskTreeDataSetTrader, string fileName)

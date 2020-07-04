@@ -13,7 +13,19 @@
         mc:Ignorable="d"
         Title="Top Risk List" Height="250" Width="332" Loaded="Page_Loaded">
     <Grid Height="250" VerticalAlignment="Top" HorizontalAlignment="Left" Width="332">
-        <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Theme:" DropDownClosed="cbTheme_DropDownClosed" Name="cbTheme" HorizontalAlignment="Left" Margin="39,43,0,0" VerticalAlignment="Top" Width="201" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" Margin="39,51,20,152">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock  VerticalAlignment="Center">Light</TextBlock>
+                <md:PackIcon Kind="LightbulbOnOutline" Margin="5" VerticalAlignment="Center" Width="32" Height="32"/>
+            </StackPanel>
+            <ToggleButton Margin="8 0 16 0" Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock  VerticalAlignment="Center">Dark</TextBlock>
+                <md:PackIcon Kind="LightbulbOn" Margin="5" VerticalAlignment="Center" Width="32" Height="32"/>
+            </StackPanel>
+        </StackPanel>
+       
+        <ComboBox Visibility="Hidden" Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Theme:" DropDownClosed="cbTheme_DropDownClosed" Name="cbTheme" HorizontalAlignment="Left" Margin="39,43,0,0" VerticalAlignment="Top" Width="201" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"/>
         <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Content:" DropDownClosed="cbColors_DropDownClosed" Name="cbColors" HorizontalAlignment="Left" Margin="39,103,0,0" VerticalAlignment="Top" Width="201" VerticalContentAlignment="Center"/>
         <StackPanel Orientation="Horizontal" Margin="39,148,-18,83">
             <TextBlock Text="Start Logo Animation" VerticalAlignment="Center"/>
