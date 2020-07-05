@@ -48,82 +48,196 @@ namespace EnsureRisk.Export
 
         private void ExportDataSet(DataSet ds, string destination)
         {
+            Alternative(destination, ds.Tables[0]);
+            //using (var workbook = SpreadsheetDocument.Create(destination, SpreadsheetDocumentType.Workbook))
+            //{
+            //    workbook.AddWorkbookPart();
+            //    workbook.WorkbookPart.Workbook = new Workbook
+            //    {
+            //        Sheets = new Sheets()
+            //    };
+            //    foreach (DataTable table in ds.Tables)
+            //    {
+            //        var sheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
+            //        var sheetData = new SheetData();
+            //        sheetPart.Worksheet = new Worksheet(sheetData);
+
+            //        Sheets sheets = workbook.WorkbookPart.Workbook.GetFirstChild<Sheets>();
+            //        string relationshipId = workbook.WorkbookPart.GetIdOfPart(sheetPart);
+
+            //        uint sheetId = 1;
+            //        if (sheets.Elements<Sheet>().Count() > 0)
+            //        {
+            //            sheetId = sheets.Elements<Sheet>().Select(s => s.SheetId.Value).Max() + 1;
+            //        }
+
+            //        Sheet sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = table.TableName };
+
+            //        sheets.Append(sheet);
+
+            //        Row headerRow = new Row();
+
+            //        List<DataColumn> dataColumnsList = new List<DataColumn>();
+            //        foreach (DataColumn column in table.Columns)
+            //        {
+            //            Run run1 = new Run();
+            //            run1.Append(new Text(column.ColumnName));
+            //            //create runproperties and append a "Bold" to them
+            //            RunProperties run1Properties = new RunProperties();
+            //            run1Properties.Append(new Bold());
+            //            //set the first runs RunProperties to the RunProperties containing the bold
+            //            run1.RunProperties = run1Properties;
+
+            //            dataColumnsList.Add(new DataColumn(column.ColumnName, column.DataType));
+            //            Cell cell = new Cell
+            //            {
+            //                DataType = CellValues.InlineString
+            //            };
+            //            InlineString inlineString = new InlineString();
+            //            inlineString.Append(run1);
+            //            cell.Append(inlineString);
+            //            headerRow.AppendChild(cell);
+            //        }
+
+            //        sheetData.AppendChild(headerRow);
+
+            //        foreach (DataRow dsrow in table.Rows)
+            //        {
+            //            Row newRow = new Row();
+            //            foreach (var col in dataColumnsList)
+            //            {
+            //                Cell cell = new Cell
+            //                {
+            //                    DataType = CellValues.String,
+            //                    CellValue = new CellValue(dsrow[col.ColumnName].ToString()),
+            //                    StyleIndex = Convert.ToUInt32(1)
+            //                };
+            //                if (col.DataType == typeof(decimal))
+            //                {
+            //                    cell.DataType = CellValues.Number;
+            //                }
+            //                newRow.AppendChild(cell);
+            //            }
+            //            sheetData.AppendChild(newRow);
+            //        }
+            //    }
+            //    AddStyleSheet(workbook);
+            //}
+        }
+
+        private void Alternative(string destination, DataTable dataTable)
+        {
             using (var workbook = SpreadsheetDocument.Create(destination, SpreadsheetDocumentType.Workbook))
             {
-                var workbookPart = workbook.AddWorkbookPart();
-                workbook.WorkbookPart.Workbook = new Workbook
+                workbook.AddWorkbookPart();
+                workbook.WorkbookPart.Workbook = new Workbook();
+                var sheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
+                sheetPart.Worksheet = new Worksheet();
+                SheetViews sheetViews = new SheetViews();
+                SheetView sheetView = new SheetView() { TabSelected = true, WorkbookViewId = (UInt32Value)0U };
+                Pane pane = new Pane() { ActivePane = PaneValues.BottomLeft, State = PaneStateValues.Frozen, TopLeftCell = "A2", VerticalSplit = 1D };
+                Selection selection = new Selection() { Pane = PaneValues.BottomLeft };
+                sheetView.Append(pane);
+                sheetView.Append(selection);
+                sheetViews.Append(sheetView);
+                sheetPart.Worksheet.Append(sheetViews);
+                SheetFormatProperties sheetFormatProperties = new SheetFormatProperties()
                 {
-                    Sheets = new Sheets()
+                    DefaultColumnWidth = 15,
+                    DefaultRowHeight = 15D
                 };
-                foreach (DataTable table in ds.Tables)
+
+                sheetPart.Worksheet.Append(sheetFormatProperties);              
+
+                Columns columns = new Columns();
+                for (uint i = 0; i < dataTable.Columns.Count; i++)
                 {
-                    var sheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
-                    var sheetData = new SheetData();
-                    sheetPart.Worksheet = new Worksheet(sheetData);
-
-                    Sheets sheets = workbook.WorkbookPart.Workbook.GetFirstChild<Sheets>();
-                    string relationshipId = workbook.WorkbookPart.GetIdOfPart(sheetPart);
-
-                    uint sheetId = 1;
-                    if (sheets.Elements<Sheet>().Count() > 0)
+                    if (dataTable.Columns[(int)i].ColumnName == "Risk Name")
                     {
-                        sheetId = sheets.Elements<Sheet>().Select(s => s.SheetId.Value).Max() + 1;
+                        columns.Append(new Column() { Min = i + 1, Max = i + 1, Width = 20, CustomWidth = true });
                     }
-
-                    Sheet sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = table.TableName };
-
-                    sheets.Append(sheet);
-
-                    Row headerRow = new Row();
-
-                    List<DataColumn> dataColumnsList = new List<DataColumn>();
-                    foreach (DataColumn column in table.Columns)
+                    if (dataTable.Columns[(int)i].ColumnName == "Risk Comments")
                     {
-                        Run run1 = new Run();
-                        run1.Append(new Text(column.ColumnName));
-                        //create runproperties and append a "Bold" to them
-                        RunProperties run1Properties = new RunProperties();
-                        run1Properties.Append(new Bold());
-                        //set the first runs RunProperties to the RunProperties containing the bold
-                        run1.RunProperties = run1Properties;
+                        columns.Append(new Column() { Min = i + 1, Max = i + 1, Width = 50, CustomWidth = true });
+                    }
+                    if (dataTable.Columns[(int)i].ColumnName == "CM Name")
+                    {
+                        columns.Append(new Column() { Min = i + 1, Max = i + 1, Width = 20, CustomWidth = true });
+                    }
+                    if (dataTable.Columns[(int)i].ColumnName == "CM Comments")
+                    {
+                        columns.Append(new Column() { Min = i + 1, Max = i + 1, Width = 50, CustomWidth = true });
+                    }
+                }
+                sheetPart.Worksheet.Append(columns);
 
-                        dataColumnsList.Add(new DataColumn(column.ColumnName, column.DataType));
+                var sheetData = sheetPart.Worksheet.AppendChild(new SheetData());
+                var sheets = workbook.WorkbookPart.Workbook.AppendChild(new Sheets());
+                sheets.AppendChild(new Sheet() { Id = workbook.WorkbookPart.GetIdOfPart(sheetPart), SheetId = 1, Name = dataTable.TableName });
+                Row headerRow = new Row();
+
+                List<DataColumn> dataColumnsList = new List<DataColumn>();
+                foreach (DataColumn column in dataTable.Columns)
+                {
+                    Run run1 = new Run();
+                    run1.Append(new Text(column.ColumnName));
+                    //create runproperties and append a "Bold" to them
+                    RunProperties run1Properties = new RunProperties();
+                    run1Properties.Append(new Bold());
+                    //set the first runs RunProperties to the RunProperties containing the bold
+                    run1.RunProperties = run1Properties;
+                    dataColumnsList.Add(new DataColumn(column.ColumnName, column.DataType));
+                    Cell cell = new Cell
+                    {
+                        DataType = CellValues.InlineString,
+                        StyleIndex = Convert.ToUInt32(1)
+                    };
+                    InlineString inlineString = new InlineString();
+                    inlineString.Append(run1);
+                    cell.Append(inlineString);
+                    headerRow.AppendChild(cell);
+                    
+                }
+                sheetData.AppendChild(headerRow);
+                foreach (DataRow dsrow in dataTable.Rows)
+                {
+                    Row newRow = new Row();
+                    foreach (var col in dataColumnsList)
+                    {
                         Cell cell = new Cell
                         {
-                            DataType = CellValues.InlineString
+                            DataType = CellValues.String,
+                            CellValue = new CellValue(dsrow[col.ColumnName].ToString()),
+                            StyleIndex = Convert.ToUInt32(1)
                         };
-                        InlineString inlineString = new InlineString();
-                        inlineString.Append(run1);
-                        cell.Append(inlineString);
-                        headerRow.AppendChild(cell);
-                    }
-
-                    sheetData.AppendChild(headerRow);
-                    foreach (DataRow dsrow in table.Rows)
-                    {
-                        Row newRow = new Row();
-                        foreach (var col in dataColumnsList)
+                        if (col.DataType == typeof(decimal))
                         {
-                            Cell cell = new Cell
-                            {
-                                DataType = CellValues.String,
-                                CellValue = new CellValue(dsrow[col.ColumnName].ToString()),
-                                StyleIndex = Convert.ToUInt32(1)
-                            };
-                            if (col.DataType == typeof(decimal))
-                            {
-                                cell.DataType = CellValues.Number;
-                            }
-                            newRow.AppendChild(cell);
+                            cell.DataType = CellValues.Number;
                         }
-                        sheetData.AppendChild(newRow);
+                        newRow.AppendChild(cell);
                     }
-
+                    sheetData.AppendChild(newRow);
                 }
                 AddStyleSheet(workbook);
+                workbook.WorkbookPart.Workbook.Save();
             }
         }
 
+        private string GetExcelColumnName(int columnNumber)
+        {
+            int dividend = columnNumber;
+            string columnName = String.Empty;
+            int modulo;
+
+            while (dividend > 0)
+            {
+                modulo = (dividend - 1) % 26;
+                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
+                dividend = (int)((dividend - modulo) / 26);
+            }
+
+            return columnName;
+        }
 
         private WorkbookStylesPart AddStyleSheet(SpreadsheetDocument spreadsheet)
         {
@@ -152,12 +266,14 @@ namespace EnsureRisk.Export
                 FillId = 0,
                 BorderId = 0
             };
-            CellFormat cellformat1 = new CellFormat(new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Top  });          // Style with textwrap set
+            CellFormat cellformat1 = new CellFormat(new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Top  });
+            CellFormat cellformat2 = new CellFormat(new Alignment() { WrapText = true, Horizontal = HorizontalAlignmentValues.Justify }); // Style with textwrap set
 
             // <APPENDING CellFormats>
             CellFormats cellformats = new CellFormats();
             cellformats.Append(cellformat0);
             cellformats.Append(cellformat1);
+            cellformats.Append(cellformat2);
 
             // Append FONTS, FILLS , BORDERS & CellFormats to stylesheet <Preserve the ORDER>
             workbookstylesheet.Append(fonts);
