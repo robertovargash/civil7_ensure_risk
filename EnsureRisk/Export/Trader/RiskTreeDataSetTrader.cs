@@ -1,12 +1,32 @@
-﻿using System;
+﻿using EnsureBusinesss.Business;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
 namespace EnsureRisk.Export.Trader
 {
+    public class RiskAndCm
+    {
+        public bool isCM;
+        public int id;
+        public decimal value;
+    }
     public class RiskTreeDataSetTrader : DataSetTrader, IDisposable
     {
+        //public List<RiskPolyLine> LinesList
+        //{
+        //    get
+        //    {
+        //        return _linesList;
+        //    }
+        //}
+        //private IEnumerable<RiskAndCm> _acumulatedValueList;
+        private RiskAndCm[] _acumulatedValueList;
+
+        //object _riskList;
+        //object _cmList;
+
         public DataTable RiskDataTable
         {
             get
@@ -29,6 +49,7 @@ namespace EnsureRisk.Export.Trader
             }
         }
         private DataSet _riskTreeDataSet;
+        //private List<RiskPolyLine> _linesList;
 
         private const string RISKTREE_TABLENAME = "RiskTree";
         private const string RISKTREE_TOPRISK_TABLENAME = "RiskTree_TopRisk";
@@ -50,6 +71,16 @@ namespace EnsureRisk.Export.Trader
         public RiskTreeDataSetTrader(DataSet dataSet, int id) : base(dataSet)
         {
             GetRiskTreeDataSet(id);
+        }
+        //public RiskTreeDataSetTrader(DataSet dataSet, int id, IEnumerable<RiskAndCm> acumulatedValueList) : base(dataSet)
+        //{
+        //    GetRiskTreeDataSet(id);
+        //    _acumulatedValueList = acumulatedValueList;
+        //}
+        public RiskTreeDataSetTrader(DataSet dataSet, int id, RiskAndCm[] acumulatedValueList) : base(dataSet)
+        {
+            GetRiskTreeDataSet(id);
+            _acumulatedValueList = acumulatedValueList;
         }
         private IEnumerable<String> GetRiskTypeList()
         {
@@ -193,7 +224,6 @@ namespace EnsureRisk.Export.Trader
             counterMeasureTopRiskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
         }
-
         public int RowsCount()
         {
             int riskCount = _riskTreeDataSet.Tables[RISK_TABLENAME].Rows.Count;
@@ -209,7 +239,18 @@ namespace EnsureRisk.Export.Trader
 
             return riskCount + counterMCount;
         }
+        public decimal RiskAcumulatedValue(int riskId)
+        {
+            RiskAndCm riskFound = _acumulatedValueList.Where(value => !value.isCM && value.id == riskId).FirstOrDefault();
 
+            return (riskFound != null) ? riskFound.value : 0;
+        }
+        public decimal CounterMeasureAcumulatedDamage(int counterMeasureId)
+        {
+            RiskAndCm riskFound = _acumulatedValueList.Where(value => value.isCM && value.id == counterMeasureId).FirstOrDefault();
+
+            return (riskFound != null) ? riskFound.value : 0;
+        }
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
