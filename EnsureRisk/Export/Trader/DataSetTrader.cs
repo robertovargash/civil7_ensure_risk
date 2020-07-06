@@ -4,7 +4,7 @@ namespace EnsureRisk.Export.Trader
 {
     public class DataSetTrader
     {
-        protected DataSet SourceDataSet { get; set; }
+        public DataSet SourceDataSet { get; set; }
 
         public DataSetTrader(DataSet dataSet)
         {

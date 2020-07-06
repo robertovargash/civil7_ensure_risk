@@ -3339,8 +3339,8 @@ namespace EnsureRisk.Classess
             this.TheProgressBar.Minimum = 0;
             this.TheProgressBar.Maximum = 100;
             //this.TheProgressBar.Visibility = Visibility.Visible;
-            RiskAndCm[] acumulatedValueList = LinesList.Select((risk, RiskAndCm) => new RiskAndCm { isCM = risk.IsCM, id = risk.ID, value = risk.AcValue }).ToArray();
-            using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(this.Ds, this.ID_Diagram, acumulatedValueList))
+            //RiskAndCm[] acumulatedValueList = LinesList.Select((risk, RiskAndCm) => new RiskAndCm { isCM = risk.IsCM, id = risk.ID, value = risk.AcValue }).ToArray();
+            using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(this.Ds, this.ID_Diagram,LinesList))
             {
                 using (ExportRiskTree exportRiskTree = new ExportRiskTree(riskTreeDataSetTrader, fileName))
                 {

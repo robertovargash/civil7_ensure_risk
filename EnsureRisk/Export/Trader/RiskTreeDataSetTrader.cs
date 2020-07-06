@@ -22,8 +22,8 @@ namespace EnsureRisk.Export.Trader
         //    }
         //}
         //private IEnumerable<RiskAndCm> _acumulatedValueList;
-        private RiskAndCm[] _acumulatedValueList;
-
+        public RiskAndCm[] _acumulatedValueList { get; set; }
+        public List<RiskPolyLine> LinesDiagram { get; set; }
         //object _riskList;
         //object _cmList;
 
@@ -72,11 +72,11 @@ namespace EnsureRisk.Export.Trader
         {
             GetRiskTreeDataSet(id);
         }
-        //public RiskTreeDataSetTrader(DataSet dataSet, int id, IEnumerable<RiskAndCm> acumulatedValueList) : base(dataSet)
-        //{
-        //    GetRiskTreeDataSet(id);
-        //    _acumulatedValueList = acumulatedValueList;
-        //}
+        public RiskTreeDataSetTrader(DataSet dataSet, int id, List<RiskPolyLine> linesDiagram) : base(dataSet)
+        {
+            GetRiskTreeDataSet(id);
+            LinesDiagram = linesDiagram;
+        }
         public RiskTreeDataSetTrader(DataSet dataSet, int id, RiskAndCm[] acumulatedValueList) : base(dataSet)
         {
             GetRiskTreeDataSet(id);
