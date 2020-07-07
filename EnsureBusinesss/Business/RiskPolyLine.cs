@@ -175,11 +175,11 @@ namespace EnsureBusinesss.Business
         public static readonly DependencyProperty ProbabilityProperty =
             DependencyProperty.Register("Probability", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
 
-        public decimal Probability { get; set; }
-        //{
-        //    set { SetValue(ProbabilityProperty, value); }
-        //    get { return (decimal)GetValue(ProbabilityProperty); }
-        //}
+        public decimal Probability
+        {
+            set { SetValue(ProbabilityProperty, value); }
+            get { return (decimal)GetValue(ProbabilityProperty); }
+        }
 
         public int Position { get; set; }
 

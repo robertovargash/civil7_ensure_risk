@@ -1024,9 +1024,7 @@ namespace EnsureBusinesss
             {
                 throw new Exception("TreeOperation.MoveRight: " + e.Message);
             }
-        }
-
-        
+        }        
 
         private static PointToMoveRight GetPointMoveRight(List<RiskPolyLine> Lines, RiskPolyLine pLine, double altura)
         {

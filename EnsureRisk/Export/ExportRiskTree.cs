@@ -297,43 +297,54 @@ namespace EnsureRisk.Export
         }
         private void SetHeader()
         {
-            _columnIndex = 1;
+            
             SetRiskHeader();
-            for (int i = 0; i < _columnIndex - 2; i++)
-            {
-                _excelColumns.Add(Convert.ToChar(65 + i));
-            }
             SetCounterMHeader();
+        }
+
+        private void SetColumnNameAndType(string columName, Type type, ref int index, bool columnMerge)
+        {
+            _columnIndex = index++;
+            DtToExport.Columns.Add(columName, type);
+            if (columnMerge)
+            {
+                _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
+            }
         }
 
         private void SetRiskHeader()
         {
-            _columnIndex++;
+            _columnIndex = 1;
             DtToExport.Columns.Add(RiskID);
+            _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
 
             _columnIndex++;
             DtToExport.Columns.Add(RiskName);
+            _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
 
             _columnIndex++;
             DtToExport.Columns.Add(RiskComments);
+            _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
 
             _columnIndex++;
             DtToExport.Columns.Add(RiskProbability, typeof(decimal));
+            _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
 
             _columnIndex++;
             DtToExport.Columns.Add(RiskStatus);
+            _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
 
             _columnIndex++;
             DtToExport.Columns.Add(RiskFather);
+            _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
 
             _columnIndex++;
             DtToExport.Columns.Add(RiskWBSName);
+            _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
 
-            _columnIndex++;
-            SetDynamicHeader(false);
-
-           
+            SetDynamicHeader(false);           
         }
+
         private void SetCounterMHeader()
         {
             _columnIndex++;
@@ -342,7 +353,6 @@ namespace EnsureRisk.Export
             _columnIndex++;
             DtToExport.Columns.Add(CMName);
 
-            _columnIndex++;
             ADSetDynamicHeader();
 
             _columnIndex++;
@@ -362,21 +372,20 @@ namespace EnsureRisk.Export
             {
                 _columnIndex++;
                 DtToExport.Columns.Add(useCM ? "CM-" + propertyType : propertyType, typeof(decimal));
+                if (!useCM)
+                {
+                    _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
+                }
             }
         }
 
         private void ADSetDynamicHeader()
         {
-            int a = _columnIndex;
-            
             foreach (var propertyType in _riskTreeDataSetTrader.RiskTypeList)
             {
                 _columnIndex++;
                 DtToExport.Columns.Add("After CM /" + propertyType, typeof(decimal));
-            }
-            for (int i = a - 3; i < _columnIndex - 3; i++)
-            {
-                _excelColumns.Add(Convert.ToChar(65 + i));
+                _excelColumns.Add(Convert.ToChar(64 + _columnIndex));               
             }
         }
 
@@ -449,9 +458,6 @@ namespace EnsureRisk.Export
 
                     AddColumnsADData(riskProperties, ref flag);
 
-
-                    //_columnIndex++;
-                    //drToExport[CMAcumulatedDamage] = _riskTreeDataSetTrader.CounterMeasureAcumulatedDamage((int)counterMDataRow[DT_CounterM.ID]);
                     _columnIndex++;
                     drToExport[CMComments] = counterMDataRow[DT_CounterM.DETAIL];
                     _columnIndex++;
@@ -524,55 +530,66 @@ namespace EnsureRisk.Export
                     {
                         value = (decimal)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk_Damages.TABLENAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
                     }
-                    AcumDamage += value * AcumulatedLikelihood(itemI);
+                    AcumDamage += value * AcumulatedLikelihood(_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(itemI.ID));
                 }
             }
-
             return AcumDamage;
         }
 
-        public decimal AcumulatedLikelihood(RiskPolyLine LineFather)
+        private decimal AcumulatedLikelihood(DataRow drRFather)
         {
-            decimal ValueToReturn;//This will be the value to return
+            decimal ValueToReturn;
             bool hasChildren = false;//the flag ill be activated if the risk has children,
             List<decimal> Probability_List = new List<decimal>();
             List<decimal> CM_Probabilities = new List<decimal>();
-            foreach (var item in LineFather.Children)
+            foreach (DataRow drChildCM in _riskTreeDataSetTrader.SourceDataSet.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + drRFather[DT_Risk.ID]))
             {
-                if (item.IsCM)
+                if ((bool)drChildCM[DT_CounterM.ENABLED])
                 {
-                    CM_Probabilities.Add(item.Probability);
+                    CM_Probabilities.Add((decimal)drChildCM[DT_CounterM.PROBABILITY]/100);
                 }
-                else
+            }
+            foreach (DataRow drChildRisk in _riskTreeDataSetTrader.SourceDataSet.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRFather[DT_Risk.ID]))
+            {
+                hasChildren = true;
+                if (_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Contains(drChildRisk[DT_RiskStructure.IDRISK]))
                 {
-                    hasChildren = true;
-                    if (item.IsLeaf())
+                    if (IsLeaf(_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_RiskStructure.IDRISK]),_riskTreeDataSetTrader.SourceDataSet.Tables[DT_RiskStructure.TABLE_NAME]))
                     {
-                        Probability_List.Add(item.Probability);
+                        if (!((bool)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_RiskStructure.IDRISK])[DT_Risk.ENABLED]))
+                        {
+                            Probability_List.Add(1);
+                        }
+                        else
+                        {
+                            Probability_List.Add((decimal)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_RiskStructure.IDRISK])[DT_Risk.PROBABILITY]/100);
+                        }
                     }
                     else
                     {
-                        Probability_List.Add(AcumulatedLikelihood(item));//else, call the function as recursive
+                        if (((bool)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_RiskStructure.IDRISK])[DT_Risk.ENABLED]))
+                        {
+                            Probability_List.Add(AcumulatedLikelihood(_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_RiskStructure.IDRISK])));
+                        }
+                        else
+                        {
+                            Probability_List.Add(1);
+                        }
                     }
-                }
+                }                
             }
-
             if (hasChildren)
             {
                 //Here the formula, the probability of the father mult. by the probabilities of their children according with the In_Exclusion_Formula
-                ValueToReturn = LineFather.Probability * EL_Inclusion_Exclusion(Probability_List);
-                foreach (var item in CM_Probabilities)
-                {
-                    ValueToReturn *= (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure
-                }
+                ValueToReturn = (decimal)drRFather[DT_Risk.PROBABILITY]/100 * EL_Inclusion_Exclusion(Probability_List);
             }
             else
             {
-                ValueToReturn = LineFather.Probability;//If don´t have child, Acum. Likelihood = its Probability
-                foreach (var item in CM_Probabilities)
-                {
-                    ValueToReturn *= (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure
-                }
+                ValueToReturn = (decimal)drRFather[DT_Risk.PROBABILITY]/100;//If don´t have child, Acum. Likelihood = its Probability                
+            }
+            foreach (var item in CM_Probabilities)
+            {
+                ValueToReturn *= (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure
             }
             if (ValueToReturn > 1)
             {
@@ -582,6 +599,11 @@ namespace EnsureRisk.Export
             {
                 return ValueToReturn;
             }
+        }
+
+        private bool IsLeaf(DataRow drChild, DataTable dtStructure)
+        {
+            return !dtStructure.Select(DT_Risk.IDRISK_FATHER + " = " + drChild[DT_Risk.ID]).Any();
         }
 
         public static decimal EL_Inclusion_Exclusion(List<decimal> p)
