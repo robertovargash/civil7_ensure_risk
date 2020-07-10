@@ -19,11 +19,21 @@ namespace EnsureRisk.Export
         public int beginAt;
         public int endAt;
     }
+    class Entity
+    {
+        public string Color;
+        public int Index;
+        public Entity()
+        {
+
+        }
+    }
     public class ExportRiskTree : IDisposable
     {
         private const int BEGIN_AT_ROWINDEX = 2;
         private readonly RiskTreeDataSetTrader _riskTreeDataSetTrader;
-
+        public CellFormats CellFormats { get; set; }
+        public Fills Fills { get; set; }
         public DataTable DtToExport { get; set; }
         private DataRow drToExport;
         private readonly string _fileName;
@@ -32,6 +42,8 @@ namespace EnsureRisk.Export
         private int _rowIndex;
         private readonly int _rowsCount;
         private List<char> _excelColumns = new List<char>();
+        private List<int> columnsDamages = new List<int>();
+        private List<Entity> colorsDamages = new List<Entity>();
 
         #region Constantes
         private const string RiskID = "Risk ID";
@@ -110,18 +122,27 @@ namespace EnsureRisk.Export
                 {
                     rowRange.endAt = index;
                 }
-
-                foreach (var col in dataColumnsList)
+                int contadorColores = 2;
+                for (int i = 0; i < dataColumnsList.Count; i++)
                 {
                     Cell cell = new Cell
                     {
                         DataType = CellValues.String,
-                        CellValue = new CellValue(dsrow[col.ColumnName].ToString()),
+                        CellValue = new CellValue(dsrow[dataColumnsList[i].ColumnName].ToString()),
                         StyleIndex = Convert.ToUInt32(1)
                     };
-                    if (col.DataType == typeof(decimal) || col.DataType == typeof(int))
+                    if (columnsDamages.Contains(i+1))
                     {
-                        cell.DataType = CellValues.Number;
+                        if (contadorColores > 5)
+                        {
+                            contadorColores = 2;                            
+                        }
+                        cell.StyleIndex = Convert.ToUInt32(contadorColores);
+                        contadorColores++;
+                    }
+                    if (dataColumnsList[i].DataType == typeof(decimal) || dataColumnsList[i].DataType == typeof(int))
+                    {
+                        cell.DataType = CellValues.Number;                        
                     }
                     newRow.AppendChild(cell);
                 }
@@ -202,42 +223,43 @@ namespace EnsureRisk.Export
             WorkbookStylesPart stylesheet = spreadsheet.WorkbookPart.AddNewPart<WorkbookStylesPart>();
             Stylesheet workbookstylesheet = new Stylesheet();
 
-            // <Fonts>
-            Font font0 = new Font();            // Default font
-            Fonts fonts = new Fonts();          // <APPENDING Fonts>
-            fonts.Append(font0);
+            Fonts fonts = new Fonts(new Font( ));
 
-            // <Fills>
-            Fill fill0 = new Fill();            // Default fill
-            Fills fills = new Fills();          // <APPENDING Fills>
-            fills.Append(fill0);
+            Fills.Append(new Fill(new PatternFill() { PatternType = PatternValues.None }));
+            Fills.Append(new Fill(new PatternFill() { PatternType = PatternValues.Gray125 }));
 
-            // <Borders>
+            foreach (var item in colorsDamages)
+            {
+                Fills.Append(new Fill(new PatternFill(new ForegroundColor { Rgb = new HexBinaryValue() { Value = item.Color.ToString().Substring(1) } }) { PatternType = PatternValues.Solid }));
+            }
+            int intValue = 182;
+            // Convert integer 182 as a hex in a string variable
+            string hexValue = intValue.ToString("X");
+
             Border border0 = new Border();      // Defualt border
             Borders borders = new Borders();    // <APPENDING Borders>
             borders.Append(border0);
 
             // <CellFormats>
-            CellFormat cellformat0 = new CellFormat()   // Default style : Mandatory
+            CellFormat cellformat0 = new CellFormat();//Default Style
+            CellFormat cellformat1 = new CellFormat(new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Center });
+            CellFormats.Append(cellformat0);
+            CellFormats.Append(cellformat1);
+            for (int i = 2; i < colorsDamages.Count + 2; i++)
             {
-                FontId = 0,
-                FillId = 0,
-                BorderId = 0
-            };
-            CellFormat cellformat1 = new CellFormat(new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Top });
-            CellFormat cellformat2 = new CellFormat(new Alignment() { WrapText = true, Horizontal = HorizontalAlignmentValues.Justify }); // Style with textwrap set
+                //CellFormat cellformat2 = new CellFormat() { FontId = 0, FillId = Convert.ToUInt32(i), BorderId = 0, ApplyFill = true, Alignment = new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Center } }; // Style with textwrap set
+                CellFormats.Append(new CellFormat() { FontId = 0, FillId = Convert.ToUInt32(i), BorderId = 0, ApplyFill = true, Alignment = new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Center } });
+            }
 
-            // <APPENDING CellFormats>
-            CellFormats cellformats = new CellFormats();
-            cellformats.Append(cellformat0);
-            cellformats.Append(cellformat1);
-            cellformats.Append(cellformat2);
+            //// <APPENDING CellFormats>
+            //CellFormats cellformats = new CellFormats();
+
 
             // Append FONTS, FILLS , BORDERS & CellFormats to stylesheet <Preserve the ORDER>
             workbookstylesheet.Append(fonts);
-            workbookstylesheet.Append(fills);
+            workbookstylesheet.Append(Fills);
             workbookstylesheet.Append(borders);
-            workbookstylesheet.Append(cellformats);
+            workbookstylesheet.Append(CellFormats);
 
             // Finalize
             stylesheet.Stylesheet = workbookstylesheet;
@@ -267,6 +289,8 @@ namespace EnsureRisk.Export
             _riskTreeDataSetTrader = riskTreeDataSetTrader ?? throw new ArgumentNullException(nameof(riskTreeDataSetTrader));
             _fileName = fileName;
             _rowsCount = _riskTreeDataSetTrader.RowsCount();
+            CellFormats = new CellFormats();
+            Fills = new Fills();
         }
         public void Export(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
         {
@@ -371,10 +395,14 @@ namespace EnsureRisk.Export
             foreach (var propertyType in _riskTreeDataSetTrader.RiskTypeList)
             {
                 _columnIndex++;
+                columnsDamages.Add(_columnIndex);
+                //colorsDamages.Add(_columnIndex.ToString());
+                
                 DtToExport.Columns.Add(useCM ? "CM-" + propertyType : propertyType, typeof(decimal));
                 if (!useCM)
                 {
                     _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
+                    colorsDamages.Add(new Entity() { Color = "", Index = _columnIndex });
                 }
             }
         }
@@ -436,6 +464,11 @@ namespace EnsureRisk.Export
                 {
                     string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
                     drToExport[columnaNombre] = riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre)[DT_Risk_Damages.VALUE];
+                    int a = _columnIndex + 1;
+                    if (colorsDamages.FindIndex(c => c.Index == a)>=0)
+                    {
+                        colorsDamages[colorsDamages.FindIndex(c => c.Index == a)].Color = riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre)[DT_Risk_Damages.COLOR].ToString();
+                    }
                     _columnIndex++;
                 }
                 

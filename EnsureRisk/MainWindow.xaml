@@ -420,7 +420,7 @@
                                                                     </DataGridTextColumn>
                                                                     <DataGridTextColumn x:Name="WBS" Header="WBS Name" Binding="{Binding {x:Static data:DT_RISK_WBS.WBS}}" Width="*" IsReadOnly="True"/>
                                                                     <DataGridTextColumn x:Name="WBSUser" Header="User" Binding="{Binding {x:Static data:DT_RISK_WBS.USERNAME}}" Width="*" IsReadOnly="True"/>
-                                                                    <DataGridTextColumn x:Name="WBProbability" Header="Prob (%)" Width="*" EditingElementStyle="{StaticResource errorStyle}" IsReadOnly="false" >
+                                                                    <DataGridTextColumn x:Name="WBProbability" Header="Prob (%)" Width="*" EditingElementStyle="{StaticResource errorStyle}" IsReadOnly="False" >
                                                                         <DataGridTextColumn.Binding>
                                                                             <Binding Path="probability" UpdateSourceTrigger="LostFocus" 
                                                                         Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"

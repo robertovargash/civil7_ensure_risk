@@ -8,24 +8,28 @@ namespace DataMapping.Data
 
         public const string ID_RISKTREE = "idRiskTree";
         public const string ID_DAMAGE = "idTopRisk";
-        public const string DAMAGE = "TopRisk";
+        public const string TOP_RISK = "TopRisk";
         public const string COLOR= "Color";
-        public const string RISK_TREE = "RiskTree";
+        public const string RISK_TREE = "RiskTree"; 
+        public const string UM = "UM";
+        public const string DAMAGE = "Damage";
 
-        public DT_Diagram_Damages():base()
+        public DT_Diagram_Damages() : base()
         {
             CreateTable();
         }
 
-        private void CreateTable()  
+        private void CreateTable()
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             TableName = TABLENAME;
             PK_COLUMN[0] = this.Columns.Add(ID_RISKTREE, typeof(int));
             PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(int));
             Columns.Add(RISK_TREE, typeof(string));
-            Columns.Add(DAMAGE, typeof(string));
+            Columns.Add(TOP_RISK, typeof(string));
             Columns.Add(COLOR, typeof(string));
+            Columns.Add(UM, typeof(string));
+            Columns.Add(DAMAGE, typeof(string));
             PrimaryKey = PK_COLUMN;
         }
         public static DataTable Create()

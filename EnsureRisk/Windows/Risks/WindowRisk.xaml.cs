@@ -165,15 +165,16 @@ namespace EnsureRisk.Windows
 
                 DvRiskWBS = Risk_WBS_Table.DefaultView;
                 dgWBS.ItemsSource = DvRiskWBS;
+                //DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
                 if (HasAccess)
-                {                   
+                {
                     DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
                 }
                 else
                 {
                     DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " AND " + DT_RISK_WBS.USERNAME + " = '" + LOGIN_USER + "'";
                 }
-                
+
 
                 //DvTopRisk = TopRiskTable.DefaultView;
                 //dgTopRisk.ItemsSource = DvTopRisk;
@@ -221,8 +222,9 @@ namespace EnsureRisk.Windows
                     rowTop[DT_Risk_Damages.ID_RISK] = RiskRow[DT_Risk.ID];
                     rowTop[DT_Risk_Damages.ID_RISK_TREE] = RiskTreeID;
                     rowTop[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString();
+                    rowTop[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.TOP_RISK].ToString() + "(" + item[DT_Diagram_Damages.UM] + ")";
                     rowTop[DT_Risk_Damages.VALUE] = 0;
-                    rowTop[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.DAMAGE];
+                    rowTop[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
                     rowTop[DT_Risk_Damages.PROBABILITY] = useProbability ? Probability : 0;
                     rowTop[DT_Risk_Damages.GROUPE_NAME] = "None";
                     rowTop[DT_Risk_Damages.RISK_NAMESHORT] = "";

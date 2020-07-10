@@ -22,18 +22,30 @@
         <Grid Grid.Row="0">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                 <Separator Margin="10" Visibility="Hidden"/>
-                <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Damage" Name="TextTopRisk" MinWidth="250" MaxWidth="300" 
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Damage" Name="TextTopRisk" MinWidth="200" MaxWidth="200" 
                           ItemsSource="{Binding DamageTable.DefaultView}" SelectedValuePath="{x:Static data:DT_Damage.ID_COLUMNA}" 
                           DisplayMemberPath="{x:Static data:DT_Damage.TOP_RISK_COLUMN}" IsEditable="True" TextBoxBase.TextChanged="TextTopRisk_TextChanged" 
                           SelectionChanged="TextTopRisk_SelectionChanged" SelectedValue="{Binding SelectedDamage}">
-                    <ComboBox.Text>
-                        <Binding Path="DAMAGE" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </ComboBox.Text>
-                </ComboBox>
+                        <ComboBox.Text>
+                            <Binding Path="DAMAGE" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </ComboBox.Text>
+                    </ComboBox>
+                    <Separator Margin="10" Visibility="Hidden"/>
+                    <TextBox md:HintAssist.Hint="UM" md:HintAssist.IsFloating="True" x:Name="UMText" Width="40" TextChanged="UMText_TextChanged">
+                        <TextBox.Text>                            
+                            <Binding Path="UM" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
                 <Separator Margin="10" Visibility="Hidden"/>
                 <TextBlock Text="Select a color:"/>
                 <xctk:ColorPicker x:Name="colorPiker" VerticalAlignment="Top" HorizontalAlignment="Center" Height="35" Width="250" />

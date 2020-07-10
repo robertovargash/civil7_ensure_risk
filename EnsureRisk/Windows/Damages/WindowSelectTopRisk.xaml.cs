@@ -78,7 +78,7 @@ namespace EnsureRisk.Windows
                 {
                     Drow[DT_Diagram_Damages.ID_DAMAGE] = frmSelection.Dt.Rows[0][DT_Damage.ID_COLUMNA];
                     Drow[DT_Diagram_Damages.COLOR] = frmSelection.Dt.Rows[0][DT_Damage.COLORID_COLUMNA];
-                    DAMAGE = frmSelection.Dt.Rows[0][DT_Diagram_Damages.DAMAGE].ToString();
+                    DAMAGE = frmSelection.Dt.Rows[0][DT_Diagram_Damages.TOP_RISK].ToString();
                 }
                 else
                 {
@@ -89,7 +89,7 @@ namespace EnsureRisk.Windows
                         {
                             Drow[DT_Diagram_Damages.ID_DAMAGE] = frmSelection.RowsSelected[0][DT_Damage.ID_COLUMNA];
                             Drow[DT_Diagram_Damages.COLOR] = frmSelection.RowsSelected[0][DT_Damage.COLORID_COLUMNA];
-                            DAMAGE = frmSelection.RowsSelected[0][DT_Diagram_Damages.DAMAGE].ToString();
+                            DAMAGE = frmSelection.RowsSelected[0][DT_Diagram_Damages.TOP_RISK].ToString();
                         }
                     }
                 }
@@ -108,7 +108,7 @@ namespace EnsureRisk.Windows
             {
                 if (DAMAGE != "")
                 {
-                    Drow[DT_Diagram_Damages.DAMAGE] = DAMAGE;
+                    Drow[DT_Diagram_Damages.TOP_RISK] = DAMAGE;
                     this.DialogResult = true;
                 }
                 else

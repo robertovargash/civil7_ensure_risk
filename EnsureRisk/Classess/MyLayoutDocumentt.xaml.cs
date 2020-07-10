@@ -131,7 +131,7 @@ namespace EnsureRisk.Classess
             exportToExcelWorker.ProgressChanged += ExportToExcelWorker_ProgressChanged;
             exportToExcelWorker.RunWorkerCompleted += ExportToExcelWorker_RunWorkerCompleted;
             this.Closing += MyLayoutDocument_Closed;
-            CbFilterTopR.DataContext = this;
+            CbFilterTopR.DataContext = this;           
         }
 
         public void MostrarYesNo(string text)
@@ -386,8 +386,9 @@ namespace EnsureRisk.Classess
                 for (int i = thisTopRisk.Length - 1; i >= 0; i--)
                 {
                     DataRow item = thisTopRisk[i];
-                    System.Drawing.Color colorete = System.Drawing.Color.FromArgb(int.Parse(item[DT_Diagram_Damages.COLOR].ToString()));
-                    Color mediaColor = Color.FromArgb(colorete.A, colorete.R, colorete.G, colorete.B);
+                    //System.Drawing.Color colorete = System.Drawing.Color.FromArgb(int.Parse(item[DT_Diagram_Damages.COLOR].ToString()));
+                    //Color mediaColor = Color.FromArgb(colorete.A, colorete.R, colorete.G, colorete.B);
+                    Color mediaColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(item[DT_Diagram_Damages.COLOR].ToString())).Color;
 
                     MyDamage rectangle = new MyDamage(GridPaintLines, new Point(puntoinicialX, puntoinicialY),
                                                         item[DT_Diagram_Damages.DAMAGE].ToString(),
@@ -407,7 +408,6 @@ namespace EnsureRisk.Classess
                 MostrarDialog(ex.Message);
             }
         }
-
 
         public void ReLoadRectangles()
         {
@@ -463,8 +463,10 @@ namespace EnsureRisk.Classess
                 double puntoinicialY = MyMainLine.Points[1].Y - formula;
                 foreach (DataRow item in thisTopRisk)
                 {
-                    System.Drawing.Color colorete = System.Drawing.Color.FromArgb(int.Parse(item[DT_Diagram_Damages.COLOR].ToString()));
-                    Color mediaColor = Color.FromArgb(colorete.A, colorete.R, colorete.G, colorete.B);
+                    Color mediaColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(item[DT_Diagram_Damages.COLOR].ToString())).Color;
+
+                    //System.Drawing.Color colorete = System.Drawing.Color.FromArgb(int.Parse(item[DT_Diagram_Damages.COLOR].ToString()));
+                    //Color mediaColor = Color.FromArgb(colorete.A, colorete.R, colorete.G, colorete.B);
 
                     MyDamage rectangle = new MyDamage(GridPaintLines,
                     new Point(MyMainLine.Points[1].X + 5 + General.MaxThickness, puntoinicialY),
@@ -563,13 +565,13 @@ namespace EnsureRisk.Classess
             }
         }
 
-        public void AddMainLine(DataRow dr, System.Drawing.Color lnColor)
+        public void AddMainLine(DataRow dr, Color lnColor)
         {
             try
             {
                 MainLine = new RiskPolyLine(GridPaintLines, MenuMainRisk, false)
                 {
-                    Stroke = new SolidColorBrush(Color.FromArgb(lnColor.A, lnColor.R, lnColor.G, lnColor.B)),
+                    Stroke = new SolidColorBrush(lnColor),
                     IsDiagonal = false,
                     IsRoot = true,
                     IsCM = false,
@@ -710,8 +712,9 @@ namespace EnsureRisk.Classess
                     
                 }
                 LinesList.Clear();
-                System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Rows.Find(new object[] { ID_Diagram, IdDamageSelected })[DT_Diagram_Damages.COLOR].ToString()));
-                AddMainLine(Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram + " and " + DT_Risk.IS_ROOT + " = " + 1).First(), drawingCColor);
+                //System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Rows.Find(new object[] { ID_Diagram, IdDamageSelected })[DT_Diagram_Damages.COLOR].ToString()));
+                System.Windows.Media.Color color = ((SolidColorBrush)new BrushConverter().ConvertFrom(Ds.Tables[DT_Diagram_Damages.TABLENAME].Rows.Find(new object[] { ID_Diagram, IdDamageSelected })[DT_Diagram_Damages.COLOR].ToString())).Color;
+                AddMainLine(Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram + " and " + DT_Risk.IS_ROOT + " = " + 1).First(), color);
 
                 foreach (DataRow item in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram))
                 {
@@ -738,11 +741,11 @@ namespace EnsureRisk.Classess
                             riskLine.ShortName = item[DT_Risk.NAMESHORT].ToString();
                             if (haspermission)
                             {
-                                riskLine.SetColor(new SolidColorBrush(Color.FromArgb(drawingCColor.A, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
+                                riskLine.SetColor(new SolidColorBrush(color));
                             }
                             else
                             {
-                                riskLine.SetColor(new SolidColorBrush(Color.FromArgb(80, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
+                                riskLine.SetColor(new SolidColorBrush(Color.FromArgb(80, color.R, color.G, color.B)));
                             }
                         }
                         else
@@ -1249,14 +1252,15 @@ namespace EnsureRisk.Classess
                     {
                         if (item.IsActivated)
                         {
-                            System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
+                            //System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
+                            System.Windows.Media.Color color = ((SolidColorBrush)new BrushConverter().ConvertFrom(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
                             if (TengoPermiso(item))
                             {
-                                item.SetColor(new SolidColorBrush(Color.FromArgb(drawingCColor.A, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
+                                item.SetColor(new SolidColorBrush(color));
                             }
                             else
                             {
-                                item.SetColor(new SolidColorBrush(Color.FromArgb(80, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
+                                item.SetColor(new SolidColorBrush(Color.FromArgb(80, color.R, color.G, color.B)));
                             }
                         }
                         else
@@ -1908,12 +1912,13 @@ namespace EnsureRisk.Classess
                             }
                             else
                             {
-                                System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Risk_Damages.COLOR].ToString()));
+                                Color drawColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Diagram_Damages.COLOR].ToString())).Color;
+                                //System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Risk_Damages.COLOR].ToString()));
                                 if (TengoPermiso(Line_Selected) && FullAccess(Line_Selected))
                                 {
                                     Line_Selected.SetMenu(MenuRisk);
                                     Line_Selected.FullAccess = true;
-                                    Line_Selected.SetColor(new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B)));
+                                    Line_Selected.SetColor(new SolidColorBrush(drawColor));
                                     SetRightMenu(new List<RiskPolyLine>() { Line_Selected });
                                 }
                                 else
@@ -2083,6 +2088,11 @@ namespace EnsureRisk.Classess
                 Line_Created.IsDiagonal = false;
                 Line_Created.NewDrawAtPoint(Line_Created.StartDrawPoint);
             }
+            if (MoviendoRisk)
+            {
+                LineInMoving.IsDiagonal = false;
+                LineInMoving.NewDrawAtPoint(LineInMoving.StartDrawPoint);
+            }
             OcultarPopWindow();
             //if (Popin != null)
             //{
@@ -2164,6 +2174,15 @@ namespace EnsureRisk.Classess
                         {
                             ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.EnableValue;
                         }
+                    }
+                }
+                else
+                {
+                    if (MoviendoRisk)
+                    {
+                        LineInMoving.IsDiagonal = !TheLine.IsDiagonal;
+                        LineInMoving.FromTop = TheLine.FromTop;
+                        LineInMoving.DrawSingleLine();
                     }
                 }
             }
@@ -2345,6 +2364,7 @@ namespace EnsureRisk.Classess
                 TreeOperation.DeleteLine(linetoDel, Ds);
 
                 GridPaintLines.Children.Remove(LineInMoving);
+                GridPaintLines.Children.Remove(LineInMoving.TextPanel);
                 LineInMoving = null;
             }
         }
@@ -2843,35 +2863,32 @@ namespace EnsureRisk.Classess
                 {
                     if (!(CbFilterTopR.SelectedValue is null))
                     {
-                        System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Risk_Damages.COLOR].ToString()));
-
+                        //System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Risk_Damages.COLOR].ToString()));
+                        Color mediaColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Diagram_Damages.COLOR].ToString())).Color;
                         int index = Rectangles.FindIndex(x => x.ID_TopRisk.Equals(IdDamageSelected));
 
                         foreach (RiskPolyLine item in LinesList)
                         {
-                            if (Ds.Tables[DT_Risk_Damages.TABLENAME].Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).Any())
+                            if (!(item.IsCM))
                             {
-                                if (!(item.IsCM))
+                                if (item.IsActivated)
                                 {
-                                    if (item.IsActivated)
+                                    if (item.IsRoot)
                                     {
-                                        if (item.IsRoot)
+                                        item.SetColor(new SolidColorBrush(mediaColor));
+                                    }
+                                    else
+                                    {
+                                        if (TengoPermiso(item))
                                         {
-                                            item.SetColor(new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B)));
+                                            item.SetColor(new SolidColorBrush(mediaColor));
                                         }
                                         else
                                         {
-                                            if (TengoPermiso(item))
-                                            {
-                                                item.SetColor(new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B)));
-                                            }
-                                            else
-                                            {
-                                                item.SetColor(new SolidColorBrush(Color.FromArgb(80, drawColor.R, drawColor.G, drawColor.B)));
-                                            }
+                                            item.SetColor(new SolidColorBrush(Color.FromArgb(80, mediaColor.R, mediaColor.G, mediaColor.B)));
                                         }
-                                        item.UpdateSegmentsStroke();
                                     }
+                                    item.UpdateSegmentsStroke();
                                 }
                             }
                         }
@@ -3098,6 +3115,15 @@ namespace EnsureRisk.Classess
                                 }
                                 else
                                 {
+                                    if (MoviendoRisk)
+                                    {
+                                        LineInMoving.NewDrawAtPoint(e.GetPosition(GridPaintLines));
+                                        TreeOperation.MoveLines(new List<RiskPolyLine>() { LineInMoving }, e.GetPosition(GridPaintLines).X - LineInMoving.Points[1].X - 25, e.GetPosition(GridPaintLines).Y - LineInMoving.Points[1].Y);
+                                        X = e.GetPosition(GridPaintLines).X;
+                                        Y = e.GetPosition(GridPaintLines).Y;
+                                        Main_Y = MainLine.Points[0].Y;
+                                    }
+                                    else
                                     {
                                         MoviendoRisk = true;
                                         LinesMoving = new List<RiskPolyLine>();
@@ -3107,22 +3133,16 @@ namespace EnsureRisk.Classess
                                             item.Oculto = true;
                                         }
                                         GridPaintLines.Children.Remove(LineInMoving);
-                                        System.Drawing.Color lnColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
+                                        //System.Drawing.Color lnColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
+                                        System.Windows.Media.Color color = ((SolidColorBrush)new BrushConverter().ConvertFrom(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
+
                                         LineInMoving = new RiskPolyLine(GridPaintLines, MenuRisk, false)
                                         {
-                                            Stroke = new SolidColorBrush(System.Windows.Media.Color.FromArgb(lnColor.A, lnColor.R, lnColor.G, lnColor.B)),
+                                            Stroke = new SolidColorBrush(color),
                                             StrokeThickness = 3,
                                             IsMoving = true
                                         };
                                         LineInMoving.NewDrawAtPoint(new Point(X, Y), "");
-                                    }
-                                    if (MoviendoRisk)
-                                    {
-                                        LineInMoving.NewDrawAtPoint(e.GetPosition(GridPaintLines));
-                                        TreeOperation.MoveLines(new List<RiskPolyLine>() { LineInMoving }, e.GetPosition(GridPaintLines).X - LineInMoving.Points[1].X - 25, e.GetPosition(GridPaintLines).Y - LineInMoving.Points[1].Y);
-                                        X = e.GetPosition(GridPaintLines).X;
-                                        Y = e.GetPosition(GridPaintLines).Y;
-                                        Main_Y = MainLine.Points[0].Y;
                                     }
                                 }
 
@@ -3434,7 +3454,8 @@ namespace EnsureRisk.Classess
                     IdDamageSelected = (int)((MyDamage)sender).ID_TopRisk;
                     int index = Rectangles.FindIndex(x => x.ID_TopRisk.Equals(IdDamageSelected));
 
-                    System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Diagram_Damages.COLOR].ToString()));
+                    //System.Drawing.Color drawColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Diagram_Damages.COLOR].ToString()));
+                    System.Windows.Media.Color drawColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_DAMAGE + " = " + IdDamageSelected).First()[DT_Diagram_Damages.COLOR].ToString())).Color;
 
                     foreach (RiskPolyLine item in LinesList)
                     {
@@ -3446,13 +3467,13 @@ namespace EnsureRisk.Classess
                                 {
                                     if (item.IsRoot)
                                     {
-                                        item.SetColor(new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B)));
+                                        item.SetColor(new SolidColorBrush(drawColor));
                                     }
                                     else
                                     {
                                         if (TengoPermiso(item))
                                         {
-                                            item.SetColor(new SolidColorBrush(Color.FromArgb(drawColor.A, drawColor.R, drawColor.G, drawColor.B)));
+                                            item.SetColor(new SolidColorBrush(drawColor));
                                         }
                                         else
                                         {

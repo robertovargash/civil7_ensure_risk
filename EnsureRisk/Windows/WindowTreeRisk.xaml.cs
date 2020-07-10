@@ -93,7 +93,9 @@ namespace EnsureRisk.Windows
                 {
                     Drow = TopRiskTable.NewRow(),
                     Icon = Icon,
-                    DamageDiagramTable = TopRiskTable.Copy()
+                    DamageDiagramTable = TopRiskTable.Select(DT_Diagram_Damages.ID_RISKTREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]).Any() ? 
+                    TopRiskTable.Select(DT_Diagram_Damages.ID_RISKTREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]).CopyToDataTable() 
+                    : TopRiskTable.Clone()
                 };
                 if (frm.ShowDialog() == true)
                 {
@@ -140,7 +142,7 @@ namespace EnsureRisk.Windows
                 if (dgTopRisk.SelectedIndex >= 0)
                 {
                     IS_DELETING = true;
-                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + fila[DT_Diagram_Damages.DAMAGE] + "]?");
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + fila[DT_Diagram_Damages.TOP_RISK] + "]?");
                 }
             }
             catch (Exception ex)

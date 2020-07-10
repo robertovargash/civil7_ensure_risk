@@ -10,7 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 //using System.Windows.Media;
-using System.Drawing;
+//using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Data;
@@ -56,9 +56,7 @@ namespace EnsureRisk.Windows
                 if (Operation == General.UPDATE)
                 {
                     TextTopRisk.Text = Drow[DT_Damage.TOP_RISK_COLUMN].ToString();
-                    int colorete = int.Parse(Drow[DT_Damage.COLORID_COLUMNA].ToString());
-                    color = System.Drawing.Color.FromArgb(colorete);
-                    colorPiker.SelectedColor = System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
+                    colorPiker.SelectedColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(Drow[DT_Damage.COLORID_COLUMNA].ToString())).Color;
                 }
                 TextTopRisk.Focus();
             }
@@ -72,8 +70,8 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                color = System.Drawing.Color.FromArgb(colorPiker.SelectedColor.Value.A, colorPiker.SelectedColor.Value.R, colorPiker.SelectedColor.Value.G, colorPiker.SelectedColor.Value.B);
-                Drow[DT_Damage.COLORID_COLUMNA] = color.ToArgb().ToString();
+                //color = System.Drawing.Color.FromArgb(colorPiker.SelectedColor.Value.A, colorPiker.SelectedColor.Value.R, colorPiker.SelectedColor.Value.G, colorPiker.SelectedColor.Value.B);
+                Drow[DT_Damage.COLORID_COLUMNA] = colorPiker.SelectedColor.ToString();
                 Drow[DT_Damage.TOP_RISK_COLUMN] = TextTopRisk.Text;
                 DialogResult = true;
             }

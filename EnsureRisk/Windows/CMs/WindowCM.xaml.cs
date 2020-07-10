@@ -124,8 +124,8 @@ namespace EnsureRisk.Windows
                         rowTop[DT_CounterM_Damage.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
                         rowTop[DT_CounterM_Damage.ID_COUNTERM] = CMRow[DT_CounterM.ID];
                         rowTop[DT_CounterM_Damage.VALUE] = 0;
-                        rowTop[DT_CounterM_Damage.TOP_RISK] = item[DT_Diagram_Damages.DAMAGE];
-                        rowTop[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString();
+                        rowTop[DT_CounterM_Damage.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
+                        rowTop[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.TOP_RISK] + "(" + item[DT_Diagram_Damages.TOP_RISK] + ")";
                         rowTop[DT_CounterM_Damage.ID_RISK_TREE] = RiskTreeID;
                         rowTop[DT_CounterM_Damage.RISK_REDUCTION] = 0;
                         rowTop[DT_CounterM_Damage.GROUPENAME] = "None";
@@ -239,8 +239,8 @@ namespace EnsureRisk.Windows
                             rowTop[DT_CounterM_Damage.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
                             rowTop[DT_CounterM_Damage.ID_COUNTERM] = CMRow[DT_CounterM.ID];
                             rowTop[DT_CounterM_Damage.VALUE] = 0;
-                            rowTop[DT_CounterM_Damage.TOP_RISK] = item[DT_Diagram_Damages.DAMAGE];
-                            rowTop[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString();
+                            rowTop[DT_CounterM_Damage.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
+                            rowTop[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.TOP_RISK] + "(" + item[DT_Diagram_Damages.UM] + ")";
                             rowTop[DT_CounterM_Damage.ID_RISK_TREE] = RiskTreeID;
                             rowTop[DT_CounterM_Damage.RISK_REDUCTION] = 0;
                             rowTop[DT_CounterM_Damage.GROUPENAME] = "None";
@@ -572,7 +572,7 @@ namespace EnsureRisk.Windows
             if (TengoPadre(idWBS))
             {
                 dtWBSAncestors.ImportRow(BuscarMiPadre(idWBS));
-                return BuscarAncestros((Int32)BuscarMiPadre(idWBS)[DT_WBS.ID_WBS], dtWBSAncestors);
+                return BuscarAncestros((int)BuscarMiPadre(idWBS)[DT_WBS.ID_WBS], dtWBSAncestors);
             }
             else
             {

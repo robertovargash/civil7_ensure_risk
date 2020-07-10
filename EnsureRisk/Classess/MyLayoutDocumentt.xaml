@@ -11,7 +11,7 @@
              xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
              xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
              mc:Ignorable="d" CanMove="True" CanClose="True" CanFloat="True" IsActiveChanged="LayoutDocument_IsActiveChanged">
-    <Grid MouseDown="LayoutDocument_MouseDown" Background="Green">
+    <Grid MouseDown="LayoutDocument_MouseDown">
         <Button x:Name="BtnUndoneScope" Panel.ZIndex="1" Click="BtnUndoneScope_Click" Visibility="Collapsed" Content="{md:PackIcon Kind=UndoVariant}" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
         <Grid x:Name="TheTopGrid" Background="Red" MouseDown="LayoutDocument_MouseDown">
             <Grid x:Name="TheMainGrid" Background="White" MouseDown="LayoutDocument_MouseDown">
@@ -40,7 +40,7 @@
                     </Grid.ColumnDefinitions>
                     <ProgressBar Grid.Column="1" x:Name="TheProgressBar" VerticalAlignment="Center" Visibility="Collapsed" HorizontalAlignment="Stretch" IsIndeterminate="True"/>
                     <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left">
-                        <ComboBox x:Name="CbFilterTopR" ItemsSource="{Binding DvDamage}" DisplayMemberPath="{x:Static data:DT_Diagram_Damages.DAMAGE}" SelectedValuePath="{x:Static data:DT_Diagram_Damages.ID_DAMAGE}" SelectedValue="{Binding IdDamageSelected}" IsEditable="False" HorizontalContentAlignment="Center"  Style="{StaticResource MaterialDesignFloatingHintComboBox}"  DropDownClosed="CbFilterTopR_DropDownClosed">
+                        <ComboBox x:Name="CbFilterTopR" ItemsSource="{Binding DvDamage}" DisplayMemberPath="{x:Static data:DT_Diagram_Damages.TOP_RISK}" SelectedValuePath="{x:Static data:DT_Diagram_Damages.ID_DAMAGE}" SelectedValue="{Binding IdDamageSelected}" IsEditable="False" HorizontalContentAlignment="Center"  Style="{StaticResource MaterialDesignFloatingHintComboBox}"  DropDownClosed="CbFilterTopR_DropDownClosed">
                             <md:HintAssist.Hint>
                                 <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
                                     <md:PackIcon Kind="Warning" />

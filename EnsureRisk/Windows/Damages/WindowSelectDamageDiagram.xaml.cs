@@ -24,10 +24,11 @@ namespace EnsureRisk.Windows.Damages
     public partial class WindowSelectDamageDiagram : Window, INotifyPropertyChanged
     {
         private int selectedDamage;
-        private string damage;
+        private string damage,um;
         private DataTable dtDamage;
         public int SelectedDamage { get { return selectedDamage; } set { selectedDamage = value; OnPropertyChanged("SelectedDamage"); } }
         public string DAMAGE { get { return damage; } set { damage = value; OnPropertyChanged("DAMAGE"); } }
+        public string UM { get { return um; } set { um = value; OnPropertyChanged("UM"); } }
         public DataRow Drow { get; set; }
         public DataTable DamageDiagramTable { get; set; }
         public DataTable DamageTable { get { return dtDamage; } set { dtDamage = value; OnPropertyChanged("DamageTable"); } }
@@ -40,6 +41,7 @@ namespace EnsureRisk.Windows.Damages
         {
             InitializeComponent();
             TextTopRisk.DataContext = this;
+            UMText.DataContext = this;
         }
 
         public void MostrarErrorDialog(string text)
@@ -70,9 +72,10 @@ namespace EnsureRisk.Windows.Damages
             {
                 if (DAMAGE != "")
                 {
-                    if (DamageTable.Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DAMAGE + "'").Any())
+                    if (DamageTable.Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DAMAGE + "' AND " + DT_Damage.UM + " = '" + UM + "'").Any())
                     {
-                        Drow[DT_Diagram_Damages.DAMAGE] = DAMAGE;
+                        Drow[DT_Diagram_Damages.TOP_RISK] = DAMAGE;
+                        Drow[DT_Diagram_Damages.DAMAGE] = DAMAGE + "(" + UM + ")";
                         Drow[DT_Diagram_Damages.ID_DAMAGE] = SelectedDamage;
                         Drow[DT_Diagram_Damages.COLOR] = DamageTable.Rows.Find(SelectedDamage)[DT_Damage.COLORID_COLUMNA];
                     }
@@ -80,8 +83,9 @@ namespace EnsureRisk.Windows.Damages
                     {
                         DataRow drDamage = DamageTable.NewRow();
                         drDamage[DT_Damage.TOP_RISK_COLUMN] = DAMAGE;
-                        System.Drawing.Color color = System.Drawing.Color.FromArgb(colorPiker.SelectedColor.Value.A, colorPiker.SelectedColor.Value.R, colorPiker.SelectedColor.Value.G, colorPiker.SelectedColor.Value.B);
-                        drDamage[DT_Damage.COLORID_COLUMNA] = color.ToArgb().ToString();
+                        drDamage[DT_Damage.UM] = UM;
+                        //System.Drawing.Color color = System.Drawing.Color.FromArgb(colorPiker.SelectedColor.Value.A, colorPiker.SelectedColor.Value.R, colorPiker.SelectedColor.Value.G, colorPiker.SelectedColor.Value.B);
+                        drDamage[DT_Damage.COLORID_COLUMNA] = colorPiker.SelectedColor.ToString();
                         ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
                         DamageTable.Rows.Add(drDamage);
                         DataSet ds = new DataSet();
@@ -89,7 +93,8 @@ namespace EnsureRisk.Windows.Damages
                         ds = ws.SaveTopRisk(ds);
                         ws.Dispose();
                         DamageTable.Merge(ds.Tables[DT_Damage.TopRisk_TABLA]);                        
-                        Drow[DT_Diagram_Damages.DAMAGE] = DAMAGE;
+                        Drow[DT_Diagram_Damages.TOP_RISK] = DAMAGE; 
+                        Drow[DT_Diagram_Damages.DAMAGE] = DAMAGE + "(" + UM + ")"; ;
                         Drow[DT_Diagram_Damages.ID_DAMAGE] = drDamage[DT_Damage.ID_COLUMNA];
                         Drow[DT_Diagram_Damages.COLOR] = drDamage[DT_Damage.COLORID_COLUMNA];
                     }                    
@@ -125,15 +130,27 @@ namespace EnsureRisk.Windows.Damages
             }
         }
 
+        private void UMText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                UM = UMText.Text;
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
         private void TextTopRisk_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
                 if (DamageTable.Rows.Contains(SelectedDamage))
                 {
-                    int colorete = int.Parse(DamageTable.Rows.Find(SelectedDamage)[DT_Damage.COLORID_COLUMNA].ToString());
-                    System.Drawing.Color color = System.Drawing.Color.FromArgb(colorete);
-                    colorPiker.SelectedColor = Color.FromArgb(color.A, color.R, color.G, color.B);
+                    colorPiker.SelectedColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(DamageTable.Rows.Find(SelectedDamage)[DT_Damage.COLORID_COLUMNA].ToString())).Color;
+                    UMText.Text = DamageTable.Rows.Find(SelectedDamage)[DT_Damage.UM].ToString();
+                    UM = UMText.Text;
                 }
             }
             catch (Exception ex)
