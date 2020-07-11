@@ -18,10 +18,10 @@ namespace EnsureRisk.Windows
     /// <summary>
     /// Interaction logic for VerticalMenu.xaml
     /// </summary>
-    public partial class VerticalMenu : Window
+    public partial class GhostWindow : Window
     {
 
-        public VerticalMenu(string TextValue)
+        public GhostWindow(string TextValue)
         {
             InitializeComponent();
             TextToShow.Text = TextValue;
@@ -34,8 +34,10 @@ namespace EnsureRisk.Windows
 
         private void StartCloseTimer()
         {
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(0.5d);
+            DispatcherTimer timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(0.5d)
+            };
             timer.Tick += TimerTick;
             timer.Start();
         }

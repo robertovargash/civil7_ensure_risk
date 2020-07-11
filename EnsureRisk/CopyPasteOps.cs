@@ -11,6 +11,104 @@ namespace EnsureRisk
 {
     public static class CopyPasteOps
     {
+
+        public static DataRow EstablecerValoresNuevoRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain, int ID_Diagram, DataSet DsWBS)
+        {
+            DataRow drNewRisk = targetDataset.Tables[DT_Risk.TABLE_NAME].NewRow();
+            drNewRisk[DT_Risk.COMMENTS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.COMMENTS];
+            drNewRisk[DT_Risk.ENABLED] = true;
+            drNewRisk[DT_Risk.FROM_TOP] = sourceRisk.FromTop;
+            drNewRisk[DT_Risk.ID_DIAGRAM] = ID_Diagram;
+            drNewRisk[DT_Risk.ISCOLLAPSED] = false;
+            drNewRisk[DT_Risk.IS_ROOT] = false;
+            drNewRisk[DT_Risk.NAMESHORT] = sourceRisk.ShortName;
+            drNewRisk[DT_Risk.POSITION] = isMain ? sourceRisk.Position : targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.POSITION];
+
+            drNewRisk[DT_Risk.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drTargetRisk[DT_Risk.ID])[DT_Risk.GROUPE_NAME]; ;
+            drNewRisk[DT_Risk.ID_GROUPE] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drTargetRisk[DT_Risk.ID])[DT_Risk.ID_GROUPE]; ;
+            drNewRisk[DT_Risk.ID_WBS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drTargetRisk[DT_Risk.ID])[DT_Risk.ID_WBS];
+            drNewRisk[DT_Risk.WBS_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drTargetRisk[DT_Risk.ID])[DT_Risk.WBS_NAME];
+            drNewRisk[DT_Risk.USER_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drTargetRisk[DT_Risk.ID])[DT_Risk.USER_NAME];
+
+            drNewRisk[DT_Risk.PROBABILITY] = 100;
+
+            drNewRisk[DT_Risk.IDRISK_FATHER] = drTargetRisk[DT_Risk.ID];
+            targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Add(drNewRisk);
+
+            DataRow rowstructure = targetDataset.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
+            rowstructure[DT_RiskStructure.IDRISK] = drNewRisk[DT_Risk.ID];
+            rowstructure[DT_RiskStructure.IDRISK_FATHER] = drTargetRisk[DT_Risk.ID];
+            targetDataset.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
+
+            SetDamagesNuevoRiesgoCopiado(targetDataset, drNewRisk, ID_Diagram);
+            SetWBS_RiskNuevoRiesgoCopiado(targetDataset, drNewRisk, drTargetRisk);
+            SetWBS_RISK_DamageNuevoRiskCopiado(targetDataset, drNewRisk, drTargetRisk, ID_Diagram, DsWBS);
+            SetRoleRisk(targetDataset, drNewRisk, drTargetRisk);
+            if (!(sourceRisk.IsLeaf()))
+            {
+                foreach (var risk in sourceRisk.Children)
+                {
+                    if (!risk.IsCM)
+                    {
+                        EstablecerValoresNuevoRiesgoCopiado(risk, targetDataset, drNewRisk, false, ID_Diagram, DsWBS);
+                    }
+                    else
+                    {
+                        SetValoresCM(risk, targetDataset, drNewRisk, ID_Diagram, DsWBS);
+                    }
+                }
+            }
+            return drNewRisk;
+        }
+
+        public static DataRow SetValoresOriginalesRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain, int ID_Diagram, DataSet DsWBS, List<RiskPolyLine> LinesList)
+        {
+            DataRow drNewRisk = targetDataset.Tables[DT_Risk.TABLE_NAME].NewRow();
+            drNewRisk[DT_Risk.COMMENTS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.COMMENTS];
+            drNewRisk[DT_Risk.ENABLED] = true;
+            drNewRisk[DT_Risk.FROM_TOP] = sourceRisk.FromTop;
+            drNewRisk[DT_Risk.ID_DIAGRAM] = ID_Diagram;
+            drNewRisk[DT_Risk.ISCOLLAPSED] = false;
+            drNewRisk[DT_Risk.IS_ROOT] = false;
+            drNewRisk[DT_Risk.NAMESHORT] = sourceRisk.ShortName;
+            drNewRisk[DT_Risk.POSITION] = isMain ? LinesList.Find(r => r.ID == (int)drTargetRisk[DT_Risk.ID]).Children.Count : targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.POSITION];
+
+            drNewRisk[DT_Risk.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.GROUPE_NAME]; ;
+            drNewRisk[DT_Risk.ID_GROUPE] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_GROUPE]; ;
+            drNewRisk[DT_Risk.ID_WBS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_WBS];
+            drNewRisk[DT_Risk.WBS_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.WBS_NAME];
+            drNewRisk[DT_Risk.USER_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.USER_NAME];
+
+            drNewRisk[DT_Risk.PROBABILITY] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.PROBABILITY]; ;
+            drNewRisk[DT_Risk.IDRISK_FATHER] = drTargetRisk[DT_Risk.ID];
+            targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Add(drNewRisk);
+            DataRow rowstructure = targetDataset.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
+            rowstructure[DT_RiskStructure.IDRISK] = drNewRisk[DT_Risk.ID];
+            rowstructure[DT_RiskStructure.IDRISK_FATHER] = drTargetRisk[DT_Risk.ID];
+            targetDataset.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
+
+            SetOriginalAndNewDamagesRiesgoCopiado(sourceRisk, targetDataset, drNewRisk, ID_Diagram);
+            SetWBS_RiskOriginalAndNuevoRiesgoCopiado(sourceRisk, targetDataset, drNewRisk, drTargetRisk);
+            SetWBS_RISK_DamageOriginalAndNuevoRiskCopiado(sourceRisk, targetDataset, drNewRisk, drTargetRisk, ID_Diagram, DsWBS);
+            SetNewAndOriginalRoleRisk(sourceRisk, targetDataset, drNewRisk, drTargetRisk);
+
+            if (!(sourceRisk.IsLeaf()))
+            {
+                foreach (var risk in sourceRisk.Children)
+                {
+                    if (!risk.IsCM)
+                    {
+                        SetValoresOriginalesRiesgoCopiado(risk, targetDataset, drNewRisk, false, ID_Diagram, DsWBS, LinesList);
+                    }
+                    else
+                    {
+                        SetValoresOriginalesAndNuevosCM(risk, targetDataset, drNewRisk, ID_Diagram, DsWBS);
+                    }
+                }
+            }
+            return drNewRisk;
+        }
+
         #region ImportarVacio
         public static void SetDamagesNuevoRiesgoCopiado(DataSet targetDataset, DataRow drNewRisk, int ID_Diagram)
         {

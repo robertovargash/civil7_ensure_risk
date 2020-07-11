@@ -59,7 +59,7 @@ namespace EnsureRisk.Classess
         public bool SaveAsClosing { get; set; }
         public bool SelectingToGroup { get; set; }
         public bool Creando { get; set; }
-        public bool Copiando { get; set; }
+        public bool Copiando { get { return ((MainWindow)MyWindow).COPIANDO; } }
         public bool IsExportingToExcel { get; set; }
         public LineGroup GroupSelected { get; set; }
         public int ID_Diagram { get; set; }
@@ -114,7 +114,7 @@ namespace EnsureRisk.Classess
             MainLine = new RiskPolyLine(GridPaintLines, MenuMainRisk, false);
             IsSelected = true;
             Loose = true;
-            MoviendoRisk = MoviendoCM = NameEditing = ChoosingCM = ChoosingRisk = IsRootSelected = SelectingToGroup = Creando = Copiando = false;
+            MoviendoRisk = MoviendoCM = NameEditing = ChoosingCM = ChoosingRisk = IsRootSelected = SelectingToGroup = Creando = false;
             Binding myBinding = new Binding
             {
                 Source = SliderZoom,
@@ -2288,6 +2288,9 @@ namespace EnsureRisk.Classess
 
             //Insertar el Risk en su nuevo padre (el PolyLine destino)
             destinationPolyLine.Children.Insert(pos, insertedRisk);
+            //CAMBIOOO
+            //insertedRisk.Position = pos;
+            ///////
             SetPolyLinePosition(destinationPolyLine.Children);
         }
         private void MoveRisk(RiskPolyLine destinationPolyLine, Point point)

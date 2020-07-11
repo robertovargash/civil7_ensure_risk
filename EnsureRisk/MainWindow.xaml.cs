@@ -56,11 +56,13 @@ namespace EnsureRisk
         private bool EditandoRisk;
         private bool SeleccionandoRisk;       
         private bool hasAccess;
+        private bool copiando;
         private decimal probability;
         private decimal riskreduction;
         private readonly string diagramName = "None";
         private MyLayoutDocumentt theCurrentLayout;
         public string RiskLineName { get { return _riskshortName; } set { _riskshortName = value; OnPropertyChanged("RiskLineName"); } }
+        public bool COPIANDO { get { return copiando; } set { copiando = value; OnPropertyChanged("COPIANDO"); } }
         public string CMLineName { get { return _cmshortName; } set { _cmshortName = value; OnPropertyChanged("CMLineName"); } }
         public bool HasAccess
         {
@@ -278,18 +280,6 @@ namespace EnsureRisk
         public DataView DvRoleCM { get { return dvRoleCM; } set { dvRoleCM = value; OnPropertyChanged("DvRoleCM"); } }
         #endregion
 
-        #region RiskDataTables
-        //public DataTable Risk_DamageTable { get; set; }
-        //public DataTable Risk_WBS_Table { get; set; }
-        //public DataTable WBS_RISK_Damage_Table { get; set; }
-        //public DataTable Risk_RoleTable { get; set; }
-
-        //public DataTable CM_DamageTable { get; set; }
-        //public DataTable CM_WBS_Table { get; set; }
-        //public DataTable WBS_CM_Damage_Table { get; set; }        
-        //public DataTable CM_RoleTable { get; set; }
-        #endregion
-
         #region DecimalUIConverterParams
         static DecimalUIConverterParams decimalConfig = new DecimalUIConverterParams(Properties.Settings.Default.DecimalsStringFormat, Properties.Settings.Default.DecimalFractionalDigits);
         #endregion
@@ -383,6 +373,7 @@ namespace EnsureRisk
                 CbFilterWBSCM.DataContext = this;
                 dgRisksCross.DataContext = this;
                 dgCrossCM.DataContext = this;
+                MenuRisk.DataContext = this;
                 WSRisk = new ServiceRiskController.WebServiceRisk();
                 DsMain = new UserDataSet();
                 AccessList = new List<int>();
@@ -1125,7 +1116,7 @@ namespace EnsureRisk
                 //Paste(TheCurrentLayout.CopyRisk, TheCurrentLayout.Ds, tempDS, (int)drDiagram[DT_Diagram.ID_DIAGRAM], TheCurrentLayout.ListCopy);//Aca pego el resto del diagrama
                 Paste(TheCurrentLayout.CopyRisk, TheCurrentLayout.Ds, tempDS, (int)drDiagram[DT_Diagram.ID_DIAGRAM]);//Aca pego el resto del diagrama
                 TheCurrentLayout.CopyRisk.IdRiskFather = 0;
-                TheCurrentLayout.Copiando = false;
+                COPIANDO = false;
                 if (tempDS.HasChanges())
                 {
                     ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk();
@@ -3291,7 +3282,7 @@ namespace EnsureRisk
         {
             try
             {
-                new VerticalMenu("Moving").ShowDialog();
+                new GhostWindow("Moving").ShowDialog();
                 TheCurrentLayout.MoviendoRisk = true;
                 TheCurrentLayout.LinesMoving = new List<RiskPolyLine>();
                 TheCurrentLayout.LinesMoving.AddRange(TreeOperation.GetMeAndMyChildrenWithCM(TheCurrentLayout.Line_Selected));
@@ -3415,7 +3406,7 @@ namespace EnsureRisk
 
         private void Scope_Click(object sender, RoutedEventArgs e)
         {
-            VerticalMenu win = new VerticalMenu("Scope");
+            GhostWindow win = new GhostWindow("Scope");
             win.ShowDialog();
             TheCurrentLayout.IsScoping = true;
             TheCurrentLayout.DropRectangles();
@@ -3427,11 +3418,11 @@ namespace EnsureRisk
         {
             try
             {
-                VerticalMenu win = new VerticalMenu("Copying...");
+                GhostWindow win = new GhostWindow("Copying...");
                 win.ShowDialog();
                 Copy(TheCurrentLayout.Line_Selected);
                 CopyToGlobal(TheCurrentLayout.Line_Selected);
-                TheCurrentLayout.Copiando = true;
+                COPIANDO = true;
             }
             catch (Exception ex)
             {
@@ -3572,56 +3563,117 @@ namespace EnsureRisk
         {
             try
             {
-                if (TheCurrentLayout.Copiando || GlobalListCopy.Count > 0)
+                if (COPIANDO)
                 {
-                    VerticalMenu win = new VerticalMenu("Paste...");
+                    GhostWindow win = new GhostWindow("Paste...");
                     win.ShowDialog();
-                    if (TheCurrentLayout.ID_Diagram == (int)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(GlobalCopyLine.ID)[DT_Risk.ID_DIAGRAM])
+                    if (new WindowMessageYesNo("Do you want to Copy the selected items with all their properties(WBS, damages, probabilities etc.)?").ShowDialog() == true)
                     {
-                        TreeOperation.CreateCopyOfLine(TheCurrentLayout.CopyRisk, TheCurrentLayout.Line_Selected.ID, TheCurrentLayout.Ds);
-                        TheCurrentLayout.CopyRisk.Father = TheCurrentLayout.Line_Selected;
-                        TheCurrentLayout.CopyRisk.Position = TheCurrentLayout.Line_Selected.Children.Count - 1;
-                        TheCurrentLayout.InsertRisk(TheCurrentLayout.CopyRisk, TheCurrentLayout.Line_Selected, TheCurrentLayout.PointSelected);
+                        if (TheCurrentLayout.ID_Diagram == (int)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(GlobalCopyLine.ID)[DT_Risk.ID_DIAGRAM])
+                        {
+                            TheCurrentLayout.CopyRisk.Father = TheCurrentLayout.Line_Selected;
+                            TheCurrentLayout.CopyRisk.Position = TheCurrentLayout.Line_Selected.Children.Count - 1;
+                            DataSet ImportDSs = TheCurrentLayout.Ds.Copy();
+                            DataRow drNewRisk = CopyPasteOps.SetValoresOriginalesRiesgoCopiado(TheCurrentLayout.CopyRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), true,
+                                                                                                TheCurrentLayout.ID_Diagram, DsWBS, TheCurrentLayout.LinesList);
+                            TheCurrentLayout.Ds.Merge(ImportDSs);
+                            ImportDSs.Dispose();
+                            COPIANDO = false;
+                            RiskPolyLine Line_Created = new RiskPolyLine
+                            {
+                                ID = (int)drNewRisk[DT_Risk.ID],
+                                IsCM = false,
+                                ShortName = "LineCreated",
+                                Father = TheCurrentLayout.Line_Selected,
+                                IdRiskFather = TheCurrentLayout.Line_Selected.ID
+                            };
+                            TheCurrentLayout.InsertRisk(Line_Created, TheCurrentLayout.Line_Selected, TheCurrentLayout.PointSelected);
+                        }
+                        else
+                        {
+                            int ID_DiagramImported = (int)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(GlobalCopyLine.ID)[DT_Risk.ID_DIAGRAM];
+                            DataSet ImportDSs = TheCurrentLayout.Ds.Copy();
+                            if (OpenedDocuments.FindIndex(o => o.ID_Diagram == ID_DiagramImported) >= 0)
+                            {
+                                ImportDSs.Merge(OpenedDocuments.Find(o => o.ID_Diagram == ID_DiagramImported).Ds);
+                            }
+                            DataRow[] drImportados = ImportDSs.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_DiagramImported);
+                            CopyPasteOps.AgregarDamageADiagram(ImportDSs, drImportados, TheCurrentLayout.ID_Diagram);
+                            CopyPasteOps.AgregarNewDamagesAExistingRisk(ImportDSs, drImportados, TheCurrentLayout.ID_Diagram, DsWBS);
+                            DataRow drNewRisk = CopyPasteOps.SetValoresOriginalesRiesgoCopiado(GlobalCopyLine, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID),
+                                                true, TheCurrentLayout.ID_Diagram, DsWBS, TheCurrentLayout.LinesList);
+                            TheCurrentLayout.Ds.Merge(ImportDSs);
+                            ImportDSs.Dispose();
+                            RiskPolyLine Line_Created = new RiskPolyLine
+                            {
+                                ID = (int)drNewRisk[DT_Risk.ID],
+                                IsCM = false,
+                                ShortName = "LineCreated",
+                                Father = TheCurrentLayout.Line_Selected,
+                                IdRiskFather = TheCurrentLayout.Line_Selected.ID
+                            };
+                            TheCurrentLayout.InsertRisk(Line_Created, TheCurrentLayout.Line_Selected, TheCurrentLayout.PointSelected);
+                            GlobalListCopy = new List<RiskPolyLine>();
+                            COPIANDO = false;
+                        }
                     }
                     else
                     {
-                        //GlobalListCopy = new List<RiskPolyLine>();
-                        int InternalDiagramID = (int)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(GlobalCopyLine.ID)[DT_Risk.ID_DIAGRAM];
-                        ImportDS = new UserDataSet();
-                        ServiceRiskController.WebServiceRisk risk = new ServiceRiskController.WebServiceRisk();
-                        ImportDS.Merge(risk.GetRiskTreeID(new object[] { InternalDiagramID }));
-                        risk.Dispose();
-                        
-                        DrImportRisk = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].NewRow();
-                        DrImportRisk[DT_Risk.COMMENTS] = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(GlobalCopyLine.ID)[DT_Risk.COMMENTS];
-                        DrImportRisk[DT_Risk.ENABLED] = true;
-                        DrImportRisk[DT_Risk.FROM_TOP] = GlobalCopyLine.FromTop;
-                        DrImportRisk[DT_Risk.ID_DIAGRAM] = TheCurrentLayout.ID_Diagram;
-                        DrImportRisk[DT_Risk.ISCOLLAPSED] = GlobalCopyLine.Collapsed;
-                        DrImportRisk[DT_Risk.IS_ROOT] = false;
-                        DrImportRisk[DT_Risk.NAMESHORT] = GlobalCopyLine.ShortName;
-                        DrImportRisk[DT_Risk.POSITION] = TheCurrentLayout.Line_Selected.Children.Count;
-                        DrImportRisk[DT_Risk.PROBABILITY] = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(GlobalCopyLine.ID)[DT_Risk.PROBABILITY];
-                        DrImportRisk[DT_Risk.IDRISK_FATHER] = TheCurrentLayout.Line_Selected.ID;
-                        TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(DrImportRisk);
-                        DataRow rowstructure = TheCurrentLayout.Ds.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
-                        rowstructure[DT_RiskStructure.IDRISK] = DrImportRisk[DT_Risk.ID];
-                        rowstructure[DT_RiskStructure.IDRISK_FATHER] = TheCurrentLayout.Line_Selected.ID;
-                        TheCurrentLayout.Ds.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
-
-                        DrDannosImportados = ImportDS.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + InternalDiagramID);
-                        DrMisDannos = TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram);
-                        ConcatProjects(DrImportRisk, DrDannosImportados, DrMisDannos, ImportDS, GlobalCopyLine);
-                        GlobalListCopy = new List<RiskPolyLine>();
-                        OpenedDocuments.Find(diagram => diagram.ID_Diagram == InternalDiagramID).Copiando = false;
+                        if (TheCurrentLayout.ID_Diagram == (int)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(GlobalCopyLine.ID)[DT_Risk.ID_DIAGRAM])
+                        {
+                            TheCurrentLayout.CopyRisk.Father = TheCurrentLayout.Line_Selected;
+                            DataSet ImportDSs = TheCurrentLayout.Ds.Copy();
+                            DataRow drNewRisk = CopyPasteOps.EstablecerValoresNuevoRiesgoCopiado(TheCurrentLayout.CopyRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), true,
+                                                    TheCurrentLayout.ID_Diagram, DsWBS);
+                            TheCurrentLayout.Ds.Merge(ImportDSs);                            
+                            ImportDSs.Dispose();
+                            GlobalListCopy = new List<RiskPolyLine>();
+                            COPIANDO = false;
+                            RiskPolyLine Line_Created = new RiskPolyLine
+                            {
+                                ID = (int)drNewRisk[DT_Risk.ID],
+                                IsCM = false,
+                                ShortName = "LineCreated",
+                                Father = TheCurrentLayout.Line_Selected,
+                                IdRiskFather = TheCurrentLayout.Line_Selected.ID
+                            };
+                            TheCurrentLayout.InsertRisk(Line_Created, TheCurrentLayout.Line_Selected, TheCurrentLayout.PointSelected);
+                        }
+                        else
+                        {
+                            //GlobalListCopy = new List<RiskPolyLine>();
+                            int ID_DiagramImported = (int)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(GlobalCopyLine.ID)[DT_Risk.ID_DIAGRAM];
+                            DataSet ImportDSs = TheCurrentLayout.Ds.Copy();
+                            if (OpenedDocuments.FindIndex(o => o.ID_Diagram == ID_DiagramImported) >= 0)
+                            {
+                                ImportDSs.Merge(OpenedDocuments.Find(o => o.ID_Diagram == ID_DiagramImported).Ds);
+                            }
+                            GlobalCopyLine.Father = TheCurrentLayout.Line_Selected;
+                            DataRow drNewRisk = CopyPasteOps.EstablecerValoresNuevoRiesgoCopiado(GlobalCopyLine, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), true,
+                                                TheCurrentLayout.ID_Diagram, DsWBS);
+                            TheCurrentLayout.Ds.Merge(ImportDSs);
+                            ImportDSs.Dispose();
+                            GlobalListCopy = new List<RiskPolyLine>();
+                            COPIANDO = false;
+                            RiskPolyLine Line_Created = new RiskPolyLine
+                            {
+                                ID = (int)drNewRisk[DT_Risk.ID],
+                                IsCM = false,
+                                ShortName = "LineCreated",
+                                Father = TheCurrentLayout.Line_Selected,
+                                IdRiskFather = TheCurrentLayout.Line_Selected.ID
+                            };
+                            TheCurrentLayout.InsertRisk(Line_Created, TheCurrentLayout.Line_Selected, TheCurrentLayout.PointSelected);
+                        }
                     }
-                    
                     TheCurrentLayout.DropLines();
                     TheCurrentLayout.DropRectangles();
+                    TheCurrentLayout.LoadComboDamage();
                     TheCurrentLayout.LoadLines();
                     TheCurrentLayout.LoadRectangles();
+                    TheCurrentLayout.DrawNumbers();
                     TextProbabilityChange(TheCurrentLayout.MainLine);
-                    //TextProbability.Text = Math.Round(General.AcumulatedLikelihood(TheCurrentLayout.MainLine) * 100, 2).ToString() + " %";
+                    TheCurrentLayout.SetLinesThickness();
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.SetLinesThickness();
                     CruzarTablaRisk(TheCurrentLayout.Ds);
@@ -3634,200 +3686,7 @@ namespace EnsureRisk
             }
         }
 
-        private void ConcatProjects(DataRow drRisk, DataRow[] drDannosImportados, DataRow[] drMisDannos, DataSet importDS, RiskPolyLine copiedRisk)
-        {
-            try
-            {
-                foreach (DataRow item in drDannosImportados.Concat(drMisDannos))
-                {
-                    //Asignando los daños de cada arbol al arbol de conjunto
-                    if (!(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Contains(new object[] { TheCurrentLayout.ID_Diagram, item[DT_Diagram_Damages.ID_DAMAGE] })))
-                    {
-                        DataRow drTop = TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].NewRow();
-                        drTop[DT_Diagram_Damages.ID_RISKTREE] = TheCurrentLayout.ID_Diagram;
-                        drTop[DT_Diagram_Damages.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
-                        drTop[DT_Diagram_Damages.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
-                        drTop[DT_Diagram_Damages.COLOR] = item[DT_Diagram_Damages.COLOR];
-                        drTop[DT_Diagram_Damages.UM] = item[DT_Diagram_Damages.UM];
-                        drTop[DT_Diagram_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE];
-                        TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Add(drTop);
-                    }
-                    //Aca el riesgo principal del ds importado coje los Damages existentes en el diagrama conjunto
-                    if (!(TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], item[DT_Diagram_Damages.ID_DAMAGE] })))
-                    {
-                        DataRow topR = TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].NewRow();
-                        topR[DT_Risk_Damages.COLOR] = item[DT_Diagram_Damages.COLOR];
-                        topR[DT_Risk_Damages.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
-                        topR[DT_Risk_Damages.ID_RISK] = drRisk[DT_Risk.ID];
-                        topR[DT_Risk_Damages.VALUE] = 0;
-                        topR[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
-                        topR[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.TOP_RISK].ToString() + "(" + item[DT_Diagram_Damages.UM].ToString() + ")";
-                        topR[DT_Risk_Damages.FATHER] = TheCurrentLayout.Line_Selected.ShortName;
-                        topR[DT_Risk_Damages.GROUPE_NAME] = drRisk[DT_Risk.GROUPE_NAME];
-                        topR[DT_Risk_Damages.ID_FATHER] = TheCurrentLayout.Line_Selected.ID;
-                        topR[DT_Risk_Damages.ID_GROUPE] = drRisk[DT_Risk.ID_GROUPE];
-                        topR[DT_Risk_Damages.ID_RISK_TREE] = TheCurrentLayout.ID_Diagram;
-                        topR[DT_Risk_Damages.IS_ROOT] = drRisk[DT_Risk.IS_ROOT];
-                        topR[DT_Risk_Damages.PROBABILITY] = drRisk[DT_Risk.PROBABILITY];
-                        topR[DT_Risk_Damages.RISK_NAMESHORT] = drRisk[DT_Risk.NAMESHORT];
-                        topR[DT_Risk_Damages.RISK_TREE] = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME];
-                        topR[DT_Risk_Damages.STATUS] = drRisk[DT_Risk.ENABLED];
-                        TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Add(topR);
-                    }
-                }
-                //el root importado obtiene todos los roles del padre actual
-                foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID))
-                {
-                    if (!(TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], item[DT_Role_Risk.IDROL_COLUMN] })))
-                    {
-                        DataRow newRow = TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].NewRow();
-                        newRow[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
-                        newRow[DT_Role_Risk.IDROL_COLUMN] = item[DT_Role_Risk.IDROL_COLUMN];
-                        newRow[DT_Role_Risk.Role] = item[DT_Role_Risk.Role];
-                        TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Add(newRow);
-                    }
-                }//EL root obtiene los roles que tnia originalmente
-                foreach (DataRow item in importDS.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + copiedRisk.ID))
-                {
-                    if (!(TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], item[DT_Role_Risk.IDROL_COLUMN] })))
-                    {
-                        DataRow newRow = TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].NewRow();
-                        newRow[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
-                        newRow[DT_Role_Risk.IDROL_COLUMN] = item[DT_Role_Risk.IDROL_COLUMN];
-                        newRow[DT_Role_Risk.Role] = item[DT_Role_Risk.Role];
-                        TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Add(newRow);
-                    }
-                }
-                //AsignarWBSDefaultToRisk(drRisk, TheCurrentLayout.Ds);
-
-                //Obtener los WBS del Padre
-                foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID))
-                {
-                    if (!(TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], item[DT_RISK_WBS.ID_WBS] })))
-                    {
-                        DataRow newRow = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
-                        newRow[DT_RISK_WBS.ID_RISK] = drRisk[DT_Risk.ID];
-                        newRow[DT_RISK_WBS.ID_WBS] = item[DT_RISK_WBS.ID_WBS];
-                        newRow[DT_RISK_WBS.WBS] = item[DT_RISK_WBS.WBS];
-                        newRow[DT_RISK_WBS.PROBABILITY] = item[DT_RISK_WBS.PROBABILITY];
-                        newRow[DT_RISK_WBS.IS_PRIMARY] = item[DT_RISK_WBS.IS_PRIMARY];
-                        newRow[DT_RISK_WBS.PRIMARY] = item[DT_RISK_WBS.PRIMARY];
-                        newRow[DT_RISK_WBS.USERNAME] = item[DT_RISK_WBS.USERNAME];
-                        newRow[DT_RISK_WBS.NIVEL] = item[DT_RISK_WBS.NIVEL];
-                        TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRow);
-                    }
-                }
-                //Obtener los WBS originales
-                foreach (DataRow item in importDS.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + copiedRisk.ID))
-                {
-                    if (!(TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], item[DT_RISK_WBS.ID_WBS] })))
-                    {
-                        DataRow newRow = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
-                        newRow[DT_RISK_WBS.ID_RISK] = drRisk[DT_Risk.ID];
-                        newRow[DT_RISK_WBS.ID_WBS] = item[DT_RISK_WBS.ID_WBS];
-                        newRow[DT_RISK_WBS.WBS] = item[DT_RISK_WBS.WBS];
-                        newRow[DT_RISK_WBS.PROBABILITY] = item[DT_RISK_WBS.PROBABILITY];
-                        newRow[DT_RISK_WBS.IS_PRIMARY] = item[DT_RISK_WBS.IS_PRIMARY];
-                        newRow[DT_RISK_WBS.PRIMARY] = item[DT_RISK_WBS.PRIMARY];
-                        newRow[DT_RISK_WBS.USERNAME] = item[DT_RISK_WBS.USERNAME];
-                        newRow[DT_RISK_WBS.NIVEL] = item[DT_RISK_WBS.NIVEL];
-                        TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRow);
-                    }
-                }
-                foreach (var item in copiedRisk.Children)
-                {
-                    item.IdRiskFather = (int)drRisk[DT_Risk.ID];
-                }
-                //--------------------------------------------------------------------------------------
-                copiedRisk.ID = (int)drRisk[DT_Risk.ID];
-                TheCurrentLayout.LinesList.Add(copiedRisk);
-                Paste(copiedRisk, importDS, TheCurrentLayout.Ds, TheCurrentLayout.ID_Diagram);
-                copiedRisk.IdRiskFather = TheCurrentLayout.Line_Selected.ID;
-                TheCurrentLayout.Copiando = false;
-                foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram))
-                {
-                    //Por cada riesgo del diagrama
-                    foreach (DataRow itemRisk in TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + TheCurrentLayout.ID_Diagram))
-                    {
-                        if (!(TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { itemRisk[DT_Risk.ID], item[DT_Risk_Damages.ID_DAMAGE] })))
-                        {
-                            DataRow drDamage = TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].NewRow();
-                            drDamage[DT_Risk_Damages.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
-                            //drDamage[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.TOP_RISK].ToString();
-                            drDamage[DT_Risk_Damages.VALUE] = 0;
-                            drDamage[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
-                            drDamage[DT_Risk_Damages.ID_RISK] = itemRisk[DT_Risk.ID];
-                            drDamage[DT_Risk_Damages.ID_RISK_TREE] = itemRisk[DT_Risk.ID_DIAGRAM];
-                            drDamage[DT_Risk_Damages.COLOR] = item[DT_Diagram_Damages.COLOR];
-                            drDamage[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
-                            //drDamage[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE];
-                            drDamage[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.TOP_RISK].ToString() + "(" + item[DT_Diagram_Damages.UM].ToString() + ")";
-                            drDamage[DT_Risk_Damages.FATHER] = TheCurrentLayout.Line_Selected.ShortName;
-                            drDamage[DT_Risk_Damages.GROUPE_NAME] = itemRisk[DT_Risk.GROUPE_NAME];
-                            drDamage[DT_Risk_Damages.ID_FATHER] = TheCurrentLayout.Line_Selected.ID;
-                            drDamage[DT_Risk_Damages.ID_GROUPE] = itemRisk[DT_Risk.ID_GROUPE];
-                            drDamage[DT_Risk_Damages.ID_RISK_TREE] = TheCurrentLayout.ID_Diagram;
-                            drDamage[DT_Risk_Damages.IS_ROOT] = itemRisk[DT_Risk.IS_ROOT];
-                            drDamage[DT_Risk_Damages.PROBABILITY] = itemRisk[DT_Risk.PROBABILITY];
-                            drDamage[DT_Risk_Damages.RISK_NAMESHORT] = itemRisk[DT_Risk.NAMESHORT];
-                            drDamage[DT_Risk_Damages.RISK_TREE] = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME];
-                            drDamage[DT_Risk_Damages.STATUS] = itemRisk[DT_Risk.ENABLED];
-                            TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Add(drDamage);
-                        }
-                    }
-                    foreach (DataRow itemCM in TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + TheCurrentLayout.ID_Diagram))
-                    {
-                        if (!(TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemCM[DT_CounterM.ID], item[DT_CounterM_Damage.ID_DAMAGE] })))
-                        {
-                            DataRow drDamage = TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].NewRow();
-                            drDamage[DT_CounterM_Damage.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
-                            //drDamage[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.TOP_RISK].ToString();
-                            drDamage[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.TOP_RISK].ToString() + "(" + item[DT_Diagram_Damages.UM].ToString() + ")";
-                            drDamage[DT_CounterM_Damage.VALUE] = 0;
-                            drDamage[DT_CounterM_Damage.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
-                            drDamage[DT_CounterM_Damage.ID_COUNTERM] = itemCM[DT_CounterM.ID];
-                            drDamage[DT_CounterM_Damage.ID_RISK_TREE] = itemCM[DT_CounterM.ID_RISK_TREE];
-                            drDamage[DT_CounterM_Damage.COLOR] = item[DT_Diagram_Damages.COLOR];
-                            drDamage[DT_CounterM_Damage.COUNTERM_NAMESHORT] = itemCM[DT_CounterM.NAMESHORT];
-                            drDamage[DT_CounterM_Damage.GROUPENAME] = itemCM[DT_CounterM.GROUPE_NAME];
-                            drDamage[DT_CounterM_Damage.IDRISK] = itemCM[DT_CounterM.ID_RISK];
-                            drDamage[DT_CounterM_Damage.ID_GROUPE] = itemCM[DT_CounterM.ID_GROUPE];
-                            drDamage[DT_CounterM_Damage.RISK] = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(itemCM[DT_CounterM.ID_RISK])[DT_Risk.NAMESHORT];
-                            drDamage[DT_CounterM_Damage.RISK_REDUCTION] = itemCM[DT_CounterM.PROBABILITY];
-                            drDamage[DT_CounterM_Damage.STATUS] = itemCM[DT_CounterM.ENABLED];
-
-                            TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Add(drDamage);
-                        }
-                    }
-                }
-                TheCurrentLayout.DropLines();
-                TheCurrentLayout.DropRectangles();
-                TheCurrentLayout.LoadComboDamage();
-                TheCurrentLayout.LoadLines();
-                TheCurrentLayout.LoadRectangles();
-                TheCurrentLayout.DrawNumbers();
-                TextProbabilityChange(TheCurrentLayout.MainLine);
-                TheCurrentLayout.SetLinesThickness();
-                TheCurrentLayout.DrawNumbers();
-                TheCurrentLayout.SetLinesThickness();
-                CruzarTablaRisk(TheCurrentLayout.Ds);
-                CruzarTablaCM(TheCurrentLayout.Ds);
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }            
-        }
-
-        private void ImportarSoloEstructura(DataRow drTargetRisk, DataSet targetDataSet, int SelectedDiagram_ID)
-        {
-            TheCurrentLayout.ListCopy = new List<RiskPolyLine>();
-            
-            LlenarListaDeCopia(targetDataSet, SelectedDiagram_ID);
-            EstablecerValoresNuevoRiesgoCopiado(TheCurrentLayout.CopyRisk, targetDataSet, drTargetRisk, true);
-        }
-
-        private void LlenarListaDeCopia(DataSet targetDataSet, int SelectedDiagram_ID)
+        public void LlenarListaDeCopiaToImport(DataSet targetDataSet, int SelectedDiagram_ID)
         {
             TheCurrentLayout.ListCopy = new List<RiskPolyLine>();
             foreach (DataRow item in targetDataSet.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + SelectedDiagram_ID))
@@ -3869,100 +3728,6 @@ namespace EnsureRisk
         }
 
 
-        private void EstablecerValoresNuevoRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain)
-        {
-            DataRow drNewRisk = targetDataset.Tables[DT_Risk.TABLE_NAME].NewRow();
-            drNewRisk[DT_Risk.COMMENTS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.COMMENTS];
-            drNewRisk[DT_Risk.ENABLED] = true;
-            drNewRisk[DT_Risk.FROM_TOP] = sourceRisk.FromTop;
-            drNewRisk[DT_Risk.ID_DIAGRAM] = TheCurrentLayout.ID_Diagram;
-            drNewRisk[DT_Risk.ISCOLLAPSED] = false;
-            drNewRisk[DT_Risk.IS_ROOT] = false;
-            drNewRisk[DT_Risk.NAMESHORT] = sourceRisk.ShortName;
-            drNewRisk[DT_Risk.POSITION] = isMain? TheCurrentLayout.LinesList.Find(r=>r.ID == (int)drTargetRisk[DT_Risk.ID]).Children.Count :  targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.POSITION];
-
-            drNewRisk[DT_Risk.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drTargetRisk[DT_Risk.ID])[DT_Risk.GROUPE_NAME]; ;
-            drNewRisk[DT_Risk.ID_GROUPE] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drTargetRisk[DT_Risk.ID])[DT_Risk.ID_GROUPE]; ;
-            drNewRisk[DT_Risk.ID_WBS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drTargetRisk[DT_Risk.ID])[DT_Risk.ID_WBS];
-            drNewRisk[DT_Risk.WBS_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drTargetRisk[DT_Risk.ID])[DT_Risk.WBS_NAME];
-            drNewRisk[DT_Risk.USER_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drTargetRisk[DT_Risk.ID])[DT_Risk.USER_NAME];
-
-            drNewRisk[DT_Risk.PROBABILITY] = 100;
-
-            drNewRisk[DT_Risk.IDRISK_FATHER] = drTargetRisk[DT_Risk.ID];
-            targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Add(drNewRisk);
-
-            DataRow rowstructure = targetDataset.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
-            rowstructure[DT_RiskStructure.IDRISK] = drNewRisk[DT_Risk.ID];
-            rowstructure[DT_RiskStructure.IDRISK_FATHER] = drTargetRisk[DT_Risk.ID];
-            targetDataset.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
-
-            CopyPasteOps.SetDamagesNuevoRiesgoCopiado(targetDataset, drNewRisk, TheCurrentLayout.ID_Diagram);
-            CopyPasteOps.SetWBS_RiskNuevoRiesgoCopiado(targetDataset, drNewRisk, drTargetRisk);
-            CopyPasteOps.SetWBS_RISK_DamageNuevoRiskCopiado(targetDataset, drNewRisk, drTargetRisk, TheCurrentLayout.ID_Diagram, DsWBS);
-            CopyPasteOps.SetRoleRisk(targetDataset, drNewRisk, drTargetRisk);
-            if (!(sourceRisk.IsLeaf()))
-            {
-                foreach (var risk in sourceRisk.Children)
-                {
-                    if (!risk.IsCM)
-                    {
-                        EstablecerValoresNuevoRiesgoCopiado(risk, targetDataset, drNewRisk, false);
-                    }else
-                    {
-                        CopyPasteOps.SetValoresCM(risk, targetDataset, drNewRisk, TheCurrentLayout.ID_Diagram, DsWBS);
-                    }
-                }
-            }
-        }
-
-        private void SetValoresOriginalesRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain)
-        {
-            DataRow drNewRisk = targetDataset.Tables[DT_Risk.TABLE_NAME].NewRow();
-            drNewRisk[DT_Risk.COMMENTS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.COMMENTS];
-            drNewRisk[DT_Risk.ENABLED] = true;
-            drNewRisk[DT_Risk.FROM_TOP] = sourceRisk.FromTop;
-            drNewRisk[DT_Risk.ID_DIAGRAM] = TheCurrentLayout.ID_Diagram;
-            drNewRisk[DT_Risk.ISCOLLAPSED] = false;
-            drNewRisk[DT_Risk.IS_ROOT] = false;
-            drNewRisk[DT_Risk.NAMESHORT] = sourceRisk.ShortName;
-            drNewRisk[DT_Risk.POSITION] = isMain ? TheCurrentLayout.LinesList.Find(r => r.ID == (int)drTargetRisk[DT_Risk.ID]).Children.Count : targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.POSITION];
-
-            drNewRisk[DT_Risk.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.GROUPE_NAME]; ;
-            drNewRisk[DT_Risk.ID_GROUPE] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_GROUPE]; ;
-            drNewRisk[DT_Risk.ID_WBS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_WBS];
-            drNewRisk[DT_Risk.WBS_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.WBS_NAME];
-            drNewRisk[DT_Risk.USER_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.USER_NAME];
-
-            drNewRisk[DT_Risk.PROBABILITY] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.PROBABILITY]; ;
-            drNewRisk[DT_Risk.IDRISK_FATHER] = drTargetRisk[DT_Risk.ID];
-            targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Add(drNewRisk);
-            DataRow rowstructure = targetDataset.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
-            rowstructure[DT_RiskStructure.IDRISK] = drNewRisk[DT_Risk.ID];
-            rowstructure[DT_RiskStructure.IDRISK_FATHER] = drTargetRisk[DT_Risk.ID];
-            targetDataset.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
-
-            CopyPasteOps.SetOriginalAndNewDamagesRiesgoCopiado(sourceRisk, targetDataset, drNewRisk, TheCurrentLayout.ID_Diagram);
-            CopyPasteOps.SetWBS_RiskOriginalAndNuevoRiesgoCopiado(sourceRisk, targetDataset, drNewRisk, drTargetRisk);
-            CopyPasteOps.SetWBS_RISK_DamageOriginalAndNuevoRiskCopiado(sourceRisk, targetDataset, drNewRisk, drTargetRisk, TheCurrentLayout.ID_Diagram, DsWBS);
-            CopyPasteOps.SetNewAndOriginalRoleRisk(sourceRisk, targetDataset, drNewRisk, drTargetRisk);
-
-            if (!(sourceRisk.IsLeaf()))
-            {
-                foreach (var risk in sourceRisk.Children)
-                {
-                    if (!risk.IsCM)
-                    {
-                        SetValoresOriginalesRiesgoCopiado(risk, targetDataset, drNewRisk, false);
-                    }
-                    else
-                    {
-                        CopyPasteOps.SetValoresOriginalesAndNuevosCM(risk, targetDataset, drNewRisk, TheCurrentLayout.ID_Diagram, DsWBS);
-                    }
-                }
-            }
-        }
-
         #region ImportProject
         private void ButtonImportProject_Click(object sender, RoutedEventArgs e)
         {
@@ -3974,7 +3739,6 @@ namespace EnsureRisk
                 {
                     Dt = General.DeleteExists(TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Copy(),
                     TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Select(DT_Diagram.ID_DIAGRAM + " = " + TheCurrentLayout.ID_Diagram).CopyToDataTable(), DT_Diagram.ID_DIAGRAM),
-
                     DcolumToShow = new string[] { DT_Diagram.DIAGRAM_NAME },
                     DcolumToShowAlias = new string[] { DT_Diagram.DIAGRAM_NAME },
                     Title = "Diagrams"
@@ -3992,14 +3756,23 @@ namespace EnsureRisk
                         {
                             ImportDSs.Merge(OpenedDocuments.Find(o => o.ID_Diagram == (int)frmSelection.RowsSelected[0][DT_Diagram.ID_DIAGRAM]).Ds);
                         }
-                        LlenarListaDeCopia(ImportDSs, ID_DiagramImported);
+                        LlenarListaDeCopiaToImport(ImportDSs, ID_DiagramImported);
                         DataRow[] drImportados = ImportDSs.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_DiagramImported);
                         CopyPasteOps.AgregarDamageADiagram(ImportDSs, drImportados,TheCurrentLayout.ID_Diagram);
                         CopyPasteOps.AgregarNewDamagesAExistingRisk(ImportDSs, drImportados, TheCurrentLayout.ID_Diagram, DsWBS);
-                        SetValoresOriginalesRiesgoCopiado(TheCurrentLayout.CopyRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), true);
-                        
+                        DataRow drNewRisk = CopyPasteOps.SetValoresOriginalesRiesgoCopiado(TheCurrentLayout.CopyRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), true,
+                                                TheCurrentLayout.ID_Diagram, DsWBS, TheCurrentLayout.LinesList);                        
                         TheCurrentLayout.Ds.Merge(ImportDSs);
                         ImportDSs.Dispose();
+                        RiskPolyLine Line_Created = new RiskPolyLine
+                        {
+                            ID = (int)drNewRisk[DT_Risk.ID],
+                            IsCM = false,
+                            ShortName = "LineCreated",
+                            Father = TheCurrentLayout.Line_Selected,
+                            IdRiskFather = TheCurrentLayout.Line_Selected.ID
+                        };
+                        TheCurrentLayout.InsertRisk(Line_Created, TheCurrentLayout.Line_Selected, TheCurrentLayout.PointSelected);
                     }
                     else
                     {
@@ -4008,8 +3781,22 @@ namespace EnsureRisk
                         {
                             ds.Merge(OpenedDocuments.Find(o => o.ID_Diagram == (int)frmSelection.RowsSelected[0][DT_Diagram.ID_DIAGRAM]).Ds);
                         }
-                        ImportarSoloEstructura(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), ds, (int)frmSelection.RowsSelected[0][DT_Diagram.ID_DIAGRAM]);
-                        TheCurrentLayout.Ds.Merge(ds);                         
+
+                        TheCurrentLayout.ListCopy = new List<RiskPolyLine>();
+                        LlenarListaDeCopiaToImport(ds, (int)frmSelection.RowsSelected[0][DT_Diagram.ID_DIAGRAM]);
+                        TheCurrentLayout.CopyRisk.Position = TheCurrentLayout.LinesList.Find(r => r.ID == (int)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.ID]).Children.Count;
+                        DataRow drNewRisk = CopyPasteOps.EstablecerValoresNuevoRiesgoCopiado(TheCurrentLayout.CopyRisk, ds, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), true,
+                                            TheCurrentLayout.ID_Diagram, DsWBS);
+                        TheCurrentLayout.Ds.Merge(ds);
+                        RiskPolyLine Line_Created = new RiskPolyLine
+                        {
+                            ID = (int)drNewRisk[DT_Risk.ID],
+                            IsCM = false,
+                            ShortName = "LineCreated",
+                            Father = TheCurrentLayout.Line_Selected,
+                            IdRiskFather = TheCurrentLayout.Line_Selected.ID
+                        };
+                        TheCurrentLayout.InsertRisk(Line_Created, TheCurrentLayout.Line_Selected, TheCurrentLayout.PointSelected);
                     }
                     TheCurrentLayout.DropLines();
                     TheCurrentLayout.DropRectangles();
@@ -4031,7 +3818,6 @@ namespace EnsureRisk
             }
         }
         #endregion
-
         private void EnableRiskButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -4039,12 +3825,12 @@ namespace EnsureRisk
                 bool result = EnableRisk(TheCurrentLayout.Line_Selected, false, false);
                 if (result)
                 {
-                    VerticalMenu win = new VerticalMenu("Enabled");
+                    GhostWindow win = new GhostWindow("Enabled");
                     win.ShowDialog();
                 }
                 else
                 {
-                    VerticalMenu win = new VerticalMenu("Disabled");
+                    GhostWindow win = new GhostWindow("Disabled");
                     win.ShowDialog();
                 }
                 OnProjectChange();
@@ -4798,7 +4584,7 @@ namespace EnsureRisk
                 TheCurrentLayout.MoviendoCM = true;
                 TheCurrentLayout.LinesMoving = new List<RiskPolyLine>() { TheCurrentLayout.Line_Selected };
                 Cursor = Cursors.Hand;
-                VerticalMenu win = new VerticalMenu("Moving");
+                GhostWindow win = new GhostWindow("Moving");
                 win.ShowDialog();
             }
             catch (Exception ex)
@@ -4818,19 +4604,19 @@ namespace EnsureRisk
                 OnProjectChange();
                 if (result)
                 {
-                    VerticalMenu win = new VerticalMenu("Enabled");
+                    GhostWindow win = new GhostWindow("Enabled");
                     win.ShowDialog();
                 }
                 else
                 {
                     if (TheCurrentLayout.Line_Selected.Father.IsActivated)
                     {
-                        VerticalMenu win = new VerticalMenu("Disabled");
+                        GhostWindow win = new GhostWindow("Disabled");
                         win.ShowDialog();
                     }
                     else
                     {
-                        VerticalMenu win = new VerticalMenu("No Changes");
+                        GhostWindow win = new GhostWindow("No Changes");
                         win.ShowDialog();
                     }
                 }
@@ -5085,12 +4871,12 @@ namespace EnsureRisk
 
                 if (!estadoActual)
                 {
-                    VerticalMenu win = new VerticalMenu("Enabled");
+                    GhostWindow win = new GhostWindow("Enabled");
                     win.ShowDialog();
                 }
                 else
                 {
-                    VerticalMenu win = new VerticalMenu("Disabled");
+                    GhostWindow win = new GhostWindow("Disabled");
                     win.ShowDialog();
                 }
 
@@ -5129,12 +4915,12 @@ namespace EnsureRisk
 
                 if (!estadoActual)
                 {
-                    VerticalMenu win = new VerticalMenu("Enabled");
+                    GhostWindow win = new GhostWindow("Enabled");
                     win.ShowDialog();
                 }
                 else
                 {
-                    VerticalMenu win = new VerticalMenu("Disabled");
+                    GhostWindow win = new GhostWindow("Disabled");
                     win.ShowDialog();
                 }
 
@@ -5262,12 +5048,12 @@ namespace EnsureRisk
 
                 if (!estadoActual)
                 {
-                    VerticalMenu win = new VerticalMenu("Enabled");
+                    GhostWindow win = new GhostWindow("Enabled");
                     win.ShowDialog();
                 }
                 else
                 {
-                    VerticalMenu win = new VerticalMenu("Disabled");
+                    GhostWindow win = new GhostWindow("Disabled");
                     win.ShowDialog();
                 }
 

@@ -54,9 +54,9 @@
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonCopy" Click="ButtonCopy_Click" Content="{md:PackIcon Kind=ContentCopy}" Width="32" Height="32"/>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Height="35" x:Name="MenuPaste">
+                <MenuItem Height="35" x:Name="MenuPaste" Visibility="{Binding Path = COPIANDO, Converter={StaticResource BoolToVisConverter}}">
                     <MenuItem.Header>
-                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonPaste" Click="ButtonPaste_Click" Content="{md:PackIcon Kind=ContentPaste}" Width="32" Height="32"/>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonPaste"  Click="ButtonPaste_Click" Content="{md:PackIcon Kind=ContentPaste}" Width="32" Height="32"/>
                     </MenuItem.Header>
                 </MenuItem>
                 <MenuItem Height="35" x:Name="MenuImportProject">
