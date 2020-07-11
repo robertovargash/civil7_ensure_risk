@@ -117,7 +117,7 @@ namespace EnsureRisk.Windows
                 {
                     TextProbability.Text = Probability.ToString();
                     TextFather.Text = DsCM.Tables[DT_Risk.TABLE_NAME].Rows.Find(RiskPadre.ID)[DT_Risk.NAMESHORT].ToString();
-                    foreach (DataRow item in DsCM.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + RiskTreeID))
+                    foreach (DataRow item in DsCM.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + RiskTreeID))
                     {
                         DataRow rowTop = CM_Damage_Table.NewRow();
                         rowTop[DT_CounterM_Damage.COLOR] = item[DT_Diagram_Damages.COLOR];
@@ -146,7 +146,7 @@ namespace EnsureRisk.Windows
                     if (RiskPadre != null)
                     {
                         bool hasWBS = false;
-                        foreach (DataRow itemWBS in DsCM.Tables[DT_RISK_WBS.TABLENAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskPadre.ID))
+                        foreach (DataRow itemWBS in DsCM.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskPadre.ID))
                         {
                             DataRow newRow = CM_WBS_Table.NewRow();
                             newRow[DT_CM_WBS.ID_CM] = CMRow[DT_CounterM.ID];
@@ -230,7 +230,7 @@ namespace EnsureRisk.Windows
                     {
                         ID_WBS = (int)CMRow[DT_Risk.ID_WBS];
                     }
-                    foreach (DataRow item in DsCM.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + RiskTreeID))
+                    foreach (DataRow item in DsCM.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + RiskTreeID))
                     {
                         if (!(CM_Damage_Table.Rows.Contains(new object[] { CMRow[DT_CounterM.ID], item[DT_Diagram_Damages.ID_DAMAGE] })))
                         {

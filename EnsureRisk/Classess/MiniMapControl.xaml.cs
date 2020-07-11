@@ -259,7 +259,6 @@ namespace EnsureRisk.Classess
                     this.mapSource = value;
                     //calculate view's size and set initial position
                     this.lookupWindow.Unselect();
-                    //TODO: Comentado por roberto pues aqui enviaba el formulario para donde le daba la gana.
                     //this.CalculateLookupWindowSize();
                     //this.lookupWindow.SetPosition(MapWidth, MapHeight / 2);
                     //CalculateMapPosition(this.lookupWindow.Left, this.lookupWindow.Top);

@@ -212,7 +212,7 @@ namespace EnsureRisk.Windows
 
         private void SetTableRisk_Damages(bool useProbability, bool isEnabled)
         {
-            foreach (DataRow item in Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + RiskTreeID))
+            foreach (DataRow item in Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + RiskTreeID))
             {
                 if (!(Risk_DamageTable.Rows.Contains(new object[] { RiskRow[DT_Risk.ID], item[DT_Diagram_Damages.ID_DAMAGE] })))
                 {

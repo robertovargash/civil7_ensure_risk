@@ -113,14 +113,14 @@ namespace DataMapping.Data
             dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
 
             _ = this.Relations.Add(RISK_TREE_TOP_RISK_RELATION, this.Tables[DT_Diagram.TABLE_NAME].Columns[DT_Diagram.ID_DIAGRAM],
-                                        this.Tables[DT_Diagram_Damages.TABLENAME].Columns[DT_Diagram_Damages.ID_RISKTREE]);
+                                        this.Tables[DT_Diagram_Damages.TABLE_NAME].Columns[DT_Diagram_Damages.ID_RISKTREE]);
 
             dr1 = this.Relations[RISK_TREE_TOP_RISK_RELATION];
             dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
             dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
 
             _ = this.Relations.Add(RISK_TREE_TOP_RISK_RELATION1, this.Tables[DT_Damage.TopRisk_TABLA].Columns[DT_Damage.ID_COLUMNA],
-                                        this.Tables[DT_Diagram_Damages.TABLENAME].Columns[DT_Diagram_Damages.ID_DAMAGE]);
+                                        this.Tables[DT_Diagram_Damages.TABLE_NAME].Columns[DT_Diagram_Damages.ID_DAMAGE]);
 
             dr1 = this.Relations[RISK_TREE_TOP_RISK_RELATION1];
             dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
@@ -148,14 +148,14 @@ namespace DataMapping.Data
             //dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
 
             _ = this.Relations.Add(RISK_TOPRISK_RELATION, this.Tables[DT_Risk.TABLE_NAME].Columns[DT_Risk.ID],
-                                        this.Tables[DT_Risk_Damages.TABLENAME].Columns[DT_Risk_Damages.ID_RISK]);
+                                        this.Tables[DT_Risk_Damages.TABLE_NAME].Columns[DT_Risk_Damages.ID_RISK]);
 
             dr1 = this.Relations[RISK_TOPRISK_RELATION];
             dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
             dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
 
             _ = this.Relations.Add(RISK_WBS_RELATION, this.Tables[DT_Risk.TABLE_NAME].Columns[DT_Risk.ID],
-                                        this.Tables[DT_RISK_WBS.TABLENAME].Columns[DT_RISK_WBS.ID_RISK]);
+                                        this.Tables[DT_RISK_WBS.TABLE_NAME].Columns[DT_RISK_WBS.ID_RISK]);
 
             dr1 = this.Relations[RISK_WBS_RELATION];
             dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
@@ -169,7 +169,7 @@ namespace DataMapping.Data
             dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
 
             _ = this.Relations.Add(RISK_TOPRISK_RELATION1, this.Tables[DT_Damage.TopRisk_TABLA].Columns[DT_Damage.ID_COLUMNA],
-                                       this.Tables[DT_Risk_Damages.TABLENAME].Columns[DT_Risk_Damages.ID_DAMAGE]);
+                                       this.Tables[DT_Risk_Damages.TABLE_NAME].Columns[DT_Risk_Damages.ID_DAMAGE]);
 
             dr1 = this.Relations[RISK_TOPRISK_RELATION1];
             dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
@@ -197,21 +197,21 @@ namespace DataMapping.Data
             //dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
 
             _ = this.Relations.Add(COUNTERM_TOPRISK_RELATION, this.Tables[DT_CounterM.TABLE_NAME].Columns[DT_CounterM.ID],
-                                        this.Tables[DT_CounterM_Damage.TABLENAME].Columns[DT_CounterM_Damage.ID_COUNTERM]);
+                                        this.Tables[DT_CounterM_Damage.TABLE_NAME].Columns[DT_CounterM_Damage.ID_COUNTERM]);
 
             dr1 = this.Relations[COUNTERM_TOPRISK_RELATION];
             dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
             dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
 
             _ = this.Relations.Add(CM_WBS_RELATION, this.Tables[DT_CounterM.TABLE_NAME].Columns[DT_CounterM.ID],
-                                       this.Tables[DT_CM_WBS.TABLENAME].Columns[DT_CM_WBS.ID_CM]);
+                                       this.Tables[DT_CM_WBS.TABLE_NAME].Columns[DT_CM_WBS.ID_CM]);
 
             dr1 = this.Relations[CM_WBS_RELATION];
             dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
             dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
 
             _ = this.Relations.Add(COUNTERM_TOPRISK_RELATION1, this.Tables[DT_Damage.TopRisk_TABLA].Columns[DT_Damage.ID_COLUMNA],
-                                        this.Tables[DT_CounterM_Damage.TABLENAME].Columns[DT_CounterM_Damage.ID_DAMAGE]);
+                                        this.Tables[DT_CounterM_Damage.TABLE_NAME].Columns[DT_CounterM_Damage.ID_DAMAGE]);
 
             dr1 = this.Relations[COUNTERM_TOPRISK_RELATION1];
             dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;

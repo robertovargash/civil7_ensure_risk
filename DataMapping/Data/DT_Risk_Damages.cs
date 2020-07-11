@@ -4,7 +4,7 @@ namespace DataMapping.Data
 {
     public class DT_Risk_Damages:DataTable
     {
-        public const string TABLENAME = "Risk_TopRisk";
+        public const string TABLE_NAME = "Risk_TopRisk";
 
         public const string ID_RISK = "idRisk";
         public const string ID_DAMAGE = "idTopRisk";
@@ -35,7 +35,7 @@ namespace DataMapping.Data
         private void CreateTable()
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
-            TableName = TABLENAME;
+            TableName = TABLE_NAME;
             PK_COLUMN[0] = this.Columns.Add(ID_RISK, typeof(int));
             PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(int));
             Columns.Add(RISK_NAMESHORT, typeof(string));
