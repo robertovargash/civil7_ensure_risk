@@ -3686,6 +3686,7 @@ namespace EnsureRisk
             }
         }
 
+        #region ImportProject
         public void LlenarListaDeCopiaToImport(DataSet targetDataSet, int SelectedDiagram_ID)
         {
             TheCurrentLayout.ListCopy = new List<RiskPolyLine>();
@@ -3727,8 +3728,6 @@ namespace EnsureRisk
             TheCurrentLayout.CopyRisk = TheCurrentLayout.ListCopy.FirstOrDefault(p => p.IsRoot);
         }
 
-
-        #region ImportProject
         private void ButtonImportProject_Click(object sender, RoutedEventArgs e)
         {
             try

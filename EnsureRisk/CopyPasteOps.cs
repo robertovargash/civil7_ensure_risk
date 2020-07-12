@@ -41,7 +41,7 @@ namespace EnsureRisk
             targetDataset.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
 
             SetDamagesNuevoRiesgoCopiado(targetDataset, drNewRisk, ID_Diagram);
-            SetWBS_RiskNuevoRiesgoCopiado(targetDataset, drNewRisk, drTargetRisk);
+            SetWBS_RiskNuevoRiesgoCopiado(targetDataset, drNewRisk, drTargetRisk, DsWBS);
             SetWBS_RISK_DamageNuevoRiskCopiado(targetDataset, drNewRisk, drTargetRisk, ID_Diagram, DsWBS);
             SetRoleRisk(targetDataset, drNewRisk, drTargetRisk);
             if (!(sourceRisk.IsLeaf()))
@@ -88,7 +88,7 @@ namespace EnsureRisk
             targetDataset.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
 
             SetOriginalAndNewDamagesRiesgoCopiado(sourceRisk, targetDataset, drNewRisk, ID_Diagram);
-            SetWBS_RiskOriginalAndNuevoRiesgoCopiado(sourceRisk, targetDataset, drNewRisk, drTargetRisk);
+            SetWBS_RiskOriginalAndNuevoRiesgoCopiado(sourceRisk, targetDataset, drNewRisk, drTargetRisk, DsWBS);
             SetWBS_RISK_DamageOriginalAndNuevoRiskCopiado(sourceRisk, targetDataset, drNewRisk, drTargetRisk, ID_Diagram, DsWBS);
             SetNewAndOriginalRoleRisk(sourceRisk, targetDataset, drNewRisk, drTargetRisk);
 
@@ -141,7 +141,7 @@ namespace EnsureRisk
             }
         }
 
-        public static void SetWBS_RiskNuevoRiesgoCopiado(DataSet targetDataset, DataRow drNewRisk, DataRow drTargetRisk)
+        public static void SetWBS_RiskNuevoRiesgoCopiado(DataSet targetDataset, DataRow drNewRisk, DataRow drTargetRisk, DataSet DsWBS)
         {
             foreach (DataRow targetWBS in targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drTargetRisk[DT_Risk.ID]))
             {
@@ -158,6 +158,29 @@ namespace EnsureRisk
                     newRiskWBS[DT_RISK_WBS.USERNAME] = targetWBS[DT_RISK_WBS.USERNAME];
                     newRiskWBS[DT_RISK_WBS.WBS] = targetWBS[DT_RISK_WBS.WBS];
                     targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
+                }
+            }
+            if (!targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drNewRisk[DT_Risk.ID]).Any())
+            {
+                bool primary = true;
+                foreach (DataRow wbs in DsWBS.Tables[DT_WBS.TABLE_NAME].Select())
+                {
+                    if (!(DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + wbs[DT_WBS.ID_WBS]).Any()))
+                    {
+                        if (!(targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drNewRisk[DT_Risk.ID], wbs[DT_WBS.ID_WBS] })))
+                        {
+                            DataRow newRiskWBS = targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
+                            newRiskWBS[DT_RISK_WBS.ID_RISK] = drNewRisk[DT_Risk.ID];
+                            newRiskWBS[DT_RISK_WBS.ID_WBS] = wbs[DT_WBS.ID_WBS];
+                            newRiskWBS[DT_RISK_WBS.WBS] = wbs[DT_WBS.WBS_NAME];
+                            newRiskWBS[DT_RISK_WBS.NIVEL] = wbs[DT_WBS.NIVEL];
+                            newRiskWBS[DT_RISK_WBS.USERNAME] = wbs[DT_WBS.USERNAME];
+                            newRiskWBS[DT_RISK_WBS.IS_PRIMARY] = primary;
+                            newRiskWBS[DT_RISK_WBS.PROBABILITY] = 100;
+                            primary = false;
+                            targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
+                        }
+                    }
                 }
             }
         }
@@ -279,17 +302,40 @@ namespace EnsureRisk
                         }
                     }
                 }
-                foreach (DataRow riskRole in targetDataset.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + drRiskFather[DT_Risk.ID]))
+            }
+            if (!targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + drNewCM[DT_CounterM.ID]).Any())
+            {
+                bool primary = true;
+                foreach (DataRow wbs in DsWBS.Tables[DT_WBS.TABLE_NAME].Select())
                 {
-                    if (!(targetDataset.Tables[DT_Role_CM.TABLENAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], riskRole[DT_Role_Risk.IDROL_COLUMN] })))
+                    if (!(DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + wbs[DT_WBS.ID_WBS]).Any()))
                     {
-                        DataRow drCmRole = targetDataset.Tables[DT_Role_CM.TABLENAME].NewRow();
-                        drCmRole[DT_Role_CM.IDROL_COLUMN] = riskRole[DT_Role_Risk.IDROL_COLUMN];
-                        drCmRole[DT_Role_CM.ID_CM] = drNewCM[DT_CounterM.ID];
-                        drCmRole[DT_Role_CM.NAME_SHORT] = drNewCM[DT_CounterM.NAMESHORT];
-                        drCmRole[DT_Role_CM.Role] = riskRole[DT_Role_Risk.Role];
-                        targetDataset.Tables[DT_Role_CM.TABLENAME].Rows.Add(drCmRole);
+                        if (!(targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], wbs[DT_WBS.ID_WBS] })))
+                        {
+                            DataRow newCMWBS = targetDataset.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
+                            newCMWBS[DT_CM_WBS.ID_CM] = drNewCM[DT_CounterM.ID];
+                            newCMWBS[DT_CM_WBS.ID_WBS] = wbs[DT_WBS.ID_WBS];
+                            newCMWBS[DT_CM_WBS.WBS] = wbs[DT_WBS.WBS_NAME];
+                            newCMWBS[DT_CM_WBS.NIVEL] = wbs[DT_WBS.NIVEL];
+                            newCMWBS[DT_CM_WBS.USERNAME] = wbs[DT_WBS.USERNAME];
+                            newCMWBS[DT_CM_WBS.IS_PRIMARY] = primary;
+                            newCMWBS[DT_CM_WBS.PROBABILITY] = 0;
+                            primary = false;
+                            targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
+                        }
                     }
+                }
+            }
+            foreach (DataRow riskRole in targetDataset.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + drRiskFather[DT_Risk.ID]))
+            {
+                if (!(targetDataset.Tables[DT_Role_CM.TABLENAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], riskRole[DT_Role_Risk.IDROL_COLUMN] })))
+                {
+                    DataRow drCmRole = targetDataset.Tables[DT_Role_CM.TABLENAME].NewRow();
+                    drCmRole[DT_Role_CM.IDROL_COLUMN] = riskRole[DT_Role_Risk.IDROL_COLUMN];
+                    drCmRole[DT_Role_CM.ID_CM] = drNewCM[DT_CounterM.ID];
+                    drCmRole[DT_Role_CM.NAME_SHORT] = drNewCM[DT_CounterM.NAMESHORT];
+                    drCmRole[DT_Role_CM.Role] = riskRole[DT_Role_Risk.Role];
+                    targetDataset.Tables[DT_Role_CM.TABLENAME].Rows.Add(drCmRole);
                 }
             }
         }
@@ -439,7 +485,7 @@ namespace EnsureRisk
             }
         }
 
-        public static void SetWBS_RiskOriginalAndNuevoRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drNewRisk, DataRow drTargetRisk)
+        public static void SetWBS_RiskOriginalAndNuevoRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drNewRisk, DataRow drTargetRisk, DataSet DsWBS)
         {
             //Estos son los WBS que tenia originalmente
             foreach (DataRow targetWBS in targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + sourceRisk.ID))
@@ -476,6 +522,29 @@ namespace EnsureRisk
                     newRiskWBS[DT_RISK_WBS.USERNAME] = targetWBS[DT_RISK_WBS.USERNAME];
                     newRiskWBS[DT_RISK_WBS.WBS] = targetWBS[DT_RISK_WBS.WBS];
                     targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
+                }
+            }
+            if (!targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drNewRisk[DT_Risk.ID]).Any())
+            {
+                bool primary = true;
+                foreach (DataRow wbs in DsWBS.Tables[DT_WBS.TABLE_NAME].Select())
+                {
+                    if (!(DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + wbs[DT_WBS.ID_WBS]).Any()))
+                    {
+                        if (!(targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drNewRisk[DT_Risk.ID], wbs[DT_WBS.ID_WBS] })))
+                        {
+                            DataRow newRiskWBS = targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
+                            newRiskWBS[DT_RISK_WBS.ID_RISK] = drNewRisk[DT_Risk.ID];
+                            newRiskWBS[DT_RISK_WBS.ID_WBS] = wbs[DT_WBS.ID_WBS];
+                            newRiskWBS[DT_RISK_WBS.WBS] = wbs[DT_WBS.WBS_NAME];
+                            newRiskWBS[DT_RISK_WBS.NIVEL] = wbs[DT_WBS.NIVEL];
+                            newRiskWBS[DT_RISK_WBS.USERNAME] = wbs[DT_WBS.USERNAME];
+                            newRiskWBS[DT_RISK_WBS.IS_PRIMARY] = primary;
+                            newRiskWBS[DT_RISK_WBS.PROBABILITY] = drNewRisk[DT_Risk.PROBABILITY];
+                            primary = false;
+                            targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
+                        }
+                    }
                 }
             }
         }

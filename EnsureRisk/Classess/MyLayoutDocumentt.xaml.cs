@@ -2285,12 +2285,8 @@ namespace EnsureRisk.Classess
             {
                 pos = lastCounterMeasurePosition + 1;
             }
-
             //Insertar el Risk en su nuevo padre (el PolyLine destino)
             destinationPolyLine.Children.Insert(pos, insertedRisk);
-            //CAMBIOOO
-            //insertedRisk.Position = pos;
-            ///////
             SetPolyLinePosition(destinationPolyLine.Children);
         }
         private void MoveRisk(RiskPolyLine destinationPolyLine, Point point)
