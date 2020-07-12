@@ -516,8 +516,7 @@ namespace EnsureRisk.Export
 
         private void FillWithRiskShort(IEnumerable<DataRow> mainRiskChildDataRowQuery, BackgroundWorker backgroundWorker, DoWorkEventArgs e, bool isMain)
         {
-            drToExport = DtToExport.NewRow();
-            IEnumerable<DataRow> riskProperties = _riskTreeDataSetTrader.GetRiskPropertyList((int)mainRiskChildDataRowQuery.First()[DT_Risk.ID]);
+            IEnumerable<DataRow> riskProperties = _riskTreeDataSetTrader.ObtenerTiposDamagesRisk();
             foreach (DataRow riskDataRow in mainRiskChildDataRowQuery)
             {
                 if (backgroundWorker.CancellationPending)
@@ -527,7 +526,7 @@ namespace EnsureRisk.Export
                 }
                 DtToExport.Merge(_riskTreeDataSetTrader.GetMainRisksDescendants(riskDataRow));
                 _columnIndex = 3;
-                foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
+                foreach (var damage in _riskTreeDataSetTrader.DamagesRow)
                 {
                     string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
                     int idRisk = (int)riskDataRow[DT_Risk.ID];
@@ -539,8 +538,8 @@ namespace EnsureRisk.Export
                     }
                     _columnIndex++;
                 }
-                _columnIndex++;
-                foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
+                _columnIndex++;//La columna de la CM
+                foreach (var damage in _riskTreeDataSetTrader.DamagesRow)
                 {
                     string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
                     int id = (int)riskDataRow[DT_Risk.ID];

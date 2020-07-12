@@ -3375,12 +3375,22 @@ namespace EnsureRisk.Classess
             this.TheProgressBar.Maximum = 100;
             //this.TheProgressBar.Visibility = Visibility.Visible;
             //RiskAndCm[] acumulatedValueList = LinesList.Select((risk, RiskAndCm) => new RiskAndCm { isCM = risk.IsCM, id = risk.ID, value = risk.AcValue }).ToArray();
-            using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(this.Ds, this.ID_Diagram,LinesList))
+            WindowSelection frmSelection = new WindowSelection();
+            frmSelection.Dt = Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram).CopyToDataTable();
+            frmSelection.DcolumToShow = new string[] { DT_Diagram_Damages.DAMAGE };
+            frmSelection.DcolumToShowAlias = new string[] { DT_Diagram_Damages.DAMAGE };
+            frmSelection.Title = "DAMAGE ";
+            frmSelection.P.FilterString = "Damage";
+            frmSelection.ColumnToFilter = DT_Diagram_Damages.DAMAGE;
+            if (frmSelection.ShowDialog() == true)
             {
-                using (ExportRiskTree exportRiskTree = new ExportRiskTree(riskTreeDataSetTrader, fileName))
+                using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(this.Ds, this.ID_Diagram, LinesList, frmSelection.RowsSelected.ToArray()))
                 {
-                    exportToExcelWorker.RunWorkerAsync(exportRiskTree);
-                    this.IsExportingToExcel = true;
+                    using (ExportRiskTree exportRiskTree = new ExportRiskTree(riskTreeDataSetTrader, fileName))
+                    {
+                        exportToExcelWorker.RunWorkerAsync(exportRiskTree);
+                        this.IsExportingToExcel = true;
+                    }
                 }
             }
         }

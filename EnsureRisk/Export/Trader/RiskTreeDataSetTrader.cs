@@ -59,6 +59,8 @@ namespace EnsureRisk.Export.Trader
                 return GetRiskTypeList();
             }
         }
+
+        public DataRow[] DamagesRow { get; set; }
         private DataSet _riskTreeDataSet;
 
         private const string MAINRISKNAME = "Main Branch";
@@ -94,6 +96,13 @@ namespace EnsureRisk.Export.Trader
             GetRiskTreeDataSet(id);
             LinesDiagram = linesDiagram;
         }
+
+        public RiskTreeDataSetTrader(DataSet dataSet, int id, List<RiskPolyLine> linesDiagram, DataRow[] drDamages) : base(dataSet)
+        {
+            GetRiskTreeDataSet(id);
+            LinesDiagram = linesDiagram;
+            DamagesRow = drDamages;
+        }
         public RiskTreeDataSetTrader(DataSet dataSet, int id, RiskAndCm[] acumulatedValueList) : base(dataSet)
         {
             GetRiskTreeDataSet(id);
@@ -101,11 +110,7 @@ namespace EnsureRisk.Export.Trader
         }
 
         #region ShortExcel
-        public IEnumerable<DataRow> GetMainRisks()
-        {
-           return GetMainRiskChildList();
-        }
-
+        
         private int MaxValue(int A, int B)
         {
             if (A > B)
@@ -165,14 +170,44 @@ namespace EnsureRisk.Export.Trader
         private IEnumerable<String> GetRiskTypeList()
         {
             IEnumerable<String> riskPropertiesTypeQuery =
-                from riskTopRiskDataRow in _riskTreeDataSet.Tables[RISK_TOPRISK_TABLENAME].AsEnumerable()
+                //from riskTopRiskDataRow in _riskTreeDataSet.Tables[RISK_TOPRISK_TABLENAME].AsEnumerable()
+                from riskTopRiskDataRow in DamagesRow.AsEnumerable()
                 select riskTopRiskDataRow.Field<String>(DAMAGE_COLUMNNAME);
 
             return riskPropertiesTypeQuery.Distinct();
         }
+
+        public IEnumerable<DataRow> ObtenerTiposDamagesRisk()
+        {
+            IEnumerable<String> riskPropertiesTypeQuery =
+                from riskTopRiskDataRow in _riskTreeDataSet.Tables[RISK_TOPRISK_TABLENAME].AsEnumerable()
+                //from riskTopRiskDataRow in DamagesRow.AsEnumerable()
+                select riskTopRiskDataRow.Field<String>(DAMAGE_COLUMNNAME);
+
+            List<DataRow> p = new List<DataRow>();
+            foreach (var item in DamagesRow)
+            {
+                foreach (var itemi in _riskTreeDataSet.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_DAMAGE + "=" + item[DT_Damage.ID_COLUMNA]))
+                {
+                    p.Add(itemi);
+                }                
+            }
+            return p;
+        }
+
+        public IEnumerable<DataRow> GetShortRiskTypeList()
+        {
+            IEnumerable<DataRow> riskPropertiesTypeQuery =
+                //from riskTopRiskDataRow in _riskTreeDataSet.Tables[RISK_TOPRISK_TABLENAME].AsEnumerable()
+                from riskTopRiskDataRow in DamagesRow.AsEnumerable()
+                select riskTopRiskDataRow;
+
+            return riskPropertiesTypeQuery.Distinct();
+        }
+
         public IEnumerable<DataRow> GetMainRiskChildList()
         {
-            DataRow mainRisk = RiskDataTable.AsEnumerable().FirstOrDefault(riskDataRow => (Boolean)(riskDataRow[ISROOT_COLUMNNAME]) == true);
+            DataRow mainRisk = RiskDataTable.AsEnumerable().FirstOrDefault(riskDataRow => (bool)(riskDataRow[ISROOT_COLUMNNAME]) == true);
 
             IEnumerable<DataRow> mainRiskChildDataRowQuery =
                 from mainRiskChildDataRow in RiskDataTable.AsEnumerable()
@@ -188,6 +223,17 @@ namespace EnsureRisk.Export.Trader
                 select riskTopRiskDataRow;
             return riskTopRiskDataRowQuery;
         }
+
+        public IEnumerable<DataRow> GetShortRiskPropertyList(int riskId)
+        {
+            IEnumerable<DataRow> riskTopRiskDataRowQuery =
+                from riskTopRiskDataRow in RiskTopRiskDataTable.AsEnumerable()
+                where riskTopRiskDataRow.Field<int>(IDRISK_COLUMNNAME) == riskId
+                select riskTopRiskDataRow;
+            return riskTopRiskDataRowQuery;
+        }
+
+
         public IEnumerable<DataRow> GetCounterMPropertyList(int counterMId)
         {
             IEnumerable<DataRow> counterMTopRiskDataRowQuery =
