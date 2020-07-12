@@ -2299,69 +2299,67 @@ namespace EnsureRisk.Classess
 
                 //Reestablecer la posición de los PolyLine en su padre
                 SetPolyLinePosition(Line_Selected.Father.Children);
-
-                //Obtener posición en que debe insertarse el Risk dentro del PolyLine destino (su nuevo padre)
-                int pos = TreeOperation.DetectClickPosition(point, destinationPolyLine);
-                int lastCounterMeasurePosition = TreeOperation.LastCounterMeasurePosition(destinationPolyLine.Children);
-                if (pos <= lastCounterMeasurePosition)
+                if (new WindowMessageYesNo("Do you want to Move the selected items with all their properties(WBS, damages, probabilities etc.)?").ShowDialog() == true)
                 {
-                    pos = lastCounterMeasurePosition + 1;
-                }
-
-                //Insertar el Risk en su nuevo padre (el PolyLine destino)
-                destinationPolyLine.Children.Insert(pos, Line_Selected);
-
-                //Actualizar el padre al Riesk
-                Line_Selected.Father = destinationPolyLine;
-                Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.IDRISK_FATHER] = destinationPolyLine.ID;
-                Ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + Line_Selected.ID).First()[DT_RiskStructure.IDRISK_FATHER] = destinationPolyLine.ID;
-
-                //Reestablecer la posición de los PolyLine en su nuevo padre
-                SetPolyLinePosition(destinationPolyLine.Children);
-
-                DataRow[] drRoleRisk = Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + destinationPolyLine.ID);
-                foreach (DataRow item in drRoleRisk)
-                {
-                    foreach (RiskPolyLine itemRiskMoving in LinesMoving)
+                    Line_Selected.Father = destinationPolyLine;
+                    //Line_Selected.Position = destinationPolyLine.Children.Count - 1;
+                    DataSet ImportDSs = Ds.Copy();
+                    DataRow drNewRisk = CopyPasteOps.SetValoresOriginalesRiesgoCopiado(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                                                                                        ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList);
+                    Ds.Merge(ImportDSs);
+                    ImportDSs.Dispose();
+                    MoviendoRisk = false;
+                    RiskPolyLine Line_Created = new RiskPolyLine
                     {
-                        if (itemRiskMoving.IsCM)
-                        {
-                            if (!(Ds.Tables[DT_Role_CM.TABLENAME].Select(DT_Role_CM.ID_CM + " = " + itemRiskMoving.ID + " AND " + DT_Role_CM.Role + " = '" + item[DT_Role_Risk.Role].ToString() + "'").Any()))
-                            {
-                                DataRow drRoleCM = Ds.Tables[DT_Role_CM.TABLENAME].NewRow();
-                                drRoleCM[DT_Role_CM.ID_CM] = itemRiskMoving.ID;
-                                drRoleCM[DT_Role_CM.NAME_SHORT] = itemRiskMoving.ShortName;
-                                drRoleCM[DT_Role_CM.Role] = item[DT_Role_Risk.Role];
-                                drRoleCM[DT_Role_CM.IDROL_COLUMN] = item[DT_Role_Risk.IDROL_COLUMN];
-                                Ds.Tables[DT_Role_CM.TABLENAME].Rows.Add(drRoleCM);
-                            }
-                        }
-                        else
-                        {
-                            if (!(Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + itemRiskMoving.ID + " AND " + DT_Role_Risk.Role + " = '" + item[DT_Role_Risk.Role].ToString() + "'").Any()))
-                            {
-                                DataRow drRoleRiskk = Ds.Tables[DT_Role_Risk.TABLENAME].NewRow();
-                                drRoleRiskk[DT_Role_Risk.ID_RISK] = itemRiskMoving.ID;
-                                drRoleRiskk[DT_Role_Risk.NAME_SHORT] = itemRiskMoving.ShortName;
-                                drRoleRiskk[DT_Role_Risk.Role] = item[DT_Role_Risk.Role];
-                                drRoleRiskk[DT_Role_Risk.IDROL_COLUMN] = item[DT_Role_Risk.IDROL_COLUMN];
-                                Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRoleRiskk);
-                            }
-                        }
-                    }
+                        ID = (int)drNewRisk[DT_Risk.ID],
+                        IsCM = false,
+                        ShortName = "LineCreated",
+                        Father = destinationPolyLine,
+                        IdRiskFather = destinationPolyLine.ID
+                    };
+                    InsertRisk(Line_Created, destinationPolyLine, point);
+
+                    RiskPolyLine linetoDel = new RiskPolyLine
+                    {
+                        ID = Line_Selected.ID,
+                        IsCM = Line_Selected.IsCM
+                    };
+                    TreeOperation.DeleteLine(linetoDel, Ds);
+                    GridPaintLines.Children.Remove(LineInMoving);
+                    GridPaintLines.Children.Remove(LineInMoving.TextPanel);
+                    LineInMoving = null;
                 }
-                RiskPolyLine linetoDel = new RiskPolyLine
+                else
                 {
-                    ID = Line_Selected.ID,
-                    IsCM = Line_Selected.IsCM
-                };
 
-                TreeOperation.CreateCopyOfLine(Line_Selected, destinationPolyLine.ID, Ds);
-                TreeOperation.DeleteLine(linetoDel, Ds);
-
-                GridPaintLines.Children.Remove(LineInMoving);
-                GridPaintLines.Children.Remove(LineInMoving.TextPanel);
-                LineInMoving = null;
+                    Line_Selected.Father = destinationPolyLine;
+                    DataSet ImportDSs = Ds.Copy();
+                    DataRow drNewRisk = CopyPasteOps.EstablecerValoresNuevoRiesgoCopiado(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                                            ID_Diagram, ((MainWindow)MyWindow).DsWBS);
+                    Ds.Merge(ImportDSs);
+                    ImportDSs.Dispose();
+                    //GlobalListCopy = new List<RiskPolyLine>();
+                    MoviendoRisk = false;
+                    RiskPolyLine Line_Created = new RiskPolyLine
+                    {
+                        ID = (int)drNewRisk[DT_Risk.ID],
+                        IsCM = false,
+                        ShortName = "LineCreated",
+                        Father = destinationPolyLine,
+                        IdRiskFather = destinationPolyLine.ID
+                    };
+                    InsertRisk(Line_Created, destinationPolyLine, point);
+                    RiskPolyLine linetoDel = new RiskPolyLine
+                    {
+                        ID = Line_Selected.ID,
+                        IsCM = Line_Selected.IsCM
+                    };
+                    TreeOperation.DeleteLine(linetoDel, Ds);
+                    GridPaintLines.Children.Remove(LineInMoving);
+                    GridPaintLines.Children.Remove(LineInMoving.TextPanel);
+                    LineInMoving = null;
+                }
+                Line_Selected = destinationPolyLine;
             }
         }
 
