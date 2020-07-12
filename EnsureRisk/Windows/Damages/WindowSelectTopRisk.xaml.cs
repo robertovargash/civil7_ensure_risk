@@ -24,7 +24,6 @@ namespace EnsureRisk.Windows
     /// </summary>
     public partial class WindowSelectTopRisk : Window, INotifyPropertyChanged
     {
-        private string _um;
         private string damage;
         public string DAMAGE { get { return damage; } set { damage = value; OnPropertyChanged("DAMAGE"); } }
         public DataRow Drow { get; set; }
@@ -62,34 +61,36 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
-                DataTable topCodif = ws.GetAllTopRisk().Tables[DT_Damage.TopRisk_TABLA].Copy();
-                WindowSelection frmSelection = new WindowSelection
+                using (ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk())
                 {
-                    //dt = topCodif,
-                    Dt = General.DeleteExists(topCodif, TopRiskTable, DT_Damage.ID_COLUMNA),
-                    DcolumToShow = new string[] { DT_Damage.TOP_RISK_COLUMN },
-                    DcolumToShowAlias = new string[] { "Damage" },
-                    ColumnToFilter = DT_Damage.TOP_RISK_COLUMN,
-                    Title = "Damages"
-                };
-                frmSelection.P.FilterString = "Damage";
-                if (frmSelection.Dt.Rows.Count == 1)
-                {
-                    Drow[DT_Diagram_Damages.ID_DAMAGE] = frmSelection.Dt.Rows[0][DT_Damage.ID_COLUMNA];
-                    Drow[DT_Diagram_Damages.COLOR] = frmSelection.Dt.Rows[0][DT_Damage.COLORID_COLUMNA];
-                    DAMAGE = frmSelection.Dt.Rows[0][DT_Diagram_Damages.TOP_RISK].ToString();
-                }
-                else
-                {
-                    frmSelection.ShowDialog();
-                    if (frmSelection.DialogResult == true)
+                    DataTable topCodif = ws.GetAllTopRisk().Tables[DT_Damage.TopRisk_TABLA].Copy();
+                    WindowSelection frmSelection = new WindowSelection
                     {
-                        if (frmSelection.RowsSelected.Count() > 0)
+                        //dt = topCodif,
+                        Dt = General.DeleteExists(topCodif, TopRiskTable, DT_Damage.ID_COLUMNA),
+                        DcolumToShow = new string[] { DT_Damage.TOP_RISK_COLUMN },
+                        DcolumToShowAlias = new string[] { "Damage" },
+                        ColumnToFilter = DT_Damage.TOP_RISK_COLUMN,
+                        Title = "Damages"
+                    };
+                    frmSelection.P.FilterString = "Damage";
+                    if (frmSelection.Dt.Rows.Count == 1)
+                    {
+                        Drow[DT_Diagram_Damages.ID_DAMAGE] = frmSelection.Dt.Rows[0][DT_Damage.ID_COLUMNA];
+                        Drow[DT_Diagram_Damages.COLOR] = frmSelection.Dt.Rows[0][DT_Damage.COLORID_COLUMNA];
+                        DAMAGE = frmSelection.Dt.Rows[0][DT_Diagram_Damages.TOP_RISK].ToString();
+                    }
+                    else
+                    {
+                        frmSelection.ShowDialog();
+                        if (frmSelection.DialogResult == true)
                         {
-                            Drow[DT_Diagram_Damages.ID_DAMAGE] = frmSelection.RowsSelected[0][DT_Damage.ID_COLUMNA];
-                            Drow[DT_Diagram_Damages.COLOR] = frmSelection.RowsSelected[0][DT_Damage.COLORID_COLUMNA];
-                            DAMAGE = frmSelection.RowsSelected[0][DT_Diagram_Damages.TOP_RISK].ToString();
+                            if (frmSelection.RowsSelected.Count() > 0)
+                            {
+                                Drow[DT_Diagram_Damages.ID_DAMAGE] = frmSelection.RowsSelected[0][DT_Damage.ID_COLUMNA];
+                                Drow[DT_Diagram_Damages.COLOR] = frmSelection.RowsSelected[0][DT_Damage.COLORID_COLUMNA];
+                                DAMAGE = frmSelection.RowsSelected[0][DT_Diagram_Damages.TOP_RISK].ToString();
+                            }
                         }
                     }
                 }

@@ -77,6 +77,7 @@ namespace EnsureRisk
                 OnPropertyChanged("HasAccess");
             }
         }
+
         public MyLayoutDocumentt TheCurrentLayout
         {
             get
@@ -186,8 +187,6 @@ namespace EnsureRisk
         private Point scrollStartOffset;
         public List<MyLayoutDocumentt> OpenedDocuments { get; set; }
         private readonly Cursor OpenHand = CursorHelper.FromByteArray(Properties.Resources.HandOpen);
-
-        //private readonly Cursor DiagCross = CursorHelper.FromByteArray(Properties.Resources.DiagCross);
 
         private readonly Cursor GrabHand = CursorHelper.FromByteArray(Properties.Resources.HandGrabbing);
         #endregion
@@ -374,6 +373,7 @@ namespace EnsureRisk
                 dgRisksCross.DataContext = this;
                 dgCrossCM.DataContext = this;
                 MenuRisk.DataContext = this;
+                MenuCM.DataContext = this;
                 WSRisk = new ServiceRiskController.WebServiceRisk();
                 DsMain = new UserDataSet();
                 AccessList = new List<int>();
@@ -1176,7 +1176,7 @@ namespace EnsureRisk
                     SaveAsClosing = true,
                     MenuRisk = MenuRisk,
                     MenuMainRisk = MenuMainRisk,
-                    MenuRiskLimited = MenuRiskLimited,
+                    //MenuRiskLimited = MenuRisk,
                     Ds = DsMain.Copy(),
                     MenuCM = MenuCM,
                     LoginUser = LoginUser,
@@ -1273,7 +1273,7 @@ namespace EnsureRisk
                     SaveAsClosing = true,
                     MenuRisk = MenuRisk,
                     MenuMainRisk = MenuMainRisk,
-                    MenuRiskLimited = MenuRiskLimited,
+                    //MenuRiskLimited = MenuRisk,
                     Ds = DsMain.Copy(),
                     MenuCM = MenuCM,
                     LoginUser = LoginUser,
@@ -1341,7 +1341,7 @@ namespace EnsureRisk
                     SaveAsClosing = true,
                     MenuRisk = MenuRisk,
                     MenuMainRisk = MenuMainRisk,
-                    MenuRiskLimited = MenuRiskLimited,
+                    //MenuRiskLimited = MenuRisk,
                     MenuCM = MenuCM,
                     Ds = DsMain.Copy(),
                     LoginUser = LoginUser,

@@ -29,22 +29,22 @@
             <ContextMenu x:Key="MenuRisk" Visibility="Hidden" Background="Transparent">
                 <MenuItem Height="35" x:Name="MenuAddRisk">
                     <MenuItem.Header>
-                        <md:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}" PlacementMode="RightAndAlignMiddles" HorizontalAlignment="Right" VerticalAlignment="Bottom" UnfurlOrientation="Horizontal" Width="32" Height="32">
+                        <md:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}" PlacementMode="RightAndAlignMiddles" HorizontalAlignment="Right" VerticalAlignment="Bottom" UnfurlOrientation="Horizontal" Width="32" Height="32" PopupMode="MouseOver">
                             <StackPanel Orientation="Horizontal">
-                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="AddButton" ToolTip="Add Risk" Click="MenuAddRisk_Click" Content="{md:PackIcon Kind=Plus}" Width="32" Height="32"/>
-                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EditButton" ToolTip="Edit Risk" Click="MenuEditRisk_Click" Content="{md:PackIcon Kind=Pencil}" Width="32" Height="32"/>
-                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="DeleteButton" ToolTip="Delete Risk" Click="MenuDeleteRisk_Click" Content="{md:PackIcon Kind=Delete}" Width="32" Height="32"/>
-                                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="MoveButton" ToolTip="Move Risk" Click="MenuMoveRisk_Click" Content="{md:PackIcon Kind=ArrowAll}" Width="32" Height="32"/>
+                                <Button Margin="2" Visibility="{Binding Path = HasAccess, Converter={StaticResource BoolToVisConverter}}" Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="AddButton" ToolTip="Add Risk" Click="MenuAddRisk_Click" Content="{md:PackIcon Kind=Plus}" Width="32" Height="32"/>
+                                <Button Margin="2" Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EditButton" ToolTip="Edit Risk" Click="MenuEditRisk_Click" Content="{md:PackIcon Kind=Pencil}" Width="32" Height="32"/>
+                                <Button Margin="2" Visibility="{Binding Path = HasAccess, Converter={StaticResource BoolToVisConverter}}" Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="DeleteButton" ToolTip="Delete Risk" Click="MenuDeleteRisk_Click" Content="{md:PackIcon Kind=Delete}" Width="32" Height="32"/>
+                                <Button Margin="2" Visibility="{Binding Path = HasAccess, Converter={StaticResource BoolToVisConverter}}" Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="MoveButton" ToolTip="Move Risk" Click="MenuMoveRisk_Click" Content="{md:PackIcon Kind=ArrowAll}" Width="32" Height="32"/>
                             </StackPanel>
                         </md:PopupBox>
                     </MenuItem.Header>
-                </MenuItem>               
-                <MenuItem Height="35" x:Name="MenuCM">
+                </MenuItem>
+                <MenuItem Height="35" x:Name="MenuCM" Visibility="{Binding Path = HasAccess, Converter={StaticResource BoolToVisConverter}}" >
                     <MenuItem.Header>
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonCM" Click="MenuCM_Click" Content="{md:PackIcon Kind=Minus}" Width="32" Height="32"/>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Height="35" x:Name="MenuZoom">
+                <MenuItem Height="35" x:Name="MenuZoom" Visibility="{Binding Path = HasAccess, Converter={StaticResource BoolToVisConverter}}" >
                     <MenuItem.Header>
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtomZoom" Click="Scope_Click" Content="{md:PackIcon Kind=Loupe}" Width="32" Height="32"/>
                     </MenuItem.Header>
@@ -59,7 +59,7 @@
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonPaste"  Click="ButtonPaste_Click" Content="{md:PackIcon Kind=ContentPaste}" Width="32" Height="32"/>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Height="35" x:Name="MenuImportProject">
+                <MenuItem Height="35" x:Name="MenuImportProject" Visibility="{Binding Path = HasAccess, Converter={StaticResource BoolToVisConverter}}" >
                     <MenuItem.Header>
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonImportProject" Click="ButtonImportProject_Click" Content="{md:PackIcon Kind=Import}" Width="32" Height="32"/>
                     </MenuItem.Header>
@@ -116,12 +116,12 @@
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EditCMButton" Click="MenuEditCM_Click" Content="{md:PackIcon Kind=Pencil}" Width="32" Height="32"/>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Height="35" x:Name="MenuDeleteCM">
+                <MenuItem Height="35" x:Name="MenuDeleteCM" Visibility="{Binding Path = HasAccess, Converter={StaticResource BoolToVisConverter}}">
                     <MenuItem.Header>
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="DeleteCMButton" Click="MenuDeleteCM_Click" Content="{md:PackIcon Kind=Delete}" Width="32" Height="32"/>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Height="35" x:Name="MenuMoveCM">
+                <MenuItem Height="35" x:Name="MenuMoveCM" Visibility="{Binding Path = HasAccess, Converter={StaticResource BoolToVisConverter}}">
                     <MenuItem.Header>
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="MoveCMButton" Click="MenuMoveCM_Click" Content="{md:PackIcon Kind=ArrowAll}" Width="32" Height="32"/>
                     </MenuItem.Header>

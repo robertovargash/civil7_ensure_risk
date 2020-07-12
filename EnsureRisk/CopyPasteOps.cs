@@ -225,7 +225,7 @@ namespace EnsureRisk
             }
         }
 
-        public static void SetValoresCM(RiskPolyLine sourceCM, DataSet targetDataset, DataRow drRiskFather, int ID_Diagram, DataSet DsWBS)
+        public static DataRow SetValoresCM(RiskPolyLine sourceCM, DataSet targetDataset, DataRow drRiskFather, int ID_Diagram, DataSet DsWBS)
         {
             DataRow drNewCM = targetDataset.Tables[DT_CounterM.TABLE_NAME].NewRow();
             drNewCM[DT_CounterM.DETAIL] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.DETAIL];
@@ -338,6 +338,7 @@ namespace EnsureRisk
                     targetDataset.Tables[DT_Role_CM.TABLENAME].Rows.Add(drCmRole);
                 }
             }
+            return drNewCM;
         }
         #endregion
         
@@ -632,7 +633,7 @@ namespace EnsureRisk
             }
         }
 
-        public static void SetValoresOriginalesAndNuevosCM(RiskPolyLine sourceCM, DataSet targetDataset, DataRow drRiskFather, int ID_Diagram, DataSet DsWBS)
+        public static DataRow SetValoresOriginalesAndNuevosCM(RiskPolyLine sourceCM, DataSet targetDataset, DataRow drRiskFather, int ID_Diagram, DataSet DsWBS)
         {
             DataRow drNewCM = targetDataset.Tables[DT_CounterM.TABLE_NAME].NewRow();
             drNewCM[DT_CounterM.DETAIL] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.DETAIL];
@@ -799,6 +800,7 @@ namespace EnsureRisk
                     targetDataset.Tables[DT_Role_CM.TABLENAME].Rows.Add(drCmRole);
                 }
             }
+            return drNewCM;
         }
 
         #endregion

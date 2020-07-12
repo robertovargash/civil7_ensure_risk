@@ -73,7 +73,7 @@ namespace EnsureRisk.Classess
 
         #region Menus
         public ContextMenu MenuRisk { get; set; }
-        public ContextMenu MenuRiskLimited { get; set; }
+        //public ContextMenu MenuRiskLimited { get; set; }
         public ContextMenu MenuMainRisk { get; set; }
         public ContextMenu MenuCM { get; set; }
         public ContextMenu MenuGroupRisk { get; set; }
@@ -959,12 +959,12 @@ namespace EnsureRisk.Classess
                     if (!(FullAccess(item)))
                     {
                         lista.Add(item);
-                        item.SetMenu(MenuRiskLimited);
+                        //item.SetMenu(MenuRisk);
                         item.FullAccess = false;
                     }
                 }
             }
-            ResetLinesMenu(lista, MenuRiskLimited);
+            ResetLinesMenu(lista, MenuRisk);
         }
 
         public bool IsPrimaryInLine(RiskPolyLine line)
@@ -2288,7 +2288,22 @@ namespace EnsureRisk.Classess
             //Insertar el Risk en su nuevo padre (el PolyLine destino)
             destinationPolyLine.Children.Insert(pos, insertedRisk);
             SetPolyLinePosition(destinationPolyLine.Children);
+        }        
+        
+        public void InsertCM(RiskPolyLine insertedCM, RiskPolyLine destinationPolyLine, Point point)
+        {
+            int pos = TreeOperation.DetectClickPosition(point, destinationPolyLine);
+            int lastCounterMeasurePosition = TreeOperation.LastCounterMeasurePosition(destinationPolyLine.Children);
+            if (pos > lastCounterMeasurePosition)
+            {
+                pos = lastCounterMeasurePosition + 1;
+            }
+
+            //Insertar la CM en su nuevo padre (el PolyLine destino)
+            destinationPolyLine.Children.Insert(pos, insertedCM);
+            SetPolyLinePosition(destinationPolyLine.Children);
         }
+
         private void MoveRisk(RiskPolyLine destinationPolyLine, Point point)
         {
             if (FullAccess(destinationPolyLine))
@@ -2363,19 +2378,6 @@ namespace EnsureRisk.Classess
             }
         }
 
-        public void InsertCM(RiskPolyLine insertedCM, RiskPolyLine destinationPolyLine, Point point)
-        {
-            int pos = TreeOperation.DetectClickPosition(point, destinationPolyLine);
-            int lastCounterMeasurePosition = TreeOperation.LastCounterMeasurePosition(destinationPolyLine.Children);
-            if (pos > lastCounterMeasurePosition)
-            {
-                pos = lastCounterMeasurePosition + 1;
-            }
-
-            //Insertar la CM en su nuevo padre (el PolyLine destino)
-            destinationPolyLine.Children.Insert(pos, insertedCM);
-            SetPolyLinePosition(destinationPolyLine.Children);
-        }
 
         private void MoveCounterMeasure(RiskPolyLine destinationPolyLine, Point point)
         {
@@ -2386,48 +2388,68 @@ namespace EnsureRisk.Classess
 
                 //Reestablecer la posición de los PolyLine en su padre
                 SetPolyLinePosition(Line_Selected.Father.Children);
-
-                //Obtener posición en que debe insertarse la CM dentro del PolyLine destino (su nuevo padre)
-                int pos = TreeOperation.DetectClickPosition(point, destinationPolyLine);
-                int lastCounterMeasurePosition = TreeOperation.LastCounterMeasurePosition(destinationPolyLine.Children);
-                if (pos > lastCounterMeasurePosition)
+                if (new WindowMessageYesNo("Do you want to Move the selected item with all their properties(WBS, damages, probabilities etc.)?").ShowDialog() == true)
                 {
-                    pos = lastCounterMeasurePosition + 1;
-                }
+                    Line_Selected.Father = destinationPolyLine;
+                    //Line_Selected.Position = destinationPolyLine.Children.Count - 1;
+                    DataSet ImportDSs = Ds.Copy();
+                    DataRow drNewCM = CopyPasteOps.SetValoresOriginalesAndNuevosCM(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
 
-                //Insertar la CM en su nuevo padre (el PolyLine destino)
-                destinationPolyLine.Children.Insert(pos, Line_Selected);
-
-                //Actualizar el padre al CM
-                Line_Selected.Father = destinationPolyLine;
-                Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_CounterM.ID_RISK] = destinationPolyLine.ID;
-
-                //Reestablecer la posición de los PolyLine en su nuevo padre
-                SetPolyLinePosition(destinationPolyLine.Children);
-
-                DataRow[] drRoleRisk = Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + destinationPolyLine.ID);
-                foreach (DataRow item in drRoleRisk)
-                {
-                    foreach (RiskPolyLine itemRiskMoving in LinesMoving)
+                    Ds.Merge(ImportDSs);
+                    ImportDSs.Dispose();
+                    MoviendoRisk = false;
+                    RiskPolyLine Line_Created = new RiskPolyLine
                     {
-                        if (!(Ds.Tables[DT_Role_CM.TABLENAME].Select(DT_Role_CM.ID_CM + " = " + itemRiskMoving.ID + " AND " + DT_Role_CM.Role + " = '" + item[DT_Role_Risk.Role].ToString() + "'").Any()))
-                        {
-                            DataRow drRole = Ds.Tables[DT_Role_CM.TABLENAME].NewRow();
-                            drRole[DT_Role_CM.ID_CM] = itemRiskMoving.ID;
-                            drRole[DT_Role_CM.NAME_SHORT] = itemRiskMoving.ShortName;
-                            drRole[DT_Role_CM.Role] = item[DT_Role_Risk.Role];
-                            drRole[DT_Role_CM.IDROL_COLUMN] = item[DT_Role_Risk.IDROL_COLUMN];
-                            Ds.Tables[DT_Role_CM.TABLENAME].Rows.Add(drRole);
-                        }
-                    }
+                        ID = (int)drNewCM[DT_CounterM.ID],
+                        IsCM = true,
+                        ShortName = "LineCreated",
+                        Father = destinationPolyLine,
+                        IdRiskFather = destinationPolyLine.ID
+                    };
+                    InsertCM(Line_Created, destinationPolyLine, point);
+
+                    RiskPolyLine linetoDel = new RiskPolyLine
+                    {
+                        ID = Line_Selected.ID,
+                        IsCM = Line_Selected.IsCM
+                    };
+                    TreeOperation.DeleteLine(linetoDel, Ds);
+                    
                 }
-                RiskPolyLine linetoDel = new RiskPolyLine
+                else
                 {
-                    ID = Line_Selected.ID,
-                    IsCM = Line_Selected.IsCM
-                };
-                TreeOperation.CreateCopyOfLine(Line_Selected, destinationPolyLine.ID, Ds);
-                TreeOperation.DeleteLine(linetoDel, Ds);
+
+                    Line_Selected.Father = destinationPolyLine;
+                    DataSet ImportDSs = Ds.Copy();
+                    DataRow drNewCM = CopyPasteOps.SetValoresCM(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);                   
+                    Ds.Merge(ImportDSs);
+                    ImportDSs.Dispose();
+                    //GlobalListCopy = new List<RiskPolyLine>();
+                    MoviendoRisk = false;
+                    RiskPolyLine Line_Created = new RiskPolyLine
+                    {
+                        ID = (int)drNewCM[DT_CounterM.ID],
+                        IsCM = true,
+                        ShortName = "LineCreated",
+                        Father = destinationPolyLine,
+                        IdRiskFather = destinationPolyLine.ID
+                    };
+                    InsertCM(Line_Created, destinationPolyLine, point);
+                    RiskPolyLine linetoDel = new RiskPolyLine
+                    {
+                        ID = Line_Selected.ID,
+                        IsCM = Line_Selected.IsCM
+                    };
+                    TreeOperation.DeleteLine(linetoDel, Ds);
+                    
+                }
+                GridPaintLines.Children.Remove(LineInMoving);
+                if (LineInMoving != null && LineInMoving.TextPanel != null)
+                {
+                    GridPaintLines.Children.Remove(LineInMoving.TextPanel);
+                }
+                LineInMoving = null;
+                Line_Selected = destinationPolyLine;
             }
         }
 

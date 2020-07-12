@@ -29,7 +29,6 @@ namespace EnsureRisk.Windows
         public DataRow Drow { get; set; }
         public string Operation { get; set; }
 
-        private System.Drawing.Color color;
         public WindowTopRisk()
         {
             InitializeComponent();
