@@ -46,7 +46,8 @@ namespace EnsureRisk.Export
         private List<Entity> colorsDamages = new List<Entity>();
 
         #region Constantes
-        private const string RiskID = "Risk ID";
+        private const string RiskID = "Risk_ID";
+        private const string MAINRISKNAME = "Main Branch";
         private const string RiskName = "Risk Name";
         private const string RiskComments = "Risk Comments";
         private const string RiskProbability = "Probability";
@@ -75,7 +76,6 @@ namespace EnsureRisk.Export
 
                 FreezeHeader(sheetPart);
                 SheetFormatProperties sheetFormatProperties = new SheetFormatProperties()
-
                 {
                     DefaultColumnWidth = 15,
                     DefaultRowHeight = 15D
@@ -83,7 +83,8 @@ namespace EnsureRisk.Export
 
                 sheetPart.Worksheet.Append(sheetFormatProperties);
 
-                SetColumnsWidth(ds.Tables[0], sheetPart);
+                //SetColumnsWidth(ds.Tables[0], sheetPart);//este es del exportar viejo
+                SetColumnsWidthShort(ds.Tables[0], sheetPart);
 
                 var sheetData = sheetPart.Worksheet.AppendChild(new SheetData());
                 var sheets = workbook.WorkbookPart.Workbook.AppendChild(new Sheets());
@@ -189,30 +190,70 @@ namespace EnsureRisk.Export
             sheetPart.Worksheet.Append(columns);
         }
 
-        private static List<DataColumn> CreateHeaderRow(DataTable table, SheetData sheetData)
+        private static void SetColumnsWidthShort(DataTable dataTable, WorksheetPart sheetPart)
+        {
+            Columns columns = new Columns();
+            for (uint i = 0; i < dataTable.Columns.Count; i++)
+            {
+                if (dataTable.Columns[(int)i].ColumnName == "Risk_ID")
+                {
+                    columns.Append(new Column() { Min = i + 1, Max = i + 1, Width = 20, CustomWidth = true, Hidden=true});
+                }
+                if (dataTable.Columns[(int)i].ColumnName == "Main Branch")
+                {
+                    columns.Append(new Column() { Min = i + 1, Max = i + 1, Width = 50, CustomWidth = true });
+                }
+                if (dataTable.Columns[(int)i].ColumnName == "Risk Name")
+                {
+                    columns.Append(new Column() { Min = i + 1, Max = i + 1, Width = 40, CustomWidth = true });
+                }
+                if (dataTable.Columns[(int)i].ColumnName == "CM Name")
+                {
+                    columns.Append(new Column() { Min = i + 1, Max = i + 1, Width = 40, CustomWidth = true });
+                }
+            }
+            sheetPart.Worksheet.Append(columns);
+        }
+
+        private List<DataColumn> CreateHeaderRow(DataTable table, SheetData sheetData)
         {
             Row headerRow = new Row();
 
             List<DataColumn> columns = new List<DataColumn>();
-            foreach (DataColumn column in table.Columns)
+            int contadorColores = 2;
+            for (int i = 0; i < table.Columns.Count; i++)
             {
                 Run run1 = new Run();
-                run1.Append(new Text(column.ColumnName));
+                run1.Append(new Text(table.Columns[i].ColumnName));
                 //create runproperties and append a "Bold" to them
                 RunProperties run1Properties = new RunProperties();
                 run1Properties.Append(new Bold());
                 //set the first runs RunProperties to the RunProperties containing the bold
                 run1.RunProperties = run1Properties;
-                columns.Add(new DataColumn(column.ColumnName, column.DataType));
+                columns.Add(new DataColumn(table.Columns[i].ColumnName, table.Columns[i].DataType));
                 Cell cell = new Cell
                 {
                     DataType = CellValues.InlineString,
                     StyleIndex = Convert.ToUInt32(1)
                 };
+
+                if (columnsDamages.Contains(i + 1))
+                {
+                    if (contadorColores > 5)
+                    {
+                        contadorColores = 2;
+                    }
+                    cell.StyleIndex = Convert.ToUInt32(contadorColores);
+                    contadorColores++;
+                }
                 InlineString inlineString = new InlineString();
                 inlineString.Append(run1);
                 cell.Append(inlineString);
                 headerRow.AppendChild(cell);
+            }
+            foreach (DataColumn column in table.Columns)
+            {
+                
             }
             sheetData.AppendChild(headerRow);
             return columns;
@@ -315,6 +356,29 @@ namespace EnsureRisk.Export
                 //CloseExcel();
             }
         }
+
+        public void ExportShortExcel(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
+        {
+            InitializeExcel();
+            SetHeaderShort();
+            FillShort(backgroundWorker, e);
+            try
+            {
+                if (!e.Cancel)
+                {
+                    //SaveToExcel();
+                    using (DataSet ds = new DataSet())
+                    {
+                        ds.Tables.Add(DtToExport);
+                        ExportDataSet(ds, _fileName);
+                    }
+                }
+            }
+            finally
+            {
+                //CloseExcel();
+            }
+        }
         private void InitializeExcel()
         {
             DtToExport = new DataTable();
@@ -326,14 +390,10 @@ namespace EnsureRisk.Export
             SetCounterMHeader();
         }
 
-        private void SetColumnNameAndType(string columName, Type type, ref int index, bool columnMerge)
+        private void SetHeaderShort()
         {
-            _columnIndex = index++;
-            DtToExport.Columns.Add(columName, type);
-            if (columnMerge)
-            {
-                _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
-            }
+            SetRiskHeaderShort();
+            SetCounterMHeaderShort();
         }
 
         private void SetRiskHeader()
@@ -368,6 +428,31 @@ namespace EnsureRisk.Export
 
             SetDynamicHeader(false);           
         }
+
+        private void SetRiskHeaderShort()
+        {
+            _columnIndex = 1;
+            DtToExport.Columns.Add(RiskID);
+            _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
+
+            _columnIndex++;
+            DtToExport.Columns.Add(MAINRISKNAME);
+            _excelColumns.Add(Convert.ToChar(64 + _columnIndex));
+
+            _columnIndex++;
+            DtToExport.Columns.Add(RiskName);
+           
+            SetDynamicHeader(false);
+        }
+
+        private void SetCounterMHeaderShort()
+        {
+            _columnIndex++;
+            DtToExport.Columns.Add(CMName);
+
+            ADSetDynamicHeader();
+        }
+
 
         private void SetCounterMHeader()
         {
@@ -422,6 +507,55 @@ namespace EnsureRisk.Export
             _rowIndex = BEGIN_AT_ROWINDEX;
             FillWithRisk(_riskTreeDataSetTrader.GetMainRiskChildList(), backgroundWorker, e, true);
         }
+
+        private void FillShort(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
+        {
+            _rowIndex = BEGIN_AT_ROWINDEX;
+            FillWithRiskShort(_riskTreeDataSetTrader.GetMainRiskChildList(), backgroundWorker, e, true);
+        }
+
+        private void FillWithRiskShort(IEnumerable<DataRow> mainRiskChildDataRowQuery, BackgroundWorker backgroundWorker, DoWorkEventArgs e, bool isMain)
+        {
+            drToExport = DtToExport.NewRow();
+            IEnumerable<DataRow> riskProperties = _riskTreeDataSetTrader.GetRiskPropertyList((int)mainRiskChildDataRowQuery.First()[DT_Risk.ID]);
+            foreach (DataRow riskDataRow in mainRiskChildDataRowQuery)
+            {
+                if (backgroundWorker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    break;
+                }
+                DtToExport.Merge(_riskTreeDataSetTrader.GetMainRisksDescendants(riskDataRow));
+                _columnIndex = 3;
+                foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
+                {
+                    string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
+                    int idRisk = (int)riskDataRow[DT_Risk.ID];
+                    DtToExport.Select(RiskID + " = " + idRisk).First()[columnaNombre] = riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre)[DT_Risk_Damages.VALUE];
+                    int a = _columnIndex + 1;
+                    if (colorsDamages.FindIndex(c => c.Index == a) >= 0)
+                    {
+                        colorsDamages[colorsDamages.FindIndex(c => c.Index == a)].Color = riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre)[DT_Risk_Damages.COLOR].ToString();
+                    }
+                    _columnIndex++;
+                }
+                _columnIndex++;
+                foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
+                {
+                    string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
+                    int id = (int)riskDataRow[DT_Risk.ID];
+                    int idDamage = (int)riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre.Split('/')[1].ToString())[DT_Risk_Damages.ID_DAMAGE];
+
+                    DtToExport.Select(RiskID + " = " + id).First()[columnaNombre] = General.MyRound(CalculateAD(id, idDamage), 1);
+                    _columnIndex++;
+                }
+            }
+           
+            
+            
+           
+        }
+
         private void FillWithRisk(IEnumerable<DataRow> mainRiskChildDataRowQuery, BackgroundWorker backgroundWorker, DoWorkEventArgs e, bool isMain)
         {
             drToExport = DtToExport.NewRow();

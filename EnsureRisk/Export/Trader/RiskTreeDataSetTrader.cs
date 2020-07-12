@@ -1,8 +1,10 @@
-﻿using EnsureBusinesss.Business;
+﻿using EnsureBusinesss;
+using EnsureBusinesss.Business;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using DataMapping.Data;
 
 namespace EnsureRisk.Export.Trader
 {
@@ -34,6 +36,15 @@ namespace EnsureRisk.Export.Trader
                 return _riskTreeDataSet.Tables[RISK_TABLENAME];
             }
         }
+
+        public DataTable CMDataTable
+        {
+            get
+            {
+                return _riskTreeDataSet.Tables[COUNTERM_TABLENAME];
+            }
+        }
+
         public DataTable RiskTopRiskDataTable
         {
             get
@@ -49,7 +60,13 @@ namespace EnsureRisk.Export.Trader
             }
         }
         private DataSet _riskTreeDataSet;
-        //private List<RiskPolyLine> _linesList;
+
+        private const string MAINRISKNAME = "Main Branch";
+        private const string RiskName = "Risk Name";
+        //private const string RiskAcumulatedValue = "Acumulated Value";
+
+        private const string CMName = "CM Name";
+
 
         private const string RISKTREE_TABLENAME = "RiskTree";
         private const string RISKTREE_TOPRISK_TABLENAME = "RiskTree_TopRisk";
@@ -82,6 +99,69 @@ namespace EnsureRisk.Export.Trader
             GetRiskTreeDataSet(id);
             _acumulatedValueList = acumulatedValueList;
         }
+
+        #region ShortExcel
+        public IEnumerable<DataRow> GetMainRisks()
+        {
+           return GetMainRiskChildList();
+        }
+
+        private int MaxValue(int A, int B)
+        {
+            if (A > B)
+            {
+                return A;
+            }
+            else
+            {
+                return B;
+            }
+        }
+
+        public DataTable GetMainRisksDescendants(DataRow mainRisk)
+        {
+            DataTable dataTable = new DataTable();
+            dataTable.Columns.Add("Risk_ID");
+            dataTable.Columns.Add("Main Branch");
+            dataTable.Columns.Add("Risk Name");
+            dataTable.Columns.Add("CM Name");
+            List<DataRow> mainRisksRiskDescendats = new List<DataRow>();
+            List<DataRow> mainRisksCMDescendats = new List<DataRow>();
+            foreach (var item in TreeOperation.GetOnlyMyChildrenWithCM(LinesDiagram.Find(l => l.ID == (int)mainRisk[IDRISK_COLUMNNAME])))
+            {
+                if (item.IsCM)
+                {
+                    mainRisksCMDescendats.Add(CMDataTable.Rows.Find(item.ID));
+
+                }
+                else
+                {
+                    mainRisksRiskDescendats.Add(RiskDataTable.Rows.Find(item.ID));
+                }
+            }            
+            int max = MaxValue(mainRisksRiskDescendats.Count, mainRisksCMDescendats.Count); 
+            for (int i = 0; i < max; i++)
+            {
+                DataRow drNewTable = dataTable.NewRow();
+                if (i==0)
+                {
+                    drNewTable["Main Branch"] = mainRisk[DT_Risk.NAMESHORT];
+                    drNewTable["Risk_ID"] = mainRisk[DT_Risk.ID];
+                }
+                if (mainRisksRiskDescendats.Count > i)
+                {
+                    drNewTable["Risk Name"] = mainRisksRiskDescendats[i][DT_Risk.NAMESHORT];
+                }
+                if (mainRisksCMDescendats.Count > i)
+                {
+                    drNewTable["CM Name"] = mainRisksCMDescendats[i][DT_CounterM.NAMESHORT];
+                }
+                dataTable.Rows.Add(drNewTable);
+            }
+            return dataTable;
+        }
+        #endregion
+
         private IEnumerable<String> GetRiskTypeList()
         {
             IEnumerable<String> riskPropertiesTypeQuery =

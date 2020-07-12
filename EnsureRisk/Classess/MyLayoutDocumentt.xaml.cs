@@ -3388,7 +3388,9 @@ namespace EnsureRisk.Classess
         {
             ExportRiskTree exportRiskTree = (ExportRiskTree)e.Argument;
 
-            exportRiskTree.Export(sender as BackgroundWorker, e);
+            //exportRiskTree.Export(sender as BackgroundWorker, e);
+
+            exportRiskTree.ExportShortExcel(sender as BackgroundWorker, e);
         }
         void ExportToExcelWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
