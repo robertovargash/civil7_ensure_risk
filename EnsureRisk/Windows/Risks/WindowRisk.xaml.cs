@@ -588,7 +588,7 @@ namespace EnsureRisk.Windows
                                 drRiskWBSi[DT_RISK_WBS.RISK] = RiskName.Text;
                                 drRiskWBSi[DT_RISK_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
                                 drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
-                                drRiskWBSi[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
+                                drRiskWBSi[DT_RISK_WBS.NIVEL] = itemAncestors[DT_WBS.NIVEL].ToString().TrimStart();
                                 drRiskWBSi[DT_RISK_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
                                 drRiskWBSi[DT_RISK_WBS.IS_PRIMARY] = false;
                                 drRiskWBSi[DT_RISK_WBS.PRIMARY] = "";
