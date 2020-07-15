@@ -44,6 +44,8 @@ namespace EnsureRisk.Export
         private List<char> _excelColumns = new List<char>();
         private List<int> columnsDamages = new List<int>();
         private List<Entity> colorsDamages = new List<Entity>();
+        private const int NumberFormats = 3;
+        private const int FillsCount = 2;
 
         #region Constantes
         private const string RiskID = "Risk_ID";
@@ -123,20 +125,27 @@ namespace EnsureRisk.Export
                 {
                     rowRange.endAt = index;
                 }
-                int contadorColores = 2;
+                int contadorColores = NumberFormats;
                 for (int i = 0; i < dataColumnsList.Count; i++)
                 {
                     Cell cell = new Cell
                     {
                         DataType = CellValues.String,
-                        CellValue = new CellValue(dsrow[dataColumnsList[i].ColumnName].ToString()),
-                        StyleIndex = Convert.ToUInt32(1)
+                        CellValue = new CellValue(dsrow[dataColumnsList[i].ColumnName].ToString())
                     };
+                    if (dsrow[dataColumnsList[0].ColumnName].ToString() == string.Empty)
+                    {
+                        cell.StyleIndex = Convert.ToUInt32(2);
+                    }
+                    else
+                    {
+                        cell.StyleIndex = Convert.ToUInt32(1);
+                    }
                     if (columnsDamages.Contains(i+1))
                     {
-                        if (contadorColores > 5)
+                        if (contadorColores - NumberFormats > columnsDamages.Count)
                         {
-                            contadorColores = 2;                            
+                            contadorColores = NumberFormats;                            
                         }
                         cell.StyleIndex = Convert.ToUInt32(contadorColores);
                         contadorColores++;
@@ -220,7 +229,7 @@ namespace EnsureRisk.Export
             Row headerRow = new Row();
 
             List<DataColumn> columns = new List<DataColumn>();
-            int contadorColores = 2;
+            int contadorColores = NumberFormats;
             for (int i = 0; i < table.Columns.Count; i++)
             {
                 Run run1 = new Run();
@@ -239,9 +248,9 @@ namespace EnsureRisk.Export
 
                 if (columnsDamages.Contains(i + 1))
                 {
-                    if (contadorColores > 5)
+                    if (contadorColores - NumberFormats > columnsDamages.Count)
                     {
-                        contadorColores = 2;
+                        contadorColores = NumberFormats;
                     }
                     cell.StyleIndex = Convert.ToUInt32(contadorColores);
                     contadorColores++;
@@ -250,10 +259,6 @@ namespace EnsureRisk.Export
                 inlineString.Append(run1);
                 cell.Append(inlineString);
                 headerRow.AppendChild(cell);
-            }
-            foreach (DataColumn column in table.Columns)
-            {
-                
             }
             sheetData.AppendChild(headerRow);
             return columns;
@@ -273,23 +278,40 @@ namespace EnsureRisk.Export
             {
                 Fills.Append(new Fill(new PatternFill(new ForegroundColor { Rgb = new HexBinaryValue() { Value = item.Color.ToString().Substring(1) } }) { PatternType = PatternValues.Solid }));
             }
-            int intValue = 182;
-            // Convert integer 182 as a hex in a string variable
-            string hexValue = intValue.ToString("X");
+            //int intValue = 182;
+            //// Convert integer 182 as a hex in a string variable
+            //string hexValue = intValue.ToString("X");
 
-            Border border0 = new Border();      // Defualt border
+            LeftBorder LB = new LeftBorder(){Style = BorderStyleValues.Medium};
+            RightBorder RB = new RightBorder(){Style = BorderStyleValues.Medium};
+            TopBorder TB = new TopBorder(){Style = BorderStyleValues.Medium};
+            BottomBorder BB = new BottomBorder(){Style = BorderStyleValues.Medium};
+
+            Border defaultBorder = new Border();// Defualt border
+            Border coloredBorders = new Border(new OpenXmlElement[] {LB,RB,TB,BB });
+            Border borderMerged = new Border(new OpenXmlElement[] { new LeftBorder() { Style = BorderStyleValues.Thin }, new RightBorder() { Style = BorderStyleValues.Thin }, new TopBorder() { Style = BorderStyleValues.Thin } });
+            Border emptyBorder = new Border(new OpenXmlElement[] { new LeftBorder() { Style = BorderStyleValues.Thin }, new RightBorder() { Style = BorderStyleValues.Thin } });
+
+            emptyBorder.Append();
+            emptyBorder.Append();
+
             Borders borders = new Borders();    // <APPENDING Borders>
-            borders.Append(border0);
+            borders.Append(defaultBorder);
+            borders.Append(coloredBorders);
+            borders.Append(borderMerged);
+            borders.Append(emptyBorder);
 
             // <CellFormats>
-            CellFormat cellformat0 = new CellFormat();//Default Style
-            CellFormat cellformat1 = new CellFormat(new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Center });
-            CellFormats.Append(cellformat0);
+            CellFormat formatDefault = new CellFormat();//DefaultFormat
+            CellFormat cellformat1 = new CellFormat() { FontId = 0, FillId = 0, BorderId = 2, ApplyFill = false, Alignment = new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Center } };
+            CellFormat format2 = new CellFormat() { FontId = 0, FillId = 0, BorderId = 3, ApplyFill = false, Alignment = new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Center } }; ;
+
+            CellFormats.Append(formatDefault);
             CellFormats.Append(cellformat1);
-            for (int i = 2; i < colorsDamages.Count + 2; i++)
+            CellFormats.Append(format2);
+            for (int i = FillsCount; i < colorsDamages.Count + FillsCount; i++)
             {
-                //CellFormat cellformat2 = new CellFormat() { FontId = 0, FillId = Convert.ToUInt32(i), BorderId = 0, ApplyFill = true, Alignment = new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Center } }; // Style with textwrap set
-                CellFormats.Append(new CellFormat() { FontId = 0, FillId = Convert.ToUInt32(i), BorderId = 0, ApplyFill = true, Alignment = new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Center } });
+                CellFormats.Append(new CellFormat() { FontId = 0, FillId = Convert.ToUInt32(i), BorderId = 1, ApplyFill = true, Alignment = new Alignment() { WrapText = true, Vertical = VerticalAlignmentValues.Center } });
             }
 
             //// <APPENDING CellFormats>
