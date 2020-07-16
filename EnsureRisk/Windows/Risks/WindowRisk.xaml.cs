@@ -436,7 +436,7 @@ namespace EnsureRisk.Windows
                 frmSelection.DcolumToShow = new string[] { DT_Role.ROLE_COLUM };
                 frmSelection.DcolumToShowAlias = new string[] { DT_Role.ROLE_COLUM };
                 frmSelection.Title = DT_Role.ROLE_COLUM;
-                frmSelection.P.FilterString = "Role Name";
+                frmSelection.FilterString = "Role Name";
                 frmSelection.ColumnToFilter = DT_Role.ROLE_COLUM;
                 if (frmSelection.ShowDialog() == true)
                 {
@@ -562,7 +562,7 @@ namespace EnsureRisk.Windows
                 frmSelection.DcolumToShow = new string[] { DT_WBS.NIVEL, DT_WBS.WBS_NAME, DT_WBS.USERNAME };
                 frmSelection.DcolumToShowAlias = new string[] { "Level", DT_WBS.WBS_NAME, "User Owner" };
                 frmSelection.Title = "WBS";
-                frmSelection.P.FilterString = "WBS Name";
+                frmSelection.FilterString = "WBS Name";
                 frmSelection.ColumnToFilter = DT_WBS.WBS_NAME;
                 if (frmSelection.ShowDialog() == true)
                 {

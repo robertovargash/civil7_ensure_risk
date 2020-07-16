@@ -63,7 +63,7 @@ namespace EnsureRisk.Windows
             {
                 using (ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk())
                 {
-                    DataTable topCodif = ws.GetAllTopRisk().Tables[DT_Damage.TopRisk_TABLA].Copy();
+                    DataTable topCodif = ws.GetAllTopRisk().Tables[DT_Damage.TABLE_NAME].Copy();
                     WindowSelection frmSelection = new WindowSelection
                     {
                         //dt = topCodif,
@@ -71,9 +71,9 @@ namespace EnsureRisk.Windows
                         DcolumToShow = new string[] { DT_Damage.TOP_RISK_COLUMN },
                         DcolumToShowAlias = new string[] { "Damage" },
                         ColumnToFilter = DT_Damage.TOP_RISK_COLUMN,
-                        Title = "Damages"
+                        Title = "Damages",
+                        FilterString = "Damage"
                     };
-                    frmSelection.P.FilterString = "Damage";
                     if (frmSelection.Dt.Rows.Count == 1)
                     {
                         Drow[DT_Diagram_Damages.ID_DAMAGE] = frmSelection.Dt.Rows[0][DT_Damage.ID_COLUMNA];

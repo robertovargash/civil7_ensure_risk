@@ -25,9 +25,9 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Damage.TopRisk_TABLA);
+                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Damage.TABLE_NAME);
                 SQL.GetDataset(ref ds, "pa_SelectTopRisk");
-                ds.Tables[0].TableName = DT_Damage.TopRisk_TABLA;
+                ds.Tables[0].TableName = DT_Damage.TABLE_NAME;
                 userds.Merge(ds);
                 return userds;
             }
@@ -48,7 +48,7 @@ namespace EnsureRiskWS
             trans = (SqlTransaction)conection.BeginTransaction();
             try
             {
-                SQLAccessBuilder trDA = new SQLAccessBuilder(trans, ds.Tables[DT_Damage.TopRisk_TABLA].TableName, ds.Tables[DT_Damage.TopRisk_TABLA].PrimaryKey);
+                SQLAccessBuilder trDA = new SQLAccessBuilder(trans, ds.Tables[DT_Damage.TABLE_NAME].TableName, ds.Tables[DT_Damage.TABLE_NAME].PrimaryKey);
 
                 trDA.Delete(ds);
 

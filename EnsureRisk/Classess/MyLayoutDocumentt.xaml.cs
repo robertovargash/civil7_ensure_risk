@@ -3375,13 +3375,15 @@ namespace EnsureRisk.Classess
             this.TheProgressBar.Maximum = 100;
             //this.TheProgressBar.Visibility = Visibility.Visible;
             //RiskAndCm[] acumulatedValueList = LinesList.Select((risk, RiskAndCm) => new RiskAndCm { isCM = risk.IsCM, id = risk.ID, value = risk.AcValue }).ToArray();
-            WindowSelection frmSelection = new WindowSelection();
-            frmSelection.Dt = Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram).CopyToDataTable();
-            frmSelection.DcolumToShow = new string[] { DT_Diagram_Damages.DAMAGE };
-            frmSelection.DcolumToShowAlias = new string[] { DT_Diagram_Damages.DAMAGE };
-            frmSelection.Title = "DAMAGE ";
-            frmSelection.P.FilterString = "Damage";
-            frmSelection.ColumnToFilter = DT_Diagram_Damages.DAMAGE;
+            WindowSelection frmSelection = new WindowSelection
+            {
+                Dt = Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram).CopyToDataTable(),
+                DcolumToShow = new string[] { DT_Diagram_Damages.DAMAGE },
+                DcolumToShowAlias = new string[] { DT_Diagram_Damages.DAMAGE },
+                Title = "List of Damages",
+                ColumnToFilter = DT_Diagram_Damages.DAMAGE,
+                FilterString = "Damage"
+            };
             if (frmSelection.ShowDialog() == true)
             {
                 using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(this.Ds, this.ID_Diagram, LinesList, frmSelection.RowsSelected.ToArray()))

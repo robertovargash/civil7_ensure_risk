@@ -80,7 +80,7 @@ namespace EnsureRiskWS
             try
             {
 
-                SQLAccessBuilder trDA = new SQLAccessBuilder(trans, ds.Tables[DT_Damage.TopRisk_TABLA].TableName, ds.Tables[DT_Damage.TopRisk_TABLA].PrimaryKey);
+                SQLAccessBuilder trDA = new SQLAccessBuilder(trans, ds.Tables[DT_Damage.TABLE_NAME].TableName, ds.Tables[DT_Damage.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder riskTreeDA = new SQLAccessBuilder(trans, ds.Tables[DT_Diagram.TABLE_NAME].TableName, ds.Tables[DT_Diagram.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder riskTreeTopRiskDA = new SQLAccessBuilder(trans, ds.Tables[DT_Diagram_Damages.TABLE_NAME].TableName, ds.Tables[DT_Diagram_Damages.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder risk_TopDA = new SQLAccessBuilder(trans, ds.Tables[DT_Risk_Damages.TABLE_NAME].TableName, ds.Tables[DT_Risk_Damages.TABLE_NAME].PrimaryKey);

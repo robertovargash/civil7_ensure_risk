@@ -15,11 +15,22 @@ using System.Data;
 using EnsureBusinesss;
 using EnsureRisk.Resources;
 using System.ComponentModel;
+using System.Windows.Controls.Primitives;
 
 namespace EnsureRisk.Windows
 {
-    public class ThisOne : INotifyPropertyChanged
+    /// <summary>
+    /// Interaction logic for WindowSelection.xaml
+    /// </summary>
+    public partial class WindowSelection : Window, INotifyPropertyChanged
     {
+        public List<DataRow> RowsSelected { get; set; }
+        public DataTable Dt { get; set; }
+        public DataView Dv { get; set; }
+        public string[] DcolumToShowAlias { get; set; }
+        public string[] DcolumToShow { get; set; }
+        public string ColumnToFilter { get; set; }
+        public bool IsMultiple { get; set; }
         string filterName = "None";
 
         public string FilterString
@@ -31,36 +42,17 @@ namespace EnsureRisk.Windows
                 OnPropertyChanged("FilterString");
             }
         }
-
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string property)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new
-                PropertyChangedEventArgs(property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-    }
-    /// <summary>
-    /// Interaction logic for WindowSelection.xaml
-    /// </summary>
-    public partial class WindowSelection : Window
-    {
-        public string FilterString { get; set; }
-        public List<DataRow> RowsSelected { get; set; }
-        public DataTable Dt { get; set; }
-        public DataView Dv { get; set; }
-        public string[] DcolumToShowAlias { get; set; }
-        public string[] DcolumToShow { get; set; }
-        public string ColumnToFilter { get; set; }
-        public ThisOne P { get; set; }
-        public bool IsMultiple { get; set; }
 
         public WindowSelection()
         {
             InitializeComponent();
             ChangeLanguage();
-            P = new ThisOne();
-            txtFilterRisk.DataContext = P;
+            txtFilterRisk.DataContext = this;
         }
 
         public void MostrarErrorDialog(string text)
@@ -80,19 +72,17 @@ namespace EnsureRisk.Windows
             try
             {
                 dgSelection.AutoGenerateColumns = false;
-                //dgSelection.columns
                 for (int i = 0; i < DcolumToShow.Count(); i++)
                 {
-                    DataGridTextColumn column = new DataGridTextColumn();
-                    column.Header = DcolumToShowAlias[i];
-                    column.Binding = new Binding(DcolumToShow[i]);
-                    column.IsReadOnly = true;
-                    //column.
-                    dgSelection.Columns.Add(column);
+                    dgSelection.Columns.Add(new DataGridTextColumn { Header = DcolumToShowAlias[i], Binding = new Binding(DcolumToShow[i]), IsReadOnly = true });
+                }
+                Dt.Columns.Add("Is_Selected", typeof(bool));
+                foreach (DataRow item in Dt.Rows)
+                {
+                    item["Is_Selected"] = false;
                 }
                 Dv = new DataView(Dt);
                 dgSelection.ItemsSource = Dv;
-
             }
             catch (Exception ex)
             {
@@ -105,9 +95,16 @@ namespace EnsureRisk.Windows
             if (dgSelection.SelectedItems.Count >= 0)
             {
                 RowsSelected = new List<DataRow>();
-                foreach (DataRowView item in dgSelection.SelectedItems)
+                //foreach (DataRowView item in dgSelection.SelectedItems)
+                //{
+                //    RowsSelected.Add(item.Row);
+                //}
+                foreach (DataRow item in Dv.Table.Rows)
                 {
-                    RowsSelected.Add(item.Row);
+                    if ((bool)item["Is_Selected"])
+                    {
+                        RowsSelected.Add(item);
+                    }
                 }
                 DialogResult = true;
             }
@@ -161,6 +158,56 @@ namespace EnsureRisk.Windows
         private void btnClearFilter_Click(object sender, RoutedEventArgs e)
         {
             txtFilterRisk.Clear();
+        }
+
+        private void DgRisksCross_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (sender is DataGrid riskDataGrid && riskDataGrid.SelectedItem != null)
+                {
+                    if (riskDataGrid.SelectedItem is DataRowView)
+                    {
+                        if ((bool)((DataRowView)riskDataGrid.SelectedItem).Row["Is_Selected"])
+                        {
+                            ((DataRowView)riskDataGrid.SelectedItem).Row["Is_Selected"] = false;
+                        }
+                        else
+                        {
+                            ((DataRowView)riskDataGrid.SelectedItem).Row["Is_Selected"] = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+
+        }
+
+        private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ((DataRowView)((ToggleButton)e.Source).DataContext).Row["Is_Selected"] = false;
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ((DataRowView)((ToggleButton)e.Source).DataContext).Row["Is_Selected"] = true;
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
         }
     }
 }

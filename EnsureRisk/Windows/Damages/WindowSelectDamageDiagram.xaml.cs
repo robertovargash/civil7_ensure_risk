@@ -56,7 +56,7 @@ namespace EnsureRisk.Windows.Damages
             {
                 ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
                 DataSet ds = ws.GetAllTopRisk();
-                DamageTable = ds.Tables[DT_Damage.TopRisk_TABLA].Copy();
+                DamageTable = ds.Tables[DT_Damage.TABLE_NAME].Copy();
                 ws.Dispose();
                 DamageTable = General.DeleteExists(DamageTable, DamageDiagramTable, DT_Diagram_Damages.ID_DAMAGE);
             }
@@ -92,7 +92,7 @@ namespace EnsureRisk.Windows.Damages
                         ds.Merge(DamageTable);
                         ds = ws.SaveTopRisk(ds);
                         ws.Dispose();
-                        DamageTable.Merge(ds.Tables[DT_Damage.TopRisk_TABLA]);                        
+                        DamageTable.Merge(ds.Tables[DT_Damage.TABLE_NAME]);                        
                         Drow[DT_Diagram_Damages.TOP_RISK] = DAMAGE; 
                         Drow[DT_Diagram_Damages.DAMAGE] = DAMAGE + "(" + UM + ")"; ;
                         Drow[DT_Diagram_Damages.ID_DAMAGE] = drDamage[DT_Damage.ID_COLUMNA];

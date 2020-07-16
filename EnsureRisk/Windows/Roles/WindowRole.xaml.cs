@@ -68,11 +68,10 @@ namespace EnsureRisk.Windows
                     Dt = General.DeleteExists(OpCod, OperationTable, DT_Operation.ID_COLUM),
                     DcolumToShow = new string[] { DT_Operation.OPERATION_COLUMN },
                     DcolumToShowAlias = new string[] { DT_Operation.OPERATION_COLUMN },
-                    Title = "Operation"
-
+                    Title = "Operation",
+                    FilterString = "Operation Name",
+                    ColumnToFilter = DT_Operation.OPERATION_COLUMN
                 };
-                frm.P.FilterString = "Operation Name";
-                frm.ColumnToFilter = DT_Operation.OPERATION_COLUMN;
                 if (frm.ShowDialog() == true)
                 {
                     foreach (DataRow item in frm.RowsSelected)

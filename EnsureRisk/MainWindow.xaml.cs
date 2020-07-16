@@ -1642,7 +1642,7 @@ namespace EnsureRisk
                                 await Task.Run(() =>
                                 {
                                     ServiceTopRiskController.WebServiceTopRisk wstop = new ServiceTopRiskController.WebServiceTopRisk();
-                                    dsImporting.Tables[DT_Damage.TopRisk_TABLA].Merge(wstop.GetAllTopRisk().Tables[DT_Damage.TopRisk_TABLA]);
+                                    dsImporting.Tables[DT_Damage.TABLE_NAME].Merge(wstop.GetAllTopRisk().Tables[DT_Damage.TABLE_NAME]);
                                     wstop.Dispose();
                                     drDiagram[DT_Diagram.DIAGRAM_NAME] = "Imported Diagram at " + DateTime.Now;
                                     drDiagram[DT_Diagram.ID_DIAGRAM] = 0000;
@@ -1653,9 +1653,9 @@ namespace EnsureRisk
                                     foreach (var itemDamages in countDamages)
                                     {
                                         string DamageName = itemDamages.MyContent;
-                                        if (!(dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DamageName + "'").Any()))//si el nombre del daño no existe 
+                                        if (!(dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DamageName + "'").Any()))//si el nombre del daño no existe 
                                         {
-                                            DataRow drDamage = dsImporting.Tables[DT_Damage.TopRisk_TABLA].NewRow();//creo un nuevo daño
+                                            DataRow drDamage = dsImporting.Tables[DT_Damage.TABLE_NAME].NewRow();//creo un nuevo daño
                                             drDamage[DT_Damage.TOP_RISK_COLUMN] = DamageName;
                                             int[] R = new int[] { 255, 220, 40, 80, 54, 144, 54, 144, 158 };
                                             int[] G = new int[] { 50, 10, 150, 200, 54, 54, 158, 158, 135 };
@@ -1677,7 +1677,7 @@ namespace EnsureRisk
                                                 drDamage[DT_Damage.COLORID_COLUMNA] = "#FF0000FF";
                                             }
 
-                                            dsImporting.Tables[DT_Damage.TopRisk_TABLA].Rows.Add(drDamage);
+                                            dsImporting.Tables[DT_Damage.TABLE_NAME].Rows.Add(drDamage);
                                             CreateDiagramDamagesExcel(dsImporting, drDamage, DamageName, drDiagram, true);
                                         }
                                         else
@@ -2087,8 +2087,8 @@ namespace EnsureRisk
             else
             {
                 DataRow drDamage_Diagram = dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].NewRow();//y creo un nuevo diagrama con los daños que acabo de crear
-                drDamage_Diagram[DT_Diagram_Damages.ID_DAMAGE] = dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + Damage + "'").First()[DT_Damage.ID_COLUMNA];
-                drDamage_Diagram[DT_Diagram_Damages.COLOR] = dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + Damage + "'").First()[DT_Damage.COLORID_COLUMNA];
+                drDamage_Diagram[DT_Diagram_Damages.ID_DAMAGE] = dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + Damage + "'").First()[DT_Damage.ID_COLUMNA];
+                drDamage_Diagram[DT_Diagram_Damages.COLOR] = dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + Damage + "'").First()[DT_Damage.COLORID_COLUMNA];
                 drDamage_Diagram[DT_Diagram_Damages.RISK_TREE] = "Imported Diagram";
                 drDamage_Diagram[DT_Diagram_Damages.ID_RISKTREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
                 drDamage_Diagram[DT_Diagram_Damages.TOP_RISK] = Damage;
@@ -2136,7 +2136,7 @@ namespace EnsureRisk
         private void DamagesToCM(DataSet dsImporting, string Damage, DataRow drCM, DataRow drDiagram)
         {
             DataRow drCM_Damage = dsImporting.Tables[DT_CounterM_Damage.TABLE_NAME].NewRow();
-            drCM_Damage[DT_CounterM_Damage.ID_DAMAGE] = dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + Damage + "'").First()[DT_Damage.ID_COLUMNA];
+            drCM_Damage[DT_CounterM_Damage.ID_DAMAGE] = dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + Damage + "'").First()[DT_Damage.ID_COLUMNA];
             drCM_Damage[DT_CounterM_Damage.ID_COUNTERM] = drCM[DT_CounterM.ID];
             drCM_Damage[DT_CounterM_Damage.ID_RISK_TREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
             drCM_Damage[DT_CounterM_Damage.VALUE] = 0;
@@ -2146,7 +2146,7 @@ namespace EnsureRisk
         private void DamagesToRisk(DataSet dsImporting, string Damage, DataRow drRiskN, decimal value, DataRow drDiagram)
         {
             DataRow drRiskDamageN = dsImporting.Tables[DT_Risk_Damages.TABLE_NAME].NewRow();
-            drRiskDamageN[DT_Risk_Damages.ID_DAMAGE] = dsImporting.Tables[DT_Damage.TopRisk_TABLA].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + Damage + "'").First()[DT_Damage.ID_COLUMNA];
+            drRiskDamageN[DT_Risk_Damages.ID_DAMAGE] = dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + Damage + "'").First()[DT_Damage.ID_COLUMNA];
             drRiskDamageN[DT_Risk_Damages.ID_RISK] = drRiskN[DT_Risk.ID];
             drRiskDamageN[DT_Risk_Damages.ID_RISK_TREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
             drRiskDamageN[DT_Risk_Damages.VALUE] = value;
@@ -2698,7 +2698,7 @@ namespace EnsureRisk
                     frmSelection.DcolumToShow = new string[] { DT_WBS.NIVEL, DT_WBS.WBS_NAME, DT_WBS.USERNAME };
                     frmSelection.DcolumToShowAlias = new string[] { "Level", DT_WBS.WBS_NAME, "User Owner" };
                     frmSelection.Title = "WBS";
-                    frmSelection.P.FilterString = "WBS Name";
+                    frmSelection.FilterString = "WBS Name";
                     frmSelection.ColumnToFilter = DT_WBS.WBS_NAME;
                     if (frmSelection.ShowDialog() == true)
                     {
@@ -3132,7 +3132,7 @@ namespace EnsureRisk
                     frmSelection.DcolumToShow = new string[] { DT_Role.ROLE_COLUM };
                     frmSelection.DcolumToShowAlias = new string[] { DT_Role.ROLE_COLUM };
                     frmSelection.Title = DT_Role.ROLE_COLUM;
-                    frmSelection.P.FilterString = "Role Name";
+                    frmSelection.FilterString = "Role Name";
                     frmSelection.ColumnToFilter = DT_Role.ROLE_COLUM;
                     if (frmSelection.ShowDialog() == true)
                     {
@@ -3743,7 +3743,7 @@ namespace EnsureRisk
                     DcolumToShowAlias = new string[] { DT_Diagram.DIAGRAM_NAME },
                     Title = "Diagrams"
                 };
-                frmSelection.P.FilterString = "Diagrams";
+                frmSelection.FilterString = "Diagrams";
                 frmSelection.ColumnToFilter = DT_Diagram.DIAGRAM_NAME;
                 if (frmSelection.ShowDialog() == true)
                 {
@@ -4319,7 +4319,7 @@ namespace EnsureRisk
                 frmSelection.DcolumToShowAlias = new string[] { "Level", DT_WBS.WBS_NAME };
                 frmSelection.Title = "WBS";
 
-                frmSelection.P.FilterString = "WBS";
+                frmSelection.FilterString = "WBS";
                 frmSelection.ColumnToFilter = DT_WBS.WBS_NAME;
                 if (frmSelection.ShowDialog() == true)
                 {
@@ -4472,7 +4472,7 @@ namespace EnsureRisk
 
                     frmSelection.DcolumToShow = new string[] { DT_Role.ROLE_COLUM };
                     frmSelection.DcolumToShowAlias = new string[] { DT_Role.ROLE_COLUM };
-                    frmSelection.P.FilterString = DT_Role.ROLE_COLUM;
+                    frmSelection.FilterString = DT_Role.ROLE_COLUM;
                     frmSelection.ColumnToFilter = DT_Role.ROLE_COLUM;
                     frmSelection.Title = DT_Role.ROLE_COLUM;
 

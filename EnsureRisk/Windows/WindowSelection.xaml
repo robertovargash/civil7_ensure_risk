@@ -31,7 +31,26 @@
             </Button>
         </Grid>
         <Grid Grid.Row="1">
-            <DataGrid Name="dgSelection" Margin="12,10,4,67" IsReadOnly="True" AutoGenerateColumns="False" MouseDoubleClick="dgSelection_MouseDoubleClick" ColumnWidth="*" />
+            <DataGrid Name="dgSelection" Margin="12,10,4,67" IsReadOnly="True" AutoGenerateColumns="False" MouseDoubleClick="dgSelection_MouseDoubleClick" ColumnWidth="*"  SelectionChanged="DgRisksCross_SelectionChanged" >
+                <DataGrid.Columns>
+                    <!--<DataGridCheckBoxColumn Binding="{Binding Is_Selected}" Width="60"/>-->
+                    <DataGridTemplateColumn Width="80" x:Name="Selectbtn">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ToggleButton Unchecked="ToggleButton_Unchecked" Checked="ToggleButton_Checked" Width="20" Height="20" Style="{StaticResource MaterialDesignActionToggleButton}" 
+                                              IsChecked="{Binding Path= Is_Selected}">
+                                    <ToggleButton.Content>
+                                        <md:PackIcon Kind="Close" Width="20" Height="20"/>
+                                    </ToggleButton.Content>
+                                    <md:ToggleButtonAssist.OnContent>
+                                        <md:PackIcon Kind="Check" Width="20" Height="20"/>
+                                    </md:ToggleButtonAssist.OnContent>
+                                </ToggleButton>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
             <Button Name="BtnSelect" Content="Select" Margin="0,0,152,18" Height="33" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="110" Click="BtnSelect_Click" IsDefault="True" />
             <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Right" Height="33" Margin="0,0,21,18" VerticalAlignment="Bottom" Width="110" Click="BtnCancel_Click" IsCancel="True"/>
         </Grid>

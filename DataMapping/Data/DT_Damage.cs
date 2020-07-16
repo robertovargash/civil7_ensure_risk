@@ -6,12 +6,20 @@ namespace DataMapping.Data
 
     public partial class DT_Damage : DataTable {
 		
-        public const string TopRisk_TABLA = "TopRisk"; 
-        
-        public const string COLORID_COLUMNA = "Color";
-        public const string ID_COLUMNA = "idTopRisk";
-        public const string TOP_RISK_COLUMN = "TopRisk";
-        public const string UM = "UM";
+        public const string TABLE_NAME = "TopRisk";
+
+        private const string cOLORID_COLUMNA = "Color";
+        private const string iD_COLUMNA = "idTopRisk";
+        private const string tOP_RISK_COLUMN = "TopRisk";
+        private const string uM = "UM";
+
+        public static string COLORID_COLUMNA => cOLORID_COLUMNA;
+
+        public static string ID_COLUMNA => iD_COLUMNA;
+
+        public static string TOP_RISK_COLUMN => tOP_RISK_COLUMN;
+
+        public static string UM => uM;
 
         public DT_Damage() : base()
         {
@@ -21,7 +29,7 @@ namespace DataMapping.Data
         private void CreateTable()
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
-            this.TableName = TopRisk_TABLA;
+            this.TableName = TABLE_NAME;
             PK_COLUMN[0] = this.Columns.Add(ID_COLUMNA, typeof(int));
             PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
             this.Columns.Add(COLORID_COLUMNA, typeof(string));

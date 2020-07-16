@@ -88,7 +88,7 @@ namespace EnsureRisk.Windows
                 Ds = new UserDataSet();
                 ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
                 Ds.Merge(ws.GetAllTopRisk());
-                Dv = Ds.Tables[DT_Damage.TopRisk_TABLA].DefaultView;
+                Dv = Ds.Tables[DT_Damage.TABLE_NAME].DefaultView;
                 dgTopRisk.ItemsSource = Dv;
             }
             catch (Exception ex)
@@ -104,13 +104,13 @@ namespace EnsureRisk.Windows
             {
                 WindowTopRisk formTop = new WindowTopRisk
                 {
-                    Drow = Ds.Tables[DT_Damage.TopRisk_TABLA].NewRow(),
+                    Drow = Ds.Tables[DT_Damage.TABLE_NAME].NewRow(),
                     Operation = General.INSERT,
                     Icon = Icon
                 };
                 if (formTop.ShowDialog() == true)
                 {
-                    Ds.Tables[DT_Damage.TopRisk_TABLA].Rows.Add(formTop.Drow);
+                    Ds.Tables[DT_Damage.TABLE_NAME].Rows.Add(formTop.Drow);
                     if (Ds.HasChanges())
                     {
                         DataSet temp = new DataSet();

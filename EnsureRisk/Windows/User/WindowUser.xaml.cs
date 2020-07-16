@@ -125,7 +125,7 @@ namespace EnsureRisk.Windows
                     DcolumToShowAlias = new string[] { DT_Role.ROLE_COLUM },
                     Title = "Role"
                 };
-                frm.P.FilterString = "Role name";
+                frm.FilterString = "Role name";
                 frm.ColumnToFilter = DT_Role.ROLE_COLUM;
                 if (frm.ShowDialog() == true)
                 {
@@ -262,10 +262,10 @@ namespace EnsureRisk.Windows
                     //dt = General.EliminarExistenColumString(OpCod, RoleTable, RoleDatos.ROLE_COLUM),
                     DcolumToShow = new string[] { "WBS", "Project" },
                     DcolumToShowAlias = new string[] { "WBS", "Project" },
-                    Title = "WBS"
+                    Title = "WBS",
+                    FilterString = "WBS",
+                    ColumnToFilter = "WBS"
                 };
-                frm.P.FilterString = "WBS";
-                frm.ColumnToFilter = "WBS";
                 if (frm.ShowDialog() == true)
                 {
                     foreach (DataRow item in frm.RowsSelected)
