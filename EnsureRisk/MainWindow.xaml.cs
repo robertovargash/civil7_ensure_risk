@@ -3577,6 +3577,8 @@ namespace EnsureRisk
                             DataSet ImportDSs = TheCurrentLayout.Ds.Copy();
                             DataRow drNewRisk = CopyPasteOps.SetValoresOriginalesRiesgoCopiado(TheCurrentLayout.CopyRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), true,
                                                                                                 TheCurrentLayout.ID_Diagram, DsWBS, TheCurrentLayout.LinesList);
+                            CopyPasteOps.EstablecerValorDelHijoAlPadre(TheCurrentLayout.CopyRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), TheCurrentLayout.ID_Diagram, DsWBS);
+
                             TheCurrentLayout.Ds.Merge(ImportDSs);
                             ImportDSs.Dispose();
                             COPIANDO = false;
@@ -3603,6 +3605,8 @@ namespace EnsureRisk
                             CopyPasteOps.AgregarNewDamagesAExistingRisk(ImportDSs, drImportados, TheCurrentLayout.ID_Diagram, DsWBS);
                             DataRow drNewRisk = CopyPasteOps.SetValoresOriginalesRiesgoCopiado(GlobalCopyLine, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID),
                                                 true, TheCurrentLayout.ID_Diagram, DsWBS, TheCurrentLayout.LinesList);
+                            CopyPasteOps.EstablecerValorDelHijoAlPadre(GlobalCopyLine, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), TheCurrentLayout.ID_Diagram, DsWBS);
+
                             TheCurrentLayout.Ds.Merge(ImportDSs);
                             ImportDSs.Dispose();
                             RiskPolyLine Line_Created = new RiskPolyLine
@@ -3761,7 +3765,8 @@ namespace EnsureRisk
                         CopyPasteOps.AgregarDamageADiagram(ImportDSs, drImportados,TheCurrentLayout.ID_Diagram);
                         CopyPasteOps.AgregarNewDamagesAExistingRisk(ImportDSs, drImportados, TheCurrentLayout.ID_Diagram, DsWBS);
                         DataRow drNewRisk = CopyPasteOps.SetValoresOriginalesRiesgoCopiado(TheCurrentLayout.CopyRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), true,
-                                                TheCurrentLayout.ID_Diagram, DsWBS, TheCurrentLayout.LinesList);                        
+                                                TheCurrentLayout.ID_Diagram, DsWBS, TheCurrentLayout.LinesList);
+                        CopyPasteOps.EstablecerValorDelHijoAlPadre(TheCurrentLayout.CopyRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), TheCurrentLayout.ID_Diagram, DsWBS);
                         TheCurrentLayout.Ds.Merge(ImportDSs);
                         ImportDSs.Dispose();
                         RiskPolyLine Line_Created = new RiskPolyLine

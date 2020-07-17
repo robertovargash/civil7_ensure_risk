@@ -2321,6 +2321,7 @@ namespace EnsureRisk.Classess
                     DataSet ImportDSs = Ds.Copy();
                     DataRow drNewRisk = CopyPasteOps.SetValoresOriginalesRiesgoCopiado(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
                                                                                         ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList);
+                    CopyPasteOps.EstablecerValorDelHijoAlPadre(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
                     Ds.Merge(ImportDSs);
                     ImportDSs.Dispose();
                     MoviendoRisk = false;
