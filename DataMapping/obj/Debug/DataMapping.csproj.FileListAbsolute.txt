@@ -70,3 +70,4 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\DataMappin
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\DataMapping.pdb
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\DataMapping\obj\Debug\DataMapping.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\DataMapping\obj\Debug\DataMapping.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\DataMapping\obj\Debug\DataMapping.csprojAssemblyReference.cache

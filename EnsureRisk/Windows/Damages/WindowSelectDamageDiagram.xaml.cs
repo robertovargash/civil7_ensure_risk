@@ -84,7 +84,6 @@ namespace EnsureRisk.Windows.Damages
                         DataRow drDamage = DamageTable.NewRow();
                         drDamage[DT_Damage.TOP_RISK_COLUMN] = DAMAGE;
                         drDamage[DT_Damage.UM] = UM;
-                        //System.Drawing.Color color = System.Drawing.Color.FromArgb(colorPiker.SelectedColor.Value.A, colorPiker.SelectedColor.Value.R, colorPiker.SelectedColor.Value.G, colorPiker.SelectedColor.Value.B);
                         drDamage[DT_Damage.COLORID_COLUMNA] = colorPiker.SelectedColor.ToString();
                         ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
                         DamageTable.Rows.Add(drDamage);

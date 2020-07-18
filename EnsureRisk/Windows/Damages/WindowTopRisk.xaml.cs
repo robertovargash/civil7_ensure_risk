@@ -18,21 +18,32 @@ using DataMapping.Data;
 using System.Windows.Media;
 using EnsureBusinesss;
 using EnsureRisk.Resources;
+using System.ComponentModel;
 
 namespace EnsureRisk.Windows
 {
     /// <summary>
     /// Interaction logic for WindowTopRisk.xaml
     /// </summary>
-    public partial class WindowTopRisk : Window
+    public partial class WindowTopRisk : Window, INotifyPropertyChanged
     {
+        private string damage, um;
+        public string DAMAGE { get { return damage; } set { damage = value; OnPropertyChanged("DAMAGE"); } }
+        public string UM { get { return um; } set { um = value; OnPropertyChanged("UM"); } }
+
         public DataRow Drow { get; set; }
         public string Operation { get; set; }
-
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
         public WindowTopRisk()
         {
             InitializeComponent();
             ChangeLanguage();
+            TextTopRisk.DataContext = this;
+            UMText.DataContext = this;
         }
 
         public void MostrarErrorDialog(string text)
@@ -54,7 +65,8 @@ namespace EnsureRisk.Windows
             {
                 if (Operation == General.UPDATE)
                 {
-                    TextTopRisk.Text = Drow[DT_Damage.TOP_RISK_COLUMN].ToString();
+                    DAMAGE = Drow[DT_Damage.TOP_RISK_COLUMN].ToString();
+                    UM= Drow[DT_Damage.UM].ToString();
                     colorPiker.SelectedColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(Drow[DT_Damage.COLORID_COLUMNA].ToString())).Color;
                 }
                 TextTopRisk.Focus();
@@ -69,10 +81,44 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                //color = System.Drawing.Color.FromArgb(colorPiker.SelectedColor.Value.A, colorPiker.SelectedColor.Value.R, colorPiker.SelectedColor.Value.G, colorPiker.SelectedColor.Value.B);
-                Drow[DT_Damage.COLORID_COLUMNA] = colorPiker.SelectedColor.ToString();
-                Drow[DT_Damage.TOP_RISK_COLUMN] = TextTopRisk.Text;
-                DialogResult = true;
+                using (ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk())
+                {
+                    if (ws.GetAllTopRisk().Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DAMAGE + "' and " + DT_Damage.UM + " = '" + UM + "'").Any())
+                    {
+                        MostrarErrorDialog("This damage exists with the UM. Insert other.");
+                    }
+                    else
+                    {
+                        Drow[DT_Damage.COLORID_COLUMNA] = colorPiker.SelectedColor.ToString();
+                        Drow[DT_Damage.TOP_RISK_COLUMN] = DAMAGE;
+                        Drow[DT_Damage.UM] = UM;
+                        DialogResult = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void TextTopRisk_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                DAMAGE = TextTopRisk.Text;
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void UMText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                UM = UMText.Text;
             }
             catch (Exception ex)
             {

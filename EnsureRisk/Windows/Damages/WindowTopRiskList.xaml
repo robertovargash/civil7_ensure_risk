@@ -21,6 +21,7 @@
         <DataGrid x:Name="dgTopRisk" Margin="128,10,20,21" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="dgTopRisk_MouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_Damage.TOP_RISK_COLUMN}}" Width="*"/>
+                <DataGridTextColumn x:Name="UM" Header="UM" Binding="{Binding {x:Static data:DT_Damage.UM}}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
         <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">

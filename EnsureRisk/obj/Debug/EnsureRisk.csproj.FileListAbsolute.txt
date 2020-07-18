@@ -1262,7 +1262,6 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Wi
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Roles\WindowRoleList.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\WindowSaveAs.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\WindowSelection.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Damages\WindowSelectTopRisk.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\WindowText.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRisk.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Damages\WindowTopRiskList.g.cs

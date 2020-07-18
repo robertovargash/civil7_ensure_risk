@@ -313,9 +313,6 @@
     <Compile Include="Windows\WindowSelection.xaml.cs">
       <DependentUpon>WindowSelection.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Damages\WindowSelectTopRisk.xaml.cs">
-      <DependentUpon>WindowSelectTopRisk.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\WindowText.xaml.cs">
       <DependentUpon>WindowText.xaml</DependentUpon>
     </Compile>
@@ -472,10 +469,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\WindowSelection.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\Damages\WindowSelectTopRisk.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -14,7 +14,25 @@
         mc:Ignorable="d"
         Title="Damage" Height="285.763" Width="310.334" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" >
     <Grid>
-        <TextBox md:HintAssist.Hint="Damage Definition" md:HintAssist.IsFloating="True" Name="TextTopRisk" HorizontalAlignment="Left" Height="56" Margin="38,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="233" TabIndex="1"/>
+        <TextBox md:HintAssist.Hint="Damage Definition" md:HintAssist.IsFloating="True" Name="TextTopRisk" TextChanged="TextTopRisk_TextChanged" HorizontalAlignment="Left"  Margin="38,25,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="189" TabIndex="1">
+            <TextBox.Text>
+                <Binding Path="DAMAGE" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <TextBox md:HintAssist.Hint="UM" md:HintAssist.IsFloating="True" x:Name="UMText" Width="52" VerticalAlignment="Top" HorizontalAlignment="Right" TextChanged="UMText_TextChanged" Margin="0,25,10,0">
+            <TextBox.Text>
+                <Binding Path="UM" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
         <Button Name="BtnOK" Content="OK" HorizontalAlignment="Left" Height="35" Margin="47,0,0,10" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5"/>
         <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Left" Height="35" Margin="160,0,0,10" VerticalAlignment="Bottom" Width="90" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5"/>
         <TextBlock Text="Select a color below:" Margin="38,86,-14,148"/>
