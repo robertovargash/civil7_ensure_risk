@@ -14,6 +14,13 @@ namespace EnsureRisk
 
         public static DataRow EstablecerValoresNuevoRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain, int ID_Diagram, DataSet DsWBS)
         {
+            int sourceID_Diagram;
+            string DiagramName = "";
+            if (sourceRisk.IsRoot)
+            {
+                sourceID_Diagram = (int)targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_DIAGRAM];
+                DiagramName = targetDataset.Tables[DT_Diagram.TABLE_NAME].Rows.Find(sourceID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
+            }
             DataRow drNewRisk = targetDataset.Tables[DT_Risk.TABLE_NAME].NewRow();
             drNewRisk[DT_Risk.COMMENTS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.COMMENTS];
             drNewRisk[DT_Risk.ENABLED] = true;
@@ -21,7 +28,7 @@ namespace EnsureRisk
             drNewRisk[DT_Risk.ID_DIAGRAM] = ID_Diagram;
             drNewRisk[DT_Risk.ISCOLLAPSED] = false;
             drNewRisk[DT_Risk.IS_ROOT] = false;
-            drNewRisk[DT_Risk.NAMESHORT] = sourceRisk.ShortName;
+            drNewRisk[DT_Risk.NAMESHORT] = sourceRisk.IsRoot ? DiagramName : sourceRisk.ShortName;
             drNewRisk[DT_Risk.POSITION] = isMain ? sourceRisk.Position : targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.POSITION];
 
             drNewRisk[DT_Risk.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drTargetRisk[DT_Risk.ID])[DT_Risk.GROUPE_NAME]; ;
@@ -63,6 +70,13 @@ namespace EnsureRisk
 
         public static DataRow SetValoresOriginalesRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain, int ID_Diagram, DataSet DsWBS, List<RiskPolyLine> LinesList)
         {
+            int sourceID_Diagram;
+            string DiagramName = "";
+            if (sourceRisk.IsRoot)
+            {
+                sourceID_Diagram = (int)targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_DIAGRAM];
+                DiagramName = targetDataset.Tables[DT_Diagram.TABLE_NAME].Rows.Find(sourceID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
+            }
             DataRow drNewRisk = targetDataset.Tables[DT_Risk.TABLE_NAME].NewRow();
             drNewRisk[DT_Risk.COMMENTS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.COMMENTS];
             drNewRisk[DT_Risk.ENABLED] = true;
@@ -70,7 +84,7 @@ namespace EnsureRisk
             drNewRisk[DT_Risk.ID_DIAGRAM] = ID_Diagram;
             drNewRisk[DT_Risk.ISCOLLAPSED] = false;
             drNewRisk[DT_Risk.IS_ROOT] = false;
-            drNewRisk[DT_Risk.NAMESHORT] = sourceRisk.ShortName;
+            drNewRisk[DT_Risk.NAMESHORT] = sourceRisk.IsRoot ? DiagramName : sourceRisk.ShortName;
             drNewRisk[DT_Risk.POSITION] = isMain ? LinesList.Find(r => r.ID == (int)drTargetRisk[DT_Risk.ID]).Children.Count : targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.POSITION];
 
             drNewRisk[DT_Risk.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.GROUPE_NAME]; ;
