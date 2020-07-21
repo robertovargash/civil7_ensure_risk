@@ -59,6 +59,7 @@ namespace EnsureRisk.Windows.Damages
                 DamageTable = ds.Tables[DT_Damage.TABLE_NAME].Copy();
                 ws.Dispose();
                 DamageTable = General.DeleteExists(DamageTable, DamageDiagramTable, DT_Diagram_Damages.ID_DAMAGE);
+                ColorField.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
             {
@@ -122,6 +123,14 @@ namespace EnsureRisk.Windows.Damages
             try
             {
                 DAMAGE = TextTopRisk.Text;
+                if (DamageTable.Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DAMAGE + "' AND " + DT_Damage.UM + " = '" + UM + "'").Any())
+                {
+                    ColorField.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    ColorField.Visibility = Visibility.Visible;
+                }
             }
             catch (Exception ex)
             {
@@ -134,6 +143,14 @@ namespace EnsureRisk.Windows.Damages
             try
             {
                 UM = UMText.Text;
+                if (DamageTable.Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DAMAGE + "' AND " + DT_Damage.UM + " = '" + UM + "'").Any())
+                {
+                    ColorField.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    ColorField.Visibility = Visibility.Visible;
+                }
             }
             catch (Exception ex)
             {

@@ -47,8 +47,10 @@
                     </TextBox>
                 </StackPanel>
                 <Separator Margin="10" Visibility="Hidden"/>
-                <TextBlock Text="Select a color:"/>
-                <xctk:ColorPicker x:Name="colorPiker" VerticalAlignment="Top" HorizontalAlignment="Center" Height="35" Width="250" />
+                <StackPanel x:Name="ColorField">
+                    <TextBlock Text="Select a color:"/>
+                    <xctk:ColorPicker x:Name="colorPiker" VerticalAlignment="Top" HorizontalAlignment="Center" Height="35" Width="250" />
+                </StackPanel>
             </StackPanel>
         </Grid>
         <Grid  Grid.Row="1">

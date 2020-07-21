@@ -3243,28 +3243,31 @@ namespace EnsureRisk
 
         #endregion
 
-        private void DeleteRisk()
+        private void DeleteRisk(RiskPolyLine line)
         {
             try
             {
-                TreeOperation.DeleteLine(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds);
-
-                TheCurrentLayout.DropLines();
-                TheCurrentLayout.DropRectangles();
-                TheCurrentLayout.LoadLines();
-                TheCurrentLayout.LoadRectangles();
-                TheCurrentLayout.DrawNumbers();
-                TextProbabilityChange(TheCurrentLayout.MainLine);
-                TheCurrentLayout.SetLinesThickness();
-                CruzarTablaRisk(TheCurrentLayout.Ds);
-                CruzarTablaCM(TheCurrentLayout.Ds);
-                IS_DELETING_RISK = false;
+                TreeOperation.DeleteLine(line, TheCurrentLayout.Ds);                
             }
             catch (Exception ex)
             {
                 IS_DELETING_RISK = false;
                 MostrarErrorDialog(ex.Message);
             }            
+        }
+
+        private void LoadDataAfterDeleRisk()
+        {
+            TheCurrentLayout.DropLines();
+            TheCurrentLayout.DropRectangles();
+            TheCurrentLayout.LoadLines();
+            TheCurrentLayout.LoadRectangles();
+            TheCurrentLayout.DrawNumbers();
+            TextProbabilityChange(TheCurrentLayout.MainLine);
+            TheCurrentLayout.SetLinesThickness();
+            CruzarTablaRisk(TheCurrentLayout.Ds);
+            CruzarTablaCM(TheCurrentLayout.Ds);
+            IS_DELETING_RISK = false;
         }
 
         /// <summary>
@@ -4544,28 +4547,31 @@ namespace EnsureRisk
 
         #endregion
 
-        private void DeleteCM()
+        private void DeleteCM(RiskPolyLine CM)
         {
             try
             {
-                TreeOperation.DeleteLine(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds);
-                TheCurrentLayout.DropLines();
-                TheCurrentLayout.DropRectangles();
-                TheCurrentLayout.LoadLines();
-                TheCurrentLayout.LoadRectangles();
-                TheCurrentLayout.DrawNumbers();
-                TextProbabilityChange(TheCurrentLayout.MainLine);
-                TheCurrentLayout.SetLinesThickness();
-                CruzarTablaRisk(TheCurrentLayout.Ds);
-                CruzarTablaCM(TheCurrentLayout.Ds);
-                IS_DELETING_CM = false;
+                TreeOperation.DeleteLine(CM, TheCurrentLayout.Ds);
             }
             catch (Exception ex)
             {
                 IS_DELETING_CM = false;
                 MostrarErrorDialog(ex.Message);
-            }
-            
+            }            
+        }
+
+        private void LoadDataAfterDeleteCM()
+        {
+            TheCurrentLayout.DropLines();
+            TheCurrentLayout.DropRectangles();
+            TheCurrentLayout.LoadLines();
+            TheCurrentLayout.LoadRectangles();
+            TheCurrentLayout.DrawNumbers();
+            TextProbabilityChange(TheCurrentLayout.MainLine);
+            TheCurrentLayout.SetLinesThickness();
+            CruzarTablaRisk(TheCurrentLayout.Ds);
+            CruzarTablaCM(TheCurrentLayout.Ds);
+            IS_DELETING_CM = false;
         }
 
         /// <summary>
@@ -4943,7 +4949,10 @@ namespace EnsureRisk
             try
             {
                 //DsMain = CurrentLayout.Ds;
-                WindowGroupe wg = new WindowGroupe();
+                WindowGroupe wg = new WindowGroupe()
+                {
+                    DT_Groups = TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Copy()
+                };
                 wg.ShowDialog();
                 if (wg.DialogResult == true)
                 {
@@ -5081,7 +5090,10 @@ namespace EnsureRisk
         {
             try
             {
-                WindowGroupe wg = new WindowGroupe();
+                WindowGroupe wg = new WindowGroupe()
+                {
+                    DT_Groups = TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Copy()
+                };
                 wg.ShowDialog();
                 if (wg.DialogResult == true)
                 {
@@ -5981,19 +5993,30 @@ namespace EnsureRisk
             }
         }
 
-        private void RemoveGroupFilter(int IDGroupe)
+        private void RemoveGroupFilter(int IDGroupe, bool removeRisk)
         {
             try
             {
                 foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_GROUPE + " = " + IDGroupe))
                 {
-                    item[DT_Risk.ID_GROUPE] = DBNull.Value;
-                    item[DT_Risk.GROUPE_NAME] = "None";
+                    if (item.RowState != DataRowState.Deleted)
+                    {
+                        item[DT_Risk.ID_GROUPE] = DBNull.Value;
+                        item[DT_Risk.GROUPE_NAME] = "None";
+                        if (removeRisk)
+                        {
+                            DeleteRisk(TheCurrentLayout.LinesList.Find(line => line.ID == (int)item[DT_Risk.ID]));
+                        }
+                    }                        
                 }
                 foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_GROUPE + " = " + IDGroupe))
                 {
-                    item[DT_CounterM.ID_GROUPE] = DBNull.Value;
-                    item[DT_CounterM.GROUPE_NAME] = "None";
+                    if (item.RowState != DataRowState.Deleted)
+                    {
+                        item[DT_CounterM.ID_GROUPE] = DBNull.Value;
+                        item[DT_CounterM.GROUPE_NAME] = "None";
+                        DeleteCM(TheCurrentLayout.LinesList.Find(line => line.ID == (int)item[DT_CounterM.ID]));
+                    }
                 }
                 foreach (var item in TheCurrentLayout.LinesList.FindAll(x => x.Group.IdGroup == IDGroupe))
                 {
@@ -6011,15 +6034,16 @@ namespace EnsureRisk
             }            
         }
 
-        private void RemoveGroup(int IdGroup)
+        private void RemoveGroup(int IdGroup, bool removeRisk)
         {
             try
             {
-                RemoveGroupFilter(IdGroup);
+                RemoveGroupFilter(IdGroup, removeRisk);
                 if (TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Contains(IdGroup))
                 {
                     TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(IdGroup).Delete();
                 }
+                LoadDataAfterRemoveGroup();
                 IS_REMOVING_GROUP = false;
             }
             catch (Exception ex)
@@ -6027,6 +6051,20 @@ namespace EnsureRisk
                 IS_REMOVING_GROUP = false;
                 MostrarErrorDialog(ex.Message);
             }
+        }
+
+        private void LoadDataAfterRemoveGroup()
+        {
+            TheCurrentLayout.DropLines();
+            TheCurrentLayout.DropRectangles();
+            TheCurrentLayout.LoadLines();
+            TheCurrentLayout.LoadRectangles();
+            TheCurrentLayout.DrawNumbers();
+            TextProbabilityChange(TheCurrentLayout.MainLine);
+            TheCurrentLayout.SetLinesThickness();
+            CruzarTablaRisk(TheCurrentLayout.Ds);
+            CruzarTablaCM(TheCurrentLayout.Ds);
+            IS_REMOVING_GROUP = false;
         }
 
         private void Remove_Group_Click(object sender, RoutedEventArgs e)
@@ -8304,11 +8342,13 @@ namespace EnsureRisk
                     }
                     if (IS_DELETING_RISK)
                     {
-                        DeleteRisk();
+                        DeleteRisk(TheCurrentLayout.Line_Selected);
+                        LoadDataAfterDeleRisk();
                     }
                     if (IS_DELETING_CM)
                     {
-                        DeleteCM();
+                        DeleteCM(TheCurrentLayout.Line_Selected);
+                        LoadDataAfterDeleteCM();
                     }
                     if (IS_DELETING_GROUP_CM)
                     {
@@ -8316,11 +8356,11 @@ namespace EnsureRisk
                     }
                     if (IS_REMOVING_GROUP_FILTER)
                     {
-                        RemoveGroupFilter(ID_Groupe);
+                        RemoveGroupFilter(ID_Groupe, false);
                     }
                     if (IS_REMOVING_GROUP)
                     {
-                        RemoveGroup(ID_Groupe);
+                        RemoveGroup(ID_Groupe, true);
                     }
                     if (IS_DELETING_GROUP_TAB)
                     {
