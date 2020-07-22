@@ -27,6 +27,12 @@
         <Button x:Name="BtnOK" Content="OK" HorizontalAlignment="Right" Margin="0,0,146,17" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5"/>
         <Button x:Name="BtnCancel" Content="Cancel" Margin="0,0,25,17" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5"/>
         <DataGrid x:Name="dgTopRisk" HorizontalAlignment="Left" CanUserAddRows="False" CanUserDeleteRows="False" Height="244" Margin="101,70,0,0" VerticalAlignment="Top" Width="284" AutoGenerateColumns="False"  CanUserSortColumns="False">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="{Binding {x:Static data:DT_Diagram_Damages.COLOR}}">
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="cTopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_Diagram_Damages.DAMAGE}}" Width="*" IsReadOnly="True" />
             </DataGrid.Columns>

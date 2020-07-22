@@ -19,9 +19,15 @@
         <Button x:Name="BtnEdit" Content="Edit" HorizontalAlignment="Left" Height="31" Margin="22,81,0,0" VerticalAlignment="Top" Width="90" Click="BtnEdit_Click" TabIndex="2" md:ShadowAssist.ShadowDepth="Depth5"/>
         <Button x:Name="BtnDel" Content="Delete" HorizontalAlignment="Left" Height="31" Margin="22,137,0,0" VerticalAlignment="Top" Width="90" Click="BtnDel_Click" TabIndex="3" md:ShadowAssist.ShadowDepth="Depth5"/>
         <DataGrid x:Name="dgTopRisk" Margin="128,10,20,21" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="dgTopRisk_MouseDoubleClick">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="{Binding {x:Static data:DT_Damage.COLORID_COLUMNA}}">                        
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_Damage.TOP_RISK_COLUMN}}" Width="*"/>
-                <DataGridTextColumn x:Name="UM" Header="UM" Binding="{Binding {x:Static data:DT_Damage.UM}}" Width="*"/>
+                <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_Damage.TOP_RISK_COLUMN}}" Width="Auto"/>
+                <DataGridTextColumn x:Name="UM" Header="UM" Binding="{Binding {x:Static data:DT_Damage.UM}}" Width="Auto"/>
             </DataGrid.Columns>
         </DataGrid>
         <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">

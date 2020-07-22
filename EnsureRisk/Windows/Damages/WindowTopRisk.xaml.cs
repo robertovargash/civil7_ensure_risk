@@ -81,19 +81,29 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                using (ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk())
+                if (Operation == General.INSERT)
                 {
-                    if (ws.GetAllTopRisk().Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DAMAGE + "' and " + DT_Damage.UM + " = '" + UM + "'").Any())
+                    using (ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk())
                     {
-                        MostrarErrorDialog("This damage exists with the UM. Insert other.");
+                        if (ws.GetAllTopRisk().Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DAMAGE + "' and " + DT_Damage.UM + " = '" + UM + "'").Any())
+                        {
+                            MostrarErrorDialog("This damage exists with the UM. Insert other.");
+                        }
+                        else
+                        {
+                            Drow[DT_Damage.COLORID_COLUMNA] = colorPiker.SelectedColor.ToString();
+                            Drow[DT_Damage.TOP_RISK_COLUMN] = DAMAGE;
+                            Drow[DT_Damage.UM] = UM;
+                            DialogResult = true;
+                        }
                     }
-                    else
-                    {
-                        Drow[DT_Damage.COLORID_COLUMNA] = colorPiker.SelectedColor.ToString();
-                        Drow[DT_Damage.TOP_RISK_COLUMN] = DAMAGE;
-                        Drow[DT_Damage.UM] = UM;
-                        DialogResult = true;
-                    }
+                }
+                else
+                {
+                    Drow[DT_Damage.COLORID_COLUMNA] = colorPiker.SelectedColor.ToString();
+                    Drow[DT_Damage.TOP_RISK_COLUMN] = DAMAGE;
+                    Drow[DT_Damage.UM] = UM;
+                    DialogResult = true;
                 }
             }
             catch (Exception ex)
