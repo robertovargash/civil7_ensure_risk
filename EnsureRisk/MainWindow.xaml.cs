@@ -553,46 +553,8 @@ namespace EnsureRisk
             try
             {
                 IS_LOGIN = true;
+                CloseOpenedDiagrams();
                 LoginDialog.IsOpen = true;
-                //LoginWindow lw = new LoginWindow
-                //{
-                //    Icon = Icon
-                //};
-                //if (lw.ShowDialog() == true)
-                //{
-                //    if (lw.Usser != "" || lw.Usser != null)
-                //    {
-                //        Title = "Ensure Risk | " + StringResources.CONNECTED_STRING + " " + lw.Usser;
-                //        LoginMenuItem.Header = StringResources.LOGOFF;
-                //        Flag_login = true;
-                //        LoginUser = lw.Usser;
-                //        AccessList = lw.AccessList;
-                //        ValidateAccess();
-                //        RefreshWBS();
-                //        foreach (var item in OpenedDocuments)
-                //        {
-                //            item.LoginUser = LoginUser;
-                //        }
-                //    }
-                //    else
-                //    {
-                //        Flag_login = false;
-                //        LoginMenuItem.Header = StringResources.LoginMenu;
-                //        Title = "Ensure Risk";
-                //        LoginUser = "";
-                //        AccessList = lw.AccessList;
-                //        ValidateAccess();
-                //    }
-                //}
-                //else
-                //{
-                //    Flag_login = false;
-                //}
-                //if (lw.DialogResult == false)
-                //{
-                //    Flag_login = false;
-                //    Close();
-                //}
             }
             catch (Exception ex)
             {
@@ -1594,7 +1556,7 @@ namespace EnsureRisk
             {
                 if (dgTreeDiagrams.SelectedIndex >= 0)
                 {
-                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " the diagram [" + DVRisk_Tree[dgTreeDiagrams.SelectedIndex].Row[DT_Diagram.DIAGRAM_NAME] + "]?");
+                    MostrarDialogYesNo($"{StringResources.DELETE_MESSAGE} the diagram [{ DVRisk_Tree[dgTreeDiagrams.SelectedIndex].Row[DT_Diagram.DIAGRAM_NAME] }]?");
                     IS_DELETING_DIAGRAM = true;
                 }
             }
@@ -8231,14 +8193,19 @@ namespace EnsureRisk
             }
         }
 
+        private void CloseOpenedDiagrams()
+        {
+            foreach (var contentToClose in _layoutRoot.Descendents().OfType<LayoutContent>().Where(d => (d.Parent is LayoutDocumentPane || d.Parent is LayoutDocumentFloatingWindow)).ToArray())
+            {
+                contentToClose.Close();
+            }
+        }
+
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             try
             {
-                foreach (var contentToClose in _layoutRoot.Descendents().OfType<LayoutContent>().Where(d => (d.Parent is LayoutDocumentPane || d.Parent is LayoutDocumentFloatingWindow)).ToArray())
-                {
-                    contentToClose.Close();
-                }
+                CloseOpenedDiagrams();
             }
             catch (Exception ex)
             {

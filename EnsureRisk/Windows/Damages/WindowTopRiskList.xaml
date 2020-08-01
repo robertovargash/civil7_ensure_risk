@@ -21,7 +21,7 @@
         <DataGrid x:Name="dgTopRisk" Margin="128,10,20,21" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="dgTopRisk_MouseDoubleClick">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
-                    <Setter Property="Background" Value="{Binding {x:Static data:DT_Damage.COLORID_COLUMNA}}">                        
+                    <Setter Property="Foreground" Value="{Binding {x:Static data:DT_Damage.COLORID_COLUMNA}}">                        
                     </Setter>
                 </Style>
             </DataGrid.RowStyle>

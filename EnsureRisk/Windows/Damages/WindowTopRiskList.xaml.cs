@@ -85,11 +85,13 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                Ds = new UserDataSet();
-                ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
-                Ds.Merge(ws.GetAllTopRisk());
-                Dv = Ds.Tables[DT_Damage.TABLE_NAME].DefaultView;
-                dgTopRisk.ItemsSource = Dv;
+                using (ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk())
+                {
+                    Ds = new UserDataSet();
+                    Ds.Merge(ws.GetAllTopRisk());
+                    Dv = Ds.Tables[DT_Damage.TABLE_NAME].DefaultView;
+                    dgTopRisk.ItemsSource = Dv;
+                }
             }
             catch (Exception ex)
             {
@@ -113,13 +115,14 @@ namespace EnsureRisk.Windows
                     Ds.Tables[DT_Damage.TABLE_NAME].Rows.Add(formTop.Drow);
                     if (Ds.HasChanges())
                     {
-                        DataSet temp = new DataSet();
-                        ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
-                        temp = Ds.GetChanges();
-                        temp = ws.SaveTopRisk(temp);
-                        Ds.Merge(temp);
-                        Ds.AcceptChanges();
-                        RefreshData();
+                        using (ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk())
+                        {
+                            DataSet temp = Ds.GetChanges();
+                            temp = ws.SaveTopRisk(temp);
+                            Ds.Merge(temp);
+                            Ds.AcceptChanges();
+                            RefreshData();
+                        }
                     }
                 }
             }
@@ -127,7 +130,6 @@ namespace EnsureRisk.Windows
             {
                 MostrarErrorDialog(ex.Message);
             }
-
         }
 
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
@@ -147,13 +149,14 @@ namespace EnsureRisk.Windows
                     {
                         if (Ds.HasChanges())
                         {
-                            DataSet temp = new DataSet();
-                            ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk();
-                            temp = Ds.GetChanges();
-                            temp = ws.SaveTopRisk(temp);
-                            Ds.Merge(temp);
-                            Ds.AcceptChanges();
-                            RefreshData();
+                            using (ServiceTopRiskController.WebServiceTopRisk ws = new ServiceTopRiskController.WebServiceTopRisk())
+                            {
+                                DataSet temp = Ds.GetChanges();
+                                temp = ws.SaveTopRisk(temp);
+                                Ds.Merge(temp);
+                                Ds.AcceptChanges();
+                                RefreshData();
+                            }
                         }
                     }
                 }
@@ -162,7 +165,6 @@ namespace EnsureRisk.Windows
             {
                 MostrarErrorDialog(ex.Message);
             }
-
         }
 
         private void Delete(DataRow fila)
