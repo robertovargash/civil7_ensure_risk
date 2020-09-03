@@ -547,7 +547,6 @@ namespace EnsureRisk
             AnchorMiniMap.IsSelected = true;
         }
 
-
         private void LoginCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try
@@ -1235,7 +1234,6 @@ namespace EnsureRisk
                     SaveAsClosing = true,
                     MenuRisk = MenuRisk,
                     MenuMainRisk = MenuMainRisk,
-                    //MenuRiskLimited = MenuRisk,
                     Ds = DsMain.Copy(),
                     MenuCM = MenuCM,
                     LoginUser = LoginUser,
@@ -1268,10 +1266,55 @@ namespace EnsureRisk
                     LayoutDocumentPanel.Children.Add(myly);
                     OpenedDocuments.Add(myly);
                     TheCurrentLayout = myly;
+                    AddWBSTopToDiagram(myly.ID_Diagram, myly.Ds);
                     CambiosVisuales();
+                    
+                }
+            }           
+        }
+
+        private void AddWBSTopToDiagram(int Diagram_ID, DataSet ds)
+        {
+            foreach (DataRow rowWBS in DsWBS.Tables[DT_WBS.TABLE_NAME].Rows)
+            {
+                if (!(TengoPadre((int)rowWBS[DT_WBS.ID_WBS])))
+                {
+                    foreach (DataRow riskRow in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + DiagramID))
+                    {
+                        if (!(ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { rowWBS[DT_WBS.ID_WBS], riskRow[DT_Risk.ID] })))
+                        {
+                            DataRow newRiskWBS = ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
+                            newRiskWBS[DT_RISK_WBS.ID_RISK] = riskRow[DT_Risk.ID];
+                            newRiskWBS[DT_RISK_WBS.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                            newRiskWBS[DT_RISK_WBS.IS_PRIMARY] = true;
+                            newRiskWBS[DT_RISK_WBS.NIVEL] = rowWBS[DT_WBS.NIVEL];
+                            newRiskWBS[DT_RISK_WBS.PRIMARY] = "Primary";
+                            newRiskWBS[DT_RISK_WBS.PROBABILITY] = 100;
+                            newRiskWBS[DT_RISK_WBS.RISK] = riskRow[DT_Risk.NAMESHORT];
+                            newRiskWBS[DT_RISK_WBS.USERNAME] = rowWBS[DT_WBS.USERNAME];
+                            newRiskWBS[DT_RISK_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
+                            ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
+                        }
+                    }
+                    foreach (DataRow rowCM in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + DiagramID))
+                    {
+                        if (!(ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { rowWBS[DT_WBS.ID_WBS], rowCM[DT_CounterM.ID] })))
+                        {
+                            DataRow newCMWBS = ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
+                            newCMWBS[DT_CM_WBS.ID_CM] = rowCM[DT_CounterM.ID];
+                            newCMWBS[DT_CM_WBS.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                            newCMWBS[DT_CM_WBS.IS_PRIMARY] = true;
+                            newCMWBS[DT_CM_WBS.NIVEL] = rowWBS[DT_WBS.NIVEL];
+                            newCMWBS[DT_CM_WBS.PRIMARY] = "Primary";
+                            newCMWBS[DT_CM_WBS.PROBABILITY] = 0;
+                            newCMWBS[DT_CM_WBS.CM] = rowCM[DT_CounterM.NAMESHORT];
+                            newCMWBS[DT_CM_WBS.USERNAME] = rowWBS[DT_WBS.USERNAME];
+                            newCMWBS[DT_CM_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
+                            ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
+                        }
+                    }
                 }
             }
-           
         }
 
         /// <summary>
@@ -1483,7 +1526,6 @@ namespace EnsureRisk
             {
                 TheCurrentLayout.LoadComboDamage();
                 TheCurrentLayout.LoadLines();
-
                 TheCurrentLayout.LoadRectangles();
                 TheCurrentLayout.DrawNumbers();
                 TheCurrentLayout.SetLinesThickness();
@@ -2859,9 +2901,9 @@ namespace EnsureRisk
 
         private bool TengoPadre(int idWBS)
         {
-
             return DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + idWBS).Any();
         }
+
         private DataRow BuscarMiPadre(int idWBS)
         {
             int idPadre = (int)DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + idWBS).First()[DT_WBS_STRUCTURE.ID_FATHER];
