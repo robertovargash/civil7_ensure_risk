@@ -60,14 +60,14 @@ namespace EnsureRisk.Windows
         public DataRow Selected_WBS_Row { get; set; }
         public DataRow Selected_Role_Row { get; set; }
 
-        public int ID_Project { get; set; }
-        public int ID_WBS { get; set; }
+        public decimal ID_Project { get; set; }
+        public decimal ID_WBS { get; set; }
         public string WBS_NAME { get; set; }
         public string USER_NAME { get; set; }
         public string LOGIN_USER { get; set; }
         public DataRow CMRow { get; set; }
         public string Operation { get; set; }
-        public int RiskTreeID { get; set; }
+        public decimal RiskTreeID { get; set; }
         public DataRow RowFather { get; set; }
         public DataSet DsCM { get; set; }
         public DataView DvTopRisk { get; set; }

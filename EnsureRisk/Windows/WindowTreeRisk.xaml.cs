@@ -23,7 +23,7 @@ namespace EnsureRisk.Windows
         public string DName { get { return _name; } set { _name = value; OnPropertyChanged("DName"); } }
         public bool IS_DELETING { get; set; } = false;
         public string Operation { get; set; }
-        public int IDProject { get; set; }
+        public decimal IDProject { get; set; }
         public DataTable TopRiskTable { get; set; }
         public DataTable CM_TopRisk { get; set; }
         public DataTable Risk_TopRisk { get; set; }

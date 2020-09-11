@@ -25,7 +25,7 @@ namespace EnsureRisk.Windows
         public bool IS_DELETING { get; set; } = false;
         public string Operation { get; set; }
         public DataRow DrWBS { get; set; }
-        public int IdProject { get; set; }
+        public decimal IdProject { get; set; }
         public DataTable WBS_Structure { get; set; }
         public DataTable WBS_Encoder { get; set; }
         public DataView DvWBS { get; set; }

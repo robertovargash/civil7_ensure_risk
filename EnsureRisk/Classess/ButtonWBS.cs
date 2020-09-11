@@ -4,7 +4,7 @@ namespace EnsureRisk.Classess
 {
     public class ButtonWBS:Button
     {
-        public int IdWBS { get; set; }
+        public decimal IdWBS { get; set; }
 
         public ButtonWBS():base()
         {

@@ -22,13 +22,13 @@ namespace EnsureBusinesss.Business
     {
         public Color Colorr { get; set; }
         public Grid Container { get; set; }
-        public int ID_TopRisk { get; set; }
+        public decimal ID_TopRisk { get; set; }
         public string UM { get; set; }
         public TextBlock CalculateValue { get => CalculatedValue; set => CalculatedValue = value; }
         public TextBlock ExpecteDamage { get => ExpectedDamage; set => ExpectedDamage = value; }
         public TextBlock HeadeValue { get => HeaderValue; set => HeaderValue = value; }
 
-        public MyDamage(Grid panel, Point location, string HeaderText, string CalculatedValueText, string ExpectedValueText, Color color, int ID_TopRisk)
+        public MyDamage(Grid panel, Point location, string HeaderText, string CalculatedValueText, string ExpectedValueText, Color color, decimal ID_TopRisk)
         {
             InitializeComponent();
             panel.Children.Add(this);

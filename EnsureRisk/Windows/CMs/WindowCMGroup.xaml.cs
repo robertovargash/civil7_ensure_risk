@@ -26,7 +26,7 @@ namespace EnsureRisk.Windows
     public partial class WindowCMGroup : Window
     {
         public bool IS_USING_NAME { get; set; } = false;
-        public int RiskTreeID { get; set; }
+        public decimal RiskTreeID { get; set; }
         public DataSet DsCM { get; set; }
         public DataTable MyCM { get; set; }
         //Añadido por roberto

@@ -61,9 +61,9 @@ namespace EnsureRisk.Windows
         public DataRow Selected_WBSRow { get; set; }
         public DataRow RiskRow { get; set; }
         public string Operation { get; set; }
-        public int RiskTreeID { get; set; }
-        public int ID_PROJECT { get; set; }
-        public int ID_WBS { get; set; }
+        public decimal RiskTreeID { get; set; }
+        public decimal ID_PROJECT { get; set; }
+        public decimal ID_WBS { get; set; }
         public string WBS_NAME { get; set; }
         public string USER_NAME { get; set; }
         public string LOGIN_USER { get; set; }
@@ -901,7 +901,7 @@ namespace EnsureRisk.Windows
             }
         }
 
-        private void RefreshDamageValues(int id, bool isCM)
+        private void RefreshDamageValues(decimal id, bool isCM)
         {
             if (isCM)
             {

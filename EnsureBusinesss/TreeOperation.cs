@@ -1133,10 +1133,10 @@ namespace EnsureBusinesss
             }
         }
 
-        public static List<RiskPolyLine> LoadLines(DataSet ds, int IdTreeRisk)
+        public static List<RiskPolyLine> LoadLines(DataSet ds, decimal idDiagram)
         {
             List<RiskPolyLine> lista = new List<RiskPolyLine>();
-            foreach (DataRow item in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + IdTreeRisk))
+            foreach (DataRow item in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + idDiagram))
             {
                 if ((bool)item[DT_Risk.IS_ROOT])
                 {
@@ -1146,7 +1146,7 @@ namespace EnsureBusinesss
                         IsCM = false,
                         FromTop = (bool)item[DT_Risk.FROM_TOP],
                         StrokeThickness = General.MaxThickness,
-                        ID = (int)item[DT_Risk.ID],
+                        ID = (decimal)item[DT_Risk.ID],
                         Probability = (decimal)item[DT_Risk.PROBABILITY],
                         ShortName = item[DT_Risk.NAMESHORT].ToString(),
                         MyLevel = 0
@@ -1163,7 +1163,7 @@ namespace EnsureBusinesss
                     RiskPolyLine riskLine = new RiskPolyLine()
                     {
                         ShortName = item[DT_Risk.NAMESHORT].ToString(),
-                        ID = (int)item[DT_Risk.ID],
+                        ID = (decimal)item[DT_Risk.ID],
                         Position = (int)item[DT_Risk.POSITION],
                         Collapsed = (bool)item[DT_Risk.ISCOLLAPSED],
                         Probability = (decimal)item[DT_Risk.PROBABILITY],
@@ -1176,7 +1176,7 @@ namespace EnsureBusinesss
                     {
                         riskLine.Group = new LineGroup()
                         {
-                            IdGroup = (int)item[DT_Risk.ID_GROUPE],
+                            IdGroup = (decimal)item[DT_Risk.ID_GROUPE],
                             GroupName = item[DT_Risk.GROUPE_NAME].ToString()
                         };
                     }
@@ -1192,15 +1192,15 @@ namespace EnsureBusinesss
                     lista.Add(riskLine);
                 }
             }
-            foreach (DataRow item in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + IdTreeRisk))
+            foreach (DataRow item in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + idDiagram))
             {
                 RiskPolyLine cmline = new RiskPolyLine()
                 {
                     IsCM = true,
                     Position = (int)item[DT_CounterM.POSITION],
                     ShortName = item[DT_CounterM.NAMESHORT].ToString(),
-                    IdRiskFather = (int)item[DT_CounterM.ID_RISK],
-                    ID = (int)item[DT_CounterM.ID],
+                    IdRiskFather = (decimal)item[DT_CounterM.ID_RISK],
+                    ID = (decimal)item[DT_CounterM.ID],
                     Probability = (decimal)item[DT_CounterM.PROBABILITY],
                     IsActivated = (bool)item[DT_CounterM.ENABLED],
                 };
@@ -1208,7 +1208,7 @@ namespace EnsureBusinesss
                 {
                     cmline.Group = new LineGroup()
                     {
-                        IdGroup = (int)item[DT_Risk.ID_GROUPE],
+                        IdGroup = (decimal)item[DT_Risk.ID_GROUPE],
                         GroupName = item[DT_Risk.GROUPE_NAME].ToString()
                     };
                 }

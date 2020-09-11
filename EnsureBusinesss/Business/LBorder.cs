@@ -13,7 +13,7 @@ namespace EnsureBusinesss.Business
             get;
         }
 
-        public int IDRisk
+        public decimal IDRisk
         {
             set;
             get;

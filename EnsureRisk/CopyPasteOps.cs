@@ -12,7 +12,7 @@ namespace EnsureRisk
     public static class CopyPasteOps
     {
 
-        public static DataRow EstablecerValoresNuevoRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain, int ID_Diagram, DataSet DsWBS)
+        public static DataRow EstablecerValoresNuevoRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain, decimal ID_Diagram, DataSet DsWBS)
         {
             int sourceID_Diagram;
             string DiagramName = "";
@@ -68,7 +68,7 @@ namespace EnsureRisk
             return drNewRisk;
         }
 
-        public static DataRow SetValoresOriginalesRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain, int ID_Diagram, DataSet DsWBS, List<RiskPolyLine> LinesList)
+        public static DataRow SetValoresOriginalesRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain, decimal ID_Diagram, DataSet DsWBS, List<RiskPolyLine> LinesList)
         {
             int sourceID_Diagram;
             string DiagramName = "";
@@ -123,7 +123,7 @@ namespace EnsureRisk
             return drNewRisk;
         }
 
-        public static void EstablecerValorDelHijoAlPadre(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, int ID_Diagram, DataSet DsWBS)
+        public static void EstablecerValorDelHijoAlPadre(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, decimal ID_Diagram, DataSet DsWBS)
         {
             if (sourceRisk.IsCM)
             {
@@ -205,7 +205,7 @@ namespace EnsureRisk
         }
 
         #region ImportarVacio
-        public static void SetDamagesNuevoRiesgoCopiado(DataSet targetDataset, DataRow drNewRisk, int ID_Diagram)
+        public static void SetDamagesNuevoRiesgoCopiado(DataSet targetDataset, DataRow drNewRisk, decimal ID_Diagram)
         {
             foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
             {
@@ -317,7 +317,7 @@ namespace EnsureRisk
             return ListaRow;
         }
 
-        public static void SetWBS_RISK_DamageNuevoRiskCopiado(DataSet targetDataset, DataRow drNewRisk, DataRow drTargetRisk, int ID_Diagram, DataSet DsWBS)
+        public static void SetWBS_RISK_DamageNuevoRiskCopiado(DataSet targetDataset, DataRow drNewRisk, DataRow drTargetRisk, decimal ID_Diagram, DataSet DsWBS)
         {
             foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
             {
@@ -357,7 +357,7 @@ namespace EnsureRisk
             }
         }
 
-        public static DataRow SetValoresCM(RiskPolyLine sourceCM, DataSet targetDataset, DataRow drRiskFather, int ID_Diagram, DataSet DsWBS)
+        public static DataRow SetValoresCM(RiskPolyLine sourceCM, DataSet targetDataset, DataRow drRiskFather, decimal ID_Diagram, DataSet DsWBS)
         {
             DataRow drNewCM = targetDataset.Tables[DT_CounterM.TABLE_NAME].NewRow();
             drNewCM[DT_CounterM.DETAIL] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.DETAIL];
@@ -480,7 +480,7 @@ namespace EnsureRisk
         }
         
         #region ImportarTODO
-        public static void AgregarDamageADiagram(DataSet targetDataset, DataRow[] drImportados, int ID_Diagram)
+        public static void AgregarDamageADiagram(DataSet targetDataset, DataRow[] drImportados, decimal ID_Diagram)
         {
             foreach (DataRow drDamage in drImportados)
             {
@@ -499,7 +499,7 @@ namespace EnsureRisk
             }
         }
 
-        public static void AgregarNewDamagesAExistingRisk(DataSet targetDataset, DataRow[] drImportados, int ID_Diagram, DataSet DsWBS)
+        public static void AgregarNewDamagesAExistingRisk(DataSet targetDataset, DataRow[] drImportados, decimal ID_Diagram, DataSet DsWBS)
         {
             foreach (DataRow drDamage in drImportados)
             {
@@ -550,7 +550,7 @@ namespace EnsureRisk
             }
         }
 
-        public static void SetOriginalAndNewDamagesRiesgoCopiado(RiskPolyLine sourceRisk,DataSet targetDataset, DataRow drNewRisk, int ID_Diagram)
+        public static void SetOriginalAndNewDamagesRiesgoCopiado(RiskPolyLine sourceRisk,DataSet targetDataset, DataRow drNewRisk, decimal ID_Diagram)
         {
             //TODOS LOS DAMAGES DEL DIAGRAM SOURCE
             foreach (DataRow oldRiskDamage in targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + sourceRisk.ID))
@@ -682,7 +682,7 @@ namespace EnsureRisk
             }
         }
 
-        public static void SetWBS_RISK_DamageOriginalAndNuevoRiskCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drNewRisk, DataRow drTargetRisk, int ID_Diagram, DataSet DsWBS)
+        public static void SetWBS_RISK_DamageOriginalAndNuevoRiskCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drNewRisk, DataRow drTargetRisk, decimal ID_Diagram, DataSet DsWBS)
         {
             foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
             {
@@ -765,7 +765,7 @@ namespace EnsureRisk
             }
         }
 
-        public static DataRow SetValoresOriginalesAndNuevosCM(RiskPolyLine sourceCM, DataSet targetDataset, DataRow drRiskFather, int ID_Diagram, DataSet DsWBS)
+        public static DataRow SetValoresOriginalesAndNuevosCM(RiskPolyLine sourceCM, DataSet targetDataset, DataRow drRiskFather, decimal ID_Diagram, DataSet DsWBS)
         {
             DataRow drNewCM = targetDataset.Tables[DT_CounterM.TABLE_NAME].NewRow();
             drNewCM[DT_CounterM.DETAIL] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.DETAIL];

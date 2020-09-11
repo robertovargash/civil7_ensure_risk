@@ -24,7 +24,7 @@ namespace EnsureRisk.Windows
         public int Cantidad { get; set; }
         public WindowWBS MyFather { get; set; }
         public DataRow DrWBS_Structure { get; set; }
-        public int IdProject { get; set; }
+        public decimal IdProject { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string property)
         {

@@ -292,7 +292,7 @@ namespace EnsureBusinesss
         /// <summary>
         /// Calculate and returns the value of the "Damage" of the "risk"
         /// </summary>
-        public static decimal CalculateTopRiskValue(DataRow risk, DataTable Risk_TopRisk, int idToprisk)
+        public static decimal CalculateTopRiskValue(DataRow risk, DataTable Risk_TopRisk, decimal idToprisk)
         {
             try
             {
@@ -322,7 +322,7 @@ namespace EnsureBusinesss
         /// <summary>
         /// Calculate and returns the value of the "Damage (TopRisk)" of the "cm"
         /// </summary>
-        public static decimal CalculateCMTopRiskValue(DataRow CM, DataTable CM_TopRisk, int idToprisk)
+        public static decimal CalculateCMTopRiskValue(DataRow CM, DataTable CM_TopRisk, decimal idToprisk)
         {
             if (!(CM_TopRisk.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CM[DT_CounterM.ID] + " AND " +
                 DT_CounterM_Damage.ID_DAMAGE + " = " + idToprisk).Any()))
@@ -347,7 +347,7 @@ namespace EnsureBusinesss
         /// <summary>
         /// Calculate and returns the value of the Damage (TopRisk) of the Risk
         /// </summary>
-        public static decimal CalculateTopRiskTreeValue(DataRow drRoot, DataTable dtRisk, int idtoprisk, DataTable dtRisk_TopRisk,
+        public static decimal CalculateTopRiskTreeValue(DataRow drRoot, DataTable dtRisk, decimal idtoprisk, DataTable dtRisk_TopRisk,
             DataTable dtCM, DataTable dtCM_TopRisk)
         {
             //THIS FUNCTION CALCULATES THE VALUE OF A TOPRISK, 

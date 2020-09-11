@@ -21,8 +21,8 @@ namespace EnsureRisk.Classess
     /// </summary>
     public partial class MyTreeViewItem : TreeViewItem, INotifyPropertyChanged
     {
-        private int myID;
-        public int MyID { get { return myID; } set { myID = value; OnPropertyChanged("MyID"); } }
+        private decimal myID;
+        public decimal MyID { get { return myID; } set { myID = value; OnPropertyChanged("MyID"); } }
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string property)

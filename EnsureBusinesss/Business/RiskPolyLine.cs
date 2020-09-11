@@ -113,10 +113,10 @@ namespace EnsureBusinesss.Business
 
         public double YxTreme { get; set; }
        
-        public int IdRiskFather { get; set; }
+        public decimal IdRiskFather { get; set; }
 
         public int MyLevel { get; set; }
-        public int ID { get; set; }
+        public decimal ID { get; set; }
 
         public static readonly DependencyProperty MinProperty =
           DependencyProperty.Register("Min", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));

@@ -7,8 +7,8 @@ namespace EnsureBusinesss.Business
 {
     public class MyGroupButton:Button
     {
-        public int IdRisk { get; set; }
-        public int IdGroup { get; set; }
+        public decimal IdRisk { get; set; }
+        public decimal IdGroup { get; set; }
 
         public MyGroupButton() : base()
         {

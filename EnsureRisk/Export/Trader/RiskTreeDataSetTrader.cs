@@ -24,7 +24,7 @@ namespace EnsureRisk.Export.Trader
         //    }
         //}
         //private IEnumerable<RiskAndCm> _acumulatedValueList;
-        public RiskAndCm[] _acumulatedValueList { get; set; }
+        public RiskAndCm[] AcumulatedValueList { get; set; }
         public List<RiskPolyLine> LinesDiagram { get; set; }
         //object _riskList;
         //object _cmList;
@@ -87,26 +87,26 @@ namespace EnsureRisk.Export.Trader
         private const string ISROOT_COLUMNNAME = "isRoot";
         private const string IDRISKFATHER_COLUMNNAME = "idRiskFather";
 
-        public RiskTreeDataSetTrader(DataSet dataSet, int id) : base(dataSet)
+        public RiskTreeDataSetTrader(DataSet dataSet, decimal id) : base(dataSet)
         {
             GetRiskTreeDataSet(id);
         }
-        public RiskTreeDataSetTrader(DataSet dataSet, int id, List<RiskPolyLine> linesDiagram) : base(dataSet)
+        public RiskTreeDataSetTrader(DataSet dataSet, decimal id, List<RiskPolyLine> linesDiagram) : base(dataSet)
         {
             GetRiskTreeDataSet(id);
             LinesDiagram = linesDiagram;
         }
 
-        public RiskTreeDataSetTrader(DataSet dataSet, int id, List<RiskPolyLine> linesDiagram, DataRow[] drDamages) : base(dataSet)
+        public RiskTreeDataSetTrader(DataSet dataSet, decimal id, List<RiskPolyLine> linesDiagram, DataRow[] drDamages) : base(dataSet)
         {
             GetRiskTreeDataSet(id);
             LinesDiagram = linesDiagram;
             DamagesRow = drDamages;
         }
-        public RiskTreeDataSetTrader(DataSet dataSet, int id, RiskAndCm[] acumulatedValueList) : base(dataSet)
+        public RiskTreeDataSetTrader(DataSet dataSet, decimal id, RiskAndCm[] acumulatedValueList) : base(dataSet)
         {
             GetRiskTreeDataSet(id);
-            _acumulatedValueList = acumulatedValueList;
+            AcumulatedValueList = acumulatedValueList;
         }
 
         #region ShortExcel
@@ -259,7 +259,7 @@ namespace EnsureRisk.Export.Trader
                    select counterMChildDataRow;
             return counterMChildDataRowQuery;
         }
-        private DataSet GetRiskTreeDataSet(int riskTreeID)
+        private DataSet GetRiskTreeDataSet(decimal riskTreeID)
         {
             _riskTreeDataSet = new DataSet();
 
@@ -273,14 +273,14 @@ namespace EnsureRisk.Export.Trader
 
             return _riskTreeDataSet;
         }
-        private DataTable GetRiskTreeDataTable(int riskTreeID)
+        private DataTable GetRiskTreeDataTable(decimal riskTreeID)
         {
             //RiskTree
             DataTable dataTable = SourceDataSet.Tables[RISKTREE_TABLENAME].Clone();
             dataTable.ImportRow(SourceDataSet.Tables[RISKTREE_TABLENAME].Rows.Find(riskTreeID));
             return dataTable;
         }
-        private DataTable GetRiskTreeTopRiskDataTable(int riskTreeID)
+        private DataTable GetRiskTreeTopRiskDataTable(decimal riskTreeID)
         {
             //RiskTree_TopRisk
             DataTable dataTable = SourceDataSet.Tables[RISKTREE_TOPRISK_TABLENAME].Clone();
@@ -303,7 +303,7 @@ namespace EnsureRisk.Export.Trader
             topRiskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
         }
-        private DataTable GetRiskDataTable(int riskTreeID)
+        private DataTable GetRiskDataTable(decimal riskTreeID)
         {
             //Risk
             DataTable dataTable = SourceDataSet.Tables[RISK_TABLENAME].Clone();
@@ -327,7 +327,7 @@ namespace EnsureRisk.Export.Trader
             riskTopRiskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
         }
-        private DataTable GetCounterMDataTable(int riskTreeID)
+        private DataTable GetCounterMDataTable(decimal riskTreeID)
         {
             //CounterM
             DataTable dataTable = SourceDataSet.Tables[COUNTERM_TABLENAME].Clone();
@@ -365,15 +365,15 @@ namespace EnsureRisk.Export.Trader
 
             return riskCount + counterMCount;
         }
-        public decimal RiskAcumulatedValue(int riskId)
+        public decimal RiskAcumulatedValue(decimal riskId)
         {
-            RiskAndCm riskFound = _acumulatedValueList.Where(value => !value.isCM && value.id == riskId).FirstOrDefault();
+            RiskAndCm riskFound = AcumulatedValueList.Where(value => !value.isCM && value.id == riskId).FirstOrDefault();
 
             return (riskFound != null) ? riskFound.value : 0;
         }
-        public decimal CounterMeasureAcumulatedDamage(int counterMeasureId)
+        public decimal CounterMeasureAcumulatedDamage(decimal counterMeasureId)
         {
-            RiskAndCm riskFound = _acumulatedValueList.Where(value => value.isCM && value.id == counterMeasureId).FirstOrDefault();
+            RiskAndCm riskFound = AcumulatedValueList.Where(value => value.isCM && value.id == counterMeasureId).FirstOrDefault();
 
             return (riskFound != null) ? riskFound.value : 0;
         }
