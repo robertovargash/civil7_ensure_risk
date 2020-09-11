@@ -22,8 +22,8 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             this.TableName = TABLE_NAME;
-            PK_COLUMN[0] = this.Columns.Add(IDRISK, typeof(int));
-            PK_COLUMN[1] = this.Columns.Add(IDRISK_FATHER, typeof(int));
+            PK_COLUMN[0] = this.Columns.Add(IDRISK, typeof(decimal));
+            PK_COLUMN[1] = this.Columns.Add(IDRISK_FATHER, typeof(decimal));
             //PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
             //this.Columns.Add(IDRISK_COLUMNA, typeof(int));
             Columns.Add(POSITION_COLUMN, typeof(int));

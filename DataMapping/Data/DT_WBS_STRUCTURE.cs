@@ -25,13 +25,13 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             this.TableName = TABLE_NAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_FATHER, typeof(int));
-            PK_COLUMN[1] = this.Columns.Add(ID_CHILD, typeof(int));
+            PK_COLUMN[0] = this.Columns.Add(ID_FATHER, typeof(decimal));
+            PK_COLUMN[1] = this.Columns.Add(ID_CHILD, typeof(decimal));
             this.Columns.Add(FATHER, typeof(string));
             this.Columns.Add(FNIVEL, typeof(string));
             this.Columns.Add(CHILD, typeof(string));
             this.Columns.Add(CNIVEL, typeof(string));
-            this.Columns.Add(IDPROJECT, typeof(int));
+            this.Columns.Add(IDPROJECT, typeof(decimal));
             this.Columns.Add(IS_MANAGER, typeof(bool));
             this.Columns.Add(CHILD_USER, typeof(string));
             this.Columns.Add(FATHER_USER, typeof(string));

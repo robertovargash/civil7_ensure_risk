@@ -23,8 +23,8 @@ namespace DataMapping.Data
             DataColumn[] PK_COLUMN = new DataColumn[3];
             this.TableName = TABLE_NAME;
             PK_COLUMN[0] = this.Columns.Add(ID_WBS, typeof(int));
-            PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(int));
-            PK_COLUMN[2] = this.Columns.Add(ID_RISK, typeof(int));
+            PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(decimal));
+            PK_COLUMN[2] = this.Columns.Add(ID_RISK, typeof(decimal));
             Columns.Add(WBS, typeof(string));
             Columns.Add(DAMAGE, typeof(string));
             Columns.Add(VALUE, typeof(decimal));

@@ -37,13 +37,13 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
             TableName = TABLE_NAME;
-            PK_COLUMN[0] = Columns.Add(ID, typeof(int));
+            PK_COLUMN[0] = Columns.Add(ID, typeof(decimal));
             PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
-            Columns.Add(ID_DIAGRAM, typeof(int));
+            Columns.Add(ID_DIAGRAM, typeof(decimal));
             Columns.Add(NAMESHORT, typeof(string));
             Columns.Add(COMMENTS, typeof(string));
             Columns.Add(FATHER, typeof(string));
-            Columns.Add(IDRISK_FATHER, typeof(int));
+            Columns.Add(IDRISK_FATHER, typeof(decimal));
             Columns.Add(ISCOLLAPSED, typeof(bool));
             Columns.Add(IS_ROOT, typeof(bool));
             Columns.Add(DIAGONAL, typeof(bool));
@@ -51,9 +51,9 @@ namespace DataMapping.Data
             Columns.Add(PROBABILITY, typeof(decimal));
             Columns.Add(POSITION, typeof(int));
             Columns.Add(ENABLED, typeof(bool));
-            Columns.Add(ID_GROUPE, typeof(int));
+            Columns.Add(ID_GROUPE, typeof(decimal));
             Columns.Add(GROUPE_NAME, typeof(string));
-            Columns.Add(ID_WBS, typeof(int));
+            Columns.Add(ID_WBS, typeof(decimal));
             Columns.Add(WBS_NAME, typeof(string));
             Columns.Add(USER_NAME, typeof(string));
 

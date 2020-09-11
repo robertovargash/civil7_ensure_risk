@@ -25,8 +25,8 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             TableName = TABLE_NAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_CM, typeof(int));
-            PK_COLUMN[1] = this.Columns.Add(ID_WBS, typeof(int));
+            PK_COLUMN[0] = this.Columns.Add(ID_CM, typeof(decimal));
+            PK_COLUMN[1] = this.Columns.Add(ID_WBS, typeof(decimal));
             Columns.Add(CM, typeof(string));
             Columns.Add(WBS, typeof(string));
             Columns.Add(NIVEL, typeof(string));

@@ -24,8 +24,8 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             this.TableName = OPERATION_ROLE_TABLE;
-            PK_COLUMN[0] = this.Columns.Add(ID_OPERATION_COLUM, typeof(int));
-            PK_COLUMN[1] = this.Columns.Add(IDROL_COLUMN, typeof(int));
+            PK_COLUMN[0] = this.Columns.Add(ID_OPERATION_COLUM, typeof(decimal));
+            PK_COLUMN[1] = this.Columns.Add(IDROL_COLUMN, typeof(decimal));
             this.Columns.Add(OPERATION_COLUMN, typeof(string));
             Columns.Add(ROLE_COLUM, typeof(string));
             this.PrimaryKey = PK_COLUMN;

@@ -741,14 +741,14 @@ namespace EnsureBusinesss
             try
             {
                 PointToMoveRight referencePoint = GetPointMoveRight(Lines, pLine, altura);
-                if (!referencePoint.terminar)
+                if (!referencePoint.Terminar)
                 {
-                    TranslateDirectChildrenTemporal(pLine, referencePoint.punto);
-                    MoveRight(Lines, pLine, referencePoint.punto.Y);
+                    TranslateDirectChildrenTemporal(pLine, referencePoint.Punto);
+                    MoveRight(Lines, pLine, referencePoint.Punto.Y);
                 }
                 else
                 {
-                    TranslateDirectChildrenTemporal(pLine, referencePoint.punto);
+                    TranslateDirectChildrenTemporal(pLine, referencePoint.Punto);
                 }
                 //Console.Out.WriteLine(" -- paso por aqui --");
             }
@@ -767,15 +767,15 @@ namespace EnsureBusinesss
 
                 if (p.Y < pLine.YxTremee())
                 {
-                    result.punto = p;
-                    result.terminar = false;
+                    result.Punto = p;
+                    result.Terminar = false;
                     return result;
                 }
                 else
                 {
                     // revisa como usar "horizontalShiftX" de la clase pline
-                    result.punto = new Point(p.X - RiskPolyLine.horizontalShiftX, p.Y);
-                    result.terminar = true;
+                    result.Punto = new Point(p.X - RiskPolyLine.horizontalShiftX, p.Y);
+                    result.Terminar = true;
                     return result;
                 }
             }

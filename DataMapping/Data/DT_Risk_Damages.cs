@@ -36,8 +36,8 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             TableName = TABLE_NAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_RISK, typeof(int));
-            PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(int));
+            PK_COLUMN[0] = this.Columns.Add(ID_RISK, typeof(decimal));
+            PK_COLUMN[1] = this.Columns.Add(ID_DAMAGE, typeof(decimal));
             Columns.Add(RISK_NAMESHORT, typeof(string));
             Columns.Add(FATHER, typeof(string));
             Columns.Add(STATUS, typeof(bool));
@@ -49,10 +49,10 @@ namespace DataMapping.Data
             Columns.Add(RISK_TREE, typeof(string));
             Columns.Add(IS_ROOT, typeof(bool));
             Columns.Add(VALUE, typeof(decimal));
-            Columns.Add(ID_RISK_TREE, typeof(int));
-            Columns.Add(ID_GROUPE, typeof(int));
-            Columns.Add(ID_FATHER, typeof(int));
-            Columns.Add(ID_WBS, typeof(int));
+            Columns.Add(ID_RISK_TREE, typeof(decimal));
+            Columns.Add(ID_GROUPE, typeof(decimal));
+            Columns.Add(ID_FATHER, typeof(decimal));
+            Columns.Add(ID_WBS, typeof(decimal));
             Columns.Add(WBS_NAME, typeof(string));
             Columns.Add(USERNAME, typeof(string));
             PrimaryKey = PK_COLUMN;

@@ -19,7 +19,7 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
             this.TableName = OPERATION_TABLE;
-            PK_COLUMN[0] = this.Columns.Add(ID_COLUM, typeof(int));
+            PK_COLUMN[0] = this.Columns.Add(ID_COLUM, typeof(decimal));
             this.Columns.Add(OPERATION_COLUMN, typeof(string));
             this.PrimaryKey = PK_COLUMN;
         }        

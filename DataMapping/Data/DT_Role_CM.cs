@@ -20,8 +20,8 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[2];
             TableName = TABLENAME;
-            PK_COLUMN[0] = this.Columns.Add(ID_CM, typeof(int));
-            PK_COLUMN[1] = this.Columns.Add(IDROL_COLUMN, typeof(int));
+            PK_COLUMN[0] = this.Columns.Add(ID_CM, typeof(decimal));
+            PK_COLUMN[1] = this.Columns.Add(IDROL_COLUMN, typeof(decimal));
             Columns.Add(NAME_SHORT, typeof(string));
             Columns.Add(Role, typeof(string));
             PrimaryKey = PK_COLUMN;

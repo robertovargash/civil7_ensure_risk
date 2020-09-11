@@ -23,7 +23,7 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
             this.TableName = ROLE_TABLE;
-            PK_COLUMN[0] = this.Columns.Add(IDROL_COLUMN, typeof(int));
+            PK_COLUMN[0] = this.Columns.Add(IDROL_COLUMN, typeof(decimal));
             PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
             Columns.Add(ROLE_COLUM, typeof(string));
             this.Columns.Add(USERNAME_COLUM, typeof(string));

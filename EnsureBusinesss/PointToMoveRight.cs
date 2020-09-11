@@ -9,19 +9,19 @@ namespace EnsureBusinesss
 {
     class PointToMoveRight
     {
-        public Point punto { get; set; }
-        public bool terminar { get; set; }
+        public Point Punto { get; set; }
+        public bool Terminar { get; set; }
 
         public PointToMoveRight()
         {
-            punto = new Point(0, 0);
-            terminar = false;
+            Punto = new Point(0, 0);
+            Terminar = false;
         }
 
         public PointToMoveRight(Point punto, bool terminar)
         {
-            this.punto = punto;
-            this.terminar = terminar;
+            this.Punto = punto;
+            this.Terminar = terminar;
         }
     }
 }

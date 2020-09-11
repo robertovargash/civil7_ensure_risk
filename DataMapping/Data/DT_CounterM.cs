@@ -32,11 +32,11 @@ namespace DataMapping.Data
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
             TableName = TABLE_NAME;
-            PK_COLUMN[0] = Columns.Add(ID, typeof(int));
+            PK_COLUMN[0] = Columns.Add(ID, typeof(decimal));
             //PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = 200; PK_COLUMN[0].AutoIncrementStep = 1;
             PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
-            Columns.Add(ID_RISK_TREE, typeof(int));
-            Columns.Add(ID_RISK, typeof(int));
+            Columns.Add(ID_RISK_TREE, typeof(decimal));
+            Columns.Add(ID_RISK, typeof(decimal));
             Columns.Add(NAMESHORT, typeof(string));
             Columns.Add(RISK_NAMESHORT, typeof(string));
             Columns.Add(DETAIL, typeof(string));
@@ -45,9 +45,9 @@ namespace DataMapping.Data
             Columns.Add(PROBABILITY, typeof(decimal));
             Columns.Add(POSITION, typeof(int));
             Columns.Add(ENABLED, typeof(bool));
-            Columns.Add(ID_GROUPE, typeof(int));
+            Columns.Add(ID_GROUPE, typeof(decimal));
             Columns.Add(GROUPE_NAME, typeof(string));
-            Columns.Add(ID_WBS, typeof(int));
+            Columns.Add(ID_WBS, typeof(decimal));
             Columns.Add(WBS_NAME, typeof(string));
             Columns.Add(USER_NAME, typeof(string));
 
