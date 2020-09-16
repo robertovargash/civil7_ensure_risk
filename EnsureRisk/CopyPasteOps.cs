@@ -14,11 +14,11 @@ namespace EnsureRisk
 
         public static DataRow EstablecerValoresNuevoRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain, decimal ID_Diagram, DataSet DsWBS)
         {
-            int sourceID_Diagram;
+            decimal sourceID_Diagram;
             string DiagramName = "";
             if (sourceRisk.IsRoot)
             {
-                sourceID_Diagram = (int)targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_DIAGRAM];
+                sourceID_Diagram = (decimal)targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_DIAGRAM];
                 DiagramName = targetDataset.Tables[DT_Diagram.TABLE_NAME].Rows.Find(sourceID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
             }
             DataRow drNewRisk = targetDataset.Tables[DT_Risk.TABLE_NAME].NewRow();
@@ -70,11 +70,11 @@ namespace EnsureRisk
 
         public static DataRow SetValoresOriginalesRiesgoCopiado(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain, decimal ID_Diagram, DataSet DsWBS, List<RiskPolyLine> LinesList)
         {
-            int sourceID_Diagram;
+            decimal sourceID_Diagram;
             string DiagramName = "";
             if (sourceRisk.IsRoot)
             {
-                sourceID_Diagram = (int)targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_DIAGRAM];
+                sourceID_Diagram = (decimal)targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_DIAGRAM];
                 DiagramName = targetDataset.Tables[DT_Diagram.TABLE_NAME].Rows.Find(sourceID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
             }
             DataRow drNewRisk = targetDataset.Tables[DT_Risk.TABLE_NAME].NewRow();
@@ -85,7 +85,7 @@ namespace EnsureRisk
             drNewRisk[DT_Risk.ISCOLLAPSED] = false;
             drNewRisk[DT_Risk.IS_ROOT] = false;
             drNewRisk[DT_Risk.NAMESHORT] = sourceRisk.IsRoot ? DiagramName : sourceRisk.ShortName;
-            drNewRisk[DT_Risk.POSITION] = isMain ? LinesList.Find(r => r.ID == (int)drTargetRisk[DT_Risk.ID]).Children.Count : targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.POSITION];
+            drNewRisk[DT_Risk.POSITION] = isMain ? LinesList.Find(r => r.ID == (decimal)drTargetRisk[DT_Risk.ID]).Children.Count : targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.POSITION];
 
             drNewRisk[DT_Risk.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.GROUPE_NAME]; ;
             drNewRisk[DT_Risk.ID_GROUPE] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_GROUPE]; ;
@@ -148,7 +148,7 @@ namespace EnsureRisk
                     {
                         if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { item[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drTargetRisk[DT_Risk.ID] })))
                         {
-                            if (WBS_isSheet((int)item[DT_RISK_WBS.ID_WBS], DsWBS))
+                            if (WBS_isSheet((decimal)item[DT_RISK_WBS.ID_WBS], DsWBS))
                             {
                                 DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
                                 newCMWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
@@ -186,7 +186,7 @@ namespace EnsureRisk
                     {
                         if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { item[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drTargetRisk[DT_Risk.ID] })))
                         {
-                            if (WBS_isSheet((int)item[DT_RISK_WBS.ID_WBS], DsWBS))
+                            if (WBS_isSheet((decimal)item[DT_RISK_WBS.ID_WBS], DsWBS))
                             {
                                 DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
                                 newCMWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
@@ -325,7 +325,7 @@ namespace EnsureRisk
                 {
                     if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { targetWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewRisk[DT_Risk.ID] })))
                     {
-                        if (WBS_isSheet((int)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        if (WBS_isSheet((decimal)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
                         {
                             DataRow newRiskWBSDamage = targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
                             newRiskWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
@@ -421,7 +421,7 @@ namespace EnsureRisk
                 {
                     if (!(targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { targetWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] })))
                     {
-                        if (WBS_isSheet((int)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        if (WBS_isSheet((decimal)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
                         {
                             DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
                             newCMWBSDamage[DT_WBS_CM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
@@ -474,7 +474,7 @@ namespace EnsureRisk
         }
         #endregion
         
-        private static bool WBS_isSheet(int ID_WBS, DataSet DsWBS)
+        private static bool WBS_isSheet(decimal ID_WBS, DataSet DsWBS)
         {
             return !DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + ID_WBS).Any();
         }
@@ -531,7 +531,7 @@ namespace EnsureRisk
                     }
                     foreach (DataRow riskWBS in targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + risk[DT_Risk.ID]))
                     {
-                        if (WBS_isSheet((int)riskWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        if (WBS_isSheet((decimal)riskWBS[DT_RISK_WBS.ID_WBS], DsWBS))
                         {
                             if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { riskWBS[DT_RISK_WBS.ID_WBS], drDamage[DT_Diagram_Damages.ID_DAMAGE], risk[DT_Risk.ID] })))
                             {
@@ -690,7 +690,7 @@ namespace EnsureRisk
                 {
                     if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { sourceWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewRisk[DT_Risk.ID] })))
                     {
-                        if (WBS_isSheet((int)sourceWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        if (WBS_isSheet((decimal)sourceWBS[DT_RISK_WBS.ID_WBS], DsWBS))
                         {
                             DataRow newRiskWBSDamage = targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
                             newRiskWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
@@ -718,7 +718,7 @@ namespace EnsureRisk
                 {
                     if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { targetWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewRisk[DT_Risk.ID] })))
                     {
-                        if (WBS_isSheet((int)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        if (WBS_isSheet((decimal)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
                         {
                             DataRow newRiskWBSDamage = targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
                             newRiskWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
@@ -864,7 +864,7 @@ namespace EnsureRisk
                 {
                     if (!(targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { sourceWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] })))
                     {
-                        if (WBS_isSheet((int)sourceWBS[DT_CM_WBS.ID_WBS], DsWBS))
+                        if (WBS_isSheet((decimal)sourceWBS[DT_CM_WBS.ID_WBS], DsWBS))
                         {
                             DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
                             newCMWBSDamage[DT_WBS_CM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
@@ -905,7 +905,7 @@ namespace EnsureRisk
                 {
                     if (!(targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { targetWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] })))
                     {
-                        if (WBS_isSheet((int)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        if (WBS_isSheet((decimal)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
                         {
                             DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
                             newCMWBSDamage[DT_WBS_CM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];

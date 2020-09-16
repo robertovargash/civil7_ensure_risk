@@ -42,7 +42,7 @@ namespace EnsureRisk
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         #region BindingStuff
-        int idwbsfilter = -1;
+        decimal idwbsfilter = -1;
         private string line_Selected = "None";
         private string type_selected = "None";
         private string _riskshortName = "";
@@ -93,7 +93,7 @@ namespace EnsureRisk
         }
 
 
-        public int IdWBSFilter
+        public decimal IdWBSFilter
         {
             get { return idwbsfilter; }
             set
@@ -1265,10 +1265,9 @@ namespace EnsureRisk
                     myly.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
                     LayoutDocumentPanel.Children.Add(myly);
                     OpenedDocuments.Add(myly);
-                    TheCurrentLayout = myly;
-                    AddWBSTopToDiagram(myly.Ds);
+                    TheCurrentLayout = myly;                   
                     CambiosVisuales();
-                    
+                    AddWBSTopToDiagram(myly.Ds);
                 }
             }           
         }
@@ -1281,7 +1280,7 @@ namespace EnsureRisk
                 {
                     foreach (DataRow riskRow in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + DiagramID))
                     {
-                        if (!(ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { rowWBS[DT_WBS.ID_WBS], riskRow[DT_Risk.ID] })))
+                        if (!(ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { riskRow[DT_Risk.ID],rowWBS[DT_WBS.ID_WBS] })))
                         {
                             DataRow newRiskWBS = ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
                             newRiskWBS[DT_RISK_WBS.ID_RISK] = riskRow[DT_Risk.ID];
@@ -1298,7 +1297,7 @@ namespace EnsureRisk
                     }
                     foreach (DataRow rowCM in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + DiagramID))
                     {
-                        if (!(ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { rowWBS[DT_WBS.ID_WBS], rowCM[DT_CounterM.ID] })))
+                        if (!(ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { rowCM[DT_CounterM.ID], rowWBS[DT_WBS.ID_WBS] })))
                         {
                             DataRow newCMWBS = ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
                             newCMWBS[DT_CM_WBS.ID_CM] = rowCM[DT_CounterM.ID];
@@ -2042,17 +2041,17 @@ namespace EnsureRisk
             if (xRiskFather != null && dt.Rows[rowPosition][xRiskFather.MyContent.ToString()].ToString() != "" &&
                 xIdRisk != null && dt.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString() != "")
             {
-                int idHijo;
-                int idPadre;
+                decimal idHijo;
+                decimal idPadre;
                 if (isCustom)
                 {
-                    idHijo = General.ConvertToInt(dt.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
-                    idPadre = General.ConvertToInt(dt.Rows[rowPosition][xRiskFather.MyContent.ToString()].ToString());
+                    idHijo = General.ConvertToDec(dt.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
+                    idPadre = General.ConvertToDec(dt.Rows[rowPosition][xRiskFather.MyContent.ToString()].ToString());
                 }
                 else
                 {                    
-                    idPadre = General.ConvertToInt(dt.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
-                    idHijo = General.ConvertToInt(dt.Rows[rowPosition][xRiskFather.MyContent.ToString()].ToString());
+                    idPadre = General.ConvertToDec(dt.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
+                    idHijo = General.ConvertToDec(dt.Rows[rowPosition][xRiskFather.MyContent.ToString()].ToString());
                 }
                 if (dsImporting.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + idHijo).Any())
                 {
@@ -3907,7 +3906,7 @@ namespace EnsureRisk
                     {
                         if (itemi.IsCM)
                         {
-                            DisableCounterMeasure(itemi, true, !TheCurrentLayout.LinesListCMState[Convert.ToInt32(itemi.ID)]);
+                            DisableCounterMeasure(itemi, true, !TheCurrentLayout.LinesListCMState[Convert.ToDecimal(itemi.ID)]);
                         }
                     }
                     result = true;
@@ -4659,7 +4658,7 @@ namespace EnsureRisk
                     {
                         damageRow[DT_CounterM_Damage.STATUS] = false;
                     }
-                    TheCurrentLayout.LinesListCMState[Convert.ToInt32(cm_Selected.ID)] = false;
+                    TheCurrentLayout.LinesListCMState[Convert.ToDecimal(cm_Selected.ID)] = false;
                     (TheCurrentLayout.LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
                     (TheCurrentLayout.LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).IsActivated = false;
                     result = false;
@@ -4673,7 +4672,7 @@ namespace EnsureRisk
                         {
                             damageRow[DT_CounterM_Damage.STATUS] = true;
                         }
-                        TheCurrentLayout.LinesListCMState[Convert.ToInt32(cm_Selected.ID)] = true;
+                        TheCurrentLayout.LinesListCMState[Convert.ToDecimal(cm_Selected.ID)] = true;
                         (TheCurrentLayout.LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Black));
                         (TheCurrentLayout.LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).IsActivated = true;
                         result = true;
@@ -5543,7 +5542,7 @@ namespace EnsureRisk
                 {
                     if (itemi.IsCM)
                     {
-                        DisableCounterMeasure(itemi, true, !TheCurrentLayout.LinesListCMState[Convert.ToInt32(itemi.ID)]);
+                        DisableCounterMeasure(itemi, true, !TheCurrentLayout.LinesListCMState[Convert.ToDecimal(itemi.ID)]);
                     }
                 }
             }
@@ -5727,7 +5726,7 @@ namespace EnsureRisk
                 {
                     damageRow[DT_CounterM_Damage.STATUS] = true;
                 }
-                TheCurrentLayout.LinesListCMState[Convert.ToInt32(cmID)] = true;
+                TheCurrentLayout.LinesListCMState[Convert.ToDecimal(cmID)] = true;
                 (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Black));
 
                 (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).IsActivated = true;
@@ -5750,7 +5749,7 @@ namespace EnsureRisk
                     {
                         damageRow[DT_CounterM_Damage.STATUS] = false;
                     }
-                    TheCurrentLayout.LinesListCMState[Convert.ToInt32(cmID)] = false;
+                    TheCurrentLayout.LinesListCMState[Convert.ToDecimal(cmID)] = false;
                     (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
                     (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).IsActivated = false;
                 }
@@ -7128,8 +7127,6 @@ namespace EnsureRisk
             }
         }
 
-
-
         #region DataGridEvents
 
         /// <summary>
@@ -7513,7 +7510,7 @@ namespace EnsureRisk
                 {
                     if (riskDataGrid.SelectedItem is DataRowView)
                     {
-                        if (((DataRowView)riskDataGrid.SelectedItem).Row[DT_Risk.ID] is int rowRiskID)
+                        if (((DataRowView)riskDataGrid.SelectedItem).Row[DT_Risk.ID] is decimal rowRiskID)
                         {
                             TheCurrentLayout.Line_Selected = TheCurrentLayout.LinesList.Find(item => (item.ID == rowRiskID && !item.IsCM));
                             TheCurrentLayout.RiskLeave();                            
@@ -7628,7 +7625,7 @@ namespace EnsureRisk
                                 {
                                     damageRow[DT_CounterM_Damage.STATUS] = false;
                                 }
-                                TheCurrentLayout.LinesListCMState[Convert.ToInt32(cmID)] = false;
+                                TheCurrentLayout.LinesListCMState[Convert.ToDecimal(cmID)] = false;
                                 (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
                                 (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).IsActivated = false;
                             }
@@ -7641,7 +7638,7 @@ namespace EnsureRisk
                                     {
                                         damageRow[DT_CounterM_Damage.STATUS] = true;
                                     }
-                                    TheCurrentLayout.LinesListCMState[Convert.ToInt32(cmID)] = true;
+                                    TheCurrentLayout.LinesListCMState[Convert.ToDecimal(cmID)] = true;
                                     (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Black));
                                     (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).IsActivated = true;
                                 }

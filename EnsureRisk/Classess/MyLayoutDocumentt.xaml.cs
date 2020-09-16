@@ -90,7 +90,7 @@ namespace EnsureRisk.Classess
         public List<RiskPolyLine> ListCopy { get; set; }
         public List<RiskPolyLine> RiskGroupSelected { get; set; }
         public List<RiskPolyLine> CMGroupSelected { get; set; }
-        public Dictionary<int, bool> LinesListCMState { get; set; }
+        public Dictionary<decimal, bool> LinesListCMState { get; set; }
         #endregion
 
         #region RiskPolyLines
@@ -112,7 +112,7 @@ namespace EnsureRisk.Classess
             RiskGroupSelected = new List<RiskPolyLine>();
             CMGroupSelected = new List<RiskPolyLine>();
             ListCopy = new List<RiskPolyLine>();
-            LinesListCMState = new Dictionary<int, bool>();
+            LinesListCMState = new Dictionary<decimal, bool>();
             MainLine = new RiskPolyLine(GridPaintLines, MenuMainRisk, false);
             IsSelected = true;
             Loose = true;
@@ -822,7 +822,7 @@ namespace EnsureRisk.Classess
                     cmline.MyName.AttachDoubleClick(cmline.MyName, CM_LabelName_MouseDoubleClick);
 
                     LinesList.Add(cmline);
-                    LinesListCMState.Add(Convert.ToInt32(cmline.ID), cmline.IsActivated);
+                    LinesListCMState.Add(Convert.ToDecimal(cmline.ID), cmline.IsActivated);
                 }
 
                 TreeOperation.Build_Tree(LinesList);
@@ -855,7 +855,7 @@ namespace EnsureRisk.Classess
             }
         }
 
-        private decimal CalculateAcumDamageRisk(RiskPolyLine line, int IdDamageSelected)
+        private decimal CalculateAcumDamageRisk(RiskPolyLine line, decimal IdDamageSelected)
         {
             decimal AcumDamage = CalculateOwnValueRisk(line.ID, IdDamageSelected) * General.AcumulatedLikelihood(line);
             decimal value = 0;
@@ -1006,7 +1006,7 @@ namespace EnsureRisk.Classess
                     {
                         if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + drCMWBS[DT_CM_WBS.ID_WBS]).Any())
                         {
-                            int idPadre = (Int32)dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + drCMWBS[DT_CM_WBS.ID_WBS]).First()[DT_WBS_STRUCTURE.ID_FATHER];
+                            decimal idPadre = (decimal)dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + drCMWBS[DT_CM_WBS.ID_WBS]).First()[DT_WBS_STRUCTURE.ID_FATHER];
                             if (Ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + line.ID).CopyToDataTable().Select(DT_CM_WBS.ID_WBS + " = " + idPadre).Any())
                             {
                                 DataRow drreturn = Ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + line.ID).CopyToDataTable().Select(DT_CM_WBS.ID_WBS + " = " + idPadre).First();
@@ -1025,7 +1025,7 @@ namespace EnsureRisk.Classess
                 {
                     if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + drRISKWBS[DT_RISK_WBS.ID_WBS]).Any())
                     {
-                        int idPadre = (Int32)dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + drRISKWBS[DT_RISK_WBS.ID_WBS]).First()[DT_WBS_STRUCTURE.ID_FATHER];
+                        decimal idPadre = (decimal)dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + drRISKWBS[DT_RISK_WBS.ID_WBS]).First()[DT_WBS_STRUCTURE.ID_FATHER];
                         if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + line.ID).CopyToDataTable().Select(DT_RISK_WBS.ID_WBS + " = " + idPadre).Any())
                         {
                             DataRow drreturn = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + line.ID).CopyToDataTable().Select(DT_RISK_WBS.ID_WBS + " = " + idPadre).First();
@@ -2380,8 +2380,6 @@ namespace EnsureRisk.Classess
                 Line_Selected = destinationPolyLine;
             }
         }
-
-
         private void MoveCounterMeasure(RiskPolyLine destinationPolyLine, Point point)
         {
             if (FullAccess(destinationPolyLine))

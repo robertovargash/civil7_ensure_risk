@@ -257,6 +257,19 @@ namespace EnsureBusinesss
             return Convert.ToInt32(valuestr);
         }
 
+        public static decimal ConvertToDec(string word)
+        {
+            string valuestr = "";
+            foreach (var item in word)
+            {
+                if (Versioned.IsNumeric(item))
+                {
+                    valuestr += item.ToString();
+                }
+            }
+            return Convert.ToDecimal(valuestr);
+        }
+
         public static List<DataRow> MyWBSChildren(DataRow drFather, DataTable dtWBS, DataTable dtStructure)
         {
             List<DataRow> returnList = new List<DataRow>();
