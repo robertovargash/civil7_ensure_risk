@@ -41,8 +41,10 @@ namespace EnsureRisk.Classess
         private DataView dvDamage;
         public DataView  DvDamage { get { return dvDamage; } set { dvDamage = value; OnPropertyChanged("DvDamage"); } }
         public decimal IdDamageSelected { get { return idDamageSelected; } set { idDamageSelected = value; OnPropertyChanged("IdDamageSelected"); } }
-        
+
+#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS0108 // Member hides inherited member; missing new keyword
         private void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
