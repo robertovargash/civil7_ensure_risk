@@ -244,19 +244,6 @@ namespace EnsureBusinesss
             }
         }
 
-        public static int ConvertToInt(string word)
-        {
-            string valuestr = "";
-            foreach (var item in word)
-            {
-                if (Versioned.IsNumeric(item))
-                {
-                    valuestr += item.ToString();
-                }
-            }
-            return Convert.ToInt32(valuestr);
-        }
-
         public static decimal ConvertToDec(string word)
         {
             string valuestr = "";
