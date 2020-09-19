@@ -710,9 +710,7 @@ namespace EnsureBusinesss
                     {
                         DrawDiagramAsFishBone(line.Children, new Point(line.Points[0].X, line.Points[0].Y));
                     }
-
-                    //TODO hmax = 101, altura que el diagrama nunca alcanza
-                    
+                   
                     if (line.Father.Father == null)
                     {
                         if (i > 0)

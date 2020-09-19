@@ -1,0 +1,114 @@
+﻿<Window x:Class="EnsureRisk.Windows.Window2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"    
+        xmlns:s="clr-namespace:System;assembly=mscorlib"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        xmlns:local="clr-namespace:EnsureRisk.Windows"
+        mc:Ignorable="d"
+        Title="Window2" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="1"
+               Text="Usage:"/>
+
+        <StackPanel Grid.Row="2">
+            <xcad:DockingManager x:Name="_dockingManager"
+                           MaxHeight="395"
+                           AllowMixedOrientation="True"
+                           BorderBrush="Black"
+                           BorderThickness="1" Height="379" Margin="0,0,-0.4,0">
+                <xcad:LayoutRoot x:Name="_layoutRoot">
+
+                    <xcad:LayoutRoot.LeftSide>
+                        <xcad:LayoutAnchorSide>
+                            <xcad:LayoutAnchorGroup>
+                                <xcad:LayoutAnchorable Title="Agenda" ContentId="agenda" IconSource="../Images/English.png">
+                                    <TextBlock Text="Agenda Content" Margin="10" FontSize="18" FontWeight="Black" TextWrapping="Wrap" />
+                                </xcad:LayoutAnchorable>
+                                <xcad:LayoutAnchorable Title="Contacts" ContentId="contacts" IconSource="../Images/Netherlands.png">
+                                    <TextBlock Text="Contacts Content" Margin="10" FontSize="18" FontWeight="Black" TextWrapping="Wrap" />
+                                </xcad:LayoutAnchorable>
+                            </xcad:LayoutAnchorGroup>
+                        </xcad:LayoutAnchorSide>
+                    </xcad:LayoutRoot.LeftSide>
+                    <xcad:LayoutPanel Orientation="Horizontal">
+                        <xcad:LayoutAnchorablePane DockWidth="200">
+                            <xcad:LayoutAnchorable ContentId="properties" IsActive="True" Title="Properties" CanHide="False" CanClose="False" AutoHideWidth="240" IconSource="../Images/English.png">
+                              
+                            </xcad:LayoutAnchorable>
+                        </xcad:LayoutAnchorablePane>
+                        <xcad:LayoutDocumentPaneGroup>
+                            <xcad:LayoutDocumentPane>
+                                <xcad:LayoutDocument ContentId="document1" Title="Document 3">
+                                    <Button Content="Document 1 Content" HorizontalAlignment="Center"  VerticalAlignment="Center" />
+                                </xcad:LayoutDocument>
+                                <xcad:LayoutDocument ContentId="document2" Title="Document 2">
+                                    <TextBox Text="Document 2 Content" AcceptsReturn="True" />
+                                </xcad:LayoutDocument>
+                            </xcad:LayoutDocumentPane>
+                        </xcad:LayoutDocumentPaneGroup>
+                        <xcad:LayoutAnchorablePaneGroup DockWidth="125">
+                            <xcad:LayoutAnchorablePane>
+                                <xcad:LayoutAnchorable ContentId="alarms"
+                                       Title="Alarms"
+                                       IconSource="../Images/English.png"
+                                       CanClose="True">
+                                    <ListBox>
+                                        <s:String>Alarm 1</s:String>
+                                        <s:String>Alarm 2</s:String>
+                                        <s:String>Alarm 3</s:String>
+                                    </ListBox>
+                                </xcad:LayoutAnchorable>
+                                <xcad:LayoutAnchorable ContentId="journal"
+                                       Title="Journal">
+                                    <RichTextBox>
+                                        <FlowDocument>
+                                            <Paragraph FontSize="14"
+                                 FontFamily="Segoe">
+                                                <Run Text="This is the content of the Journal Pane."/>
+                                                <LineBreak />
+                                                <Run Text="A "/>
+                                                <Bold>
+                                                    <Run Text="RichTextBox"/>
+                                                </Bold>
+                                                <Run Text=" has been added here"/>
+                                            </Paragraph>
+                                        </FlowDocument>
+                                    </RichTextBox>
+                                </xcad:LayoutAnchorable>
+                            </xcad:LayoutAnchorablePane>
+                        </xcad:LayoutAnchorablePaneGroup>
+                    </xcad:LayoutPanel>
+
+                </xcad:LayoutRoot>
+            </xcad:DockingManager>
+
+            <StackPanel Orientation="Horizontal"
+                  HorizontalAlignment="Center">
+                <Button Content="Save AvalonDock"
+                Margin="5"
+                Padding="5"
+                />
+                <Button Content="Load AvalonDock"
+                Margin="5"
+                Padding="5"
+                />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+
+</Window>

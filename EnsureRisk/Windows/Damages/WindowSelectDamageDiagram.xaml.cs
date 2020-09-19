@@ -23,10 +23,10 @@ namespace EnsureRisk.Windows.Damages
     /// </summary>
     public partial class WindowSelectDamageDiagram : Window, INotifyPropertyChanged
     {
-        private int selectedDamage;
+        private decimal selectedDamage;
         private string damage,um;
         private DataTable dtDamage;
-        public int SelectedDamage { get { return selectedDamage; } set { selectedDamage = value; OnPropertyChanged("SelectedDamage"); } }
+        public decimal SelectedDamage { get { return selectedDamage; } set { selectedDamage = value; OnPropertyChanged("SelectedDamage"); } }
         public string DAMAGE { get { return damage; } set { damage = value; OnPropertyChanged("DAMAGE"); } }
         public string UM { get { return um; } set { um = value; OnPropertyChanged("UM"); } }
         public DataRow Drow { get; set; }

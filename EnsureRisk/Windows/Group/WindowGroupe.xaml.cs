@@ -13,7 +13,7 @@ namespace EnsureRisk.Windows
     /// </summary>
     public partial class WindowGroupe : Window
     {
-        public int IdGroup = -100;
+        public decimal IdGroup = -100;
         public string GroupName { get; set; }
         public DataTable DT_Groups { get; set; }
         public WindowGroupe()
@@ -66,7 +66,7 @@ namespace EnsureRisk.Windows
                 frmSelection.ShowDialog();
                 if (frmSelection.DialogResult == true)
                 {//Arreglado por roberto pues estaba  tomando el primer elemento
-                    IdGroup = (int)frmSelection.RowsSelected[0][DT_Groupe.ID_GROUPE];
+                    IdGroup = (decimal)frmSelection.RowsSelected[0][DT_Groupe.ID_GROUPE];
                     TextGroup.Text = frmSelection.RowsSelected[0][DT_Groupe.GROUPE_NAME].ToString();
                 }
             }

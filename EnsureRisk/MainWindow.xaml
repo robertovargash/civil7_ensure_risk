@@ -303,14 +303,14 @@
             <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
         <xcad:DockingManager x:Name="_dockingManager" AllowMixedOrientation="True" BorderBrush="Black" BorderThickness="1" Grid.Row="1" Margin="0">
-            <xcad:DockingManager.DocumentHeaderTemplate>
+            <!--<xcad:DockingManager.DocumentHeaderTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <md:PackIcon Kind="FileDocument"  Margin="0,0,4,0" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
-                        <TextBlock Text="{Binding Title}" Name="headerDrawPanel" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        --><!--<TextBlock Text="{Binding Title}" Name="headerDrawPanel" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>--><!--
                     </StackPanel>
                 </DataTemplate>
-            </xcad:DockingManager.DocumentHeaderTemplate>
+            </xcad:DockingManager.DocumentHeaderTemplate>-->
             <xcad:DockingManager.AnchorableHeaderTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -625,7 +625,9 @@
                         </xcad:LayoutAnchorable>
                     </xcad:LayoutAnchorablePane>
                     <xcad:LayoutDocumentPaneGroup>
-                        <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel"/>
+                        <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel">
+                            <xcad:LayoutDocument x:Name="pp" Title="pp"/>
+                        </xcad:LayoutDocumentPane>
                     </xcad:LayoutDocumentPaneGroup >
                     <xcad:LayoutAnchorablePaneGroup DockWidth="250" ScrollViewer.CanContentScroll="True" DockMinWidth="50" FloatingWidth="250">
                         <xcad:LayoutAnchorablePane ScrollViewer.CanContentScroll="True">

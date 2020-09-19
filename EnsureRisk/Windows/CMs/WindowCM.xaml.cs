@@ -157,7 +157,7 @@ namespace EnsureRisk.Windows
                             newRow[DT_CM_WBS.PROBABILITY] = 0;
                             if ((bool)itemWBS[DT_RISK_WBS.IS_PRIMARY])
                             {
-                                ID_WBS = (int)itemWBS[DT_RISK_WBS.ID_WBS];
+                                ID_WBS = (decimal)itemWBS[DT_RISK_WBS.ID_WBS];
                                 WBS_NAME = itemWBS[DT_RISK_WBS.NIVEL].ToString() + " " + itemWBS[DT_RISK_WBS.WBS].ToString();
                                 USER_NAME = itemWBS[DT_RISK_WBS.USERNAME].ToString();
                             }
@@ -166,7 +166,7 @@ namespace EnsureRisk.Windows
                             hasWBS = true;
                             CM_WBS_Table.Rows.Add(newRow);
                             
-                            if (WBS_isSheet((int)itemWBS[DT_RISK_WBS.ID_WBS]))
+                            if (WBS_isSheet((decimal)itemWBS[DT_RISK_WBS.ID_WBS]))
                             {
                                 foreach (DataRow itemDamage in CM_Damage_Table.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CMRow[DT_CounterM.ID]))
                                 {
@@ -228,7 +228,7 @@ namespace EnsureRisk.Windows
                     TextFather.Text = DsCM.Tables[DT_Risk.TABLE_NAME].Rows.Find(RiskPadre.ID)[DT_Risk.NAMESHORT].ToString();
                     if (CMRow[DT_CounterM.ID_WBS] != DBNull.Value)
                     {
-                        ID_WBS = (int)CMRow[DT_Risk.ID_WBS];
+                        ID_WBS = (decimal)CMRow[DT_Risk.ID_WBS];
                     }
                     foreach (DataRow item in DsCM.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + RiskTreeID))
                     {
@@ -333,7 +333,7 @@ namespace EnsureRisk.Windows
                 List<decimal> Probabilities = new List<decimal>();
                 foreach (DataRow item in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
                 {
-                    if (WBS_isSheet((int)item[DT_CM_WBS.ID_WBS]))
+                    if (WBS_isSheet((decimal)item[DT_CM_WBS.ID_WBS]))
                     {
                         if (item[DT_CM_WBS.PROBABILITY] == DBNull.Value)
                         {
@@ -557,22 +557,22 @@ namespace EnsureRisk.Windows
             Close();
         }
 
-        private bool TengoPadre(int idWBS)
+        private bool TengoPadre(decimal idWBS)
         {
             return dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + idWBS).Any();
         }
-        private DataRow BuscarMiPadre(int idWBS)
+        private DataRow BuscarMiPadre(decimal idWBS)
         {
-            int idPadre = (Int32)dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + idWBS).First()[DT_WBS_STRUCTURE.ID_FATHER];
+            decimal idPadre = (decimal)dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + idWBS).First()[DT_WBS_STRUCTURE.ID_FATHER];
             return dsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idPadre);
         }
 
-        public DataTable BuscarAncestros(int idWBS, DataTable dtWBSAncestors)
+        public DataTable BuscarAncestros(decimal idWBS, DataTable dtWBSAncestors)
         {
             if (TengoPadre(idWBS))
             {
                 dtWBSAncestors.ImportRow(BuscarMiPadre(idWBS));
-                return BuscarAncestros((int)BuscarMiPadre(idWBS)[DT_WBS.ID_WBS], dtWBSAncestors);
+                return BuscarAncestros((decimal)BuscarMiPadre(idWBS)[DT_WBS.ID_WBS], dtWBSAncestors);
             }
             else
             {
@@ -590,9 +590,9 @@ namespace EnsureRisk.Windows
                 DataTable roleCodif = ws.GetAllWBS().Tables[DT_WBS.TABLE_NAME].Copy();
                 ws.Dispose();
                 WindowSelection frmSelection = new WindowSelection();
-                if (CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + (int)CMRow[DT_CounterM.ID]).Count() > 0)
+                if (CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + (decimal)CMRow[DT_CounterM.ID]).Count() > 0)
                 {
-                    frmSelection.Dt = General.DeleteExists(roleCodif, CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + (int)CMRow[DT_CounterM.ID]).CopyToDataTable(), DT_WBS.ID_WBS);
+                    frmSelection.Dt = General.DeleteExists(roleCodif, CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + (decimal)CMRow[DT_CounterM.ID]).CopyToDataTable(), DT_WBS.ID_WBS);
                 }
                 else
                 {
@@ -622,7 +622,7 @@ namespace EnsureRisk.Windows
                     }
                     foreach (DataRow itemRISKWBSi in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
                     {
-                        foreach (DataRow itemAncestors in BuscarAncestros((int)itemRISKWBSi[DT_RISK_WBS.ID_WBS], dsWBS.Tables[DT_WBS.TABLE_NAME].Clone()).Rows)
+                        foreach (DataRow itemAncestors in BuscarAncestros((decimal)itemRISKWBSi[DT_RISK_WBS.ID_WBS], dsWBS.Tables[DT_WBS.TABLE_NAME].Clone()).Rows)
                         {
                             if (!(CM_WBS_Table.Rows.Contains(new object[] { CMRow[DT_CounterM.ID], itemAncestors[DT_WBS.ID_WBS] })))
                             {
@@ -642,7 +642,7 @@ namespace EnsureRisk.Windows
                     }
                     foreach (DataRow itemWBS in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
                     {
-                        if (WBS_isSheet((int)itemWBS[DT_CM_WBS.ID_WBS]))
+                        if (WBS_isSheet((decimal)itemWBS[DT_CM_WBS.ID_WBS]))
                         {
                             foreach (DataRow itemDamage in CM_Damage_Table.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CMRow[DT_CounterM.ID]))
                             {
@@ -740,7 +740,7 @@ namespace EnsureRisk.Windows
             }
         }
 
-        private bool WBS_isSheet(int ID_WBS)
+        private bool WBS_isSheet(decimal ID_WBS)
         {
 
             if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + ID_WBS).Any())

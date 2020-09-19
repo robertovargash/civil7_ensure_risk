@@ -171,7 +171,7 @@ namespace EnsureBusinesss
             {
                 XDocument tempVar = XDocument.Load(file);
 
-                foreach (XElement val in Enumerable.Where(tempVar.Descendants("value"), (xEl) => Microsoft.VisualBasic.CompilerServices.StringType.StrLike(xEl.Value, "http://*", Microsoft.VisualBasic.CompareMethod.Binary)).AsParallel())
+                foreach (XElement val in Enumerable.Where(tempVar.Descendants("value"), (xEl) => StringType.StrLike(xEl.Value, "http://*", Microsoft.VisualBasic.CompareMethod.Binary)).AsParallel())
                 {
                     val.Value = ChangeWebReference(val.Value, server);
                 }
@@ -591,6 +591,18 @@ namespace EnsureBusinesss
         {
             decimal pow = Convert.ToDecimal(Math.Pow(10, CntDecimales));
             return Convert.ToDecimal(Math.Floor(N * pow + 0.5M) / pow);
+        }
+
+        public static bool WSBLowest(decimal idWBS, decimal idRisk, DataSet dsWBS, DataTable dtRisk_WBS)
+        {
+            foreach (DataRow riskWBS in dtRisk_WBS.Select(DT_RISK_WBS.ID_RISK + " = " + idRisk))
+            {
+                if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + idWBS + " and " + DT_WBS_STRUCTURE.ID_CHILD + " = " + riskWBS[DT_RISK_WBS.ID_WBS]).Any())
+                {
+                    return false;
+                }
+            }
+            { return true; }
         }
         #endregion
     }

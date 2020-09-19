@@ -108,10 +108,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Referencias\Xceed.Wpf.AvalonDock.dll</HintPath>
-    </Reference>
     <Reference Include="Xceed.Wpf.Toolkit, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Referencias\Xceed.Wpf.Toolkit.dll</HintPath>
@@ -307,6 +303,9 @@
     <Compile Include="Windows\Roles\WindowRoleList.xaml.cs">
       <DependentUpon>WindowRoleList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Window2.xaml.cs">
+      <DependentUpon>Window2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\WindowSaveAs.xaml.cs">
       <DependentUpon>WindowSaveAs.xaml</DependentUpon>
     </Compile>
@@ -345,8 +344,8 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Classess\MyLayoutDocumentt.xaml">
+      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="Classess\MyTreeViewItem.xaml">
       <SubType>Designer</SubType>
@@ -461,6 +460,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Roles\WindowRoleList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Window2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -620,6 +623,10 @@
     <ProjectReference Include="..\EnsureBusinesss\EnsureBusinesss.csproj">
       <Project>{dec79fd2-e1e8-4e4d-90ed-d44910f4a79b}</Project>
       <Name>EnsureBusinesss</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
+      <Project>{db81988f-e0f2-45a0-a1fd-8c37f3d35244}</Project>
+      <Name>Xceed.Wpf.AvalonDock</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

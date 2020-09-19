@@ -504,6 +504,8 @@ namespace EnsureRisk
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             AnchorDiagramList.IsVisible = true;
+            Window2 w2 = new Window2();
+            w2.ShowDialog();
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
@@ -695,14 +697,14 @@ namespace EnsureRisk
         {
             try
             {
-                //if (TheCurrentLayout != null)
-                //{
-                //    MiniMap.MapSource = TheCurrentLayout.ScrollGridPaint;
-                //}
-                //else
-                //{
-                //    MiniMap.MapSource = new ScrollViewer();
-                //}
+                if (TheCurrentLayout != null)
+                {
+                    MiniMap.MapSource = TheCurrentLayout.ScrollGridPaint;
+                }
+                else
+                {
+                    MiniMap.MapSource = new ScrollViewer();
+                }
             }
             catch (Exception ex)
             {
@@ -1265,9 +1267,9 @@ namespace EnsureRisk
                     myly.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
                     LayoutDocumentPanel.Children.Add(myly);
                     OpenedDocuments.Add(myly);
-                    TheCurrentLayout = myly;                   
-                    CambiosVisuales();
+                    TheCurrentLayout = myly;
                     AddWBSTopToDiagram(myly.Ds);
+                    CambiosVisuales();                    
                 }
             }           
         }
@@ -2280,9 +2282,9 @@ namespace EnsureRisk
                     RiskTreeID = TheCurrentLayout.ID_Diagram,
                     RiskSelected = TheCurrentLayout.Line_Selected,
                     Icon = Icon,
-                    MyRisks = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Copy()
+                    MyRisks = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Copy(),
+                    HasAccess = true
                 };
-                wrisk.HasAccess = true;
                 if (wrisk.ShowDialog() == true)
                 {
                     TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(wrisk.RiskRow);

@@ -13,6 +13,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
+
                 </Grid.RowDefinitions>
                 <TextBlock Name="HeaderValue" Text="Cost ($)" Grid.Row="0" VerticalAlignment="Center" Foreground="Black"/>
                 <TextBlock Name="CalculatedValue" Text="Acum. Value" Grid.Row="1" VerticalAlignment="Center" Foreground="Black"/>
