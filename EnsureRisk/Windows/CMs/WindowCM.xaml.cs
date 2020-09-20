@@ -19,6 +19,7 @@ using EnsureBusinesss.Business;
 using EnsureRisk.Resources;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
+using System.Windows.Controls.Primitives;
 
 namespace EnsureRisk.Windows
 {
@@ -381,9 +382,9 @@ namespace EnsureRisk.Windows
                 DataTable roleCodif = ws.GetRolesData().Tables[DT_Role.ROLE_TABLE].Copy();
                 ws.Dispose();
                 WindowSelection frmSelection = new WindowSelection();
-                if (CM_RoleTable.Select(DT_Role_CM.ID_CM + " = " + (Int32)CMRow[DT_CounterM.ID]).Count() > 0)
+                if (CM_RoleTable.Select(DT_Role_CM.ID_CM + " = " + (decimal)CMRow[DT_CounterM.ID]).Count() > 0)
                 {
-                    frmSelection.Dt = General.DeleteExists(roleCodif, CM_RoleTable.Select(DT_Role_CM.ID_CM + " = " + (Int32)CMRow[DT_CounterM.ID]).CopyToDataTable(), DT_Role.IDROL_COLUMN);
+                    frmSelection.Dt = General.DeleteExists(roleCodif, CM_RoleTable.Select(DT_Role_CM.ID_CM + " = " + (decimal)CMRow[DT_CounterM.ID]).CopyToDataTable(), DT_Role.IDROL_COLUMN);
                 }
                 else
                 {
@@ -716,30 +717,6 @@ namespace EnsureRisk.Windows
             }
         }
 
-        private void BtnSetPrimary_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (dgWBS.SelectedIndex >= 0)
-                {
-                    foreach (DataRow item in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
-                    {
-                        item[DT_CM_WBS.IS_PRIMARY] = false;
-                        item[DT_CM_WBS.PRIMARY] = "";
-                    }
-                    DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.IS_PRIMARY] = true;
-                    DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.PRIMARY] = "PRIMARY";
-                    ID_WBS = (Int32)DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.ID_WBS];
-                    WBS_NAME = DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.NIVEL].ToString() + " " + DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.WBS].ToString();
-                    USER_NAME = DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.USERNAME].ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
         private bool WBS_isSheet(decimal ID_WBS)
         {
 
@@ -774,6 +751,31 @@ namespace EnsureRisk.Windows
         private void TextName_TextChanged(object sender, TextChangedEventArgs e)
         {
             ShortName = TextName.Text;
+        }
+
+        private void KeyToggleButtonChecked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                decimal idWBS = (decimal)((DataRowView)((ToggleButton)e.Source).DataContext).Row[DT_CM_WBS.ID_WBS];
+                if (dgWBS.SelectedIndex >= 0)
+                {
+                    DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.IS_PRIMARY] = true;
+                    DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.PRIMARY] = "PRIMARY";
+                    foreach (DataRow item in DVCMWBS.Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID] + " and " + DT_CM_WBS.ID_WBS + " <> " + idWBS))
+                    {
+                        item[DT_CM_WBS.IS_PRIMARY] = false;
+                        item[DT_CM_WBS.PRIMARY] = "";
+                    }
+                    ID_WBS = (decimal)DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.ID_WBS];
+                    WBS_NAME = DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.NIVEL].ToString() + " " + DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.WBS].ToString();
+                    USER_NAME = DVCMWBS[dgWBS.SelectedIndex].Row[DT_CM_WBS.USERNAME].ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
         }
     }
 }

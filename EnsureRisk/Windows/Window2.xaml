@@ -52,46 +52,15 @@
                             </xcad:LayoutAnchorable>
                         </xcad:LayoutAnchorablePane>
                         <xcad:LayoutDocumentPaneGroup>
-                            <xcad:LayoutDocumentPane>
-                                <xcad:LayoutDocument ContentId="document1" Title="Document 3">
+                            <xcad:LayoutDocumentPane x:Name="panelito">
+                                <xcad:LayoutDocument ContentId="document1" Title="Document 3" IsSelected="False">
                                     <Button Content="Document 1 Content" HorizontalAlignment="Center"  VerticalAlignment="Center" />
                                 </xcad:LayoutDocument>
-                                <xcad:LayoutDocument ContentId="document2" Title="Document 2">
+                                <xcad:LayoutDocument ContentId="document2" Title="Document 2" IsSelected="True">
                                     <TextBox Text="Document 2 Content" AcceptsReturn="True" />
                                 </xcad:LayoutDocument>
                             </xcad:LayoutDocumentPane>
                         </xcad:LayoutDocumentPaneGroup>
-                        <xcad:LayoutAnchorablePaneGroup DockWidth="125">
-                            <xcad:LayoutAnchorablePane>
-                                <xcad:LayoutAnchorable ContentId="alarms"
-                                       Title="Alarms"
-                                       IconSource="../Images/English.png"
-                                       CanClose="True">
-                                    <ListBox>
-                                        <s:String>Alarm 1</s:String>
-                                        <s:String>Alarm 2</s:String>
-                                        <s:String>Alarm 3</s:String>
-                                    </ListBox>
-                                </xcad:LayoutAnchorable>
-                                <xcad:LayoutAnchorable ContentId="journal"
-                                       Title="Journal">
-                                    <RichTextBox>
-                                        <FlowDocument>
-                                            <Paragraph FontSize="14"
-                                 FontFamily="Segoe">
-                                                <Run Text="This is the content of the Journal Pane."/>
-                                                <LineBreak />
-                                                <Run Text="A "/>
-                                                <Bold>
-                                                    <Run Text="RichTextBox"/>
-                                                </Bold>
-                                                <Run Text=" has been added here"/>
-                                            </Paragraph>
-                                        </FlowDocument>
-                                    </RichTextBox>
-                                </xcad:LayoutAnchorable>
-                            </xcad:LayoutAnchorablePane>
-                        </xcad:LayoutAnchorablePaneGroup>
                     </xcad:LayoutPanel>
 
                 </xcad:LayoutRoot>
@@ -101,11 +70,11 @@
                   HorizontalAlignment="Center">
                 <Button Content="Save AvalonDock"
                 Margin="5"
-                Padding="5"
+                Padding="5" Click="Button_Click"
                 />
                 <Button Content="Load AvalonDock"
                 Margin="5"
-                Padding="5"
+                Padding="5" Click="Button_Click"
                 />
             </StackPanel>
         </StackPanel>

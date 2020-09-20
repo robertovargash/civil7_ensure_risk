@@ -3,7 +3,9 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"         
+        xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
+        xmlns:classess="clr-namespace:EnsureRisk.Classess"
         x:Class="EnsureRisk.Windows.WindowCM"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,6 +15,9 @@
          xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Countermeasure"  Height="481" Width="680" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+    </Window.Resources>
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
             <BeginStoryboard>
@@ -36,9 +41,9 @@
         </TextBox>
         <TextBox md:HintAssist.Hint="Father" md:HintAssist.IsFloating="True" x:Name="TextFather" HorizontalAlignment="Left" Margin="408,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="246" IsReadOnly="True" IsEnabled="False"/>
         <TextBox IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" Name="TextDetail" HorizontalAlignment="Left" Height="71" Margin="34,59,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="622" TextAlignment="Justify"/>
-        <TabControl HorizontalAlignment="Left" Height="192" Margin="79,186,0,0" VerticalAlignment="Top" Width="575">
+        <TabControl HorizontalAlignment="Left" Height="192" Margin="34,186,0,0" VerticalAlignment="Top" Width="620">
             <TabItem Header="Values" Name="tabValues" >
-                <Grid Background="#FFE5E5E5">
+                <Grid>
                     <DataGrid Name="dgTopRisk" HorizontalAlignment="Left" Height="159" Margin="1,1,0,0" VerticalAlignment="Top" Width="565" AutoGenerateColumns="False">
                         <DataGrid.Resources>
                             <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
@@ -68,17 +73,8 @@
                 </Grid>
             </TabItem>
             <TabItem Header="WBS" Name="tabWBS" >
-                <Grid Background="#FFE5E5E5" Name="gridTabWBS" >
-                    <Button Name="BtnAddWBS" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAddWBS_Click" md:ShadowAssist.ShadowDepth="Depth5">
-                        <md:PackIcon Kind="Plus"/>
-                    </Button>
-                    <Button x:Name="BtnDelWBS" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" Click="BtnDelWBS_Click" md:ShadowAssist.ShadowDepth="Depth5">
-                        <md:PackIcon Kind="Minus"/>
-                    </Button>
-                    <Button x:Name="BtnSetPrimary" IsEnabled="{Binding Path = HasAccess}" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignFloatingActionAccentButton}" ToolTip="Set Primary WBS" Margin="15,89,0,0" VerticalAlignment="Top" Width="47" Click="BtnSetPrimary_Click" md:ShadowAssist.ShadowDepth="Depth5" Height="44">
-                        <md:PackIcon Kind="Key"/>
-                    </Button>
-                    <DataGrid Name="dgWBS" CanUserDeleteRows="False" HorizontalAlignment="Left" Height="156" Margin="71,5,0,0" VerticalAlignment="Top" Width="489" AutoGenerateColumns="False" SelectedCellsChanged="DgWBS_SelectedCellsChanged" LostFocus="DgWBS_LostFocus" SelectionChanged="DgWBS_SelectionChanged" CellEditEnding="DgWBS_CellEditEnding">
+                <Grid Name="gridTabWBS" >
+                    <DataGrid Name="dgWBS" CanUserDeleteRows="False" CanUserAddRows="False" HorizontalAlignment="Left" VerticalAlignment="Top" AutoGenerateColumns="False" SelectedCellsChanged="DgWBS_SelectedCellsChanged" LostFocus="DgWBS_LostFocus" SelectionChanged="DgWBS_SelectionChanged" CellEditEnding="DgWBS_CellEditEnding">
                         <DataGrid.Resources>
                             <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                 <Setter Property="Padding" Value="-2"/>
@@ -91,6 +87,20 @@
                             </Style>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
+                            <DataGridTemplateColumn x:Name="wbsBtn">
+                                <DataGridTemplateColumn.Header>
+                                    <Button Name="BtnAddWBS" Width="40" Height="40" ToolTip="Add WBS" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" IsEnabled="{Binding Path = HasAccess}" VerticalAlignment="Top" Click="BtnAddWBS_Click" md:ShadowAssist.ShadowDepth="Depth5">
+                                        <md:PackIcon Kind="Plus"/>
+                                    </Button>
+                                </DataGridTemplateColumn.Header>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button x:Name="BtnDelWBS" Height="20" Width="20" ToolTip="Delete row" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" IsEnabled="{Binding Path = HasAccess}" Click="BtnDelWBS_Click" md:ShadowAssist.ShadowDepth="Depth5">
+                                            <md:PackIcon Kind="Trash"/>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= Nivel}" Width="100" IsReadOnly="True"/>
                             <DataGridTextColumn x:Name="WBS" Header="WBS Name" Binding="{Binding Path= WBS_Name}" Width="*" IsReadOnly="True"/>
                             <DataGridTextColumn x:Name="WBSUser" Header="User" Binding="{Binding Path= userName}" Width="*" IsReadOnly="True"/>
@@ -103,21 +113,40 @@
                                     </Binding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
-                            <DataGridTextColumn x:Name="PRIMARY" Header="Primary" Binding="{Binding Path= Primaryy}" Width="100" Foreground="#FFF30808" FontWeight="Bold" IsReadOnly="True"/>
+                            <DataGridTemplateColumn x:Name="PRIMARY" Header="Primary">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ToggleButton IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Checked="KeyToggleButtonChecked" Style="{StaticResource MaterialDesignActionToggleButton}" IsChecked="{Binding {x:Static data:DT_CM_WBS.IS_PRIMARY}}">
+                                            <md:ToggleButtonAssist.OnContent>
+                                                <md:PackIcon Kind="Key" Width="20" Height="20"/>
+                                            </md:ToggleButtonAssist.OnContent>
+                                        </ToggleButton>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
             </TabItem>
             <TabItem Header="Roles" Name="tabRoles" >
-                <Grid Background="#FFE5E5E5" Name="gridTabRoles" IsEnabled="{Binding Path = HasAccess}">
-                    <Button Name="BtnAddRole"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAddRole_Click" md:ShadowAssist.ShadowDepth="Depth5">
-                        <md:PackIcon Kind="Plus"/>
-                    </Button>
-                    <Button x:Name="BtnDelRole" HorizontalAlignment="Left" Margin="15,49,0,0" VerticalAlignment="Top" Width="47" Click="BtnDelRole_Click" md:ShadowAssist.ShadowDepth="Depth5">
-                        <md:PackIcon Kind="Minus"/>
-                    </Button>
-                    <DataGrid Name="dgRoles" HorizontalAlignment="Left" Height="156" Margin="71,5,0,0" VerticalAlignment="Top" Width="489" AutoGenerateColumns="False" IsReadOnly="True">
+                <Grid Name="gridTabRoles" IsEnabled="{Binding Path = HasAccess}">
+                    <DataGrid Name="dgRoles" HorizontalAlignment="Left" VerticalAlignment="Top"  AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
+                            <DataGridTemplateColumn x:Name="roleBtn">
+                                <DataGridTemplateColumn.Header>
+                                    <Button Name="BtnAdd" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Add Role"  HorizontalAlignment="Left"  VerticalAlignment="Center" Click="BtnAddRole_Click" md:ShadowAssist.ShadowDepth="Depth5">
+                                        <md:PackIcon Kind="Plus"/>
+                                    </Button>
+                                </DataGridTemplateColumn.Header>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button x:Name="BtnDel" ToolTip="Delete Row" Height="20" Width="20"  HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" Click="BtnDelRole_Click" md:ShadowAssist.ShadowDepth="Depth5">
+                                            <md:PackIcon Kind="Trash"/>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn x:Name="Role" Header="Role" Binding="{Binding Path= Role}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>

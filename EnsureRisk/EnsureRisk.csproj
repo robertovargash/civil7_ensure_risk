@@ -126,8 +126,8 @@
       <DependentUpon>MiniMapControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classess\MRLimited.cs" />
-    <Compile Include="Classess\MyLayoutDocumentt.xaml.cs">
-      <DependentUpon>MyLayoutDocumentt.xaml</DependentUpon>
+    <Compile Include="Classess\MyLayouttDocument.xaml.cs">
+      <DependentUpon>MyLayouttDocument.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classess\MyRadioButton.cs" />
     <Compile Include="Classess\MyTreeItem.cs" />
@@ -343,9 +343,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Classess\MyLayoutDocumentt.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Classess\MyLayouttDocument.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Classess\MyTreeViewItem.xaml">
       <SubType>Designer</SubType>
@@ -376,6 +376,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\ThemePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

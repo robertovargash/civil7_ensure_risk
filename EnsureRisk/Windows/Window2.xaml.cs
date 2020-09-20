@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace EnsureRisk.Windows
 {
@@ -22,6 +23,11 @@ namespace EnsureRisk.Windows
         public Window2()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            panelito.Children.Add(new LayoutDocument() { Title = "test"});
         }
     }
 }

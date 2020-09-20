@@ -464,7 +464,7 @@
 
     <DataTemplate x:Key="DocumentHeaderTemplate">
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-            <md:PackIcon Kind="FileDocument" VerticalAlignment="Center"/>
+            <md:PackIcon Kind="FileDocument" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
             <TextBlock Text="{Binding Title}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource MaterialDesignBody}">
             </TextBlock>
         </StackPanel>
@@ -628,40 +628,32 @@
                                     <md:PackIcon Kind="CloseBoxOutline" Foreground="{DynamicResource MaterialDesignBody}"/>
                                 </Button>
                             </Grid>
-                            <Border.Triggers>
-
-                            </Border.Triggers>
                         </Border>
                     </avalonDockControls:DropDownControlArea>
-                    <ControlTemplate.Triggers>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=IsSelected}" Value="False" />
-                                <Condition  Binding="{Binding Path=IsActive}" Value="False"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Background" Value="#FF9C9C9C" TargetName="MyBorder"/>
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=IsSelected}" Value="True" />
-                                <Condition  Binding="{Binding Path=IsActive}" Value="True"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" TargetName="MyBorder"/>
-                        </MultiDataTrigger>
+                    <ControlTemplate.Triggers>                        
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding Path=IsSelected}" Value="True" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton" />
+                            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" TargetName="MyBorder" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=IsSelected}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Hidden" TargetName="DocumentCloseButton" />
+                            <Setter Property="Background" Value="#FFDFDFDF" TargetName="MyBorder" />
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton" />
+                            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" TargetName="MyBorder" />
                         </MultiDataTrigger>
                         <DataTrigger Binding="{Binding Path=CanClose}" Value="false">
-                            <Setter Property="Visibility" Value="Collapsed" TargetName="DocumentCloseButton" />
+                            <Setter Property="Visibility" Value="Hidden" TargetName="DocumentCloseButton" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
