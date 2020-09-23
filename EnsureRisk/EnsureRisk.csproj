@@ -345,7 +345,7 @@
     </Page>
     <Page Include="Classess\MyLayouttDocument.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="Classess\MyTreeViewItem.xaml">
       <SubType>Designer</SubType>

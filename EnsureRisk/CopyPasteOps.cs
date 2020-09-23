@@ -1,4 +1,5 @@
 ﻿using DataMapping.Data;
+using EnsureBusinesss;
 using EnsureBusinesss.Business;
 using System;
 using System.Collections.Generic;
@@ -126,79 +127,100 @@ namespace EnsureRisk
         public static void EstablecerValorDelHijoAlPadre(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, decimal ID_Diagram, DataSet DsWBS)
         {
             if (sourceRisk.IsCM)
-            {
-                foreach (DataRow item in targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + sourceRisk.ID))
+            {//TODO: MUY EXTRAÑO
+                foreach (DataRow rowCMwbs in targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + sourceRisk.ID))
                 {
-                    if (!(targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drTargetRisk[DT_Risk.ID], item[DT_CM_WBS.ID_WBS] })))
+                    if (!(targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drTargetRisk[DT_Risk.ID], rowCMwbs[DT_CM_WBS.ID_WBS] })))
                     {
                         DataRow newRiskWBS = targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
                         newRiskWBS[DT_RISK_WBS.ID_RISK] = drTargetRisk[DT_Risk.ID];
-                        newRiskWBS[DT_RISK_WBS.ID_WBS] = item[DT_CM_WBS.ID_WBS];
+                        newRiskWBS[DT_RISK_WBS.ID_WBS] = rowCMwbs[DT_CM_WBS.ID_WBS];
                         newRiskWBS[DT_RISK_WBS.IS_PRIMARY] = false;
-                        newRiskWBS[DT_RISK_WBS.NIVEL] = item[DT_CM_WBS.NIVEL];
+                        newRiskWBS[DT_RISK_WBS.NIVEL] = rowCMwbs[DT_CM_WBS.NIVEL];
                         newRiskWBS[DT_RISK_WBS.PRIMARY] = "";
                         newRiskWBS[DT_RISK_WBS.PROBABILITY] = drTargetRisk[DT_Risk.PROBABILITY];
                         newRiskWBS[DT_RISK_WBS.RISK] = drTargetRisk[DT_Risk.NAMESHORT];
-                        newRiskWBS[DT_RISK_WBS.USERNAME] = item[DT_CM_WBS.USERNAME];
-                        newRiskWBS[DT_RISK_WBS.WBS] = item[DT_CM_WBS.WBS];
+                        newRiskWBS[DT_RISK_WBS.USERNAME] = rowCMwbs[DT_CM_WBS.USERNAME];
+                        newRiskWBS[DT_RISK_WBS.WBS] = rowCMwbs[DT_CM_WBS.WBS];
                         targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
                     }
                     //LOS VALORES ORIGINALES 
                     foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
                     {
-                        if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { item[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drTargetRisk[DT_Risk.ID] })))
+                        if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { rowCMwbs[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drTargetRisk[DT_Risk.ID] })))
                         {
-                            if (WBS_isSheet((decimal)item[DT_RISK_WBS.ID_WBS], DsWBS))
+                            if (General.IsRiskWBSLow(rowCMwbs, DsWBS, targetDataset.Tables[DT_RISK_WBS.TABLE_NAME]))
                             {
                                 DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
                                 newCMWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
                                 newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
                                 newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_RISK] = drTargetRisk[DT_Risk.ID];
-                                newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_WBS] = item[DT_CM_WBS.ID_WBS];
+                                newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_WBS] = rowCMwbs[DT_CM_WBS.ID_WBS];
                                 newCMWBSDamage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
-                                newCMWBSDamage[DT_WBS_RISK_DAMAGE.WBS] = item[DT_CM_WBS.WBS];
+                                newCMWBSDamage[DT_WBS_RISK_DAMAGE.WBS] = rowCMwbs[DT_CM_WBS.WBS];
                                 targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(newCMWBSDamage);
                             }
+                            //if (General.WBS_isSheet((decimal)rowCMwbs[DT_CM_WBS.ID_WBS], DsWBS))
+                            //{
+                               
+                            //}
                         }
                     }
                 }
-
             }
             else
             {
-                foreach (DataRow item in targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + sourceRisk.ID))
+                foreach (DataRow rowRiskWbs in targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + sourceRisk.ID))
                 {
-                    if (!(targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drTargetRisk[DT_Risk.ID], item[DT_RISK_WBS.ID_WBS] })))
+                    if (!(targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drTargetRisk[DT_Risk.ID], rowRiskWbs[DT_RISK_WBS.ID_WBS] })))
                     {
                         DataRow newRiskWBS = targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
                         newRiskWBS[DT_RISK_WBS.ID_RISK] = drTargetRisk[DT_Risk.ID];
-                        newRiskWBS[DT_RISK_WBS.ID_WBS] = item[DT_RISK_WBS.ID_WBS];
+                        newRiskWBS[DT_RISK_WBS.ID_WBS] = rowRiskWbs[DT_RISK_WBS.ID_WBS];
                         newRiskWBS[DT_RISK_WBS.IS_PRIMARY] = false;
-                        newRiskWBS[DT_RISK_WBS.NIVEL] = item[DT_RISK_WBS.NIVEL];
+                        newRiskWBS[DT_RISK_WBS.NIVEL] = rowRiskWbs[DT_RISK_WBS.NIVEL];
                         newRiskWBS[DT_RISK_WBS.PRIMARY] = "";
                         newRiskWBS[DT_RISK_WBS.PROBABILITY] = drTargetRisk[DT_Risk.PROBABILITY];
                         newRiskWBS[DT_RISK_WBS.RISK] = drTargetRisk[DT_Risk.NAMESHORT];
-                        newRiskWBS[DT_RISK_WBS.USERNAME] = item[DT_RISK_WBS.USERNAME];
-                        newRiskWBS[DT_RISK_WBS.WBS] = item[DT_RISK_WBS.WBS];
+                        newRiskWBS[DT_RISK_WBS.USERNAME] = rowRiskWbs[DT_RISK_WBS.USERNAME];
+                        newRiskWBS[DT_RISK_WBS.WBS] = rowRiskWbs[DT_RISK_WBS.WBS];
                         targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
-                    }
-                    foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
-                    {
-                        if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { item[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drTargetRisk[DT_Risk.ID] })))
+                        if (General.IsRiskWBSLow(rowRiskWbs, DsWBS, targetDataset.Tables[DT_RISK_WBS.TABLE_NAME]))
                         {
-                            if (WBS_isSheet((decimal)item[DT_RISK_WBS.ID_WBS], DsWBS))
+                            foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
                             {
-                                DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
-                                newCMWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
-                                newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
-                                newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_RISK] = drTargetRisk[DT_Risk.ID];
-                                newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_WBS] = item[DT_RISK_WBS.ID_WBS];
-                                newCMWBSDamage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
-                                newCMWBSDamage[DT_WBS_RISK_DAMAGE.WBS] = item[DT_RISK_WBS.WBS];
-                                targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(newCMWBSDamage);
+                                if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { rowRiskWbs[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drTargetRisk[DT_Risk.ID] })))
+                                {
+                                    DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
+                                    newCMWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
+                                    newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
+                                    newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_RISK] = drTargetRisk[DT_Risk.ID];
+                                    newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_WBS] = rowRiskWbs[DT_RISK_WBS.ID_WBS];
+                                    newCMWBSDamage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
+                                    newCMWBSDamage[DT_WBS_RISK_DAMAGE.WBS] = rowRiskWbs[DT_RISK_WBS.WBS];
+                                    targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(newCMWBSDamage);
+                                }
                             }
                         }
                     }
+                    //foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
+                    //{
+                    //    if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { rowRiskWbs[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drTargetRisk[DT_Risk.ID] })))
+                    //    {
+                            
+                    //        if (General.WBS_isSheet((decimal)rowRiskWbs[DT_RISK_WBS.ID_WBS], DsWBS))
+                    //        {
+                    //            DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
+                    //            newCMWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
+                    //            newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
+                    //            newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_RISK] = drTargetRisk[DT_Risk.ID];
+                    //            newCMWBSDamage[DT_WBS_RISK_DAMAGE.ID_WBS] = rowRiskWbs[DT_RISK_WBS.ID_WBS];
+                    //            newCMWBSDamage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
+                    //            newCMWBSDamage[DT_WBS_RISK_DAMAGE.WBS] = rowRiskWbs[DT_RISK_WBS.WBS];
+                    //            targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(newCMWBSDamage);
+                    //        }
+                    //    }
+                    //}
 
                 }
             }
@@ -325,7 +347,7 @@ namespace EnsureRisk
                 {
                     if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { targetWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewRisk[DT_Risk.ID] })))
                     {
-                        if (WBS_isSheet((decimal)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        if (General.IsRiskWBSLow(targetWBS, DsWBS, targetDataset.Tables[DT_RISK_WBS.TABLE_NAME]))
                         {
                             DataRow newRiskWBSDamage = targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
                             newRiskWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
@@ -336,6 +358,10 @@ namespace EnsureRisk
                             newRiskWBSDamage[DT_WBS_RISK_DAMAGE.WBS] = targetWBS[DT_RISK_WBS.WBS];
                             targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(newRiskWBSDamage);
                         }
+                        //if (General.WBS_isSheet((decimal)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        //{
+                            
+                        //}
                     }
                 }
             }
@@ -416,24 +442,42 @@ namespace EnsureRisk
                     newCMWBS[DT_CM_WBS.USERNAME] = targetWBS[DT_RISK_WBS.USERNAME];
                     newCMWBS[DT_CM_WBS.WBS] = targetWBS[DT_RISK_WBS.WBS];
                     targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
-                }
-                foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
-                {
-                    if (!(targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { targetWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] })))
+                    if (General.IsRiskWBSLow(newCMWBS, DsWBS, targetDataset.Tables[DT_CM_WBS.TABLE_NAME]))
                     {
-                        if (WBS_isSheet((decimal)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
                         {
-                            DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
-                            newCMWBSDamage[DT_WBS_CM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
-                            newCMWBSDamage[DT_WBS_CM_Damage.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
-                            newCMWBSDamage[DT_WBS_CM_Damage.ID_CM] = drNewCM[DT_CounterM.ID];
-                            newCMWBSDamage[DT_WBS_CM_Damage.ID_WBS] = targetWBS[DT_RISK_WBS.ID_WBS];
-                            newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = 0;
-                            newCMWBSDamage[DT_WBS_CM_Damage.WBS] = targetWBS[DT_RISK_WBS.WBS];
-                            targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newCMWBSDamage);
+                            if (!(targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { targetWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] })))
+                            {
+                                DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
+                                newCMWBSDamage[DT_WBS_CM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
+                                newCMWBSDamage[DT_WBS_CM_Damage.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
+                                newCMWBSDamage[DT_WBS_CM_Damage.ID_CM] = drNewCM[DT_CounterM.ID];
+                                newCMWBSDamage[DT_WBS_CM_Damage.ID_WBS] = targetWBS[DT_RISK_WBS.ID_WBS];
+                                newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = 0;
+                                newCMWBSDamage[DT_WBS_CM_Damage.WBS] = targetWBS[DT_RISK_WBS.WBS];
+                                targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newCMWBSDamage);
+                            }
                         }
                     }
                 }
+                //foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
+                //{
+                //    if (!(targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { targetWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] })))
+                //    {
+                       
+                //        if (General.WBS_isSheet((decimal)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                //        {
+                //            DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
+                //            newCMWBSDamage[DT_WBS_CM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
+                //            newCMWBSDamage[DT_WBS_CM_Damage.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
+                //            newCMWBSDamage[DT_WBS_CM_Damage.ID_CM] = drNewCM[DT_CounterM.ID];
+                //            newCMWBSDamage[DT_WBS_CM_Damage.ID_WBS] = targetWBS[DT_RISK_WBS.ID_WBS];
+                //            newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = 0;
+                //            newCMWBSDamage[DT_WBS_CM_Damage.WBS] = targetWBS[DT_RISK_WBS.WBS];
+                //            targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newCMWBSDamage);
+                //        }
+                //    }
+                //}
             }
             if (!targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + drNewCM[DT_CounterM.ID]).Any())
             {
@@ -472,12 +516,7 @@ namespace EnsureRisk
             }
             return drNewCM;
         }
-        #endregion
-        
-        private static bool WBS_isSheet(decimal ID_WBS, DataSet DsWBS)
-        {
-            return !DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + ID_WBS).Any();
-        }
+        #endregion        
         
         #region ImportarTODO
         public static void AgregarDamageADiagram(DataSet targetDataset, DataRow[] drImportados, decimal ID_Diagram)
@@ -531,7 +570,7 @@ namespace EnsureRisk
                     }
                     foreach (DataRow riskWBS in targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + risk[DT_Risk.ID]))
                     {
-                        if (WBS_isSheet((decimal)riskWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        if (General.IsRiskWBSLow(riskWBS, DsWBS, targetDataset.Tables[DT_RISK_WBS.TABLE_NAME]))
                         {
                             if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { riskWBS[DT_RISK_WBS.ID_WBS], drDamage[DT_Diagram_Damages.ID_DAMAGE], risk[DT_Risk.ID] })))
                             {
@@ -545,6 +584,10 @@ namespace EnsureRisk
                                 targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(drWBSDamageRisk);
                             }
                         }
+                        //if (General.WBS_isSheet((decimal)riskWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        //{
+                            
+                        //}
                     }
                 }
             }
@@ -690,7 +733,7 @@ namespace EnsureRisk
                 {
                     if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { sourceWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewRisk[DT_Risk.ID] })))
                     {
-                        if (WBS_isSheet((decimal)sourceWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        if (General.IsRiskWBSLow(sourceWBS, DsWBS,targetDataset.Tables[DT_RISK_WBS.TABLE_NAME]))
                         {
                             DataRow newRiskWBSDamage = targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
                             newRiskWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
@@ -711,6 +754,10 @@ namespace EnsureRisk
                             newRiskWBSDamage[DT_WBS_RISK_DAMAGE.WBS] = sourceWBS[DT_RISK_WBS.WBS];
                             targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(newRiskWBSDamage);
                         }
+                        //if (General.WBS_isSheet((decimal)sourceWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        //{
+                            
+                        //}
                     }
                 }
                 //Los valores que va a tener que debio heredar del padre
@@ -718,7 +765,7 @@ namespace EnsureRisk
                 {
                     if (!(targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { targetWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewRisk[DT_Risk.ID] })))
                     {
-                        if (WBS_isSheet((decimal)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        if (General.IsRiskWBSLow(targetWBS, DsWBS, targetDataset.Tables[DT_RISK_WBS.TABLE_NAME]))
                         {
                             DataRow newRiskWBSDamage = targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
                             newRiskWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
@@ -730,6 +777,10 @@ namespace EnsureRisk
                             newRiskWBSDamage[DT_WBS_RISK_DAMAGE.WBS] = targetWBS[DT_RISK_WBS.WBS];
                             targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(newRiskWBSDamage);
                         }
+                        //if (General.WBS_isSheet((decimal)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        //{
+                            
+                        //}
                     }
                 }
             }
@@ -858,31 +909,55 @@ namespace EnsureRisk
                     newCMWBS[DT_CM_WBS.USERNAME] = sourceWBS[DT_CM_WBS.USERNAME];
                     newCMWBS[DT_CM_WBS.WBS] = sourceWBS[DT_CM_WBS.WBS];
                     targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
-                }
-                //LOS VALORES ORIGINALES 
-                foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
-                {
-                    if (!(targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { sourceWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] })))
+                    if (General.IsCMWBSLow(newCMWBS, DsWBS, targetDataset.Tables[DT_CM_WBS.TABLE_NAME]))
                     {
-                        if (WBS_isSheet((decimal)sourceWBS[DT_CM_WBS.ID_WBS], DsWBS))
+                        //LOS VALORES ORIGINALES 
+                        foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
                         {
-                            DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
-                            newCMWBSDamage[DT_WBS_CM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
-                            newCMWBSDamage[DT_WBS_CM_Damage.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
-                            newCMWBSDamage[DT_WBS_CM_Damage.ID_CM] = drNewCM[DT_CounterM.ID];
-                            newCMWBSDamage[DT_WBS_CM_Damage.ID_WBS] = sourceWBS[DT_CM_WBS.ID_WBS];
-                            if (targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] {
-                                                                    sourceWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], sourceCM.ID}))
+                            if (!(targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { sourceWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] })))
                             {
-                                newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Find(new object[] {
+                                DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
+                                newCMWBSDamage[DT_WBS_CM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
+                                newCMWBSDamage[DT_WBS_CM_Damage.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
+                                newCMWBSDamage[DT_WBS_CM_Damage.ID_CM] = drNewCM[DT_CounterM.ID];
+                                newCMWBSDamage[DT_WBS_CM_Damage.ID_WBS] = sourceWBS[DT_CM_WBS.ID_WBS];
+                                if (targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] {
+                                                                    sourceWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], sourceCM.ID}))
+                                {
+                                    newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Find(new object[] {
                                                                     sourceWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], sourceCM.ID})[DT_WBS_CM_Damage.VALUE];
+                                }
+                                newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = 0;
+                                newCMWBSDamage[DT_WBS_CM_Damage.WBS] = sourceWBS[DT_CM_WBS.WBS];
+                                targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newCMWBSDamage);
                             }
-                            newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = 0;
-                            newCMWBSDamage[DT_WBS_CM_Damage.WBS] = sourceWBS[DT_CM_WBS.WBS];
-                            targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newCMWBSDamage);
                         }
                     }
                 }
+                //LOS VALORES ORIGINALES 
+                //foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
+                //{
+                //    if (!(targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { sourceWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] })))
+                //    {
+                //        if (General.WBS_isSheet((decimal)sourceWBS[DT_CM_WBS.ID_WBS], DsWBS))
+                //        {
+                //            DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
+                //            newCMWBSDamage[DT_WBS_CM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
+                //            newCMWBSDamage[DT_WBS_CM_Damage.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
+                //            newCMWBSDamage[DT_WBS_CM_Damage.ID_CM] = drNewCM[DT_CounterM.ID];
+                //            newCMWBSDamage[DT_WBS_CM_Damage.ID_WBS] = sourceWBS[DT_CM_WBS.ID_WBS];
+                //            if (targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] {
+                //                                                    sourceWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], sourceCM.ID}))
+                //            {
+                //                newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Find(new object[] {
+                //                                                    sourceWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], sourceCM.ID})[DT_WBS_CM_Damage.VALUE];
+                //            }
+                //            newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = 0;
+                //            newCMWBSDamage[DT_WBS_CM_Damage.WBS] = sourceWBS[DT_CM_WBS.WBS];
+                //            targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newCMWBSDamage);
+                //        }
+                //    }
+                //}
             }
 
             foreach (DataRow targetWBS in targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drRiskFather[DT_Risk.ID]))
@@ -900,24 +975,41 @@ namespace EnsureRisk
                     newCMWBS[DT_CM_WBS.USERNAME] = targetWBS[DT_RISK_WBS.USERNAME];
                     newCMWBS[DT_CM_WBS.WBS] = targetWBS[DT_RISK_WBS.WBS];
                     targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
-                }
-                foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
-                {
-                    if (!(targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { targetWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] })))
+                    if (General.IsCMWBSLow(newCMWBS, DsWBS, targetDataset.Tables[DT_CM_WBS.TABLE_NAME]))
                     {
-                        if (WBS_isSheet((decimal)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                        foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
                         {
-                            DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
-                            newCMWBSDamage[DT_WBS_CM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
-                            newCMWBSDamage[DT_WBS_CM_Damage.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
-                            newCMWBSDamage[DT_WBS_CM_Damage.ID_CM] = drNewCM[DT_CounterM.ID];
-                            newCMWBSDamage[DT_WBS_CM_Damage.ID_WBS] = targetWBS[DT_RISK_WBS.ID_WBS];
-                            newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = 0;
-                            newCMWBSDamage[DT_WBS_CM_Damage.WBS] = targetWBS[DT_RISK_WBS.WBS];
-                            targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newCMWBSDamage);
+                            if (!(targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { targetWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] })))
+                            {
+                                DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
+                                newCMWBSDamage[DT_WBS_CM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
+                                newCMWBSDamage[DT_WBS_CM_Damage.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
+                                newCMWBSDamage[DT_WBS_CM_Damage.ID_CM] = drNewCM[DT_CounterM.ID];
+                                newCMWBSDamage[DT_WBS_CM_Damage.ID_WBS] = targetWBS[DT_RISK_WBS.ID_WBS];
+                                newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = 0;
+                                newCMWBSDamage[DT_WBS_CM_Damage.WBS] = targetWBS[DT_RISK_WBS.WBS];
+                                targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newCMWBSDamage);
+                            }
                         }
                     }
                 }
+                //foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
+                //{
+                //    if (!(targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { targetWBS[DT_RISK_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] })))
+                //    {
+                //        if (General.WBS_isSheet((decimal)targetWBS[DT_RISK_WBS.ID_WBS], DsWBS))
+                //        {
+                //            DataRow newCMWBSDamage = targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
+                //            newCMWBSDamage[DT_WBS_CM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
+                //            newCMWBSDamage[DT_WBS_CM_Damage.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
+                //            newCMWBSDamage[DT_WBS_CM_Damage.ID_CM] = drNewCM[DT_CounterM.ID];
+                //            newCMWBSDamage[DT_WBS_CM_Damage.ID_WBS] = targetWBS[DT_RISK_WBS.ID_WBS];
+                //            newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = 0;
+                //            newCMWBSDamage[DT_WBS_CM_Damage.WBS] = targetWBS[DT_RISK_WBS.WBS];
+                //            targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newCMWBSDamage);
+                //        }
+                //    }
+                //}
             }
 
             foreach (DataRow riskRole in targetDataset.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + drRiskFather[DT_Risk.ID]))

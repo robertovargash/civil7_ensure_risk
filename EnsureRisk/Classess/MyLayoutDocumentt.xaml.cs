@@ -33,6 +33,7 @@ namespace EnsureRisk.Classess
     public partial class MyLayoutDocumentt : LayoutDocument, INotifyPropertyChanged
     {
         public string LoginUser { get; set; }
+        private LayoutDocument mylayout;
         public double X { get; set; }
         public double Y { get; set; }
         public double Main_Y { get; set; }
@@ -41,7 +42,7 @@ namespace EnsureRisk.Classess
         public double ZoomValue { get { return zoomValue; } set { zoomValue = value; OnPropertyChanged("ZoomValue"); } }
         private decimal idDamageSelected;
         private DataView dvDamage;
-        public DataView  DvDamage { get { return dvDamage; } set { dvDamage = value; OnPropertyChanged("DvDamage"); } }
+        public DataView DvDamage { get { return dvDamage; } set { dvDamage = value; OnPropertyChanged("DvDamage"); } }
         public decimal IdDamageSelected { get { return idDamageSelected; } set { idDamageSelected = value; OnPropertyChanged("IdDamageSelected"); } }
 
 #pragma warning disable CS0108 // Member hides inherited member; missing new keyword
@@ -116,7 +117,7 @@ namespace EnsureRisk.Classess
             ListCopy = new List<RiskPolyLine>();
             LinesListCMState = new Dictionary<decimal, bool>();
             MainLine = new RiskPolyLine(GridPaintLines, MenuMainRisk, false);
-            IsSelected = true;
+            //IsSelected = true;
             Loose = true;
             ZoomValue = 100;
             MoviendoRisk = MoviendoCM = NameEditing = ChoosingCM = ChoosingRisk = IsRootSelected = SelectingToGroup = Creando = false;
@@ -129,15 +130,10 @@ namespace EnsureRisk.Classess
             exportToExcelWorker.ProgressChanged += ExportToExcelWorker_ProgressChanged;
             exportToExcelWorker.RunWorkerCompleted += ExportToExcelWorker_RunWorkerCompleted;
             this.Closing += MyLayoutDocument_Closed;
-            CbFilterTopR.DataContext = this;           
+            CbFilterTopR.DataContext = this;
         }
 
-        public void MostrarYesNo(string text)
-        {
-            ((MainWindow)MyWindow).MostrarDialogYesNo(text);
-        }
-
-        private void MyLayoutDocument_Closed(object sender, EventArgs e)
+        public void MyLayoutDocument_Closed(object sender, EventArgs e)
         {
             try
             {
@@ -168,7 +164,6 @@ namespace EnsureRisk.Classess
             }
             catch (Exception ex)
             {
-                //((MainWindow)MyWindow).IS_SAVING_DATA = false;
                 MostrarDialog(ex.Message);
             }
         }
@@ -232,6 +227,7 @@ namespace EnsureRisk.Classess
 
                     DrawNumbers();
                     //((MainWindow)MyWindow).TextProbabilityChange(LinesList.Find(x => x.ID == ScopeLine.ID));
+
                     Title = LinesList.Find(x => x.ID == ScopeLine.ID).ShortName;
                     //((MainWindow)MyWindow).TextDiagram.Text = LinesList.Find(x => x.ID == ScopeLine.ID).ShortName;
                     LinesList.Find(x => x.ID == ScopeLine.ID).ExtrasVisibility(Visibility.Hidden);
@@ -253,11 +249,12 @@ namespace EnsureRisk.Classess
         public void EnterWorking()
         {
             TheMainGrid.Margin = new Thickness(3);
+            IsClicked = true;
         }
         public void ExitWorking()
         {
             TheMainGrid.Margin = new Thickness(0);
-            //IsSelected = false;
+            IsClicked = false;
         }
 
         private bool TengoPermiso(RiskPolyLine linea)
@@ -424,7 +421,7 @@ namespace EnsureRisk.Classess
 
                 //for (int i = MyRectangles.Length - 1; i >= 0; i--)
                 for (int i = 0; i < MyRectangles.Length; i++)
-                    {
+                {
                     MyDamage item = MyRectangles[i];
                     Color mediaColor = item.Colorr;
 
@@ -705,7 +702,7 @@ namespace EnsureRisk.Classess
                 LinesListCMState.Clear();
                 if (CbFilterTopR.SelectedIndex >= 0)
                 {
-                    
+
                 }
                 LinesList.Clear();
                 //System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Rows.Find(new object[] { ID_Diagram, IdDamageSelected })[DT_Diagram_Damages.COLOR].ToString()));
@@ -1366,7 +1363,7 @@ namespace EnsureRisk.Classess
                 //};
                 if (!showPopup)
                 {
-                    MostrarPopCMWindow(new Point(pointToShowPopup.X - ScrollGridPaint.ContentHorizontalOffset,pointToShowPopup.Y - ScrollGridPaint.ContentVerticalOffset), CMLine.ShortName, probability, Value);
+                    MostrarPopCMWindow(new Point(pointToShowPopup.X - ScrollGridPaint.ContentHorizontalOffset, pointToShowPopup.Y - ScrollGridPaint.ContentVerticalOffset), CMLine.ShortName, probability, Value);
                 }
                 else
                 {
@@ -2287,8 +2284,8 @@ namespace EnsureRisk.Classess
             //Insertar el Risk en su nuevo padre (el PolyLine destino)
             destinationPolyLine.Children.Insert(pos, insertedRisk);
             SetPolyLinePosition(destinationPolyLine.Children);
-        }        
-        
+        }
+
         public void InsertCM(RiskPolyLine insertedCM, RiskPolyLine destinationPolyLine, Point point)
         {
             int pos = TreeOperation.DetectClickPosition(point, destinationPolyLine);
@@ -2412,14 +2409,14 @@ namespace EnsureRisk.Classess
                         IsCM = Line_Selected.IsCM
                     };
                     TreeOperation.DeleteLine(linetoDel, Ds);
-                    
+
                 }
                 else
                 {
 
                     Line_Selected.Father = destinationPolyLine;
                     DataSet ImportDSs = Ds.Copy();
-                    DataRow drNewCM = CopyPasteOps.SetValoresCM(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);                   
+                    DataRow drNewCM = CopyPasteOps.SetValoresCM(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
                     Ds.Merge(ImportDSs);
                     ImportDSs.Dispose();
                     //GlobalListCopy = new List<RiskPolyLine>();
@@ -2439,7 +2436,7 @@ namespace EnsureRisk.Classess
                         IsCM = Line_Selected.IsCM
                     };
                     TreeOperation.DeleteLine(linetoDel, Ds);
-                    
+
                 }
                 GridPaintLines.Children.Remove(LineInMoving);
                 if (LineInMoving != null && LineInMoving.TextPanel != null)
@@ -2941,7 +2938,7 @@ namespace EnsureRisk.Classess
                     Boolean? canUsePolyLineName = CanUseProposedPolyLineName(TextChangeName.Text);
                     if (!canUsePolyLineName.HasValue || canUsePolyLineName.HasValue && canUsePolyLineName.Value)
                     {
-                        if (TextChangeName.Text != string.Empty)
+                        if (!string.IsNullOrEmpty(TextChangeName.Text))
                         {
                             UpdatePolyLineName(TextChangeName.Text);
                         }
@@ -2972,7 +2969,7 @@ namespace EnsureRisk.Classess
                         Boolean? canUsePolyLineName = CanUseProposedPolyLineName(TextChangeName.Text);
                         if (!canUsePolyLineName.HasValue || canUsePolyLineName.HasValue && canUsePolyLineName.Value)
                         {
-                            if (TextChangeName.Text != string.Empty)
+                            if (!string.IsNullOrEmpty(TextChangeName.Text))
                             {
                                 UpdatePolyLineName(TextChangeName.Text);
                             }
@@ -3212,6 +3209,7 @@ namespace EnsureRisk.Classess
             {
                 if (((MainWindow)MyWindow).TheCurrentLayout.ID_Diagram != ID_Diagram)
                 {
+
                     ((MainWindow)MyWindow).TheCurrentLayout = this;
                     ((MainWindow)MyWindow).UpdateMiniMapSource();
                     foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
@@ -3219,10 +3217,6 @@ namespace EnsureRisk.Classess
                         item.ExitWorking();
                     }
                     this.EnterWorking();
-                    //CleanFishBone();
-                    //LoadFishBone();
-                    //DrawNumbersAndLineThickness();
-                    //((MainWindow)MyWindow).TextProbabilityChange(MainLine);
                 }
                 UpdateGridRiskAndGridCM();
                 if (Creando)
@@ -3424,7 +3418,7 @@ namespace EnsureRisk.Classess
 
         }
 
-        private void LayoutDocument_IsActiveChanged(object sender, EventArgs e)
+        public void LayoutDocument_IsActiveChanged(object sender, EventArgs e)
         {
             try
             {
@@ -3439,7 +3433,7 @@ namespace EnsureRisk.Classess
                             item.ExitWorking();
                         }
                         this.EnterWorking();
-                        //((MainWindow)MyWindow).TextProbabilityChange(MainLine);
+                        
                     }
                 }
             }
@@ -3460,9 +3454,7 @@ namespace EnsureRisk.Classess
                 LoadRectangles();
                 DrawNumbers();
                 BtnUndoneScope.Visibility = Visibility.Hidden;
-                //TextDiagram.Text = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
                 Title = Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
-                //TextProbabilityChange(TheCurrentLayout.MainLine);
                 SetLinesThickness();
             }
             catch (Exception ex)
@@ -3541,10 +3533,10 @@ namespace EnsureRisk.Classess
             MyDamage[] arr = lista.ToArray();
             //for (int i = 0; i < k; i++)
             for (int i = k; i < n - 1; i++)
-                {
+            {
                 // acomodo uno en cada iteracion
-                MyDamage elem = arr[n-1];
-                for (int j = n-1; j >= 1; j--)
+                MyDamage elem = arr[n - 1];
+                for (int j = n - 1; j >= 1; j--)
                     arr[j] = arr[j - 1];
                 arr[0] = elem;
             }

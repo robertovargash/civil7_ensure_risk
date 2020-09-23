@@ -593,7 +593,7 @@ namespace EnsureBusinesss
             return Convert.ToDecimal(Math.Floor(N * pow + 0.5M) / pow);
         }
 
-        public static bool WSBLowest(decimal idWBS, decimal idRisk, DataSet dsWBS, DataTable dtRisk_WBS)
+        public static bool RiskWSBLowest(decimal idWBS, decimal idRisk, DataSet dsWBS, DataTable dtRisk_WBS)
         {
             foreach (DataRow riskWBS in dtRisk_WBS.Select(DT_RISK_WBS.ID_RISK + " = " + idRisk))
             {
@@ -602,6 +602,40 @@ namespace EnsureBusinesss
                     return false;
                 }
             }
+            { return true; }
+        }
+
+        public static bool IsRiskWBSLow(DataRow rowRiskWBS, DataSet dsWBS, DataTable dtRisk_WBS)
+        {
+            foreach (DataRow riskWBS in dtRisk_WBS.Select(DT_RISK_WBS.ID_RISK + " = " + rowRiskWBS[DT_RISK_WBS.ID_RISK]))
+            {
+                if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + rowRiskWBS[DT_RISK_WBS.ID_WBS] + " and " + DT_WBS_STRUCTURE.ID_CHILD + " = " + riskWBS[DT_RISK_WBS.ID_WBS]).Any())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static bool IsCMWBSLow(DataRow rowCMWBS, DataSet dsWBS, DataTable dtCM_WBS)
+        {
+            foreach (DataRow cmWBS in dtCM_WBS.Select(DT_CM_WBS.ID_CM + " = " + rowCMWBS[DT_CM_WBS.ID_CM]))
+            {
+                if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + rowCMWBS[DT_CM_WBS.ID_WBS] + " and " + DT_WBS_STRUCTURE.ID_CHILD + " = " + cmWBS[DT_CM_WBS.ID_WBS]).Any())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static bool WBS_isSheet(decimal ID_WBS, DataSet dsWBS)
+        {
+            if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + ID_WBS).Any())
+            {
+                return false;
+            }
+            else
             { return true; }
         }
         #endregion

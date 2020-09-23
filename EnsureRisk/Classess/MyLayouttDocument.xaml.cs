@@ -133,7 +133,6 @@ namespace EnsureRisk.Classess
             exportToExcelWorker.DoWork += ExportToExcelWorker_DoWork;
             exportToExcelWorker.ProgressChanged += ExportToExcelWorker_ProgressChanged;
             exportToExcelWorker.RunWorkerCompleted += ExportToExcelWorker_RunWorkerCompleted;
-
             //this.Closing += MyLayoutDocument_Closed;
             CbFilterTopR.DataContext = this;
         }
@@ -258,7 +257,7 @@ namespace EnsureRisk.Classess
         public void ExitWorking()
         {
             TheMainGrid.Margin = new Thickness(0);
-            //IsSelected = false;
+            //IsClicked = false;
         }
 
         private bool TengoPermiso(RiskPolyLine linea)
@@ -2942,7 +2941,7 @@ namespace EnsureRisk.Classess
                     Boolean? canUsePolyLineName = CanUseProposedPolyLineName(TextChangeName.Text);
                     if (!canUsePolyLineName.HasValue || canUsePolyLineName.HasValue && canUsePolyLineName.Value)
                     {
-                        if (TextChangeName.Text != string.Empty)
+                        if (!string.IsNullOrEmpty(TextChangeName.Text))
                         {
                             UpdatePolyLineName(TextChangeName.Text);
                         }
@@ -2973,7 +2972,7 @@ namespace EnsureRisk.Classess
                         Boolean? canUsePolyLineName = CanUseProposedPolyLineName(TextChangeName.Text);
                         if (!canUsePolyLineName.HasValue || canUsePolyLineName.HasValue && canUsePolyLineName.Value)
                         {
-                            if (TextChangeName.Text != string.Empty)
+                            if (!string.IsNullOrEmpty(TextChangeName.Text))
                             {
                                 UpdatePolyLineName(TextChangeName.Text);
                             }
@@ -3218,8 +3217,7 @@ namespace EnsureRisk.Classess
                     ((MainWindow)MyWindow).UpdateMiniMapSource();
                     foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
                     {
-                        //TODO: COMENTADO 1 LINEA
-                        //item.ExitWorking();
+                        item.ExitWorking();
                     }
                     this.EnterWorking();
                 }
@@ -3436,8 +3434,10 @@ namespace EnsureRisk.Classess
                         foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
                         {
                             item.ExitWorking();
+                            item.Mylayout.IsClicked = false;
                         }
                         this.EnterWorking();
+                        this.Mylayout.IsClicked = true;
                         //((MainWindow)MyWindow).TextProbabilityChange(MainLine);
                     }
                 }

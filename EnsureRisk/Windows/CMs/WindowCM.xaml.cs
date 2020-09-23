@@ -166,8 +166,7 @@ namespace EnsureRisk.Windows
                             newRow[DT_CM_WBS.USERNAME] = itemWBS[DT_RISK_WBS.USERNAME];
                             hasWBS = true;
                             CM_WBS_Table.Rows.Add(newRow);
-                            
-                            if (WBS_isSheet((decimal)itemWBS[DT_RISK_WBS.ID_WBS]))
+                            if (General.IsCMWBSLow(newRow, dsWBS, CM_WBS_Table))
                             {
                                 foreach (DataRow itemDamage in CM_Damage_Table.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CMRow[DT_CounterM.ID]))
                                 {
@@ -184,6 +183,10 @@ namespace EnsureRisk.Windows
                                     }
                                 }
                             }
+                            //if (General.WBS_isSheet((decimal)itemWBS[DT_RISK_WBS.ID_WBS], dsWBS))
+                            //{
+                                
+                            //}
                         }
                         foreach (DataRow item in dsWBS.Tables[DT_WBS.TABLE_NAME].Select())
                         {
@@ -332,19 +335,23 @@ namespace EnsureRisk.Windows
             try
             {
                 List<decimal> Probabilities = new List<decimal>();
-                foreach (DataRow item in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
+                foreach (DataRow rowCmWbs in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
                 {
-                    if (WBS_isSheet((decimal)item[DT_CM_WBS.ID_WBS]))
+                    if (General.IsCMWBSLow(rowCmWbs, dsWBS, CM_WBS_Table))
                     {
-                        if (item[DT_CM_WBS.PROBABILITY] == DBNull.Value)
+                        if (rowCmWbs[DT_CM_WBS.PROBABILITY] == DBNull.Value)
                         {
                             Probabilities.Add(0);
                         }
                         else
                         {
-                            Probabilities.Add((decimal)item[DT_CM_WBS.PROBABILITY]);
+                            Probabilities.Add((decimal)rowCmWbs[DT_CM_WBS.PROBABILITY]);
                         }
                     }
+                    //if (General.WBS_isSheet((decimal)rowCmWbs[DT_CM_WBS.ID_WBS],dsWBS))
+                    //{
+                        
+                    //}
                 }
                 if (Probabilities.Count > 0)
                 {
@@ -643,7 +650,7 @@ namespace EnsureRisk.Windows
                     }
                     foreach (DataRow itemWBS in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
                     {
-                        if (WBS_isSheet((decimal)itemWBS[DT_CM_WBS.ID_WBS]))
+                        if (General.IsCMWBSLow(itemWBS, dsWBS, CM_WBS_Table))
                         {
                             foreach (DataRow itemDamage in CM_Damage_Table.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CMRow[DT_CounterM.ID]))
                             {
@@ -660,6 +667,10 @@ namespace EnsureRisk.Windows
                                 }
                             }
                         }
+                        //if (General.WBS_isSheet((decimal)itemWBS[DT_CM_WBS.ID_WBS], dsWBS))
+                        //{
+                            
+                        //}
                     }
                 }
             }
@@ -715,17 +726,6 @@ namespace EnsureRisk.Windows
             {
                 MostrarErrorDialog("Insert a Numeric Value!");
             }
-        }
-
-        private bool WBS_isSheet(decimal ID_WBS)
-        {
-
-            if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + ID_WBS).Any())
-            {
-                return false;
-            }
-            else
-            { return true; }
         }
 
         private void DgWBS_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)

@@ -212,6 +212,13 @@ namespace Xceed.Wpf.AvalonDock.Layout
       }
     }
 
+        private bool clicked;
+        public bool IsClicked
+        {
+            get { return clicked; }
+            set { clicked = value; RaisePropertyChanged("IsClicked"); }
+        }
+
     /// <summary>
     /// Provides derived classes an opportunity to handle changes to the IsActive property.
     /// </summary>

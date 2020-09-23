@@ -10,8 +10,8 @@
              xmlns:local="clr-namespace:EnsureRisk.Classess"
              xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
              xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
-             mc:Ignorable="d">
-    <Grid MouseDown="LayoutDocument_MouseDown">
+             mc:Ignorable="d" Background="Transparent">
+    <Grid MouseDown="LayoutDocument_MouseDown" Background="Red">
         <Button x:Name="BtnUndoneScope" Panel.ZIndex="1" Click="BtnUndoneScope_Click" Visibility="Collapsed" Content="{md:PackIcon Kind=UndoVariant}" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
         <Grid x:Name="TheMainGrid" Background="White" MouseDown="LayoutDocument_MouseDown">
             <Grid.RowDefinitions>

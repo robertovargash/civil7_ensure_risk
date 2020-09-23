@@ -630,7 +630,14 @@
                             </Grid>
                         </Border>
                     </avalonDockControls:DropDownControlArea>
-                    <ControlTemplate.Triggers>                        
+                    <ControlTemplate.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=IsActive}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Hidden" TargetName="DocumentCloseButton" />
+                            <Setter Property="Background" Value="Blue" TargetName="MyBorder" />
+                        </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding Path=IsSelected}" Value="True" />
@@ -645,6 +652,14 @@
                             <Setter Property="Visibility" Value="Hidden" TargetName="DocumentCloseButton" />
                             <Setter Property="Background" Value="#FFDFDFDF" TargetName="MyBorder" />
                         </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=IsActive}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton" />
+                            <Setter Property="Background" Value="Red" TargetName="MyBorder" />
+                        </MultiDataTrigger>
+                        
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
