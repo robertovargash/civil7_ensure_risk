@@ -126,8 +126,8 @@
       <DependentUpon>MiniMapControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classess\MRLimited.cs" />
-    <Compile Include="Classess\MyLayouttDocument.xaml.cs">
-      <DependentUpon>MyLayouttDocument.xaml</DependentUpon>
+    <Compile Include="Classess\MyLayoutDocumentt.xaml.cs">
+      <DependentUpon>MyLayoutDocumentt.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classess\MyRadioButton.cs" />
     <Compile Include="Classess\MyTreeItem.cs" />
@@ -343,7 +343,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Classess\MyLayouttDocument.xaml">
+    <Page Include="Classess\MyLayoutDocumentt.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>

@@ -77,6 +77,7 @@ namespace EnsureRisk.Windows.Damages
                     {
                         Drow[DT_Diagram_Damages.TOP_RISK] = DAMAGE;
                         Drow[DT_Diagram_Damages.DAMAGE] = DAMAGE + "(" + UM + ")";
+                        Drow[DT_Diagram_Damages.UM] = UM;
                         Drow[DT_Diagram_Damages.ID_DAMAGE] = SelectedDamage;
                         Drow[DT_Diagram_Damages.COLOR] = DamageTable.Rows.Find(SelectedDamage)[DT_Damage.COLORID_COLUMNA];
                     }
@@ -93,7 +94,8 @@ namespace EnsureRisk.Windows.Damages
                         ds = ws.SaveTopRisk(ds);
                         ws.Dispose();
                         DamageTable.Merge(ds.Tables[DT_Damage.TABLE_NAME]);                        
-                        Drow[DT_Diagram_Damages.TOP_RISK] = DAMAGE; 
+                        Drow[DT_Diagram_Damages.TOP_RISK] = DAMAGE;
+                        Drow[DT_Diagram_Damages.UM] = UM;
                         Drow[DT_Diagram_Damages.DAMAGE] = DAMAGE + "(" + UM + ")"; ;
                         Drow[DT_Diagram_Damages.ID_DAMAGE] = drDamage[DT_Damage.ID_COLUMNA];
                         Drow[DT_Diagram_Damages.COLOR] = drDamage[DT_Damage.COLORID_COLUMNA];

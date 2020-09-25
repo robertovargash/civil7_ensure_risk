@@ -44,7 +44,7 @@
         <TabControl HorizontalAlignment="Left" Height="192" Margin="34,186,0,0" VerticalAlignment="Top" Width="620">
             <TabItem Header="Values" Name="tabValues" >
                 <Grid>
-                    <DataGrid Name="dgTopRisk" HorizontalAlignment="Left" Height="159" Margin="1,1,0,0" VerticalAlignment="Top" Width="565" AutoGenerateColumns="False">
+                    <DataGrid Name="dgTopRisk" HorizontalAlignment="Left" Margin="1,1,0,0" VerticalAlignment="Top" AutoGenerateColumns="False">
                         <DataGrid.Resources>
                             <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                 <Setter Property="Padding" Value="-2"/>
@@ -135,7 +135,7 @@
                         <DataGrid.Columns>
                             <DataGridTemplateColumn x:Name="roleBtn">
                                 <DataGridTemplateColumn.Header>
-                                    <Button Name="BtnAdd" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Add Role"  HorizontalAlignment="Left"  VerticalAlignment="Center" Click="BtnAddRole_Click" md:ShadowAssist.ShadowDepth="Depth5">
+                                    <Button Name="BtnAdd" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Add Role" Width="40" Height="40" HorizontalAlignment="Left"  VerticalAlignment="Center" Click="BtnAddRole_Click" md:ShadowAssist.ShadowDepth="Depth5">
                                         <md:PackIcon Kind="Plus"/>
                                     </Button>
                                 </DataGridTemplateColumn.Header>

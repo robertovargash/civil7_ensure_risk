@@ -33,13 +33,12 @@ namespace EnsureRisk.Classess
     public partial class MyLayoutDocumentt : LayoutDocument, INotifyPropertyChanged
     {
         public string LoginUser { get; set; }
-        private LayoutDocument mylayout;
         public double X { get; set; }
         public double Y { get; set; }
         public double Main_Y { get; set; }
         public Point PointSelected { get; set; }
         private double zoomValue;
-        public double ZoomValue { get { return zoomValue; } set { zoomValue = value; OnPropertyChanged("ZoomValue"); } }
+        public double ZoomValue { get { return zoomValue; } set { zoomValue = value; OnPropertyChanged("ZoomValue"); } }      
         private decimal idDamageSelected;
         private DataView dvDamage;
         public DataView DvDamage { get { return dvDamage; } set { dvDamage = value; OnPropertyChanged("DvDamage"); } }
@@ -117,7 +116,6 @@ namespace EnsureRisk.Classess
             ListCopy = new List<RiskPolyLine>();
             LinesListCMState = new Dictionary<decimal, bool>();
             MainLine = new RiskPolyLine(GridPaintLines, MenuMainRisk, false);
-            //IsSelected = true;
             Loose = true;
             ZoomValue = 100;
             MoviendoRisk = MoviendoCM = NameEditing = ChoosingCM = ChoosingRisk = IsRootSelected = SelectingToGroup = Creando = false;
@@ -129,11 +127,34 @@ namespace EnsureRisk.Classess
             exportToExcelWorker.DoWork += ExportToExcelWorker_DoWork;
             exportToExcelWorker.ProgressChanged += ExportToExcelWorker_ProgressChanged;
             exportToExcelWorker.RunWorkerCompleted += ExportToExcelWorker_RunWorkerCompleted;
-            this.Closing += MyLayoutDocument_Closed;
             CbFilterTopR.DataContext = this;
         }
 
-        public void MyLayoutDocument_Closed(object sender, EventArgs e)
+        public void LayoutDocument_IsActiveChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (((MainWindow)MyWindow).TheCurrentLayout != null)
+                {
+                    if (((MainWindow)MyWindow).TheCurrentLayout.ID_Diagram != ID_Diagram)
+                    {
+                        ((MainWindow)MyWindow).TheCurrentLayout = this;
+                        ((MainWindow)MyWindow).UpdateMiniMapSource();
+                        foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
+                        {
+                            item.ExitWorking();
+                        }
+                        this.EnterWorking();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        private void MyLayoutDocument_Closed(object sender, EventArgs e)
         {
             try
             {
@@ -166,6 +187,7 @@ namespace EnsureRisk.Classess
             {
                 MostrarDialog(ex.Message);
             }
+
         }
 
         public void MostrarPopWindow(Point pointToShow, string lineName, string probability, string value, string acumDamage, string acumValue, string EL)
@@ -249,12 +271,10 @@ namespace EnsureRisk.Classess
         public void EnterWorking()
         {
             TheMainGrid.Margin = new Thickness(3);
-            IsClicked = true;
         }
         public void ExitWorking()
         {
             TheMainGrid.Margin = new Thickness(0);
-            IsClicked = false;
         }
 
         private bool TengoPermiso(RiskPolyLine linea)
@@ -3418,30 +3438,6 @@ namespace EnsureRisk.Classess
 
         }
 
-        public void LayoutDocument_IsActiveChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (((MainWindow)MyWindow).TheCurrentLayout != null)
-                {
-                    if (((MainWindow)MyWindow).TheCurrentLayout.ID_Diagram != ID_Diagram)
-                    {
-                        ((MainWindow)MyWindow).TheCurrentLayout = this;
-                        ((MainWindow)MyWindow).UpdateMiniMapSource();
-                        foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
-                        {
-                            item.ExitWorking();
-                        }
-                        this.EnterWorking();
-                        
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarDialog(ex.Message);
-            }
-        }
 
         private void BtnUndoneScope_Click(object sender, RoutedEventArgs e)
         {
@@ -3546,5 +3542,6 @@ namespace EnsureRisk.Classess
                 Rectangles.Add(arr[i]);
             }
         }
+
     }
 }

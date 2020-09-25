@@ -110,5 +110,5 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\En
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Window2.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Window2.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Themes\Generic.baml
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Classess\MyLayouttDocument.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Classess\MyLayouttDocument.baml
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Classess\MyLayoutDocumentt.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Classess\MyLayoutDocumentt.baml

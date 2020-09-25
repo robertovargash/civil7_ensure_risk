@@ -223,7 +223,7 @@ namespace EnsureRisk.Windows
                     rowTop[DT_Risk_Damages.ID_RISK] = RiskRow[DT_Risk.ID];
                     rowTop[DT_Risk_Damages.ID_RISK_TREE] = RiskTreeID;
                     rowTop[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.DAMAGE].ToString();
-                    rowTop[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.TOP_RISK].ToString() + "(" + item[DT_Diagram_Damages.UM] + ")";
+                    //rowTop[DT_Risk_Damages.DAMAGE] = item[DT_Diagram_Damages.TOP_RISK].ToString() + "(" + item[DT_Diagram_Damages.UM] + ")";
                     rowTop[DT_Risk_Damages.VALUE] = 0;
                     rowTop[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
                     rowTop[DT_Risk_Damages.PROBABILITY] = useProbability ? Probability : 0;
@@ -354,26 +354,16 @@ namespace EnsureRisk.Windows
             //TODO: aqui el primero
             if (General.IsRiskWBSLow(riskWBS,dsWBS,Risk_WBS_Table))
             {
-                foreach (DataRow itemDamage in Risk_DamageTable.Select(DT_Risk_Damages.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
-                {
-                    DataRow drWBS_RISK_Damage = WBS_RISK_Damage.NewRow();
-                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_RISK] = RiskRow[DT_Risk.ID];
-                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_WBS] = riskWBS[DT_RISK_WBS.ID_WBS];
-                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = itemDamage[DT_Risk_Damages.ID_DAMAGE];
-                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.DAMAGE] = itemDamage[DT_Risk_Damages.DAMAGE];
-                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
-                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.WBS] = riskWBS[DT_RISK_WBS.WBS];
-                    if (!(WBS_RISK_Damage.Rows.Contains(new object[] { riskWBS[DT_RISK_WBS.ID_WBS], itemDamage[DT_Risk_Damages.ID_DAMAGE], RiskRow[DT_Risk.ID] })))
-                    {
-                        WBS_RISK_Damage.Rows.Add(drWBS_RISK_Damage);
-                    }
-                }
+                AddWBS_Risk_Damage((decimal)RiskRow[DT_Risk.ID], riskWBS);                
+            }
+            else
+            {
+                DeleteWBS_Risk_Damage((decimal)RiskRow[DT_Risk.ID], riskWBS);
             }
             //if (General.WBS_isSheet((decimal)riskWBS[DT_RISK_WBS.ID_WBS], dsWBS))
             //{
                 
             //}
-
         }
 
         private void CalculateProbability()
@@ -393,6 +383,10 @@ namespace EnsureRisk.Windows
                         {
                             Probabilities.Add((decimal)rowRiskWbs[DT_RISK_WBS.PROBABILITY]);
                         }
+                    }
+                    else
+                    {
+                        rowRiskWbs[DT_RISK_WBS.PROBABILITY] = 100;
                     }
                     //if (General.WBS_isSheet((decimal)rowRiskWbs[DT_RISK_WBS.ID_WBS], dsWBS))
                     //{
@@ -608,15 +602,15 @@ namespace EnsureRisk.Windows
                         }
                         if (Operation == General.UPDATE)
                         {
-                            foreach (var itemLines in ChildrenLines)
+                            foreach (var childLine in ChildrenLines)
                             {
-                                if (itemLines.IsCM)
+                                if (childLine.IsCM)
                                 {
-                                    if (!(CM_WBS_Table.Rows.Contains(new object[] { itemLines.ID, itemWBS[DT_WBS.ID_WBS] })))
+                                    if (!(CM_WBS_Table.Rows.Contains(new object[] { childLine.ID, itemWBS[DT_WBS.ID_WBS] })))
                                     {
                                         DataRow drCMWBS = CM_WBS_Table.NewRow();
-                                        drCMWBS[DT_CM_WBS.ID_CM] = itemLines.ID;
-                                        drCMWBS[DT_CM_WBS.CM] = itemLines.ShortName;
+                                        drCMWBS[DT_CM_WBS.ID_CM] = childLine.ID;
+                                        drCMWBS[DT_CM_WBS.CM] = childLine.ShortName;
                                         drCMWBS[DT_CM_WBS.WBS] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart();
                                         drCMWBS[DT_CM_WBS.ID_WBS] = itemWBS[DT_WBS.ID_WBS];
                                         drCMWBS[DT_CM_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
@@ -625,16 +619,16 @@ namespace EnsureRisk.Windows
                                         drCMWBS[DT_CM_WBS.PRIMARY] = "";
                                         CM_WBS_Table.Rows.Add(drCMWBS);
                                     }
-                                    foreach (DataRow itemWBSCM in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + itemLines.ID))
+                                    foreach (DataRow itemWBSCM in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + childLine.ID))
                                     {
                                         if (General.IsCMWBSLow(itemWBSCM, dsWBS, CM_WBS_Table))
                                         {
-                                            foreach (DataRow itemDamage in CM_DamageTable.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + itemLines.ID))
+                                            foreach (DataRow itemDamage in CM_DamageTable.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + childLine.ID))
                                             {
-                                                if (!(WBS_CM_Damage.Rows.Contains(new object[] { itemWBSCM[DT_CM_WBS.ID_WBS], itemDamage[DT_CounterM_Damage.ID_DAMAGE], itemLines.ID })))
+                                                if (!(WBS_CM_Damage.Rows.Contains(new object[] { itemWBSCM[DT_CM_WBS.ID_WBS], itemDamage[DT_CounterM_Damage.ID_DAMAGE], childLine.ID })))
                                                 {
                                                     DataRow drWBS_CM_Damage = WBS_CM_Damage.NewRow();
-                                                    drWBS_CM_Damage[DT_WBS_CM_Damage.ID_CM] = itemLines.ID;
+                                                    drWBS_CM_Damage[DT_WBS_CM_Damage.ID_CM] = childLine.ID;
                                                     drWBS_CM_Damage[DT_WBS_CM_Damage.ID_WBS] = itemWBSCM[DT_CM_WBS.ID_WBS];
                                                     drWBS_CM_Damage[DT_WBS_CM_Damage.ID_DAMAGE] = itemDamage[DT_CounterM_Damage.ID_DAMAGE];
                                                     drWBS_CM_Damage[DT_WBS_CM_Damage.DAMAGE] = itemDamage[DT_CounterM_Damage.DAMAGE];
@@ -650,15 +644,15 @@ namespace EnsureRisk.Windows
                                         //}
                                     }
                                     //Buscando los ancestros para c/u de los wbs del cm
-                                    foreach (DataRow itemCMWBSi in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + itemLines.ID))
+                                    foreach (DataRow itemCMWBSi in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + childLine.ID))
                                     {
                                         foreach (DataRow itemAncestors in BuscarAncestros((decimal)itemCMWBSi[DT_CM_WBS.ID_WBS], dsWBS.Tables[DT_WBS.TABLE_NAME].Clone()).Rows)
                                         {
-                                            if (!(CM_WBS_Table.Rows.Contains(new object[] { itemLines.ID, itemAncestors[DT_WBS.ID_WBS] })))
+                                            if (!(CM_WBS_Table.Rows.Contains(new object[] { childLine.ID, itemAncestors[DT_WBS.ID_WBS] })))
                                             {
                                                 DataRow drCMWBS = CM_WBS_Table.NewRow();
-                                                drCMWBS[DT_CM_WBS.ID_CM] = itemLines.ID;
-                                                drCMWBS[DT_CM_WBS.CM] = itemLines.ShortName;
+                                                drCMWBS[DT_CM_WBS.ID_CM] = childLine.ID;
+                                                drCMWBS[DT_CM_WBS.CM] = childLine.ShortName;
                                                 drCMWBS[DT_CM_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
                                                 drCMWBS[DT_CM_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
                                                 drCMWBS[DT_CM_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
@@ -672,11 +666,11 @@ namespace EnsureRisk.Windows
                                 }
                                 else
                                 {
-                                    if (!(Risk_WBS_Table.Rows.Contains(new object[] { itemLines.ID, itemWBS[DT_WBS.ID_WBS] })))
+                                    if (!(Risk_WBS_Table.Rows.Contains(new object[] { childLine.ID, itemWBS[DT_WBS.ID_WBS] })))
                                     {
                                         DataRow drRiskWBSS = Risk_WBS_Table.NewRow();
-                                        drRiskWBSS[DT_RISK_WBS.ID_RISK] = itemLines.ID;
-                                        drRiskWBSS[DT_RISK_WBS.RISK] = itemLines.ShortName;
+                                        drRiskWBSS[DT_RISK_WBS.ID_RISK] = childLine.ID;
+                                        drRiskWBSS[DT_RISK_WBS.RISK] = childLine.ShortName;
                                         drRiskWBSS[DT_RISK_WBS.WBS] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart();
                                         drRiskWBSS[DT_RISK_WBS.ID_WBS] = itemWBS[DT_WBS.ID_WBS];
                                         drRiskWBSS[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
@@ -686,38 +680,29 @@ namespace EnsureRisk.Windows
                                         drRiskWBSS[DT_RISK_WBS.PROBABILITY] = 100;
                                         Risk_WBS_Table.Rows.Add(drRiskWBSS);
                                     }
-                                    foreach (DataRow itemWBSRisk in Risk_WBS_Table.Select(DT_RISK_WBS.ID_RISK + " = " + itemLines.ID))
+                                    foreach (DataRow itemWBSRisk in Risk_WBS_Table.Select(DT_RISK_WBS.ID_RISK + " = " + childLine.ID))
                                     {
                                         if (General.IsRiskWBSLow(itemWBSRisk, dsWBS, Risk_WBS_Table))
                                         {
-                                            foreach (DataRow itemDamage in Risk_DamageTable.Select(DT_Risk_Damages.ID_RISK + " = " + itemLines.ID))
-                                            {
-                                                if (!(WBS_RISK_Damage.Rows.Contains(new object[] { itemWBSRisk[DT_RISK_WBS.ID_WBS], itemDamage[DT_Risk_Damages.ID_DAMAGE], itemLines.ID })))
-                                                {
-                                                    DataRow drWBS_RISK_Damage = WBS_RISK_Damage.NewRow();
-                                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_RISK] = itemLines.ID;
-                                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_WBS] = itemWBSRisk[DT_RISK_WBS.ID_WBS];
-                                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = itemDamage[DT_Risk_Damages.ID_DAMAGE];
-                                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.DAMAGE] = itemDamage[DT_Risk_Damages.DAMAGE];
-                                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
-                                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.WBS] = itemWBSRisk[DT_RISK_WBS.WBS];
-                                                    WBS_RISK_Damage.Rows.Add(drWBS_RISK_Damage);
-                                                }
-                                            }
+                                            AddWBS_Risk_Damage(childLine.ID, itemWBSRisk);
+                                        }
+                                        else
+                                        {
+                                            DeleteWBS_Risk_Damage(childLine.ID, itemWBSRisk);
                                         }
                                         //if (General.WBS_isSheet((decimal)itemWBSRisk[DT_RISK_WBS.ID_WBS], dsWBS))
                                         //{
                                         //}
                                     }
-                                    foreach (DataRow itemRISKWBSi in Risk_WBS_Table.Select(DT_RISK_WBS.ID_RISK + " = " + itemLines.ID))
+                                    foreach (DataRow itemRISKWBSi in Risk_WBS_Table.Select(DT_RISK_WBS.ID_RISK + " = " + childLine.ID))
                                     {
                                         foreach (DataRow itemAncestors in BuscarAncestros((decimal)itemRISKWBSi[DT_RISK_WBS.ID_WBS], dsWBS.Tables[DT_WBS.TABLE_NAME].Clone()).Rows)
                                         {
-                                            if (!(Risk_WBS_Table.Rows.Contains(new object[] { itemLines.ID, itemAncestors[DT_WBS.ID_WBS] })))
+                                            if (!(Risk_WBS_Table.Rows.Contains(new object[] { childLine.ID, itemAncestors[DT_WBS.ID_WBS] })))
                                             {
                                                 DataRow drRiskWBSi = Risk_WBS_Table.NewRow();
-                                                drRiskWBSi[DT_RISK_WBS.ID_RISK] = itemLines.ID;
-                                                drRiskWBSi[DT_RISK_WBS.RISK] = itemLines.ShortName;
+                                                drRiskWBSi[DT_RISK_WBS.ID_RISK] = childLine.ID;
+                                                drRiskWBSi[DT_RISK_WBS.RISK] = childLine.ShortName;
                                                 drRiskWBSi[DT_RISK_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
                                                 drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
                                                 drRiskWBSi[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
@@ -738,26 +723,15 @@ namespace EnsureRisk.Windows
                     {
                         if (General.IsRiskWBSLow(itemWBS, dsWBS, Risk_WBS_Table))
                         {
-                            foreach (DataRow itemDamage in Risk_DamageTable.Select(DT_Risk_Damages.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
-                            {
-                                if (!(WBS_RISK_Damage.Rows.Contains(new object[] { itemWBS[DT_RISK_WBS.ID_WBS], itemDamage[DT_Risk_Damages.ID_DAMAGE], RiskRow[DT_Risk.ID] })))
-                                {
-                                    DataRow drWBS_RISK_Damage = WBS_RISK_Damage.NewRow();
-                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_RISK] = RiskRow[DT_Risk.ID];
-                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_WBS] = itemWBS[DT_RISK_WBS.ID_WBS];
-                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = itemDamage[DT_Risk_Damages.ID_DAMAGE];
-                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.DAMAGE] = itemDamage[DT_Risk_Damages.DAMAGE];
-                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
-                                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.WBS] = itemWBS[DT_RISK_WBS.WBS];
-                                    WBS_RISK_Damage.Rows.Add(drWBS_RISK_Damage);
-                                }
-                            }
+                            AddWBS_Risk_Damage((decimal)RiskRow[DT_Risk.ID], itemWBS);
                         }
-                        //if (General.WBS_isSheet((decimal)itemWBS[DT_RISK_WBS.ID_WBS], dsWBS))
-                        //{
-                            
-                        //}
+                        else
+                        {//TENGO QUE BORRAR EL DAMAGE_WBS_RISK, PUES YA NO ES LOWLEVEL
+                            DeleteWBS_Risk_Damage((decimal)RiskRow[DT_Risk.ID], itemWBS);
+                        }
                     }
+                    CalculateProbability();
+                    RefreshDamageValues((decimal)RiskRow[DT_Risk.ID], false);
                 }
             }
             catch (Exception ex)
@@ -765,7 +739,36 @@ namespace EnsureRisk.Windows
                MostrarErrorDialog(ex.Message);
             }
         }
-        
+
+        private void DeleteWBS_Risk_Damage(decimal riskID,DataRow itemWBS)
+        {
+            foreach (DataRow itemDamage in Risk_DamageTable.Select(DT_Risk_Damages.ID_RISK + " = " + riskID))
+            {
+                if (WBS_RISK_Damage.Rows.Contains(new object[] { itemWBS[DT_RISK_WBS.ID_WBS], itemDamage[DT_Risk_Damages.ID_DAMAGE], riskID }))
+                {
+                    WBS_RISK_Damage.Rows.Find(new object[] { itemWBS[DT_RISK_WBS.ID_WBS], itemDamage[DT_Risk_Damages.ID_DAMAGE], riskID }).Delete();
+                }
+            }
+        }
+
+        private void AddWBS_Risk_Damage(decimal riskID, DataRow itemWBSRisk)
+        {
+            foreach (DataRow itemDamage in Risk_DamageTable.Select(DT_Risk_Damages.ID_RISK + " = " + riskID))
+            {
+                if (!(WBS_RISK_Damage.Rows.Contains(new object[] { itemWBSRisk[DT_RISK_WBS.ID_WBS], itemDamage[DT_Risk_Damages.ID_DAMAGE], riskID })))
+                {
+                    DataRow drWBS_RISK_Damage = WBS_RISK_Damage.NewRow();
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_RISK] = riskID;
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_WBS] = itemWBSRisk[DT_RISK_WBS.ID_WBS];
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = itemDamage[DT_Risk_Damages.ID_DAMAGE];
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.DAMAGE] = itemDamage[DT_Risk_Damages.DAMAGE];
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.WBS] = itemWBSRisk[DT_RISK_WBS.WBS];
+                    WBS_RISK_Damage.Rows.Add(drWBS_RISK_Damage);
+                }
+            }
+        }
+
         private bool TengoPadre(decimal idWBS)
         {
             return dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + idWBS).Any();
@@ -793,40 +796,25 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                foreach (var itemLines in ChildrenLines)
-                {
-                    if (itemLines.IsCM)
-                    {//AQUI PROBLEMAS CON EL ROWSTATE
-                        foreach (DataRow itemC in WBS_CM_Damage.Select(DT_WBS_CM_Damage.ID_CM + " = " + itemLines.ID + " AND " + DT_WBS_CM_Damage.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
-                        {
-                            itemC.Delete();
-                        }
-                        if (CM_WBS_Table.Rows.Contains(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }))
-                        {
-                            CM_WBS_Table.Rows.Find(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }).Delete();
-                        }
-                    }
-                    else
-                    {
-                        foreach (DataRow itemC in WBS_RISK_Damage.Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + itemLines.ID + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
-                        {
-                            itemC.Delete();
-                        }
-                        if (Risk_WBS_Table.Rows.Contains(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }))
-                        {
-                            Risk_WBS_Table.Rows.Find(new object[] { itemLines.ID, fila[DT_WBS.ID_WBS] }).Delete();
-                        }
-                    }
-                }
                 foreach (DataRow itemC in WBS_RISK_Damage.Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
                 {
                     itemC.Delete();
                 }
                 fila.Delete();
-                foreach (var item in ChildrenLines)
+
+                foreach (DataRow itemWBS in Risk_WBS_Table.Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
                 {
-                    RefreshDamageValues(item.ID, item.IsCM);
+                    if (General.IsRiskWBSLow(itemWBS, dsWBS, Risk_WBS_Table))
+                    {
+                        AddWBS_Risk_Damage((decimal)RiskRow[DT_Risk.ID], itemWBS);
+                    }
+                    else
+                    {//TENGO QUE BORRAR EL DAMAGE_WBS_RISK, PUES YA NO ES LOWLEVEL
+                        DeleteWBS_Risk_Damage((decimal)RiskRow[DT_Risk.ID], itemWBS);
+                    }
                 }
+                CalculateProbability();
+                RefreshDamageValues((decimal)RiskRow[DT_Risk.ID], false);
                 IS_DELETING_WBS_ROW = false;
             }
             catch (Exception ex)
@@ -896,6 +884,14 @@ namespace EnsureRisk.Windows
                         item[DT_Risk_Damages.WBS_NAME] = WBS_NAME;
                         item[DT_Risk_Damages.USERNAME] = USER_NAME;
                     }
+                    if (Operation == General.INSERT)
+                    {
+                        Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(RiskRow);
+                        DataRow rowstructure = Ds.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
+                        rowstructure[DT_RiskStructure.IDRISK] = RiskRow[DT_Risk.ID];
+                        rowstructure[DT_RiskStructure.IDRISK_FATHER] = RowFather[DT_Risk.ID];
+                        Ds.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
+                    }
                 }
                 else
                 {
@@ -909,14 +905,14 @@ namespace EnsureRisk.Windows
             }
         }
 
-        private void RefreshDamageValues(decimal id, bool isCM)
+        private void RefreshDamageValues(decimal idRiskCM, bool isCM)
         {
             if (isCM)
             {
-                foreach (DataRow itemDamage in CM_DamageTable.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + id))
+                foreach (DataRow itemDamage in CM_DamageTable.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + idRiskCM))
                 {//primero recorro los Daños de los riesgos
                     decimal valor = 0;
-                    foreach (DataRow itemWBS in WBS_CM_Damage.Select(DT_WBS_CM_Damage.ID_CM + " = " + id + " AND " + DT_WBS_CM_Damage.ID_DAMAGE + " = " + itemDamage[DT_CounterM_Damage.ID_DAMAGE]))
+                    foreach (DataRow itemWBS in WBS_CM_Damage.Select(DT_WBS_CM_Damage.ID_CM + " = " + idRiskCM + " AND " + DT_WBS_CM_Damage.ID_DAMAGE + " = " + itemDamage[DT_CounterM_Damage.ID_DAMAGE]))
                     {//y despues para  sumarlos todos en un mismo daño y encontrar el AD
                         valor += (decimal)itemWBS[DT_WBS_CM_Damage.VALUE];
                     }
@@ -925,7 +921,7 @@ namespace EnsureRisk.Windows
             }
             else
             {
-                foreach (DataRow itemDamage in Risk_DamageTable.Select(DT_Risk_Damages.ID_RISK + " = " + id))
+                foreach (DataRow itemDamage in Risk_DamageTable.Select(DT_Risk_Damages.ID_RISK + " = " + idRiskCM))
                 {//primero recorro los Daños de los riesgos
                     decimal valor = 0;
                     foreach (DataRow itemWBS in WBS_RISK_Damage.Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " AND " + DT_WBS_RISK_DAMAGE.ID_DAMAGE + " = " + itemDamage[DT_Risk_Damages.ID_DAMAGE]))
@@ -950,7 +946,6 @@ namespace EnsureRisk.Windows
             RiskRow[DT_Risk.WBS_NAME] = WBS_NAME;
             RiskRow[DT_Risk.USER_NAME] = USER_NAME;
             RefreshDamageValues((decimal)RiskRow[DT_Risk.ID], false);
-
             if (Versioned.IsNumeric(TextProbability.Text))
             {
                 if (Probability > 100)

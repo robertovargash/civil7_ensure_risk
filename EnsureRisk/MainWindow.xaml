@@ -303,6 +303,14 @@
             <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
         <xcad:DockingManager x:Name="_dockingManager" AllowMixedOrientation="True" BorderBrush="Black" BorderThickness="1" Grid.Row="1" Margin="0">
+            <!--<xcad:DockingManager.DocumentHeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="FileDocument"  Margin="0,0,4,0" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        <TextBlock Text="{Binding IsActive}" Name="headerDrawPanel" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </xcad:DockingManager.DocumentHeaderTemplate>-->
             <xcad:LayoutRoot x:Name="_layoutRoot">
                 <xcad:LayoutPanel Orientation="Horizontal">                    
                     <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200" >
@@ -641,7 +649,7 @@
                             </Grid>
                         </xcad:LayoutAnchorable>
                     </xcad:LayoutAnchorablePane>
-                    <xcad:LayoutDocumentPaneGroup>
+                    <xcad:LayoutDocumentPaneGroup x:Name="LayoutDocPaneGroup">
                         <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel">
                         </xcad:LayoutDocumentPane>
                     </xcad:LayoutDocumentPaneGroup >

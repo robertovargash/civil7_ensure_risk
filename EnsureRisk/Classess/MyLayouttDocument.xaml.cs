@@ -3434,11 +3434,8 @@ namespace EnsureRisk.Classess
                         foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
                         {
                             item.ExitWorking();
-                            item.Mylayout.IsClicked = false;
                         }
                         this.EnterWorking();
-                        this.Mylayout.IsClicked = true;
-                        //((MainWindow)MyWindow).TextProbabilityChange(MainLine);
                     }
                 }
             }

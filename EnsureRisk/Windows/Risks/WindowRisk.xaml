@@ -123,7 +123,6 @@
                                     </Binding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
-                            <!--<DataGridTextColumn x:Name="PRIMARY" Header="Primary" Binding="{Binding Path= Primaryy}" Width="100" Foreground="#FFF30808" FontWeight="Bold" IsReadOnly="True"/>-->
                             <DataGridTemplateColumn x:Name="PRIMARY" Header="Primary">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -145,7 +144,7 @@
                         <DataGrid.Columns>
                             <DataGridTemplateColumn x:Name="roleBtn">
                                 <DataGridTemplateColumn.Header>
-                                    <Button Name="BtnAdd" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Add Role"  HorizontalAlignment="Left"  VerticalAlignment="Center" Click="BtnAddRole_Click" md:ShadowAssist.ShadowDepth="Depth5">
+                                    <Button Name="BtnAdd" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Add Role" Width="40" Height="40"  HorizontalAlignment="Left"  VerticalAlignment="Center" Click="BtnAddRole_Click" md:ShadowAssist.ShadowDepth="Depth5">
                                         <md:PackIcon Kind="Plus"/>
                                     </Button>
                                 </DataGridTemplateColumn.Header>

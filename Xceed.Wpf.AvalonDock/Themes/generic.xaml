@@ -465,8 +465,7 @@
     <DataTemplate x:Key="DocumentHeaderTemplate">
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
             <md:PackIcon Kind="FileDocument" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
-            <TextBlock Text="{Binding Title}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource MaterialDesignBody}">
-            </TextBlock>
+            <TextBlock Text="{Binding Title}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource MaterialDesignBody}"/>
         </StackPanel>
 
     </DataTemplate>
@@ -633,13 +632,6 @@
                     <ControlTemplate.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=IsActive}" Value="False" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Hidden" TargetName="DocumentCloseButton" />
-                            <Setter Property="Background" Value="Blue" TargetName="MyBorder" />
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding Path=IsSelected}" Value="True" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton" />
@@ -650,16 +642,8 @@
                                 <Condition Binding="{Binding Path=IsSelected}" Value="False" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Hidden" TargetName="DocumentCloseButton" />
-                            <Setter Property="Background" Value="#FFDFDFDF" TargetName="MyBorder" />
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=IsActive}" Value="True" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton" />
-                            <Setter Property="Background" Value="Red" TargetName="MyBorder" />
-                        </MultiDataTrigger>
-                        
+                            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" TargetName="MyBorder" />
+                        </MultiDataTrigger>                       
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
@@ -667,7 +651,7 @@
                             <Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton" />
                             <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" TargetName="MyBorder" />
                         </MultiDataTrigger>
-                        <DataTrigger Binding="{Binding Path=CanClose}" Value="false">
+                        <DataTrigger Binding="{Binding Path=CanClose}" Value="False">
                             <Setter Property="Visibility" Value="Hidden" TargetName="DocumentCloseButton" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
