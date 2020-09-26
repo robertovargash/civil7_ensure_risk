@@ -2337,8 +2337,9 @@ namespace EnsureRisk.Classess
                     DataSet ImportDSs = Ds.Copy();
                     DataRow drNewRisk = CopyPasteOps.SetValoresOriginalesRiesgoCopiado(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
                                                                                         ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList);
-                    CopyPasteOps.EstablecerValorDelHijoAlPadre(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
-                    Ds.Merge(ImportDSs);
+                    //CopyPasteOps.EstablecerValorDelHijoAlPadre(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
+                    CopyPasteOps.EstablecerValorDelRiskHijoAlPadre(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS);
+                    Ds = ImportDSs;
                     ImportDSs.Dispose();
                     MoviendoRisk = false;
                     RiskPolyLine Line_Created = new RiskPolyLine
@@ -2368,7 +2369,7 @@ namespace EnsureRisk.Classess
                     DataSet ImportDSs = Ds.Copy();
                     DataRow drNewRisk = CopyPasteOps.EstablecerValoresNuevoRiesgoCopiado(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
                                             ID_Diagram, ((MainWindow)MyWindow).DsWBS);
-                    Ds.Merge(ImportDSs);
+                    Ds = ImportDSs;
                     ImportDSs.Dispose();
                     //GlobalListCopy = new List<RiskPolyLine>();
                     MoviendoRisk = false;
@@ -2436,7 +2437,7 @@ namespace EnsureRisk.Classess
 
                     Line_Selected.Father = destinationPolyLine;
                     DataSet ImportDSs = Ds.Copy();
-                    DataRow drNewCM = CopyPasteOps.SetValoresCM(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
+                    DataRow drNewCM = CopyPasteOps.SetValoresNuevoCM(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
                     Ds.Merge(ImportDSs);
                     ImportDSs.Dispose();
                     //GlobalListCopy = new List<RiskPolyLine>();

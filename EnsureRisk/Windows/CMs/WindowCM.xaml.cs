@@ -694,6 +694,7 @@ namespace EnsureRisk.Windows
                 {
                     itemR.Delete();
                 }
+                SetDefaultWBSPrimary(fila);
                 fila.Delete();
                 foreach (DataRow itemWBS in CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
                 {
@@ -714,6 +715,23 @@ namespace EnsureRisk.Windows
             {
                 IS_DELETING_WBS = false;
                 MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void SetDefaultWBSPrimary(DataRow fila)
+        {
+            if ((bool)fila[DT_CM_WBS.IS_PRIMARY] && CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_Risk.ID]).Any())
+            {
+                CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]).First()[DT_CM_WBS.IS_PRIMARY] = true;
+                CMRow[DT_CounterM.ID_WBS] = CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]).First()[DT_CM_WBS.ID_WBS];
+                CMRow[DT_CounterM.USER_NAME] = CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]).First()[DT_CM_WBS.USERNAME];
+                CMRow[DT_CounterM.WBS_NAME] = CM_WBS_Table.Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]).First()[DT_CM_WBS.WBS];
+                foreach (var riskrow in CM_WBS_Table.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CMRow[DT_CounterM.ID]))
+                {
+                    riskrow[DT_CounterM_Damage.ID_WBS] = CMRow[DT_CounterM.ID];
+                    riskrow[DT_CounterM_Damage.WBS_NAME] = CMRow[DT_CounterM.ID];
+                    riskrow[DT_CounterM_Damage.USERNAME] = CMRow[DT_CounterM.ID];
+                }
             }
         }
 
