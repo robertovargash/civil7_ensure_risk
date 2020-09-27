@@ -358,7 +358,7 @@
     <value>Acum. Likelihood: </value>
   </data>
   <data name="ACUM_VALUE" xml:space="preserve">
-    <value>Acum. Val: </value>
+    <value>Max. Damage.:</value>
   </data>
   <data name="FISH_MENU_TOOLTIP" xml:space="preserve">
     <value>View current diagram as Tree</value>
@@ -377,5 +377,11 @@
   </data>
   <data name="VALUE" xml:space="preserve">
     <value>Value: </value>
+  </data>
+  <data name="ACUM_CM_DAMAGE" xml:space="preserve">
+    <value>Dam. CM: {0} {1}</value>
+  </data>
+  <data name="ACUM_RISK_DAMAGE" xml:space="preserve">
+    <value>Dam. Risks: {0} {1}</value>
   </data>
 </root>

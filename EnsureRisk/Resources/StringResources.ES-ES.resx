@@ -358,7 +358,7 @@
     <value>Prob. Acum: </value>
   </data>
   <data name="ACUM_VALUE" xml:space="preserve">
-    <value>Valor Acum: </value>
+    <value>Daño Máx.:</value>
   </data>
   <data name="FISH_MENU_TOOLTIP" xml:space="preserve">
     <value>Ver este diagrama como árbol genérico</value>
@@ -374,5 +374,11 @@
   </data>
   <data name="VALUE" xml:space="preserve">
     <value>Valor: </value>
+  </data>
+  <data name="ACUM_CM_DAMAGE" xml:space="preserve">
+    <value>CM Acum: {0} {1}</value>
+  </data>
+  <data name="ACUM_RISK_DAMAGE" xml:space="preserve">
+    <value>Risks Acum: {0} {1}</value>
   </data>
 </root>

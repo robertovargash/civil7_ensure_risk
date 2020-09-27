@@ -61,6 +61,15 @@ namespace EnsureRisk.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dam. CM: {0} {1}.
+        /// </summary>
+        internal static string ACUM_CM_DAMAGE {
+            get {
+                return ResourceManager.GetString("ACUM_CM_DAMAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Acum. Dam: .
         /// </summary>
         internal static string ACUM_DAMAGE {
@@ -79,7 +88,16 @@ namespace EnsureRisk.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Acum. Val: .
+        ///   Looks up a localized string similar to Dam. Risks: {0} {1}.
+        /// </summary>
+        internal static string ACUM_RISK_DAMAGE {
+            get {
+                return ResourceManager.GetString("ACUM_RISK_DAMAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max. Damage.:.
         /// </summary>
         internal static string ACUM_VALUE {
             get {

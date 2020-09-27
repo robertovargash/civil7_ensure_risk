@@ -27,8 +27,10 @@ namespace EnsureBusinesss.Business
         public TextBlock CalculateValue { get => CalculatedValue; set => CalculatedValue = value; }
         public TextBlock ExpecteDamage { get => ExpectedDamage; set => ExpectedDamage = value; }
         public TextBlock HeadeValue { get => HeaderValue; set => HeaderValue = value; }
+        public TextBlock RisksDamageValue { get => RisksDamage; set => RisksDamage=value; }
+        public TextBlock CounterMesuareDamageValue { get => CounterMesuareDamage; set => CounterMesuareDamage = value; }
 
-        public MyDamage(Grid panel, Point location, string HeaderText, string CalculatedValueText, string ExpectedValueText, Color color, decimal ID_TopRisk)
+        public MyDamage(Grid panel, Point location, string HeaderText, string CalculatedValueText, string ExpectedValueText, string RisksDamageText, string CounterMesuareDamageText, Color color, decimal ID_TopRisk)
         {
             InitializeComponent();
             panel.Children.Add(this);
@@ -37,11 +39,13 @@ namespace EnsureBusinesss.Business
             this.Container = panel;
             myBorder.Background = new SolidColorBrush(color);
             HeaderValue.Text = HeaderText;
-            CalculatedValue.Text = CalculatedValueText;
             ExpectedDamage.Text = ExpectedValueText;
+            RisksDamage.Text = RisksDamageText;
+            CounterMesuareDamage.Text = CounterMesuareDamageText;
+            CalculatedValue.Text = CalculatedValueText;
             this.ID_TopRisk = ID_TopRisk;
             Width = 250;
-            Height = 90;
+            Height = 150;
             this.RenderTransformOrigin = new Point(0, 0);
         }
     }

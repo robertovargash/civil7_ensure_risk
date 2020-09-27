@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EnsureBusinesss.Business"
              mc:Ignorable="d" 
-              RenderTransformOrigin="0,0" Width="250" Height="90" HorizontalAlignment="Left" VerticalAlignment="Top">
+              RenderTransformOrigin="0,0" Width="250" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top">
     <Grid Name="gridContanerLabels" Background="Transparent" Cursor="Hand">
         <Border Name="myBorder" Background="Beige" CornerRadius="10">
             <Grid Margin="3">
@@ -13,11 +13,14 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
-
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Name="HeaderValue" Text="Cost ($)" Grid.Row="0" VerticalAlignment="Center" Foreground="Black"/>
-                <TextBlock Name="CalculatedValue" Text="Acum. Value" Grid.Row="1" VerticalAlignment="Center" Foreground="Black"/>
-                <TextBlock Name="ExpectedDamage" Text="Acum. Dam" Grid.Row="2" VerticalAlignment="Center" Foreground="Black"/>
+                <TextBlock Name="ExpectedDamage" Text="Acum. Dam" Grid.Row="1" VerticalAlignment="Center" Foreground="Black"/>
+                <TextBlock Name="RisksDamage" Text="Dam. Risks" Grid.Row="2" VerticalAlignment="Center" Foreground="Black"/>
+                <TextBlock Name="CounterMesuareDamage" Text="Dam. CM" Grid.Row="3" VerticalAlignment="Center" Foreground="Black"/>
+                <TextBlock Name="CalculatedValue" Text="Max. Damage" Grid.Row="4" VerticalAlignment="Center" Foreground="Black"/>
             </Grid>
         </Border>
     </Grid>

@@ -391,9 +391,9 @@ namespace EnsureRisk
 
         public void MostrarErrorDialog(string text)
         {
-            //ErrorDialogMessage.IsOpen = true;
-            //TextMessage.Text = text;
-            MessageBox.Show(text);
+            ErrorDialogMessage.IsOpen = true;
+            TextMessage.Text = text;
+            //MessageBox.Show(text);
         }
 
         public void MostrarInfoDialog(string text)
@@ -1176,11 +1176,8 @@ namespace EnsureRisk
                     newRow[DT_Role_Risk.Role] = myly.Ds.Tables[DT_Role.ROLE_TABLE].Select(DT_Role.ROLE_COLUM + " = 'Administrator'").First()[DT_Role.ROLE_COLUM];
                     newRow[DT_Role_Risk.IDROL_COLUMN] = myly.Ds.Tables[DT_Role.ROLE_TABLE].Select(DT_Role.ROLE_COLUM + " = 'Administrator'").First()[DT_Role.IDROL_COLUMN];
                     myly.Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Add(newRow);
-
-                    //System.Drawing.Color color = System.Drawing.Color.FromArgb(int.Parse(myly.Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + riskTree.DRow[DT_Diagram.ID_DIAGRAM]).First()[DT_Diagram_Damages.COLOR].ToString()));
                     System.Windows.Media.Color color = ((SolidColorBrush)new BrushConverter().ConvertFrom(myly.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + riskTree.DRow[DT_Diagram.ID_DIAGRAM]).First()[DT_Diagram_Damages.COLOR].ToString())).Color;
                     myly.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
-                    //LayoutDocumentPanel.Children.Add(myly);
                     if (LayoutDocPaneGroup.Children.Count > 0)
                     {
                         ((LayoutDocumentPane)LayoutDocPaneGroup.Children[0]).Children.Add(myly);
@@ -1193,8 +1190,7 @@ namespace EnsureRisk
                     TheCurrentLayout.AddMainLine(drRisk, color);
                     TheCurrentLayout.LoadComboDamage();
                     TheCurrentLayout.LoadRectangles();
-                    //TextProbability.Text = "0";
-                    //TextDiagram.Text = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
+                    TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
                     TheCurrentLayout.FixDrawPanel();
                     foreach (var item in OpenedDocuments)
@@ -8713,17 +8709,7 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
-
-        private void LayoutDocumentPanel_ChildrenTreeChanged(object sender, ChildrenTreeChangedEventArgs e)
-        {
-            MessageBox.Show("Cambio el ChildrenTreeChanged");
-        }
-
-        private void LayoutDocumentPanel_ChildrenCollectionChanged(object sender, EventArgs e)
-        {
-            MessageBox.Show("Cambio el ChildrenCollectionChanged");
-        }
-
+        
         private void BtnDeselect_Click(object sender, RoutedEventArgs e)
         {
             try

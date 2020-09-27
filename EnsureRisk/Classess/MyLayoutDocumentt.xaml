@@ -11,20 +11,53 @@
              xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
              xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
              mc:Ignorable="d" CanMove="True" CanClose="True" CanFloat="True" IsActiveChanged="LayoutDocument_IsActiveChanged" Closing="MyLayoutDocument_Closed" IsSelected="True">
-    <Grid MouseDown="LayoutDocument_MouseDown" Background="Red">
+    <Grid MouseDown="LayoutDocument_MouseDown">
         <Button x:Name="BtnUndoneScope" Panel.ZIndex="1" Click="BtnUndoneScope_Click" Visibility="Collapsed" Content="{md:PackIcon Kind=UndoVariant}" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <!--<xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="Mini Map" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300">-->
+        <!--<Grid Name="gridMiniMap" Background="#FF918080">
+             <local:MiniMapControl x:Name="MiniMap" />
+            </Grid>-->
+        <!--</xcad:LayoutAnchorable>-->
         <Grid x:Name="TheMainGrid" Background="White" MouseDown="LayoutDocument_MouseDown">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
-            <ScrollViewer x:Name="ScrollGridPaint" Grid.Row="0" VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" >
-                <Grid x:Name="CanvasMain">
-                    <Grid Width="200" Height="200" x:Name="GridPaintLines" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel" Background="#FFFAF3FA">
-                        <TextBox x:Name="TextChangeName" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <!--<RowDefinition Height="*"/>-->
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition ></ColumnDefinition>
+                    <ColumnDefinition ></ColumnDefinition>
+                    <ColumnDefinition ></ColumnDefinition>
+                    <ColumnDefinition ></ColumnDefinition>
+                    <ColumnDefinition ></ColumnDefinition>
+                    <ColumnDefinition ></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ScrollViewer Name="ScrollGridPaint" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="8" Grid.RowSpan="8" VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" 
+                              Loaded="ScrollGridPaint_Loaded"  ScrollChanged="ScrollGridPaint_ScrollChanged" SizeChanged="ScrollGridPaint_SizeChanged"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Grid x:Name="CanvasMain">
+                        <Grid Width="200" Height="200" x:Name="GridPaintLines" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel" Background="#FFFAF3FA">
+                            <TextBox x:Name="TextChangeName" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </ScrollViewer>
+                </ScrollViewer>
+            </Grid>
+            
+            <local:MiniMapControl x:Name="MiniMapGHT" Panel.ZIndex="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="20"/>
+
             <local:PopWindow x:Name="MyPopWindow" Visibility="Collapsed" Panel.ZIndex="1" Grid.Row="0" Foreground="Black"/>
             <local:PopCMWindow x:Name="MyPopCMWindow" Visibility="Collapsed" Panel.ZIndex="1" Grid.Row="0" Foreground="Black"/>
             <Grid Grid.Row="1" Background="{DynamicResource MaterialDesignPaper}">
@@ -36,6 +69,7 @@
                     <ColumnDefinition Width="25"/>
                     <ColumnDefinition Width="150"/>
                     <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
                 <ProgressBar Grid.Column="1" x:Name="TheProgressBar" VerticalAlignment="Center" Visibility="Collapsed" HorizontalAlignment="Stretch" IsIndeterminate="True"/>
                 <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left">
@@ -50,7 +84,7 @@
                         </md:HintAssist.Hint>
                     </ComboBox>
                 </StackPanel>
-                <ComboBox x:Name="TheZoomComboBox" Text="{Binding ZoomValue}" Style="{DynamicResource MaterialDesignComboBox}" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" HorizontalContentAlignment="Right" IsEditable="True">
+                <ComboBox x:Name="TheZoomComboBox" Text="100" Style="{DynamicResource MaterialDesignComboBox}" DropDownClosed="TheZoomComboBox_DropDownClosed" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" HorizontalContentAlignment="Right" IsEditable="True">
                     <ComboBoxItem Content="10"/>
                     <ComboBoxItem Content="25"/>
                     <ComboBoxItem Content="50"/>
@@ -61,9 +95,15 @@
                 </ComboBox>
                 <TextBlock Text="%" Grid.Column="3" VerticalAlignment="Center"/>
                 <Button Content="{md:PackIcon Kind=MinusCircleOutline}" x:Name="BtnMinus" Grid.Column="4" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignToolButton}" HorizontalAlignment="Right" Click="BtnMinusZoom_Click"/>
-                <Slider Style="{DynamicResource MaterialDesignSlider}" x:Name="SliderZoom" Value="{Binding ZoomValue}" ValueChanged="SliderZoom_ValueChanged" MouseWheel="SliderZoom_MouseWheel"  Grid.Column="5" Minimum="10" Maximum="200" VerticalAlignment="Center" TickPlacement="TopLeft" SmallChange="10" LargeChange="20" TickFrequency="10"/>
+                <Slider Style="{DynamicResource MaterialDesignSlider}" x:Name="SliderZoom" Value="100" ValueChanged="SliderZoom_ValueChanged" MouseWheel="SliderZoom_MouseWheel"  Grid.Column="5" Minimum="10" Maximum="200" VerticalAlignment="Center" TickPlacement="TopLeft" SmallChange="10" LargeChange="20" TickFrequency="10"/>
                 <Button Content="{md:PackIcon Kind=PlusCircleOutline}" x:Name="BtnPlus" Grid.Column="6" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignToolButton}" HorizontalAlignment="Right" Click="BtnPlusZoom_Click"/>
+
+                <!--<Button Content="{md:PackIcon Kind=VectorArrangeAbove}" x:Name="EnableMiniMap" Grid.Column="7" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignToolButton}" HorizontalAlignment="Center" Click="EnableMiniMap_Click"/>-->
+                <ToggleButton Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}" ToolTip="MiniMap" x:Name="EnableMiniMap" Grid.Column="7" IsChecked="True" Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked" HorizontalAlignment="Center" >
+                    <md:PackIcon Kind="VectorArrangeAbove"/>
+                </ToggleButton>
             </Grid>
+
         </Grid>
     </Grid>
 </xcad:LayoutDocument>
