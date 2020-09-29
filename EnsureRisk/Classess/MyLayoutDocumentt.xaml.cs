@@ -30,7 +30,7 @@ namespace EnsureRisk.Classess
     /// <summary>
     /// Interaction logic for MyLayoutDocumentt.xaml
     /// </summary>
-    public partial class MyLayoutDocumentt : LayoutDocument, INotifyPropertyChanged
+    public partial class MyLayoutDocumentt : LayoutDocument
     {
         public string LoginUser { get; set; }
         public double X { get; set; }
@@ -38,19 +38,11 @@ namespace EnsureRisk.Classess
         public double Main_Y { get; set; }
         public Point PointSelected { get; set; }
         private double zoomValue;
-        public double ZoomValue { get { return zoomValue; } set { zoomValue = value; OnPropertyChanged("ZoomValue"); } }
+        public double ZoomValue { get { return zoomValue; } set { zoomValue = value; RaisePropertyChanged("ZoomValue"); } }
         private decimal idDamageSelected;
         private DataView dvDamage;
-        public DataView DvDamage { get { return dvDamage; } set { dvDamage = value; OnPropertyChanged("DvDamage"); } }
-        public decimal IdDamageSelected { get { return idDamageSelected; } set { idDamageSelected = value; OnPropertyChanged("IdDamageSelected"); } }
-
-#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
-        public event PropertyChangedEventHandler PropertyChanged;
-#pragma warning restore CS0108 // Member hides inherited member; missing new keyword
-        private void OnPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
+        public DataView DvDamage { get => dvDamage; set { dvDamage = value; RaisePropertyChanged("DvDamage"); } }
+        public decimal IdDamageSelected { get => idDamageSelected; set { idDamageSelected = value; RaisePropertyChanged("IdDamageSelected"); } }
         #region Booleans
         public bool IsScoping { get; set; }
         public bool MoviendoRisk { get; set; }
@@ -134,6 +126,7 @@ namespace EnsureRisk.Classess
             exportToExcelWorker.ProgressChanged += ExportToExcelWorker_ProgressChanged;
             exportToExcelWorker.RunWorkerCompleted += ExportToExcelWorker_RunWorkerCompleted;
             CbFilterTopR.DataContext = this;
+            MiniMapGHT.DataContext = this;
             MiniMapGHT.MapSource = this.ScrollGridPaint;
         }
 
@@ -2793,7 +2786,7 @@ namespace EnsureRisk.Classess
                 MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 40 / 100;
                 MiniMapGHT.MapSource = new ScrollViewer();
                 MiniMapGHT.MapSource = this.ScrollGridPaint;
-              
+
             }
             catch (Exception ex)
             {
@@ -2945,8 +2938,7 @@ namespace EnsureRisk.Classess
                 MostrarDialog(ex.Message);
             }
         }
-
-
+        
         #region TextChangeName
         private void TextChangeName_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {

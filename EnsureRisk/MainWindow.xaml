@@ -650,7 +650,7 @@
                         </xcad:LayoutAnchorable>
                     </xcad:LayoutAnchorablePane>
                     <xcad:LayoutDocumentPaneGroup x:Name="LayoutDocPaneGroup">
-                        <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel">
+                        <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel">                            
                         </xcad:LayoutDocumentPane>
                     </xcad:LayoutDocumentPaneGroup >
                     <xcad:LayoutAnchorablePaneGroup DockWidth="250" ScrollViewer.CanContentScroll="True" DockMinWidth="50" FloatingWidth="250">

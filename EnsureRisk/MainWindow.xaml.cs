@@ -1183,7 +1183,6 @@ namespace EnsureRisk
                         ((LayoutDocumentPane)LayoutDocPaneGroup.Children[0]).Children.Add(myly);
                     }
                     OpenedDocuments.Add(myly);
-
                     TheCurrentLayout = myly;
                     TheCurrentLayout.MoviendoRisk = false;
                     TheCurrentLayout.ID_Diagram = (decimal)riskTree.DRow[DT_Diagram.ID_DIAGRAM];
@@ -1261,7 +1260,6 @@ namespace EnsureRisk
                     TheProgress.Visibility = Visibility.Visible;
                     HabilitarBotones(false);
                     myly.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
-                    //LayoutDocumentPanel.Children.Add(myly);
                     if (LayoutDocPaneGroup.Children.Count > 0)
                     {
                         ((LayoutDocumentPane)LayoutDocPaneGroup.Children[0]).Children.Add(myly);
@@ -1269,7 +1267,12 @@ namespace EnsureRisk
                     OpenedDocuments.Add(myly);
                     TheCurrentLayout = myly;
                     AddWBSTopToDiagram(myly.Ds);
-                    CambiosVisuales();                    
+                    CambiosVisuales();
+                    foreach (var item in OpenedDocuments)
+                    {
+                        item.ExitWorking();
+                    }
+                    TheCurrentLayout.EnterWorking();
                 }
             }           
         }
@@ -1382,7 +1385,13 @@ namespace EnsureRisk
                     }
                     OpenedDocuments.Add(myly);
                     TheCurrentLayout = myly;
+                    AddWBSTopToDiagram(myly.Ds);
                     CambiosVisuales();
+                    foreach (var item in OpenedDocuments)
+                    {
+                        item.ExitWorking();
+                    }
+                    TheCurrentLayout.EnterWorking();
                 }
                 IS_REOPEN_DIAGRAM = false;
             }

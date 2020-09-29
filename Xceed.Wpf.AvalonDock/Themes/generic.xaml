@@ -71,7 +71,7 @@
                                 <md:PackIcon Kind="ChevronDownBoxOutline" Foreground="{DynamicResource MaterialDesignBody}"/>
                             </avalonDockControls:DropDownButton>
                         </Grid>
-                        <Border x:Name="ContentPanel" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{DynamicResource MaterialDesignPaper}" Grid.Column="0" KeyboardNavigation.DirectionalNavigation="Contained" Grid.Row="1" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Cycle">
+                        <Border x:Name="ContentPanel" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{DynamicResource PrimaryHueLightBrush}" Grid.Column="0" KeyboardNavigation.DirectionalNavigation="Contained" Grid.Row="1" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Cycle">
                             <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </Border>
                     </Grid>
@@ -81,6 +81,12 @@
                         </Trigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Model.ChildrenCount}" Value="0">
                             <Setter Property="Visibility" Value="Collapsed" TargetName="MenuDropDownButton" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Model.SelectedContent.IsActive}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" TargetName="ContentPanel" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Model.SelectedContent.IsActive}" Value="False">
+                            <Setter Property="Background" Value="{DynamicResource PrimaryHueLightBrush}" TargetName="ContentPanel" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -99,28 +105,44 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TabItem}">
                                 <Grid SnapsToDevicePixels="true">
-                                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" Background="{DynamicResource MaterialDesignPaper}" Padding="{TemplateBinding Padding}" BorderThickness="1,1,1,0">
-                                        <ContentPresenter x:Name="Content"
-                                      ContentSource="Header"
+                                    <Border x:Name="Bd" BorderBrush="Red" Background="Green" Padding="{TemplateBinding Padding}" BorderThickness="1,1,1,0">
+                                        <ContentPresenter x:Name="Content" ContentSource="Header" 
                                       HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
                                       VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
                                       RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                     </Border>
                                 </Grid>
                                 <ControlTemplate.Triggers>
-                                    <Trigger Property="Selector.IsSelected" Value="true">
-                                        <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=IsActive, UpdateSourceTrigger=PropertyChanged}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" TargetName="Bd" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidBrush}" TargetName="Bd" />
+                                        <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" />
                                         <Setter Property="Panel.ZIndex" Value="1" />
                                         <Setter Property="Margin" Value="0,0,0,-2" />
                                         <Setter Property="Margin" TargetName="Content" Value="0,0,0,3" />
-                                    </Trigger>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=IsActive, UpdateSourceTrigger=PropertyChanged}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Background" Value="{DynamicResource PrimaryHueLightBrush}" TargetName="Bd" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueLightBrush}" TargetName="Bd" />
+                                        <Setter Property="Background" Value="{DynamicResource PrimaryHueLightBrush}" />
+                                        <Setter Property="Panel.ZIndex" Value="1" />
+                                        <Setter Property="Margin" Value="0,0,0,-2" />
+                                        <Setter Property="Margin" TargetName="Content" Value="0,0,0,3" />
+                                    </MultiDataTrigger>
+                                    
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
                                             <Condition Property="IsMouseOver" Value="true" />
                                             <Condition Property="Selector.IsSelected" Value="false" />
                                         </MultiTrigger.Conditions>
-                                        <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
-                                        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                                        <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidBrush}" />
                                         <Setter Property="Panel.ZIndex" Value="0" />
                                     </MultiTrigger>
                                     <Trigger Property="IsEnabled" Value="false">
@@ -464,10 +486,9 @@
 
     <DataTemplate x:Key="DocumentHeaderTemplate">
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-            <md:PackIcon Kind="FileDocument" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
-            <TextBlock Text="{Binding Title}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource MaterialDesignBody}"/>
+            <md:PackIcon x:Name="inco" Kind="FileDocument" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
+            <TextBlock x:Name="Textings" Text="{Binding Title}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource MaterialDesignBody}"/>
         </StackPanel>
-
     </DataTemplate>
 
     <DataTemplate x:Key="AnchorableHeaderTemplate">
@@ -609,7 +630,7 @@
                 <ControlTemplate TargetType="{x:Type avalonDockControls:LayoutDocumentTabItem}">
                     <avalonDockControls:DropDownControlArea DropDownContextMenu="{Binding Root.Manager.DocumentContextMenu}"
                                                               DropDownContextMenuDataContext="{Binding LayoutItem, RelativeSource={RelativeSource TemplatedParent}}">
-                        <Border Background="{DynamicResource MaterialDesignPaper}" x:Name="MyBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <Border Background="{DynamicResource PrimaryHueMidBrush}" x:Name="MyBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -632,24 +653,24 @@
                     <ControlTemplate.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=IsSelected}" Value="True" />
+                                <Condition Binding="{Binding Path=IsActive, UpdateSourceTrigger=PropertyChanged}" Value="True" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton" />
-                            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" TargetName="MyBorder" />
+                            <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" TargetName="MyBorder" />
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=IsSelected}" Value="False" />
+                                <Condition Binding="{Binding Path=IsActive, UpdateSourceTrigger=PropertyChanged}" Value="False" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Hidden" TargetName="DocumentCloseButton" />
-                            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" TargetName="MyBorder" />
+                            <Setter Property="Background" Value="{DynamicResource PrimaryHueLightBrush}" TargetName="MyBorder" />
                         </MultiDataTrigger>                       
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton" />
-                            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" TargetName="MyBorder" />
+                            <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" TargetName="MyBorder" />
                         </MultiDataTrigger>
                         <DataTrigger Binding="{Binding Path=CanClose}" Value="False">
                             <Setter Property="Visibility" Value="Hidden" TargetName="DocumentCloseButton" />

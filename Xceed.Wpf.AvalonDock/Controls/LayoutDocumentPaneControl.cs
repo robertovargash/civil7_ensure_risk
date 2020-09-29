@@ -55,7 +55,7 @@ namespace Xceed.Wpf.AvalonDock.Controls
 
     #region Properties
 
-
+      
 
 
 
@@ -111,6 +111,7 @@ namespace Xceed.Wpf.AvalonDock.Controls
 
       if( _model.SelectedContent != null )
         _model.SelectedContent.IsActive = true;
+      
     }
 
     protected override void OnMouseLeftButtonDown( System.Windows.Input.MouseButtonEventArgs e )
