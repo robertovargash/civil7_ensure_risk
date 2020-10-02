@@ -1808,6 +1808,7 @@ namespace EnsureRisk.Classess
                 MostrarDialog("S_MouseDown_Event: " + ex.Message);
             }
         }
+
         private void R_MouseDown_Event(object sender, MouseButtonEventArgs e)
         {
             try
@@ -2786,7 +2787,6 @@ namespace EnsureRisk.Classess
                 MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 40 / 100;
                 MiniMapGHT.MapSource = new ScrollViewer();
                 MiniMapGHT.MapSource = this.ScrollGridPaint;
-
             }
             catch (Exception ex)
             {
@@ -3573,8 +3573,8 @@ namespace EnsureRisk.Classess
 
         private void ScrollGridPaint_Loaded(object sender, RoutedEventArgs e)
         {
-            //MiniMapGHT.Height = ScrollGridPaint.ViewportHeight * 30 / 100;
-            //MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 30 / 100;
+            MiniMapGHT.Height = ScrollGridPaint.ViewportHeight * 40 / 100;
+            MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 40 / 100;
         }
 
         private void ScrollGridPaint_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -3585,8 +3585,8 @@ namespace EnsureRisk.Classess
 
         private void ScrollGridPaint_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //MiniMapGHT.Height = ScrollGridPaint.ViewportHeight * 30 / 100;
-            //MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 30 / 100;
+            MiniMapGHT.Height = ScrollGridPaint.ViewportHeight * 30 / 100;
+            MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 30 / 100;
         }
 
         private void EnableMiniMap_Click(object sender, RoutedEventArgs e)

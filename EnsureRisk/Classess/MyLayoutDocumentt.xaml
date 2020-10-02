@@ -55,8 +55,9 @@
                         </Grid>
                     </ScrollViewer>
                 </Grid>
-
-                <local:MiniMapControl x:Name="MiniMapGHT" Panel.ZIndex="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="20"/>
+                <local:MiniMapControl x:Name="MiniMapGHT" Panel.ZIndex="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20" BorderBrush="Red" BorderThickness="2" Background="Gray">
+                  
+                </local:MiniMapControl>
 
                 <local:PopWindow x:Name="MyPopWindow" Visibility="Collapsed" Panel.ZIndex="1" Grid.Row="0" Foreground="Black"/>
                 <local:PopCMWindow x:Name="MyPopCMWindow" Visibility="Collapsed" Panel.ZIndex="1" Grid.Row="0" Foreground="Black"/>

@@ -2436,23 +2436,13 @@ namespace EnsureRisk
             {
                 if (TheCurrentLayout.Line_Selected != null)
                 {
-                    //Risk_DamageTable = TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLENAME].Copy();
-                    //CM_DamageTable = TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLENAME].Copy();
-                    //WBS_RISK_Damage_Table = TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Copy();
-                    //WBS_CM_Damage_Table = TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Copy();
-                    //Risk_WBS_Table = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLENAME].Copy();
-                    //CM_WBS_Table = TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLENAME].Copy();
-                    //Risk_RoleTable = TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].Copy();
-                    //CM_RoleTable = TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Copy();
                     HasAccess = TheCurrentLayout.FullAccess(TheCurrentLayout.Line_Selected);
                     DataRow RiskRow = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID);
                     RiskLineName = RiskRow[DT_Risk.NAMESHORT].ToString();
                     TextRiskDetail.Text = RiskRow[DT_Risk.COMMENTS].ToString();
 
                     DvRiskWBS = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].DefaultView;
-                    //DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
-                    //DgRiskWBS.ItemsSource = DvRiskWBS;
-
+                    
                     if (HasAccess)
                     {
                         DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
@@ -2464,8 +2454,6 @@ namespace EnsureRisk
 
                     DvRoleRisk = TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLENAME].DefaultView;
                     DvRoleRisk.RowFilter = DT_Role_Risk.ID_RISK + " = " + RiskRow[DT_Risk.ID];
-                    //DgRiskRoles.ItemsSource = DvRoleRisk;
-
                     DvRiskDamages = TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].DefaultView;
 
                     DvRiskDamages.RowFilter = DT_WBS_RISK_DAMAGE.ID_RISK + " = " + RiskRow[DT_Risk.ID];

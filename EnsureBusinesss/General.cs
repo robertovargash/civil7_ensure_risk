@@ -505,20 +505,11 @@ namespace EnsureBusinesss
                 if (!(item.IsCM))
                 {
                     item.SetThickness(item.AcDamage, min, max);
-                    //item.Min = min;
-                    //item.Max = max;
                 }
-                //SetMargin(item);
             }
             RiskPolyLine rootPolyLine = linesList.Find(r => r.IsRoot);
             rootPolyLine.StrokeThickness = MaxThickness;
             UpdateSegmentsStrokeThickness(rootPolyLine);
-            //IEnumerable<RiskPolyLine> rootChildren = linesList.FindAll(p => !p.IsRoot && !p.IsCM && p.Father.IsRoot);
-            //IEnumerable<RiskPolyLine> orderedRootChildren = rootChildren.OrderBy(p => p.Points[1].X);
-            //foreach (RiskPolyLine polyLine in orderedRootChildren)
-            //{
-            //    UpdateSegmentsStrokeThickness(polyLine);
-            //}
         }
 
 
