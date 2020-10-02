@@ -9,7 +9,7 @@
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Xceed.Wpf.AvalonDock</RootNamespace>
-    <AssemblyName>Xceed.Wpf.AvalonDock</AssemblyName>
+    <AssemblyName>ERDock</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>

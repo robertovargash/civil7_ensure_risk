@@ -1,4 +1,4 @@
-﻿Xceed.Wpf.AvalonDock
+﻿ERDock
 
 
 library
@@ -12,9 +12,9 @@ DEBUG
 
 1692892633
 4810632644
-155930327222
+156-598509520
 1685705537
 Themes\generic.xaml;
 
-False
+True
 

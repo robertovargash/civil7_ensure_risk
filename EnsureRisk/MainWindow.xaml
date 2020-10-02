@@ -23,7 +23,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
             <ContextMenu x:Key="MenuRisk" Visibility="Hidden" Background="Transparent">
@@ -303,14 +303,14 @@
             <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
         <xcad:DockingManager x:Name="_dockingManager" AllowMixedOrientation="True" BorderBrush="Black" BorderThickness="1" Grid.Row="1" Margin="0">
-            <!--<xcad:DockingManager.DocumentHeaderTemplate>
+            <xcad:DockingManager.DocumentHeaderTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <md:PackIcon Kind="FileDocument"  Margin="0,0,4,0" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
-                        <TextBlock Text="{Binding IsActive}" Name="headerDrawPanel" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        <md:PackIcon Kind="FileDocument"  Margin="0,0,4,0" VerticalAlignment="Center" Foreground="White"/>
+                        <TextBlock Text="{Binding Title}" VerticalAlignment="Center" Foreground="White"/>
                     </StackPanel>
                 </DataTemplate>
-            </xcad:DockingManager.DocumentHeaderTemplate>-->
+            </xcad:DockingManager.DocumentHeaderTemplate>
             <xcad:LayoutRoot x:Name="_layoutRoot">
                 <xcad:LayoutPanel Orientation="Horizontal">                    
                     <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200" >

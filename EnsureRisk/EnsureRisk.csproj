@@ -628,9 +628,9 @@
       <Project>{dec79fd2-e1e8-4e4d-90ed-d44910f4a79b}</Project>
       <Name>EnsureBusinesss</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
+    <ProjectReference Include="..\Xceed.Wpf.AvalonDock\ERDock.csproj">
       <Project>{db81988f-e0f2-45a0-a1fd-8c37f3d35244}</Project>
-      <Name>Xceed.Wpf.AvalonDock</Name>
+      <Name>ERDock</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
