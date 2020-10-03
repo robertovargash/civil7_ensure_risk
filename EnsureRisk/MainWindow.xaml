@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EnsureRisk"
-        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:xcad="http://civil7.nl/wpf/xaml/avalondock"
         xmlns:rec="clr-namespace:EnsureRisk.Resources"
         xmlns:classess="clr-namespace:EnsureRisk.Classess"
         xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"

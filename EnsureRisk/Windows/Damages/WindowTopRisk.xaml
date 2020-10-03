@@ -9,7 +9,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:xctk="http://civil7.nl/wpf/xaml/toolkit"
+        xmlns:comp="clr-namespace:ERComp;assembly=ERComp"
         xmlns:local="clr-namespace:EnsureRisk.Windows"
         mc:Ignorable="d"
         Title="Damage" Height="285.763" Width="310.334" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" >
@@ -36,7 +37,8 @@
         <Button Name="BtnOK" Content="OK" HorizontalAlignment="Left" Height="35" Margin="47,0,0,10" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5"/>
         <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Left" Height="35" Margin="160,0,0,10" VerticalAlignment="Bottom" Width="90" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5"/>
         <TextBlock Text="Select a color below:" Margin="38,86,-14,148"/>
-        <xctk:ColorPicker x:Name="colorPiker" VerticalAlignment="Top" HorizontalAlignment="Left" Height="44" Margin="38,114,0,0" Width="233"/>
+        <comp:ColorPicker x:Name="colorPiker" VerticalAlignment="Top" HorizontalAlignment="Left" Height="44" Margin="38,114,0,0" Width="233"/>
+      
         <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">
             <md:DialogHost.DialogContent >
                 <StackPanel Margin="15">

@@ -27,8 +27,8 @@ using System.Threading.Tasks;
 using EnsureRisk.Export.Trader;
 using EnsureRisk.Export;
 using System.Runtime.InteropServices;
-using Xceed.Wpf.AvalonDock.Layout;
-using Xceed.Wpf.AvalonDock;
+using ERDock.Layout;
+using ERDock;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Windows.Controls.Primitives;
@@ -3279,7 +3279,7 @@ namespace EnsureRisk
                 }
                 foreach (var item in TheCurrentLayout.LinesMoving)
                 {
-                    item.Oculto = true;
+                    item.Hidden = true;
                 }
                 Cursor = Cursors.Hand;
             }

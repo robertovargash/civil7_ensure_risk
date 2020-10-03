@@ -1,0 +1,62 @@
+﻿<!--***********************************************************************************
+
+   
+
+   
+
+   This program is provided to you under the terms of the Microsoft Public
+    
+
+   For more features, controls, and fast professional support,
+    
+
+    
+
+  **********************************************************************************-->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:core="clr-namespace:ERComp.Core">
+   <ResourceDictionary.MergedDictionaries>
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="Themes/Generic/Brushes.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="Themes/Generic/Buttons.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="Themes/Generic/Common.xaml" />
+
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="Chromes/Themes/Generic.xaml" />
+
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="BusyIndicator/Themes/Generic.xaml" />
+
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="ButtonSpinner/Themes/Generic.xaml" />
+
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="Calculator/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="CalculatorUpDown/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="Primitives/Themes/Generic/WindowControl.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="Primitives/Themes/Generic/SelectorItem.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="CheckComboBox/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="CheckListBox/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="ChildWindow/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="CollectionControl/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="ColorCanvas/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="ColorPicker/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="DropDownButton/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="IconButton/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="Magnifier/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="MessageBox/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="DateTimeUpDown/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="DateTimePicker/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="MultiLineTextEditor/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="NumericUpDown/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="Pie/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="RangeSlider/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="SplitButton/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="PropertyGrid/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="RichTextBoxFormatBar/Themes/Generic.xaml" />
+
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="TimePicker/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="TimeSpanUpDown/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="WatermarkComboBox/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="WatermarkTextBox/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="Wizard/Themes/Generic.xaml" />
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="Zoombox/Themes/Generic.xaml" />
+   </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

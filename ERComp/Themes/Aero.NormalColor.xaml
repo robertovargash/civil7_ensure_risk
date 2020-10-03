@@ -1,0 +1,27 @@
+﻿<!--***********************************************************************************
+
+   
+
+   
+
+   This program is provided to you under the terms of the Microsoft Public
+    
+
+   For more features, controls, and fast professional support,
+    
+
+    
+
+  **********************************************************************************-->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:core="clr-namespace:ERComp.Core">
+
+   <ResourceDictionary.MergedDictionaries>
+      <core:VersionResourceDictionary AssemblyName="ERComp" SourcePath="Themes/Aero/Brushes_NormalColor.xaml"/>
+      <core:VersionResourceDictionary AssemblyName="ERComp"
+                                      SourcePath="Themes/Aero/Buttons_NormalColor.xaml"/>
+   </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

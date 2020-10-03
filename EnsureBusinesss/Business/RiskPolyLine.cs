@@ -75,7 +75,7 @@ namespace EnsureBusinesss.Business
             set;/* { SetValue(IsRootProperty, value); }*/
             get; /*{ return (bool)GetValue(IsRootProperty); }*/
         }
-        public bool Oculto
+        public bool Hidden
         {
             set; /*{ SetValue(OcultoProperty, value); }*/
             get; /*{ return (bool)GetValue(OcultoProperty); }*/
@@ -284,12 +284,10 @@ namespace EnsureBusinesss.Business
             StrokeStartLineCap = PenLineCap.Round;
             StrokeEndLineCap = PenLineCap.Round;
         }
-
         public bool IsLeaf()
         {
             return Children.Count == 0;
         }
-
         public void NewDrawAtPoint(Point StartPoint, string LabelName)
         {
             //Las flechas se dibujan del punto 0 hacia el punto 1. 
@@ -380,7 +378,7 @@ namespace EnsureBusinesss.Business
                     Expand.Source = new BitmapImage(new Uri(General.CONTRAIDO));
                     foreach (var item in TreeOperation.GetOnlyMyChildrenWithCM(this))
                     {
-                        item.Oculto = true;
+                        item.Hidden = true;
                     }
                     foreach (var item in Segments)
                     {
@@ -410,7 +408,7 @@ namespace EnsureBusinesss.Business
                 {
                     TextPanel.Background = new SolidColorBrush(Color.FromArgb(50, ((SolidColorBrush)Stroke).Color.R, ((SolidColorBrush)Stroke).Color.G, ((SolidColorBrush)Stroke).Color.B));
                 }
-                if (Oculto)
+                if (Hidden)
                 {
                     TextPanel.Visibility = Visibility.Collapsed;
                     foreach (var itemseg in Segments)
@@ -816,7 +814,7 @@ namespace EnsureBusinesss.Business
 
         public void OnThicknessChange()
         {
-            if (!IsCM && !IsRoot && !Oculto)
+            if (!IsCM && !IsRoot && !Hidden)
             {
                 if (!OriginalStartPointHasValue)
                 {

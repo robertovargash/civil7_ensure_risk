@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:comp="clr-namespace:ERComp;assembly=ERComp"
         xmlns:local="clr-namespace:EnsureRisk.Windows.Damages"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -13,6 +13,7 @@
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
+        xmlns:xctk="http://civil7.nl/wpf/xaml/avalondock"
         Title="Select a Damage" Height="238.2" Width="354.2" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" >
     <Grid>
         <Grid.RowDefinitions>            
@@ -49,7 +50,7 @@
                 <Separator Margin="10" Visibility="Hidden"/>
                 <StackPanel x:Name="ColorField">
                     <TextBlock Text="Select a color:"/>
-                    <xctk:ColorPicker x:Name="colorPiker" VerticalAlignment="Top" HorizontalAlignment="Center" Height="35" Width="250" />
+                    <comp:ColorPicker  x:Name="colorPiker" VerticalAlignment="Top" HorizontalAlignment="Center" Height="35" Width="250" ></comp:ColorPicker>
                 </StackPanel>
             </StackPanel>
         </Grid>

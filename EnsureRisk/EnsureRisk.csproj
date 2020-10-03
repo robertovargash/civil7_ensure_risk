@@ -108,10 +108,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.Toolkit, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Referencias\Xceed.Wpf.Toolkit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -628,7 +624,11 @@
       <Project>{dec79fd2-e1e8-4e4d-90ed-d44910f4a79b}</Project>
       <Name>EnsureBusinesss</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Xceed.Wpf.AvalonDock\ERDock.csproj">
+    <ProjectReference Include="..\ERComp\ERComp.csproj">
+      <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
+      <Name>ERComp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ERDock\ERDock.csproj">
       <Project>{db81988f-e0f2-45a0-a1fd-8c37f3d35244}</Project>
       <Name>ERDock</Name>
     </ProjectReference>

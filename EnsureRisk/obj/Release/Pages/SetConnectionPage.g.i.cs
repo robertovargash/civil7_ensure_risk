@@ -9,7 +9,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using DataMapping.Data;
+using EnsureRisk;
+using EnsureRisk.Classess;
+using EnsureRisk.DataBinding;
 using EnsureRisk.Pages;
+using EnsureRisk.Resources;
 using MaterialDesignThemes.Wpf;
 using MaterialDesignThemes.Wpf.Converters;
 using MaterialDesignThemes.Wpf.Transitions;

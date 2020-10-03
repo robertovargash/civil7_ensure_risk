@@ -23,7 +23,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using Xceed.Wpf.AvalonDock.Layout;
+using ERDock.Layout;
 
 namespace EnsureRisk.Classess
 {
@@ -3162,7 +3162,7 @@ namespace EnsureRisk.Classess
                                         LinesMoving.AddRange(TreeOperation.GetMeAndMyChildrenWithCM(Line_Selected));
                                         foreach (var item in LinesMoving)
                                         {
-                                            item.Oculto = true;
+                                            item.Hidden = true;
                                         }
                                         GridPaintLines.Children.Remove(LineInMoving);
                                         //System.Drawing.Color lnColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));

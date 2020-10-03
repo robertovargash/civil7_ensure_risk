@@ -9,6 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using DataMapping.Data;
 using EnsureRisk.Classess;
 using MaterialDesignThemes.Wpf;
 using MaterialDesignThemes.Wpf.Converters;

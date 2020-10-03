@@ -57,7 +57,7 @@ namespace EnsureBusinesss.Business
         {
             get
             {
-                if (Father.Oculto)
+                if (Father.Hidden)
                 {
                     Visibility = Visibility.Collapsed;
                 }

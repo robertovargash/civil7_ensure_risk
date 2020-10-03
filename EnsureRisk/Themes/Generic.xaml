@@ -2,7 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:EnsureRisk"
-    xmlns:avalonDockControls="http://schemas.xceed.com/wpf/xaml/avalondock"
+    xmlns:avalonDockControls="http://civil7.nl/wpf/xaml/avalondock"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes">
 
 

@@ -1,0 +1,64 @@
+﻿<!--***********************************************************************************
+
+   
+
+   
+
+   This program is provided to you under the terms of the Microsoft Public
+    
+
+   For more features, controls, and fast professional support,
+    
+
+    
+
+  **********************************************************************************-->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+   <ResourceDictionary.MergedDictionaries>
+
+      <ResourceDictionary Source="/ERComp;component/Themes/Aero2/Brushes.xaml" />
+      <ResourceDictionary Source="/ERComp;component/Themes/Aero2/Buttons.xaml" />
+      <ResourceDictionary Source="/ERComp;component/Themes/Aero2/Common.xaml" />
+
+      <ResourceDictionary Source="/ERComp;component/Chromes/Themes/Aero2.NormalColor.xaml" />
+
+      <ResourceDictionary Source="/ERComp;component/BusyIndicator/Themes/Aero2.NormalColor.xaml" />
+
+      <ResourceDictionary Source="/ERComp;component/ButtonSpinner/Themes/Aero2.NormalColor.xaml" />
+
+      <ResourceDictionary Source="/ERComp;component/Calculator/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/CalculatorUpDown/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/Primitives/Themes/Aero2/WindowControl.xaml" />
+      <ResourceDictionary Source="/ERComp;component/Primitives/Themes/Aero2/SelectorItem.xaml" />
+      <ResourceDictionary Source="/ERComp;component/CheckComboBox/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/CheckListBox/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/ChildWindow/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/CollectionControl/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/ColorCanvas/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/ColorPicker/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/DropDownButton/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/IconButton/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/MessageBox/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/DateTimeUpDown/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/DateTimePicker/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/MultiLineTextEditor/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/NumericUpDown/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/Pie/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/RangeSlider/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/RichTextBoxFormatBar/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/SplitButton/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/PropertyGrid/Themes/Aero2.NormalColor.xaml" />
+
+
+      <ResourceDictionary Source="/ERComp;component/TimePicker/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/TimeSpanUpDown/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/WatermarkComboBox/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/WatermarkTextBox/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/Wizard/Themes/Aero2.NormalColor.xaml" />
+      <ResourceDictionary Source="/ERComp;component/Zoombox/Themes/Aero2.NormalColor.xaml" />
+   </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>
