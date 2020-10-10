@@ -551,7 +551,7 @@ namespace EnsureRisk.Export
                 foreach (var damage in _riskTreeDataSetTrader.DamagesRow)
                 {
                     string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
-                    int idRisk = (int)riskDataRow[DT_Risk.ID];
+                    decimal idRisk = (decimal)riskDataRow[DT_Risk.ID];
                     DtToExport.Select(RiskID + " = " + idRisk).First()[columnaNombre] = riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre)[DT_Risk_Damages.VALUE];
                     int a = _columnIndex + 1;
                     if (colorsDamages.FindIndex(c => c.Index == a) >= 0)
@@ -564,8 +564,8 @@ namespace EnsureRisk.Export
                 foreach (var damage in _riskTreeDataSetTrader.DamagesRow)
                 {
                     string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
-                    int id = (int)riskDataRow[DT_Risk.ID];
-                    int idDamage = (int)riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre.Split('/')[1].ToString())[DT_Risk_Damages.ID_DAMAGE];
+                    decimal id = (decimal)riskDataRow[DT_Risk.ID];
+                    decimal idDamage = (decimal)riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre.Split('/')[1].ToString())[DT_Risk_Damages.ID_DAMAGE];
 
                     DtToExport.Select(RiskID + " = " + id).First()[columnaNombre] = General.MyRound(CalculateAD(id, idDamage), 1);
                     _columnIndex++;
@@ -613,7 +613,7 @@ namespace EnsureRisk.Export
                 drToExport[RiskWBSName] = riskDataRow[DT_Risk.WBS_NAME];
                 _columnIndex++;
 
-                IEnumerable<DataRow> riskProperties = _riskTreeDataSetTrader.GetRiskPropertyList((int)riskDataRow[DT_Risk.ID]);
+                IEnumerable<DataRow> riskProperties = _riskTreeDataSetTrader.GetRiskPropertyList((decimal)riskDataRow[DT_Risk.ID]);
 
                 foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
                 {
@@ -629,7 +629,7 @@ namespace EnsureRisk.Export
                 
                 int _counterMcolumnIndexBeginAt = _columnIndex;
 
-                IEnumerable<DataRow> counterMeasureChildList = _riskTreeDataSetTrader.GetCounterMeasureChildList((int)riskDataRow[DT_Risk.ID]);
+                IEnumerable<DataRow> counterMeasureChildList = _riskTreeDataSetTrader.GetCounterMeasureChildList((decimal)riskDataRow[DT_Risk.ID]);
 
                 if (!counterMeasureChildList.Any())
                 {
@@ -654,7 +654,7 @@ namespace EnsureRisk.Export
                     drToExport[CMStatus] = (bool)counterMDataRow[DT_CounterM.ENABLED] ? "Activated" : "No Activated";
                     _columnIndex++;
 
-                    IEnumerable<DataRow> counterMProperties = _riskTreeDataSetTrader.GetCounterMPropertyList((int)counterMDataRow[DT_CounterM.ID]);
+                    IEnumerable<DataRow> counterMProperties = _riskTreeDataSetTrader.GetCounterMPropertyList((decimal)counterMDataRow[DT_CounterM.ID]);
 
                     foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
                     {
@@ -671,7 +671,7 @@ namespace EnsureRisk.Export
                     
                 }
                 flag = true;
-                IEnumerable<DataRow> riskChildList = _riskTreeDataSetTrader.GetRiskChildList((int)riskDataRow[DT_Risk.ID]);
+                IEnumerable<DataRow> riskChildList = _riskTreeDataSetTrader.GetRiskChildList((decimal)riskDataRow[DT_Risk.ID]);
 
                 if (riskChildList.Any())
                 {
@@ -688,8 +688,8 @@ namespace EnsureRisk.Export
                 if (flag)
                 {
                     string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
-                    int id = (int)riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre.Split('/')[1].ToString())[DT_Risk_Damages.ID_RISK];
-                    int idDamage = (int)riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre.Split('/')[1].ToString())[DT_Risk_Damages.ID_DAMAGE];
+                    decimal id = (decimal)riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre.Split('/')[1].ToString())[DT_Risk_Damages.ID_RISK];
+                    decimal idDamage = (decimal)riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre.Split('/')[1].ToString())[DT_Risk_Damages.ID_DAMAGE];
 
                     drToExport[columnaNombre] = General.MyRound(CalculateAD(id, idDamage), 1);                    
                 }       
@@ -697,7 +697,7 @@ namespace EnsureRisk.Export
             flag = false;
         }
 
-        private decimal CalculateAD(int lineID, int IdDamageSelected)
+        private decimal CalculateAD(decimal lineID, decimal IdDamageSelected)
         {
             decimal AcumDamage = 0;
             RiskPolyLine line = _riskTreeDataSetTrader.LinesDiagram.Find(l => l.ID == lineID);

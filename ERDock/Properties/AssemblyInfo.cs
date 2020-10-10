@@ -28,7 +28,7 @@ using System;
 [assembly: AssemblyTitle( "ERDock" )]
 [assembly: AssemblyDescription( "This assembly implements the ERDock namespace, a docking layout system for the Windows Presentation Framework." )]
 
-[assembly: AssemblyCompany( "CIVIL 7 NL" )]
+[assembly: AssemblyCompany("CIVIL 7 NL")]
 [assembly: AssemblyProduct( "Ensure Risk Project" )]
 [assembly: AssemblyCopyright( "Copyright (C) CIVIL7 Co. 2020" )]
 [assembly: AssemblyCulture( "" )]

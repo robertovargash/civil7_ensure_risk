@@ -75,12 +75,15 @@
     <Compile Include="Business\Popin.cs" />
     <Compile Include="Business\RiskPolyLine.cs" />
     <Compile Include="Business\SegmentPolyLine.cs" />
-    <Compile Include="PointToMoveRight.cs" />
-    <Compile Include="TreeOperation.cs" />
-    <Compile Include="General.cs" />
+    <Compile Include="Controllers\PointToMoveRight.cs" />
+    <Compile Include="Controllers\TreeOperation.cs" />
+    <Compile Include="Controllers\General.cs" />
+    <Compile Include="Controllers\WBSOperations.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messages.cs" />
+    <Compile Include="Controllers\CopyPasteController.cs" />
+    <Compile Include="CrossTabController.cs" />
+    <Compile Include="FishHeadController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

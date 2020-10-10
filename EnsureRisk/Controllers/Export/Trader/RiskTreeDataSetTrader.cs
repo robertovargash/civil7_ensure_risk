@@ -11,7 +11,7 @@ namespace EnsureRisk.Export.Trader
     public class RiskAndCm
     {
         public bool isCM;
-        public int id;
+        public decimal id;
         public decimal value;
     }
     public class RiskTreeDataSetTrader : DataSetTrader, IDisposable
@@ -132,7 +132,7 @@ namespace EnsureRisk.Export.Trader
             dataTable.Columns.Add("CM Name");
             List<DataRow> mainRisksRiskDescendats = new List<DataRow>();
             List<DataRow> mainRisksCMDescendats = new List<DataRow>();
-            foreach (var item in TreeOperation.GetOnlyMyChildrenWithCM(LinesDiagram.Find(l => l.ID == (int)mainRisk[IDRISK_COLUMNNAME])))
+            foreach (var item in TreeOperation.GetOnlyMyChildrenWithCM(LinesDiagram.Find(l => l.ID == (decimal)mainRisk[IDRISK_COLUMNNAME])))
             {
                 if (item.IsCM)
                 {
@@ -211,50 +211,50 @@ namespace EnsureRisk.Export.Trader
 
             IEnumerable<DataRow> mainRiskChildDataRowQuery =
                 from mainRiskChildDataRow in RiskDataTable.AsEnumerable()
-                where mainRiskChildDataRow.Field<int?>(IDRISKFATHER_COLUMNNAME) == (int)mainRisk[IDRISK_COLUMNNAME]
+                where mainRiskChildDataRow.Field<decimal?>(IDRISKFATHER_COLUMNNAME) == (decimal)mainRisk[IDRISK_COLUMNNAME]
                 select mainRiskChildDataRow;
             return mainRiskChildDataRowQuery;
         }
-        public IEnumerable<DataRow> GetRiskPropertyList(int riskId)
+        public IEnumerable<DataRow> GetRiskPropertyList(decimal riskId)
         {
             IEnumerable<DataRow> riskTopRiskDataRowQuery =
                 from riskTopRiskDataRow in RiskTopRiskDataTable.AsEnumerable()
-                where riskTopRiskDataRow.Field<int>(IDRISK_COLUMNNAME) == riskId
+                where riskTopRiskDataRow.Field<decimal>(IDRISK_COLUMNNAME) == riskId
                 select riskTopRiskDataRow;
             return riskTopRiskDataRowQuery;
         }
 
-        public IEnumerable<DataRow> GetShortRiskPropertyList(int riskId)
+        public IEnumerable<DataRow> GetShortRiskPropertyList(decimal riskId)
         {
             IEnumerable<DataRow> riskTopRiskDataRowQuery =
                 from riskTopRiskDataRow in RiskTopRiskDataTable.AsEnumerable()
-                where riskTopRiskDataRow.Field<int>(IDRISK_COLUMNNAME) == riskId
+                where riskTopRiskDataRow.Field<decimal>(IDRISK_COLUMNNAME) == riskId
                 select riskTopRiskDataRow;
             return riskTopRiskDataRowQuery;
         }
 
 
-        public IEnumerable<DataRow> GetCounterMPropertyList(int counterMId)
+        public IEnumerable<DataRow> GetCounterMPropertyList(decimal counterMId)
         {
             IEnumerable<DataRow> counterMTopRiskDataRowQuery =
                 from counterMTopRiskDataRow in _riskTreeDataSet.Tables[COUNTERM_TOPRISK_TABLENAME].AsEnumerable()
-                where counterMTopRiskDataRow.Field<int>(IDCOUNTERM_COLUMNNAME) == counterMId
+                where counterMTopRiskDataRow.Field<decimal>(IDCOUNTERM_COLUMNNAME) == counterMId
                 select counterMTopRiskDataRow;
             return counterMTopRiskDataRowQuery;
         }
-        public IEnumerable<DataRow> GetRiskChildList(int riskId)
+        public IEnumerable<DataRow> GetRiskChildList(decimal riskId)
         {
             IEnumerable<DataRow> riskChildDataRowQuery =
                    from riskChildDataRow in RiskDataTable.AsEnumerable()
-                   where riskChildDataRow.Field<int?>(IDRISKFATHER_COLUMNNAME) == riskId
+                   where riskChildDataRow.Field<decimal?>(IDRISKFATHER_COLUMNNAME) == riskId
                    select riskChildDataRow;
             return riskChildDataRowQuery;
         }
-        public IEnumerable<DataRow> GetCounterMeasureChildList(int riskId)
+        public IEnumerable<DataRow> GetCounterMeasureChildList(decimal riskId)
         {
             IEnumerable<DataRow> counterMChildDataRowQuery =
                    from counterMChildDataRow in _riskTreeDataSet.Tables[COUNTERM_TABLENAME].AsEnumerable()
-                   where counterMChildDataRow.Field<int?>(IDRISK_COLUMNNAME) == riskId
+                   where counterMChildDataRow.Field<decimal?>(IDRISK_COLUMNNAME) == riskId
                    orderby counterMChildDataRow.Field<int?>(POSITION_COLUMNNAME)
                    select counterMChildDataRow;
             return counterMChildDataRowQuery;
@@ -286,7 +286,7 @@ namespace EnsureRisk.Export.Trader
             DataTable dataTable = SourceDataSet.Tables[RISKTREE_TOPRISK_TABLENAME].Clone();
             IEnumerable<DataRow> riskTreeDamageDataRowQuery =
                 from riskTreeDamageDataRow in SourceDataSet.Tables[RISKTREE_TOPRISK_TABLENAME].AsEnumerable()
-                where riskTreeDamageDataRow.Field<int>(IDRISKTREE_COLUMNNAME) == riskTreeID
+                where riskTreeDamageDataRow.Field<decimal>(IDRISKTREE_COLUMNNAME) == riskTreeID
                 select riskTreeDamageDataRow;
             riskTreeDamageDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
@@ -298,7 +298,7 @@ namespace EnsureRisk.Export.Trader
             IEnumerable<DataRow> topRiskDataRowQuery =
                 from topRiskDataRow in SourceDataSet.Tables[TOPRISK_TABLENAME].AsEnumerable()
                 join riskTreeDamageDataRow in riskTreeTopRiskDataTable.AsEnumerable()
-                on topRiskDataRow.Field<int>(IDTOPRISK_COLUMNNAME) equals riskTreeDamageDataRow.Field<int>(IDTOPRISK_COLUMNNAME)
+                on topRiskDataRow.Field<decimal>(IDTOPRISK_COLUMNNAME) equals riskTreeDamageDataRow.Field<decimal>(IDTOPRISK_COLUMNNAME)
                 select topRiskDataRow;
             topRiskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
@@ -309,7 +309,7 @@ namespace EnsureRisk.Export.Trader
             DataTable dataTable = SourceDataSet.Tables[RISK_TABLENAME].Clone();
             IEnumerable<DataRow> riskDataRowQuery =
                 from riskDataRow in SourceDataSet.Tables[RISK_TABLENAME].AsEnumerable()
-                where riskDataRow.Field<int>(IDRISKTREE_COLUMNNAME) == riskTreeID
+                where riskDataRow.Field<decimal>(IDRISKTREE_COLUMNNAME) == riskTreeID
                 orderby riskDataRow.Field<int?>(POSITION_COLUMNNAME)
                 select riskDataRow;
             riskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
@@ -321,8 +321,8 @@ namespace EnsureRisk.Export.Trader
             DataTable dataTable = SourceDataSet.Tables[RISK_TOPRISK_TABLENAME].Clone();
             IEnumerable<DataRow> riskTopRiskDataRowQuery =
                 from riskTopRiskDataRow in SourceDataSet.Tables[RISK_TOPRISK_TABLENAME].AsEnumerable()
-                join riskDataRow in riskDataTable.AsEnumerable() on riskTopRiskDataRow.Field<int>(IDRISK_COLUMNNAME) equals riskDataRow.Field<int>(IDRISK_COLUMNNAME)
-                orderby riskDataRow.Field<int?>(POSITION_COLUMNNAME), riskTopRiskDataRow.Field<int>(IDRISK_COLUMNNAME)
+                join riskDataRow in riskDataTable.AsEnumerable() on riskTopRiskDataRow.Field<decimal>(IDRISK_COLUMNNAME) equals riskDataRow.Field<decimal>(IDRISK_COLUMNNAME)
+                orderby riskDataRow.Field<int?>(POSITION_COLUMNNAME), riskTopRiskDataRow.Field<decimal>(IDRISK_COLUMNNAME)
                 select riskTopRiskDataRow;
             riskTopRiskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
@@ -333,7 +333,7 @@ namespace EnsureRisk.Export.Trader
             DataTable dataTable = SourceDataSet.Tables[COUNTERM_TABLENAME].Clone();
             IEnumerable<DataRow> counterMesureDataRowQuery =
                 from counterMesureDataRow in SourceDataSet.Tables[COUNTERM_TABLENAME].AsEnumerable()
-                where counterMesureDataRow.Field<int>(IDRISKTREE_COLUMNNAME) == riskTreeID
+                where counterMesureDataRow.Field<decimal>(IDRISKTREE_COLUMNNAME) == riskTreeID
                 select counterMesureDataRow;
             counterMesureDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
@@ -344,8 +344,8 @@ namespace EnsureRisk.Export.Trader
             DataTable dataTable = SourceDataSet.Tables[COUNTERM_TOPRISK_TABLENAME].Clone();
             IEnumerable<DataRow> counterMeasureTopRiskDataRowQuery =
                 from counterMeasureTopRiskDataRow in SourceDataSet.Tables[COUNTERM_TOPRISK_TABLENAME].AsEnumerable()
-                join counterMesureDataRow in counterMDataTable.AsEnumerable() on counterMeasureTopRiskDataRow.Field<int>(IDCOUNTERM_COLUMNNAME) equals counterMesureDataRow.Field<int>(IDCOUNTERM_COLUMNNAME)
-                orderby counterMesureDataRow.Field<int>(POSITION_COLUMNNAME), counterMeasureTopRiskDataRow.Field<int>(IDCOUNTERM_COLUMNNAME)
+                join counterMesureDataRow in counterMDataTable.AsEnumerable() on counterMeasureTopRiskDataRow.Field<decimal>(IDCOUNTERM_COLUMNNAME) equals counterMesureDataRow.Field<decimal>(IDCOUNTERM_COLUMNNAME)
+                orderby counterMesureDataRow.Field<int>(POSITION_COLUMNNAME), counterMeasureTopRiskDataRow.Field<decimal>(IDCOUNTERM_COLUMNNAME)
                 select counterMeasureTopRiskDataRow;
             counterMeasureTopRiskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
@@ -355,7 +355,7 @@ namespace EnsureRisk.Export.Trader
             int riskCount = _riskTreeDataSet.Tables[RISK_TABLENAME].Rows.Count;
 
             var query = from counterMDataRow in _riskTreeDataSet.Tables[COUNTERM_TABLENAME].AsEnumerable()
-                        group counterMDataRow by counterMDataRow.Field<int>(IDRISK_COLUMNNAME) into counterMGroup
+                        group counterMDataRow by counterMDataRow.Field<decimal>(IDRISK_COLUMNNAME) into counterMGroup
                         select new
                         {
                             idRisk = counterMGroup.Key,

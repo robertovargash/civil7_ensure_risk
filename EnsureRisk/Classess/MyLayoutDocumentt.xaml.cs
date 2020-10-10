@@ -498,7 +498,7 @@ namespace EnsureRisk.Classess
                     decimal RiskValue = 0;
                     if (Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains(MyMainLine.ID))
                     {
-                        RiskValue = General.CalculateTopRiskTreeValue(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(MyMainLine.ID),
+                        RiskValue = FishHeadController.CalcDiagramDamageValue(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(MyMainLine.ID),
                             Ds.Tables[DT_Risk.TABLE_NAME], item.ID_TopRisk, Ds.Tables[DT_Risk_Damages.TABLE_NAME],
                             Ds.Tables[DT_CounterM.TABLE_NAME], Ds.Tables[DT_CounterM_Damage.TABLE_NAME]);
                     }
@@ -527,7 +527,7 @@ namespace EnsureRisk.Classess
                                     {
                                         value = (decimal)Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Find(new object[] { itemI.ID, item.ID_TopRisk })[DT_Risk_Damages.VALUE];
                                     }
-                                    AcumDamage += value * General.AcumulatedLikelihood(itemI);
+                                    AcumDamage += value * FishHeadController.AcumulatedLikelihood(itemI);
                                 }
                             }
                         }
@@ -556,7 +556,7 @@ namespace EnsureRisk.Classess
                     //IdDamageSelected = IdDamageSelected;
                     if (IdDamageSelected != 0)
                     {
-                        General.UpdateThickness(LinesList);
+                        General.UpdateLinesThickness(LinesList);
                         foreach (RiskPolyLine polyLine in LinesList)
                         {
                             if (!polyLine.IsCM)
@@ -864,7 +864,7 @@ namespace EnsureRisk.Classess
 
         private decimal CalculateAcumDamageRisk(RiskPolyLine line, decimal IdDamageSelected)
         {
-            decimal AcumDamage = CalculateOwnValueRisk(line.ID, IdDamageSelected) * General.AcumulatedLikelihood(line);
+            decimal AcumDamage = CalculateOwnValueRisk(line.ID, IdDamageSelected) * FishHeadController.AcumulatedLikelihood(line);
             decimal value = 0;
             if (line.IsActivated)
             {
@@ -889,7 +889,7 @@ namespace EnsureRisk.Classess
                                 {
                                     value = (decimal)Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Find(new object[] { hijo.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
                                 }
-                                AcumDamage += value * General.AcumulatedLikelihood(hijo);
+                                AcumDamage += value * FishHeadController.AcumulatedLikelihood(hijo);
                                 value = 0;
                             }
                         }
@@ -913,8 +913,8 @@ namespace EnsureRisk.Classess
             {
                 if (!item.IsCM)
                 {
-                    decimal al = General.AcumulatedLikelihood(item);
-                    decimal valor = General.CalculateTopRiskTreeValue(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID),
+                    decimal al = FishHeadController.AcumulatedLikelihood(item);
+                    decimal valor = FishHeadController.CalcDiagramDamageValue(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID),
                         Ds.Tables[DT_Risk.TABLE_NAME], IdDamageSelected, Ds.Tables[DT_Risk_Damages.TABLE_NAME],
                             Ds.Tables[DT_CounterM.TABLE_NAME], Ds.Tables[DT_CounterM_Damage.TABLE_NAME]);
                     decimal myvalue = 0;
@@ -945,7 +945,7 @@ namespace EnsureRisk.Classess
                                 {
                                     value = (decimal)Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
                                 }
-                                AcumDamage += value * General.AcumulatedLikelihood(itemI);
+                                AcumDamage += value * FishHeadController.AcumulatedLikelihood(itemI);
                             }
                         }
                     }
@@ -1709,12 +1709,8 @@ namespace EnsureRisk.Classess
                 {
                     ID_Project = (decimal)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT],
                     CMRow = Ds.Tables[DT_CounterM.TABLE_NAME].NewRow(),
-                    DsCM = Ds,
-                    LOGIN_USER = LoginUser,
-                    CM_RoleTable = Ds.Tables[DT_Role_CM.TABLENAME],
-                    CM_WBS_Table = Ds.Tables[DT_CM_WBS.TABLE_NAME],
-                    WBS_CM_Damage = Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME],
-                    CM_Damage_Table = Ds.Tables[DT_CounterM_Damage.TABLE_NAME],
+                    Ds = Ds,
+                    LOGIN_USER = LoginUser,                    
                     Operation = General.INSERT,
                     RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
                     RiskTreeID = ID_Diagram,
@@ -1725,11 +1721,7 @@ namespace EnsureRisk.Classess
                 windowCM.Probability = 0;
                 if (windowCM.ShowDialog() == true)
                 {
-                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Add(windowCM.CMRow);
-                    //Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Merge(windowCM.CM_Damage_Table);
-                    //Ds.Tables[DT_CM_WBS.TABLE_NAME].Merge(windowCM.CM_WBS_Table);
-                    //Ds.Tables[DT_Role_CM.TABLENAME].Merge(windowCM.CM_RoleTable);
-
+                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Add(windowCM.CMRow);                    
                     Line_Created.ID = (decimal)windowCM.CMRow[DT_CounterM.ID];
 
                     Line_Created.Father = Line_Selected;
@@ -1749,33 +1741,16 @@ namespace EnsureRisk.Classess
                     RiskRow = Ds.Tables[DT_Risk.TABLE_NAME].NewRow(),
                     ID_PROJECT = (decimal)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT],
                     Ds = Ds,
-                    Risk_RoleTable = Ds.Tables[DT_Role_Risk.TABLENAME],
-                    Risk_DamageTable = Ds.Tables[DT_Risk_Damages.TABLE_NAME],
-                    Risk_WBS_Table = Ds.Tables[DT_RISK_WBS.TABLE_NAME],
                     Operation = General.INSERT,
                     RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
                     RiskTreeID = (decimal)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.ID_DIAGRAM],
                     RiskSelected = Line_Selected,
                     MyRisks = Ds.Tables[DT_Risk.TABLE_NAME],
                     LOGIN_USER = LoginUser,
-                    WBS_RISK_Damage = Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME],
-                    WBS_CM_Damage = Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME],
-                    CM_DamageTable = Ds.Tables[DT_CounterM_Damage.TABLE_NAME],
                 };
                 wrisk.HasAccess = true;
                 if (wrisk.ShowDialog() == true)
                 {
-                    //Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(wrisk.RiskRow);
-                    //DataRow rowstructure = Ds.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
-                    //rowstructure[DT_RiskStructure.IDRISK] = wrisk.RiskRow[DT_Risk.ID];
-                    //rowstructure[DT_RiskStructure.IDRISK_FATHER] = wrisk.RowFather[DT_Risk.ID];
-                    //Ds.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
-                    //Ds.Tables[DT_Role_Risk.TABLENAME].Merge(wrisk.Risk_RoleTable);
-                    //Ds.Tables[DT_Risk_Damages.TABLE_NAME].Merge(wrisk.Risk_DamageTable);
-                    //Ds.Tables[DT_RISK_WBS.TABLE_NAME].Merge(wrisk.Risk_WBS_Table);
-                    //Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Merge(wrisk.WBS_RISK_Damage);
-                    //Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Merge(wrisk.WBS_CM_Damage);
-                    //Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Merge(wrisk.CM_DamageTable);
                     Line_Created.ID = (decimal)wrisk.RiskRow[DT_Risk.ID];
                     Line_Created.Father = Line_Selected;
                     Line_Created.IdRiskFather = Line_Selected.ID;
@@ -2314,6 +2289,11 @@ namespace EnsureRisk.Classess
             SetPolyLinePosition(destinationPolyLine.Children);
         }
 
+        /// <summary>
+        /// Move a Risk to a destination Line
+        /// </summary>
+        /// <param name="destinationPolyLine">The destination Line</param>
+        /// <param name="point">The point to calculate the position to be ordered</param>
         private void MoveRisk(RiskPolyLine destinationPolyLine, Point point)
         {
             if (FullAccess(destinationPolyLine))
@@ -2329,10 +2309,10 @@ namespace EnsureRisk.Classess
                     Line_Selected.Father = destinationPolyLine;
                     //Line_Selected.Position = destinationPolyLine.Children.Count - 1;
                     DataSet ImportDSs = Ds.Copy();
-                    DataRow drNewRisk = CopyPasteOps.SetValoresOriginalesRiesgoCopiado(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                    DataRow drNewRisk = CopyPasteController.CopyValuesFromLineSource(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
                                                                                         ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList);
-                    //CopyPasteOps.EstablecerValorDelHijoAlPadre(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
-                    CopyPasteOps.EstablecerValorDelRiskHijoAlPadre(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS);
+                    //CopyPasteController.EstablecerValorDelHijoAlPadre(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
+                    CopyPasteController.SetValuesFromChildToFather(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS);
                     Ds = ImportDSs;
                     ImportDSs.Dispose();
                     MoviendoRisk = false;
@@ -2361,7 +2341,7 @@ namespace EnsureRisk.Classess
 
                     Line_Selected.Father = destinationPolyLine;
                     DataSet ImportDSs = Ds.Copy();
-                    DataRow drNewRisk = CopyPasteOps.EstablecerValoresNuevoRiesgoCopiado(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                    DataRow drNewRisk = CopyPasteController.CopyRiskWithoutSourceData(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
                                             ID_Diagram, ((MainWindow)MyWindow).DsWBS);
                     Ds = ImportDSs;
                     ImportDSs.Dispose();
@@ -2403,7 +2383,7 @@ namespace EnsureRisk.Classess
                     Line_Selected.Father = destinationPolyLine;
                     //Line_Selected.Position = destinationPolyLine.Children.Count - 1;
                     DataSet ImportDSs = Ds.Copy();
-                    DataRow drNewCM = CopyPasteOps.SetValoresOriginalesAndNuevosCM(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
+                    DataRow drNewCM = CopyPasteController.SetValuesOriginalAndNewCopiedCM(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
 
                     Ds.Merge(ImportDSs);
                     ImportDSs.Dispose();
@@ -2431,7 +2411,7 @@ namespace EnsureRisk.Classess
 
                     Line_Selected.Father = destinationPolyLine;
                     DataSet ImportDSs = Ds.Copy();
-                    DataRow drNewCM = CopyPasteOps.SetValoresNuevoCM(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
+                    DataRow drNewCM = CopyPasteController.SetNewCMValues(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
                     Ds = ImportDSs;
                     ImportDSs.Dispose();
                     //GlobalListCopy = new List<RiskPolyLine>();
@@ -2615,12 +2595,6 @@ namespace EnsureRisk.Classess
                                 Ds = Ds,
                                 LOGIN_USER = LoginUser,
                                 ID_PROJECT = (decimal)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT],
-                                Risk_RoleTable = Ds.Tables[DT_Role_Risk.TABLENAME],
-                                WBS_RISK_Damage = Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME],
-                                WBS_CM_Damage = Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME],
-                                Risk_WBS_Table = Ds.Tables[DT_RISK_WBS.TABLE_NAME],
-                                Risk_DamageTable = Ds.Tables[DT_Risk_Damages.TABLE_NAME],
-                                CM_DamageTable = Ds.Tables[DT_CounterM_Damage.TABLE_NAME],
                                 Operation = General.INSERT,
                                 RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
                                 RiskTreeID = ID_Diagram,
@@ -2630,17 +2604,6 @@ namespace EnsureRisk.Classess
                             wrisk.HasAccess = true;
                             if (wrisk.ShowDialog() == true)
                             {
-                                //Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(wrisk.RiskRow);
-                                //DataRow rowstructure = Ds.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
-                                //rowstructure[DT_RiskStructure.IDRISK] = wrisk.RiskRow[DT_Risk.ID];
-                                //rowstructure[DT_RiskStructure.IDRISK_FATHER] = wrisk.RowFather[DT_Risk.ID];
-                                //Ds.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
-                                //Ds.Tables[DT_Role_Risk.TABLENAME].Merge(wrisk.Risk_RoleTable);
-                                //Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Merge(wrisk.WBS_RISK_Damage);
-                                //Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Merge(wrisk.WBS_CM_Damage);
-                                //Ds.Tables[DT_RISK_WBS.TABLE_NAME].Merge(wrisk.Risk_WBS_Table);
-                                //Ds.Tables[DT_Risk_Damages.TABLE_NAME].Merge(wrisk.Risk_DamageTable);
-                                //Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Merge(wrisk.CM_DamageTable);
                                 RiskPolyLine Line_Created = new RiskPolyLine
                                 {
                                     ID = (decimal)wrisk.RiskRow[DT_Risk.ID],
@@ -2657,7 +2620,6 @@ namespace EnsureRisk.Classess
                                 LoadRectangles();
                                 DrawNumbers();
                                 SetLinesThickness();
-                                //((MainWindow)MyWindow).TextProbabilityChange(MainLine);
                                 ((MainWindow)MyWindow).CruzarTablaRisk(Ds);
                             }
                         }

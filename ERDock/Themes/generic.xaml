@@ -645,7 +645,7 @@
                                 <Button x:Name="DocumentCloseButton" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
                                     Grid.Column="2" Visibility="Hidden"  Command="{Binding Path=LayoutItem.CloseCommand, RelativeSource={RelativeSource TemplatedParent}}"
                                     ToolTip="{x:Static avalonDockProperties:Resources.Document_Close}">
-                                    <md:PackIcon Kind="CloseBoxOutline" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                    <md:PackIcon Kind="CloseBoxOutline" Foreground="White"/>
                                 </Button>
                             </Grid>
                         </Border>

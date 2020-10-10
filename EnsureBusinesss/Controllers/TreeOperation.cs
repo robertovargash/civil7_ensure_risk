@@ -1168,7 +1168,7 @@ namespace EnsureBusinesss
                         IsActivated = (bool)item[DT_Risk.ENABLED],
                         StrokeThickness = 2,
                         IsCM = false,
-                        IdRiskFather = (Int32)item[DT_Risk.IDRISK_FATHER]
+                        IdRiskFather = (decimal)item[DT_Risk.IDRISK_FATHER]
                     };
                     if (item[DT_Risk.ID_GROUPE] != DBNull.Value)
                     {

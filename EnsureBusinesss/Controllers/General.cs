@@ -206,7 +206,7 @@ namespace EnsureBusinesss
         {
             foreach (DataRow itemi in collection)
             {
-                if (IsLeaf(itemi, ds.Tables[DT_Risk.TABLE_NAME]))
+                if (FishHeadController.IsLeaf(itemi, ds.Tables[DT_Risk.TABLE_NAME]))
                 {
                     DataRow[] drs = ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID + " = " + itemi[DT_Risk.ID]);
                     foreach (DataRow item in drs)
@@ -221,7 +221,7 @@ namespace EnsureBusinesss
                 }
                 else
                 {
-                    DeleteRiskAndCMFirst(GetChildss(itemi, ds.Tables[DT_Risk.TABLE_NAME]), ds);
+                    DeleteRiskAndCMFirst(FishHeadController.GetChildss(itemi, ds.Tables[DT_Risk.TABLE_NAME]), ds);
                     int cantidad = ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + itemi[DT_Risk.ID]).Count();
                     for (int i = 0; i < cantidad; i++)
                     {
@@ -232,17 +232,6 @@ namespace EnsureBusinesss
             }
         }
 
-        public static void EliminarMisHijosWBS(List<DataRow> hijos, DataTable dtWBS, DataTable dtStrucutre)
-        {
-            foreach (DataRow item in hijos)
-            {
-                if (dtStrucutre.Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + item[DT_WBS.ID_WBS]).Any())
-                {
-                    EliminarMisHijosWBS(MyWBSChildren(item, dtWBS, dtStrucutre), dtWBS, dtStrucutre);
-                }
-                dtWBS.Rows.Find(item[DT_WBS.ID_WBS]).Delete();
-            }
-        }
 
         public static decimal ConvertToDec(string word)
         {
@@ -257,241 +246,11 @@ namespace EnsureBusinesss
             return Convert.ToDecimal(valuestr);
         }
 
-        public static List<DataRow> MyWBSChildren(DataRow drFather, DataTable dtWBS, DataTable dtStructure)
-        {
-            List<DataRow> returnList = new List<DataRow>();
-
-            foreach (DataRow item in dtStructure.Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + drFather[DT_WBS.ID_WBS].ToString()))
-            {
-                returnList.Add(dtWBS.Rows.Find(item[DT_WBS_STRUCTURE.ID_CHILD]));
-            }
-            return returnList;
-        }
 
         #endregion
 
-        #region CalculateFishHead
-
-        public static List<DataRow> GetChildss(DataRow drFather, DataTable dtRisk)
+        public static void UpdateLinesThickness(List<RiskPolyLine> linesList)
         {
-            List<DataRow> returnList = new List<DataRow>();
-
-            foreach (DataRow item in dtRisk.Select(DT_Risk.IDRISK_FATHER + " = " + drFather[DT_Risk.ID].ToString()))
-            {
-                returnList.Add(item);
-            }
-            return returnList;
-        }
-
-        public static bool IsLeaf(DataRow drChild, DataTable dtStructure)
-        {
-            return !dtStructure.Select(DT_Risk.IDRISK_FATHER + " = " + drChild[DT_Risk.ID]).Any();
-        }
-
-
-        /// <summary>
-        /// Calculate and returns the value of the "Damage" of the "risk"
-        /// </summary>
-        public static decimal CalculateTopRiskValue(DataRow risk, DataTable Risk_TopRisk, decimal idToprisk)
-        {
-            try
-            {
-                if ((bool)risk[DT_Risk.ENABLED])
-                {
-                    if (!(Risk_TopRisk.Select(DT_Risk_Damages.ID_RISK + " = " + risk[DT_Risk.ID] + " AND " +
-                                DT_Risk_Damages.ID_DAMAGE + " = " + idToprisk).Any()))
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        return (decimal)Risk_TopRisk.Select(DT_Risk_Damages.ID_RISK + " = " + risk[DT_Risk.ID] + " AND " +
-                            DT_Risk_Damages.ID_DAMAGE + " = " + idToprisk).First()[DT_Risk_Damages.VALUE];
-                    }
-                }
-                else
-                    return 0;
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Calculate and returns the value of the "Damage (TopRisk)" of the "cm"
-        /// </summary>
-        public static decimal CalculateCMTopRiskValue(DataRow CM, DataTable CM_TopRisk, decimal idToprisk)
-        {
-            if (!(CM_TopRisk.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CM[DT_CounterM.ID] + " AND " +
-                DT_CounterM_Damage.ID_DAMAGE + " = " + idToprisk).Any()))
-            {
-                return 0;
-            }
-            else
-            {
-                return (decimal)CM_TopRisk.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CM[DT_CounterM.ID] + " AND " +
-                    DT_CounterM_Damage.ID_DAMAGE + " = " + idToprisk).First()[DT_CounterM_Damage.VALUE];
-            }
-        }
-
-        /// <summary>
-        /// Return an Array with the CM of the Risk
-        /// </summary>
-        public static DataRow[] MyCounterMeasure(DataRow risk, DataTable CM)
-        {
-            return CM.Select(DT_CounterM.ID_RISK + " = " + risk[DT_Risk.ID] + " and " + DT_CounterM.ENABLED + " = " + true);
-        }
-
-        /// <summary>
-        /// Calculate and returns the value of the Damage (TopRisk) of the Risk
-        /// </summary>
-        public static decimal CalculateTopRiskTreeValue(DataRow drRoot, DataTable dtRisk, decimal idtoprisk, DataTable dtRisk_TopRisk,
-            DataTable dtCM, DataTable dtCM_TopRisk)
-        {
-            //THIS FUNCTION CALCULATES THE VALUE OF A TOPRISK, 
-            //THE CODING AND STRUCTURE TABLES, HANDLE THE RISK AND ITS POSITION WITHIN THE TREE TO CALCULATE THE VALUE OF ITS CHILDREN.
-            decimal riskValue = CalculateTopRiskValue(drRoot, dtRisk_TopRisk, idtoprisk);//HERE IS CALCULATED THE VALUE OF THE FATHER ONLY 
-            decimal cmValue = 0;
-
-            //HERE WE SELECT ALL THE COUNTERMEASURE OF THE RISK AND SUM ALL HIS VALUES AND RESTAMOS
-            foreach (DataRow item in MyCounterMeasure(drRoot, dtCM))
-            {
-                cmValue += CalculateCMTopRiskValue(item, dtCM_TopRisk, idtoprisk);
-            }
-            riskValue += cmValue;//ORIGINALMENTE ERA MENOS, PERO POR LO QUE DIJO LUCAS CAMBIE A +
-            //NOW, FOR EACH CHILDS OF 'drRoot' WE EVALUATE IF HAS CHILDREN
-            foreach (DataRow item in GetChildss(drRoot, dtRisk)) //FOR EACH CHILDS OF 'drRoot'
-            {
-                if (IsLeaf(item, dtRisk))//HERE IS EVALUATED IF drRoot CHILDS HAVE CHILDREN
-                {
-                    //IF NOT HAVE CHILDREN AS THE VALUE IS ADDED TO THE VALUE OF THE FATHER
-                    riskValue += CalculateTopRiskValue(item, dtRisk_TopRisk, idtoprisk);
-                    foreach (DataRow item2 in MyCounterMeasure(item, dtCM))
-                    {
-                        cmValue = CalculateCMTopRiskValue(item2, dtCM_TopRisk, idtoprisk);
-                        riskValue += cmValue;//ORIGINALMENTE ERA MENOS, PERO POR LO QUE DIJO LUCAS CAMBIE A +
-                    }
-                }
-                else
-                {
-                    //ELSE FOR EACH CHILDS EXECUTE THE FUNCTION RECURSIVELY
-                    if ((bool)item[DT_Risk.ENABLED])
-                    {
-                        riskValue += CalculateTopRiskTreeValue(item, dtRisk, idtoprisk, dtRisk_TopRisk, dtCM, dtCM_TopRisk);
-                    }
-                }
-            }
-            return riskValue;
-        }
-
-
-        /// <summary>
-        /// Calculate the Acumulated Likelihood of the line. The results depends of the children.
-        /// </summary>
-        public static decimal AcumulatedLikelihood(RiskPolyLine LineFather)
-        {
-            decimal ValueToReturn;//This will be the value to return
-            bool hasChildren = false;//the flag ill be activated if the risk has children,
-            List<decimal> Probability_List = new List<decimal>();
-            List<decimal> CM_Probabilities = new List<decimal>();
-            foreach (var item in LineFather.Children)
-            {
-                if (item.IsCM)
-                {
-                    if (item.IsActivated)
-                    {
-                        CM_Probabilities.Add(item.Probability);
-                    }
-                }
-                else
-                {
-                    hasChildren = true;
-                    if (item.IsLeaf())
-                    {
-                        if (!(item.IsActivated))
-                        {
-                            Probability_List.Add(1);
-                        }
-                        else
-                        {
-                            Probability_List.Add(item.Probability);//if don´t have child, Acum. Likelihhod = its Probability
-                        }
-                    }
-                    else
-                    {
-                        if (item.IsActivated)
-                        {
-                            Probability_List.Add(AcumulatedLikelihood(item));//else, call the function as recursive
-                        }
-                        else
-                        {
-                            Probability_List.Add(1);
-                        }
-                    }
-                }
-            }
-
-            if (hasChildren)
-            {
-                //Here the formula, the probability of the father mult. by the probabilities of their children according with the In_Exclusion_Formula
-                ValueToReturn = (LineFather.IsActivated ? LineFather.Probability : 1) * EL_Inclusion_Exclusion(Probability_List);
-                foreach (var item in CM_Probabilities)
-                {
-                    ValueToReturn *= (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure
-                }
-            }
-            else
-            {
-                ValueToReturn = LineFather.IsActivated ? LineFather.Probability : 1;//If don´t have child, Acum. Likelihood = its Probability
-                foreach (var item in CM_Probabilities)
-                {
-                    ValueToReturn *= (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure
-                }
-            }
-            if (ValueToReturn > 1)
-            {
-                return 1;
-            }
-            else
-            {
-                return ValueToReturn;
-            }
-        }
-        
-        /// <summary>
-        /// Calculating Inclusion_Exclusion likelihood 
-        /// </summary>
-        public static decimal EL_Inclusion_Exclusion(List<decimal> p)
-        {
-            if (p.Count > 1)
-            {
-                decimal temp = 0;
-                for (int i = 0; i < p.Count - 1; i++)
-                {
-                    temp = ProbabilityOr(p[i], p[i + 1]);
-                    p[i + 1] = temp;
-                }
-                return temp;
-            }
-            else
-            {
-                return p[0];
-            }
-        }
-
-        /// <summary>
-        /// Calculating the probability of A U B
-        /// </summary>
-        public static decimal ProbabilityOr(decimal A, decimal B)
-        {
-            return (A + B) - (A * B);
-        }
-
-        
-        public static void UpdateThickness(List<RiskPolyLine> linesList)
-        {           
             decimal min = 0;
             decimal max = 0;
             if (linesList.Where(p => !p.IsRoot).Any())
@@ -512,7 +271,6 @@ namespace EnsureBusinesss
             UpdateSegmentsStrokeThickness(rootPolyLine);
         }
 
-
         private static void UpdateSegmentsStrokeThickness(RiskPolyLine riskPolyLine)
         {
             if (riskPolyLine.Children.Any())
@@ -527,8 +285,6 @@ namespace EnsureBusinesss
             riskPolyLine.UpdateSegmentsStrokeThickness();
         }
 
-
-        #endregion
 
         #region OtherFunctions
         public static byte[] Encrypt(string source)
@@ -574,7 +330,7 @@ namespace EnsureBusinesss
             DT_Language table = new DT_Language();
             table.Rows.Add("English", "EN-US");
             table.Rows.Add("Español", "ES-ES");
-            table.Rows.Add("Nederlands", "NL-NL");
+            table.Rows.Add("Netherlander", "NL-NL");
             return table;
         }
 
@@ -583,52 +339,7 @@ namespace EnsureBusinesss
             decimal pow = Convert.ToDecimal(Math.Pow(10, CntDecimales));
             return Convert.ToDecimal(Math.Floor(N * pow + 0.5M) / pow);
         }
-
-        public static bool RiskWSBLowest(decimal idWBS, decimal idRisk, DataSet dsWBS, DataTable dtRisk_WBS)
-        {
-            foreach (DataRow riskWBS in dtRisk_WBS.Select(DT_RISK_WBS.ID_RISK + " = " + idRisk))
-            {
-                if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + idWBS + " and " + DT_WBS_STRUCTURE.ID_CHILD + " = " + riskWBS[DT_RISK_WBS.ID_WBS]).Any())
-                {
-                    return false;
-                }
-            }
-            { return true; }
-        }
-
-        public static bool IsRiskWBSLow(DataRow rowRiskWBS, DataSet dsWBS, DataTable dtRisk_WBS)
-        {
-            foreach (DataRow riskWBS in dtRisk_WBS.Select(DT_RISK_WBS.ID_RISK + " = " + rowRiskWBS[DT_RISK_WBS.ID_RISK]))
-            {
-                if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + rowRiskWBS[DT_RISK_WBS.ID_WBS] + " and " + DT_WBS_STRUCTURE.ID_CHILD + " = " + riskWBS[DT_RISK_WBS.ID_WBS]).Any())
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public static bool IsCMWBSLow(DataRow rowCMWBS, DataSet dsWBS, DataTable dtCM_WBS)
-        {
-            foreach (DataRow cmWBS in dtCM_WBS.Select(DT_CM_WBS.ID_CM + " = " + rowCMWBS[DT_CM_WBS.ID_CM]))
-            {
-                if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + rowCMWBS[DT_CM_WBS.ID_WBS] + " and " + DT_WBS_STRUCTURE.ID_CHILD + " = " + cmWBS[DT_CM_WBS.ID_WBS]).Any())
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public static bool WBS_isSheet(decimal ID_WBS, DataSet dsWBS)
-        {
-            if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + ID_WBS).Any())
-            {
-                return false;
-            }
-            else
-            { return true; }
-        }
+        
         #endregion
     }
 }

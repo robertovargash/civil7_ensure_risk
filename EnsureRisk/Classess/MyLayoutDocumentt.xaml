@@ -48,14 +48,14 @@
                     <ScrollViewer Name="ScrollGridPaint" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="8" Grid.RowSpan="8" VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" 
                               Loaded="ScrollGridPaint_Loaded"  ScrollChanged="ScrollGridPaint_ScrollChanged" SizeChanged="ScrollGridPaint_SizeChanged"
                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <Grid x:Name="CanvasMain">
+                        <Grid x:Name="CanvasMain" Background="#FFFAF3FA">
                             <Grid Width="200" Height="200" x:Name="GridPaintLines" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel" Background="#FFFAF3FA">
                                 <TextBox x:Name="TextChangeName" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>
                             </Grid>
                         </Grid>
                     </ScrollViewer>
                 </Grid>
-                <local:MiniMapControl x:Name="MiniMapGHT" Panel.ZIndex="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20" BorderBrush="Red" BorderThickness="2" Background="Gray">
+                <local:MiniMapControl x:Name="MiniMapGHT" Panel.ZIndex="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20">
                   
                 </local:MiniMapControl>
 

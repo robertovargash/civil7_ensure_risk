@@ -15,6 +15,9 @@
         Title="Window1" Height="561.975" Width="1223.574" Loaded="Window_Loaded">
 
     <Grid>
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="200" Height="200" Background="Green">
+            <Grid  Background="Red"/>
+        </Grid>
     </Grid>
 
 </Window>

@@ -138,13 +138,13 @@
     <Compile Include="Classess\PopWindow.xaml.cs">
       <DependentUpon>PopWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CopyPasteOps.cs" />
     <Compile Include="CursorHelper.cs" />
     <Compile Include="CustomCommands.cs" />
     <Compile Include="DecimalUIConverter.cs" />
-    <Compile Include="Export\ExportRiskTree.cs" />
-    <Compile Include="Export\Trader\DataSetTrader.cs" />
-    <Compile Include="Export\Trader\RiskTreeDataSetTrader.cs" />
+    <Compile Include="Controllers\ExcelController.cs" />
+    <Compile Include="Controllers\Export\ExportRiskTree.cs" />
+    <Compile Include="Controllers\Export\Trader\DataSetTrader.cs" />
+    <Compile Include="Controllers\Export\Trader\RiskTreeDataSetTrader.cs" />
     <Compile Include="Pages\SetConnectionPage.xaml.cs">
       <DependentUpon>SetConnectionPage.xaml</DependentUpon>
     </Compile>
@@ -187,8 +187,8 @@
       <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
     <Compile Include="SampleDataModel.cs" />
-    <Compile Include="TreeHelpers.cs" />
-    <Compile Include="TreeNodeModel.cs" />
+    <Compile Include="Controllers\TreeHelpers.cs" />
+    <Compile Include="Controllers\TreeNodeModel.cs" />
     <Compile Include="Web References\GroupService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -808,7 +808,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Export\Contract\" />
+    <Folder Include="Controllers\Export\Contract\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

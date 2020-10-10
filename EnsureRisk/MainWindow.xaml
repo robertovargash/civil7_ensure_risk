@@ -19,7 +19,7 @@
         x:Class="EnsureRisk.MainWindow" 
         mc:Ignorable="d"
         Title="Ensure Risk" Height="715.725" Width="1385" WindowStartupLocation="CenterScreen" WindowState="Maximized" 
-        Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown"  MouseMove="Window_MouseMove" Closing="Window_Closing">
+        Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown" Closing="Window_Closing">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -632,9 +632,9 @@
                                     <md:PopupBox ToolTip="More" Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}" PlacementMode="RightAndAlignMiddles" HorizontalAlignment="Left" VerticalAlignment="Top" UnfurlOrientation="Horizontal" >
                                         <StackPanel Orientation="Horizontal">
                                             <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnAddWBS" Click="BtnAddWBS_Click" Content="{md:PackIcon Kind=Add}" Width="32" Height="32" ToolTip="Add WBS"/>
-                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnCollapseWBS" Click="BtnCollapse_Click" Content="{md:PackIcon Kind=ContentCopy}" Width="32" Height="32" ToolTip="Collapse All"/>
-                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnDeselect" Click="BtnDeselect_Click" Content="{md:PackIcon Kind=ArrowBack}" Width="32" Height="32" ToolTip="DeSelect"/>
-                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnSettings" Click="BtnDeselect_Click" Content="{md:PackIcon Kind=Settings}" Width="32" Height="32" ToolTip="WBS Settings"/>
+                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnCollapseWBS" Click="WBSTreeviewBtnCollapse_Click" Content="{md:PackIcon Kind=ContentCopy}" Width="32" Height="32" ToolTip="Collapse All"/>
+                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnDeselect" Click="WBSTreeviewBtnDeselect_Click" Content="{md:PackIcon Kind=ArrowBack}" Width="32" Height="32" ToolTip="DeSelect"/>
+                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnSettings" Click="WBSTreeviewBtnDeselect_Click" Content="{md:PackIcon Kind=Settings}" Width="32" Height="32" ToolTip="WBS Settings"/>
                                         </StackPanel>
                                     </md:PopupBox>
                                 </Grid>
