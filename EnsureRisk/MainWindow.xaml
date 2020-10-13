@@ -622,7 +622,7 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </xcad:LayoutAnchorable>
-                        <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" IsVisibleChanged="AnchorWBSList_IsVisibleChanged" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
+                        <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="60"/>

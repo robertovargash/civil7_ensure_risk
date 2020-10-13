@@ -201,6 +201,7 @@ namespace EnsureRisk.Classess
             MyPopCMWindow.Visibility = Visibility.Collapsed;
         }
 
+        //TODO: Documentar
         public void Scope()
         {
             if (IsScoping)
@@ -315,6 +316,9 @@ namespace EnsureRisk.Classess
             }
         }
 
+        /// <summary>
+        /// Adjust draw panel size to show fishbone diagram.
+        /// </summary>
         public void FixDrawPanel()
         {
             try
@@ -573,6 +577,11 @@ namespace EnsureRisk.Classess
             }
         }
 
+        /// <summary>
+        /// Create fishbone main line.
+        /// </summary>
+        /// <param name="dr">Datarow that contains main line data</param>
+        /// <param name="lnColor">Main line color</param>
         public void AddMainLine(DataRow dr, Color lnColor)
         {
             try
@@ -706,131 +715,21 @@ namespace EnsureRisk.Classess
             }
         }
 
+        /// <summary>
+        /// Create risk and counter measure shapes and arrange all of their. Show fishbone diagram.
+        /// </summary>
         public void LoadLines()
         {
             try
             {
-                //((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines.Children.Clear();
-
                 LinesListCMState.Clear();
-                if (CbFilterTopR.SelectedIndex >= 0)
-                {
 
-                }
                 LinesList.Clear();
-                //System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Rows.Find(new object[] { ID_Diagram, IdDamageSelected })[DT_Diagram_Damages.COLOR].ToString()));
                 System.Windows.Media.Color color = ((SolidColorBrush)new BrushConverter().ConvertFrom(Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Find(new object[] { ID_Diagram, IdDamageSelected })[DT_Diagram_Damages.COLOR].ToString())).Color;
                 AddMainLine(Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram + " and " + DT_Risk.IS_ROOT + " = " + 1).First(), color);
 
-                foreach (DataRow item in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram))
-                {
-                    if (!((bool)item[DT_Risk.IS_ROOT]))
-                    {
-                        DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + item[DT_Risk.ID].ToString());
-                        bool haspermission = false;
-                        foreach (DataRow itemii in dr)
-                        {
-                            if (Ds.Tables[DT_User_Role.TABLE_NAME].Select(DT_User_Role.ROLE + " = '" + itemii[DT_Role_Risk.Role] + "' and " + DT_User_Role.USER + " = '" + LoginUser + "'").Any())
-                            {
-                                haspermission = true;
-                                break;
-                            }
-                        }
-                        RiskPolyLine riskLine = haspermission ? CreateRiskShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, MenuRisk, false, item) : CreateRiskShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, null, false, item);
-                        SetPolyLineGroup(riskLine, item);
-
-                        riskLine.Collapsed = (bool)item[DT_Risk.ISCOLLAPSED];
-                        if (((bool)item[DT_Risk.ENABLED]))
-                        {
-                            ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
-
-                            riskLine.ShortName = item[DT_Risk.NAMESHORT].ToString();
-                            if (haspermission)
-                            {
-                                riskLine.SetColor(new SolidColorBrush(color));
-                            }
-                            else
-                            {
-                                riskLine.SetColor(new SolidColorBrush(Color.FromArgb(80, color.R, color.G, color.B)));
-                            }
-                        }
-                        else
-                        {
-                            ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.EnableValue;
-                            riskLine.ShortName = item[DT_Risk.NAMESHORT].ToString();
-                            riskLine.SetColor(new SolidColorBrush(Colors.Gray));
-                        }
-                        riskLine.MyName.AttachDoubleClick(riskLine.MyName, Risk_LabelName_MouseDoubleClick);
-
-                        riskLine.MouseUp += RiskLine_MouseUp;
-                        riskLine.MouseDown += R_MouseDown_Event;//click en el Riesgo
-
-                        riskLine.MouseLeave += Risk_MouseLeave;
-                        riskLine.MyName.MouseLeave += Risk_MouseLeave;
-
-                        riskLine.MouseEnter += Risk_MouseHover;
-                        riskLine.MyName.MouseEnter += Risk_MouseHover;
-
-                        riskLine.MyName.MouseUp += RiskLine_MouseUp;
-                        riskLine.MyName.MouseDown += R_MouseDown_Event;//Click en el label
-
-                        riskLine.Expand.MouseLeftButtonDown += Expand_MouseLeftButtonDown;
-
-                        if (Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { riskLine.ID, IdDamageSelected }))
-                        {
-                            riskLine.OwnValue = (decimal)Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Find(new object[] { riskLine.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
-                        }
-                        LinesList.Add(riskLine);
-                    }
-                }
-                foreach (DataRow item in Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + ID_Diagram))
-                {
-                    DataRow[] dr = Ds.Tables[DT_Role_CM.TABLENAME].Select(DT_Role_CM.ID_CM + " = " + item[DT_CounterM.ID].ToString());
-                    bool haspermission = false;
-                    foreach (DataRow itemii in dr)
-                    {
-                        if (Ds.Tables[DT_User_Role.TABLE_NAME].Select(DT_User_Role.ROLE + " = '" + itemii[DT_Role_Risk.Role] + "' and " + DT_User_Role.USER + " = '" + LoginUser + "'").Any())
-                        {
-                            haspermission = true;
-                            break;
-                        }
-                    }
-                    RiskPolyLine cmline = haspermission ? CreateCounterMeasureShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, MenuCM, true, item) : CreateCounterMeasureShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, null, true, item);
-                    SetPolyLineGroup(cmline, item);
-
-                    if (((bool)item[DT_CounterM.ENABLED]))
-                    {
-                        ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.DisableValue;
-                        cmline.ShortName = item[DT_CounterM.NAMESHORT].ToString();
-
-                        if (!(haspermission))
-                        {
-                            cmline.SetColor(new SolidColorBrush(Colors.Gray));
-                        }
-                    }
-                    else
-                    {
-                        ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.EnableValue;
-
-                        cmline.ShortName = item[DT_CounterM.NAMESHORT].ToString();
-                        cmline.SetColor(new SolidColorBrush(Colors.Gray));
-                    }
-
-                    cmline.MouseLeave += Cmline_MouseLeave; ;
-                    cmline.MyName.MouseLeave += Cmline_MouseLeave;
-
-                    cmline.MouseEnter += Cmline_MouseEnter; ;
-                    cmline.MyName.MouseEnter += Cmline_MouseEnter;
-
-                    //// asignar el label y el clic al mismo controlador de evento
-                    cmline.MyName.MouseDown += Cmline_MouseDown;
-                    cmline.MouseDown += Cmline_MouseDown;
-
-                    cmline.MyName.AttachDoubleClick(cmline.MyName, CM_LabelName_MouseDoubleClick);
-
-                    LinesList.Add(cmline);
-                    LinesListCMState.Add(Convert.ToDecimal(cmline.ID), cmline.IsActivated);
-                }
+                CreateRiskShapes(color);
+                CreateCounterMeasureShapes();
 
                 TreeOperation.Build_Tree(LinesList);
                 TreeOperation.DrawEntireDiagramAsFishBone(MainLine);
@@ -847,6 +746,130 @@ namespace EnsureRisk.Classess
             catch (Exception ex)
             {
                 MostrarDialog(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Create and set up counter measure shapes
+        /// </summary>
+        private void CreateCounterMeasureShapes()
+        {
+            foreach (DataRow item in Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + ID_Diagram))
+            {
+                DataRow[] dr = Ds.Tables[DT_Role_CM.TABLENAME].Select(DT_Role_CM.ID_CM + " = " + item[DT_CounterM.ID].ToString());
+                bool haspermission = false;
+                foreach (DataRow itemii in dr)
+                {
+                    if (Ds.Tables[DT_User_Role.TABLE_NAME].Select(DT_User_Role.ROLE + " = '" + itemii[DT_Role_Risk.Role] + "' and " + DT_User_Role.USER + " = '" + LoginUser + "'").Any())
+                    {
+                        haspermission = true;
+                        break;
+                    }
+                }
+                RiskPolyLine cmline = haspermission ? CreateCounterMeasureShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, MenuCM, true, item) : CreateCounterMeasureShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, null, true, item);
+                SetPolyLineGroup(cmline, item);
+
+                if (((bool)item[DT_CounterM.ENABLED]))
+                {
+                    ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.DisableValue;
+                    cmline.ShortName = item[DT_CounterM.NAMESHORT].ToString();
+
+                    if (!(haspermission))
+                    {
+                        cmline.SetColor(new SolidColorBrush(Colors.Gray));
+                    }
+                }
+                else
+                {
+                    ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.EnableValue;
+
+                    cmline.ShortName = item[DT_CounterM.NAMESHORT].ToString();
+                    cmline.SetColor(new SolidColorBrush(Colors.Gray));
+                }
+
+                cmline.MouseLeave += Cmline_MouseLeave; ;
+                cmline.MyName.MouseLeave += Cmline_MouseLeave;
+
+                cmline.MouseEnter += Cmline_MouseEnter; ;
+                cmline.MyName.MouseEnter += Cmline_MouseEnter;
+
+                //// asignar el label y el clic al mismo controlador de evento
+                cmline.MyName.MouseDown += Cmline_MouseDown;
+                cmline.MouseDown += Cmline_MouseDown;
+
+                cmline.MyName.AttachDoubleClick(cmline.MyName, CM_LabelName_MouseDoubleClick);
+
+                LinesList.Add(cmline);
+                LinesListCMState.Add(Convert.ToDecimal(cmline.ID), cmline.IsActivated);
+            }
+        }
+
+        /// <summary>
+        /// Create and set up risk shapes
+        /// </summary>
+        /// <param name="color">Risk line color</param>
+        private void CreateRiskShapes(Color color)
+        {
+            foreach (DataRow item in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram))
+            {
+                if (!((bool)item[DT_Risk.IS_ROOT]))
+                {
+                    DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + item[DT_Risk.ID].ToString());
+                    bool haspermission = false;
+                    foreach (DataRow itemii in dr)
+                    {
+                        if (Ds.Tables[DT_User_Role.TABLE_NAME].Select(DT_User_Role.ROLE + " = '" + itemii[DT_Role_Risk.Role] + "' and " + DT_User_Role.USER + " = '" + LoginUser + "'").Any())
+                        {
+                            haspermission = true;
+                            break;
+                        }
+                    }
+                    RiskPolyLine riskLine = haspermission ? CreateRiskShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, MenuRisk, false, item) : CreateRiskShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, null, false, item);
+                    SetPolyLineGroup(riskLine, item);
+
+                    riskLine.Collapsed = (bool)item[DT_Risk.ISCOLLAPSED];
+                    if (((bool)item[DT_Risk.ENABLED]))
+                    {
+                        ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
+
+                        riskLine.ShortName = item[DT_Risk.NAMESHORT].ToString();
+                        if (haspermission)
+                        {
+                            riskLine.SetColor(new SolidColorBrush(color));
+                        }
+                        else
+                        {
+                            riskLine.SetColor(new SolidColorBrush(Color.FromArgb(80, color.R, color.G, color.B)));
+                        }
+                    }
+                    else
+                    {
+                        ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.EnableValue;
+                        riskLine.ShortName = item[DT_Risk.NAMESHORT].ToString();
+                        riskLine.SetColor(new SolidColorBrush(Colors.Gray));
+                    }
+                    riskLine.MyName.AttachDoubleClick(riskLine.MyName, Risk_LabelName_MouseDoubleClick);
+
+                    riskLine.MouseUp += RiskLine_MouseUp;
+                    riskLine.MouseDown += R_MouseDown_Event;//click en el Riesgo
+
+                    riskLine.MouseLeave += Risk_MouseLeave;
+                    riskLine.MyName.MouseLeave += Risk_MouseLeave;
+
+                    riskLine.MouseEnter += Risk_MouseHover;
+                    riskLine.MyName.MouseEnter += Risk_MouseHover;
+
+                    riskLine.MyName.MouseUp += RiskLine_MouseUp;
+                    riskLine.MyName.MouseDown += R_MouseDown_Event;//Click en el label
+
+                    riskLine.Expand.MouseLeftButtonDown += Expand_MouseLeftButtonDown;
+
+                    if (Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { riskLine.ID, IdDamageSelected }))
+                    {
+                        riskLine.OwnValue = (decimal)Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Find(new object[] { riskLine.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
+                    }
+                    LinesList.Add(riskLine);
+                }
             }
         }
 
@@ -907,6 +930,9 @@ namespace EnsureRisk.Classess
             }
         }
 
+        /// <summary>
+        /// Update risw and counter measure properties values like acumulated likelihood, damage, acumulated damage. 
+        /// </summary>
         public void UpdateLinesValues()
         {
             foreach (var item in LinesList)
@@ -958,6 +984,10 @@ namespace EnsureRisk.Classess
             }
         }
 
+        /// <summary>
+        /// Set menu risk to all risk
+        /// </summary>
+        /// <param name="listaComplete"></param>
         public void SetRightMenu(List<RiskPolyLine> listaComplete)
         {
             List<RiskPolyLine> lista = new List<RiskPolyLine>();
@@ -1086,6 +1116,9 @@ namespace EnsureRisk.Classess
             }
         }
 
+        /// <summary>
+        /// Set events to segments
+        /// </summary>
         private void SetEventsToSegments()
         {
             foreach (var item in LinesList)
@@ -1162,25 +1195,25 @@ namespace EnsureRisk.Classess
             };
         }
 
-        public void DrawEntireDiagram()
-        {
-            try
-            {
-                if (Ds.HasChanges())
-                {
-                    if (ID_Diagram != 0)
-                    {
-                        CleanFishBone();
-                        LoadFishBone();
-                        DrawNumbersAndLineThickness();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarDialog(ex.Message);
-            }
-        }
+        //public void DrawEntireDiagram()
+        //{
+        //    try
+        //    {
+        //        if (Ds.HasChanges())
+        //        {
+        //            if (ID_Diagram != 0)
+        //            {
+        //                CleanFishBone();
+        //                LoadFishBone();
+        //                DrawNumbersAndLineThickness();
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MostrarDialog(ex.Message);
+        //    }
+        //}
 
         #endregion
 
@@ -1710,7 +1743,7 @@ namespace EnsureRisk.Classess
                     ID_Project = (decimal)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT],
                     CMRow = Ds.Tables[DT_CounterM.TABLE_NAME].NewRow(),
                     Ds = Ds,
-                    LOGIN_USER = LoginUser,                    
+                    LOGIN_USER = LoginUser,
                     Operation = General.INSERT,
                     RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
                     RiskTreeID = ID_Diagram,
@@ -1721,7 +1754,7 @@ namespace EnsureRisk.Classess
                 windowCM.Probability = 0;
                 if (windowCM.ShowDialog() == true)
                 {
-                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Add(windowCM.CMRow);                    
+                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Add(windowCM.CMRow);
                     Line_Created.ID = (decimal)windowCM.CMRow[DT_CounterM.ID];
 
                     Line_Created.Father = Line_Selected;
@@ -2289,11 +2322,6 @@ namespace EnsureRisk.Classess
             SetPolyLinePosition(destinationPolyLine.Children);
         }
 
-        /// <summary>
-        /// Move a Risk to a destination Line
-        /// </summary>
-        /// <param name="destinationPolyLine">The destination Line</param>
-        /// <param name="point">The point to calculate the position to be ordered</param>
         private void MoveRisk(RiskPolyLine destinationPolyLine, Point point)
         {
             if (FullAccess(destinationPolyLine))
@@ -2311,7 +2339,7 @@ namespace EnsureRisk.Classess
                     DataSet ImportDSs = Ds.Copy();
                     DataRow drNewRisk = CopyPasteController.CopyValuesFromLineSource(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
                                                                                         ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList);
-                    //CopyPasteController.EstablecerValorDelHijoAlPadre(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
+                    //CopyPasteOps.EstablecerValorDelHijoAlPadre(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
                     CopyPasteController.SetValuesFromChildToFather(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS);
                     Ds = ImportDSs;
                     ImportDSs.Dispose();
@@ -3535,38 +3563,22 @@ namespace EnsureRisk.Classess
 
         private void ScrollGridPaint_Loaded(object sender, RoutedEventArgs e)
         {
-            MiniMapGHT.Height = ScrollGridPaint.ViewportHeight * 40 / 100;
-            MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 40 / 100;
+            UpdateMiniMapSize();
         }
 
         private void ScrollGridPaint_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            MiniMapGHT.Height = ScrollGridPaint.ViewportHeight * 40 / 100;
-            MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 40 / 100;
+            UpdateMiniMapSize();
         }
 
         private void ScrollGridPaint_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            MiniMapGHT.Height = ScrollGridPaint.ViewportHeight * 30 / 100;
-            MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 30 / 100;
-        }
-
-        private void EnableMiniMap_Click(object sender, RoutedEventArgs e)
-        {
-            if (MiniMapGHT.Visibility == Visibility.Visible)
-            {
-                MiniMapGHT.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                MiniMapGHT.Visibility = Visibility.Visible;
-            }
+            UpdateMiniMapSize();
         }
 
         private void TheZoomComboBox_DropDownClosed(object sender, EventArgs e)
         {
-            MiniMapGHT.Height = ScrollGridPaint.ViewportHeight * 30 / 100;
-            MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 30 / 100;
+            UpdateMiniMapSize();
         }
 
         private void ToggleButton_Checked(object sender, RoutedEventArgs e)
@@ -3577,6 +3589,57 @@ namespace EnsureRisk.Classess
         private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
         {
             MiniMapGHT.Visibility = Visibility.Hidden;
+        }
+
+        //this method updates minimap size- most likely, minimap view will be scaled to fit
+        //the window - so there will be some minimun extra space visible on the left and right sides or above and below actual
+        //mini map view
+        private void UpdateMiniMapSize()
+        {
+            bool resetToDefault = true;
+            if (this.ScrollGridPaint != null)
+            {
+                //calculate current width to height ratio on the minimap
+                double height = ScrollGridPaint.ViewportHeight * 40 / 100;
+                double width = ScrollGridPaint.ViewportWidth * 40 / 100;
+
+                if (ScrollGridPaint.ExtentWidth != 0 && ScrollGridPaint.ExtentHeight != 0)
+                {
+                    //get width to height ratio from map source - we want to display our minimap in the same ratio
+                    double widthToHeightRatio = ScrollGridPaint.ExtentWidth / ScrollGridPaint.ExtentHeight;
+
+
+                    //ideally - it should be 1 - whole view perfectly fits minimap 
+                    double minimapWidthToHeightRatio = (height * widthToHeightRatio) / (width > 1.0 ? width : 1.0);
+
+                    //if value is greater than one - we have to reduce height
+                    if (minimapWidthToHeightRatio > 1.0)
+                    {
+                        double margin = (height - (height / minimapWidthToHeightRatio));
+
+                        MiniMapGHT.Height = height - margin;
+                        MiniMapGHT.Width = width;
+
+                        resetToDefault = false;
+                    }
+                    //if value is less than one - we have to reduce width
+                    else if (minimapWidthToHeightRatio < 1.0)
+                    {
+                        double margin = (width - (width * minimapWidthToHeightRatio));
+
+                        MiniMapGHT.Height = height;
+                        MiniMapGHT.Width = width - margin;
+
+                        resetToDefault = false;
+                    }
+                }
+                //perfect match or nothing to display - no need to setup margins
+                if (resetToDefault)
+                {
+                    MiniMapGHT.Height = height;
+                    MiniMapGHT.Width = width;
+                }
+            }
         }
     }
 }

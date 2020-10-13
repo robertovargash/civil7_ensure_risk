@@ -10,6 +10,7 @@
 //------------------------------------------------------------------------------
 
 using DataMapping.Data;
+using ERComp;
 using EnsureRisk.Classess;
 using EnsureRisk.Windows;
 using MaterialDesignThemes.Wpf;

@@ -16,7 +16,7 @@
         </Style>
     </UserControl.Style>
 
-    <Grid x:Uid="contentGrid" Name="contentGrid">
+    <Grid x:Uid="contentGrid" Name="contentGrid" ShowGridLines="false">
         <Grid.ColumnDefinitions>
             <ColumnDefinition x:Uid="ColumnDefinition_1" Width="0"/>
             <ColumnDefinition x:Uid="ColumnDefinition_2" Width="*"/>
@@ -29,7 +29,7 @@
         </Grid.RowDefinitions>
 
         <!-- Rectangle containing visual representation of minimap source-->
-        <Rectangle  x:Uid="Rectangle_1" Grid.Column="1" Grid.Row="1" Stroke="Red" StrokeThickness="2">
+        <Rectangle  x:Uid="Rectangle_1" Name="Rectangle_1" Grid.Column="1" Grid.Row="1" Stroke="Gray" StrokeThickness="0">
             <Rectangle.Fill>
                 <!-- visual brush object, bound to scroll viewer's content element - displays actual minimap -->
                 <VisualBrush x:Uid="VisualBrush_1" Visual="{Binding ElementName=controlRoot, Path=MapSource.Content}" Stretch="Uniform"/>

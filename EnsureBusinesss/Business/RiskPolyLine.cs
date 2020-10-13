@@ -11,6 +11,9 @@ using System.Windows.Data;
 
 namespace EnsureBusinesss.Business
 {
+    /// <summary>
+    /// RiskPolyLine is a line that represent a risk (using arrow) or counter measure (dashed line)
+    /// </summary>
     public class RiskPolyLine : ArrowPolyline
     {
         #region Constatntes
@@ -206,13 +209,14 @@ namespace EnsureBusinesss.Business
         public PictureBoxPolyLine Expand { get; set; }
         public Grid MyContainer { get; set; }
         public List<SegmentPolyLine> Segments { get; set; }
-
         /// <summary>
         /// Es el punto donde esta la flecha originalmente
         /// </summary>
         private Point OriginalStartPoint { get; set; }
         public bool OriginalStartPointHasValue { get; set; } = false;
-
+        /// <summary>
+        /// Initializes a new instance of the RiskPolyLine class with no arguments.
+        /// </summary>
         public RiskPolyLine()
         {
             //Segments = new List<RiskPolyLine>();
@@ -220,6 +224,12 @@ namespace EnsureBusinesss.Business
             StrokeStartLineCap = PenLineCap.Round;
             StrokeEndLineCap = PenLineCap.Round;
         }
+        /// <summary>
+        /// Initializes a new instance of the RiskPolyLine class with the Container, Menu and isCMI
+        /// </summary>
+        /// <param name="Container">Grid parent of the RiskPolyLine</param>
+        /// <param name="Menu">ContextMenu for right click event</param>
+        /// <param name="isCMI">Is counter measure?</param>
         public RiskPolyLine(Grid Container, ContextMenu Menu, bool isCMI)
         {
             Points.Add(new Point());
@@ -284,10 +294,19 @@ namespace EnsureBusinesss.Business
             StrokeStartLineCap = PenLineCap.Round;
             StrokeEndLineCap = PenLineCap.Round;
         }
+        /// <summary>
+        /// Is leaf RiskPolyLine. 
+        /// </summary>
+        /// <returns>False if has descendants. True otherwise.</returns>
         public bool IsLeaf()
         {
             return Children.Count == 0;
         }
+        /// <summary>
+        /// Draw a line. For risk arrow are painted from point 0 to point 1.
+        /// </summary>
+        /// <param name="StartPoint">Reference point to start draw</param>
+        /// <param name="LabelName">Text about reisk or counter measure</param>
         public void NewDrawAtPoint(Point StartPoint, string LabelName)
         {
             //Las flechas se dibujan del punto 0 hacia el punto 1. 
@@ -308,6 +327,10 @@ namespace EnsureBusinesss.Business
             DrawLabelLineName();
             ShortName = LabelName;
         }
+        /// <summary>
+        /// Draw a line. For risk arrow are painted from point 0 to point 1. Arrow direction is from point 0 to point 1.
+        /// </summary>
+        /// <param name="StartPoint">Reference point to start draw</param>
         public void NewDrawAtPoint(Point StartPoint)
         {
             //Las flechas se dibujan del punto 0 hacia el punto 1. 
@@ -330,7 +353,9 @@ namespace EnsureBusinesss.Business
                 Points[0] = new Point(Points[1].X - 100, Points[1].Y);
             }
         }
-
+        /// <summary>
+        /// Define text position.
+        /// </summary>
         private void DefinyTextPosition()
         {
             if (IsDiagonal)
@@ -351,12 +376,12 @@ namespace EnsureBusinesss.Business
                 this.TextPanel.Margin = new Thickness(Points[1].X - horizontalShiftLabelX, Points[1].Y + StrokeThickness, 0, 0);
             }
         }
-
+        //TODO: Documentar
         private void DrawLabelLineName()
         {
             this.MyName.Line = this;
         }
-               
+        //TODO:Documentar
         protected override Geometry DefiningGeometry
         {            
             get
@@ -429,7 +454,10 @@ namespace EnsureBusinesss.Business
                 return base.DefiningGeometry;
             }
         }
-
+        /// <summary>
+        /// Set menu to RiskPolyLine (risk or counter measure)
+        /// </summary>
+        /// <param name="Menu">RiskPolyLine context menu</param>
         public void SetMenu(ContextMenu Menu)
         {
             ContextMenu = Menu;
@@ -439,7 +467,10 @@ namespace EnsureBusinesss.Business
                 item.ContextMenu = Menu;
             }
         }
-
+        /// <summary>
+        /// Set RiskPolyLine color
+        /// </summary>
+        /// <param name="color"></param>
         public void SetColor(SolidColorBrush color)
         {
             Stroke = color;
@@ -448,7 +479,12 @@ namespace EnsureBusinesss.Business
                 item.Stroke = color;
             }
         }
-
+        /// <summary>
+        /// Sets RiskPolyLine width
+        /// </summary>
+        /// <param name="cost"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
         public void SetThickness(decimal cost, decimal min, decimal max)
         {
 
@@ -529,7 +565,10 @@ namespace EnsureBusinesss.Business
                 }
             }
         }
-
+        /// <summary>
+        /// My descendant minimun X
+        /// </summary>
+        /// <returns>Minimun X</returns>
         public double XTremee()
         {
             double xtremo = XTreme;
@@ -541,6 +580,10 @@ namespace EnsureBusinesss.Business
             XTreme = xtremo;
             return XTreme;
         }
+        /// <summary>
+        ///  My descendant minimun Y
+        /// </summary>
+        /// <returns>Minimun Y</returns>
         public double YxTremee()
         {
             double ytremo = YxTreme;
@@ -559,6 +602,10 @@ namespace EnsureBusinesss.Business
             YxTreme = ytremo;
             return YxTreme;
         }
+        /// <summary>
+        ///  My descendant minimun Y
+        /// </summary>
+        /// <returns>Minimun Y</returns>
         public double AbsoluteYxTremee()
         {
             double ytremo = YxTreme;
@@ -570,6 +617,9 @@ namespace EnsureBusinesss.Business
             YxTreme = ytremo;
             return YxTreme;
         }
+        /// <summary>
+        /// Draw a line
+        /// </summary>
         public void DrawSingleLine()
         {
             if (IsDiagonal)
@@ -597,40 +647,51 @@ namespace EnsureBusinesss.Business
             TextPanel.Visibility = aVisibility;
         }
         /// <summary>
-        /// Dado una rama busca el mayor extremo x de sus hijos horizontales
+        /// Find point that has minimun X value in descendants and Y is greater than ReferenceHeight.Dado una rama busca el mayor extremo x de sus hijos horizontales
         /// una rama es un hijo de mainline con toda su descendencia, 
         /// siempre es vertical
         /// </summary>
-        /// <returns></returns>
-        public Point HorizontalMaxXTremee(double altura)
+        /// <param name="ReferenceHeight">Y axis value to references</param>
+        /// <returns>Point with minimun X value in descendants and Y is greater than ReferenceHeight</returns>
+        public Point HorizontalMaxXTremee(double ReferenceHeight)
         {
             Point xtremo = new Point(XTreme, YxTreme);
             if (!(Collapsed))
             {
-                if (altura == 101)
+                if (ReferenceHeight == 101)
                 {
-                    //xtremo = TreeOperation.GetMeAndAllChildsWithCM(this).OrderBy(x => x.Points[0].X).First().Points[0];
                     xtremo = TreeOperation.GetMeAndMyChildrenWithCM(this).OrderBy(x => x.MyMinXPoint().X).First().MyMinXPoint();
                 }
                 else
                 {
                     //RiskPolyLine rtremo = TreeOperation.GetMeAndAllChildsWithCM(this).Where(x => (x.Points[0].Y > altura)).OrderBy(x => x.Points[0].X).FirstOrDefault();
-                    RiskPolyLine rtremo = TreeOperation.GetMeAndMyChildrenWithCM(this).Where(x => (x.MyMinXPoint().Y > altura)).OrderBy(x => x.MyMinXPoint().X).FirstOrDefault();
+                    RiskPolyLine rtremo = TreeOperation.GetMeAndMyChildrenWithCM(this).Where(x => (x.MyMinXPoint().Y > ReferenceHeight)).OrderBy(x => x.MyMinXPoint().X).FirstOrDefault();
                     //xtremo = (rtremo != null) ? rtremo.Points[0] : xtremo;
                     xtremo = (rtremo != null) ? rtremo.MyMinXPoint() : xtremo;
                 }
             }
             return xtremo;
         }
-
+        /// <summary>
+        /// Draw new horizontal segment expanding the horizontal line length
+        /// </summary>
+        /// <param name="FromX">Expand from X value </param>
         public void ExtendHorizontal(double FromX)
         {
             CreateSegmentAt(new Point(FromX - horizontalShiftX, Points[0].Y));
         }
+        /// <summary>
+        /// Draw new vertical segment expanding the vertical line length
+        /// </summary>
+        /// <param name="FromY">Expand from Y value</param>
         public void ExtendVertical(double FromY)
         {
             CreateSegmentAt(new Point(Points[0].X, FromY - diagonalShiftY));
         }
+        /// <summary>
+        /// Draw a new segment. Segment expand line horizontally or vertically
+        /// </summary>
+        /// <param name="startPoint">Start point</param>
         private void CreateSegmentAt(Point startPoint)
         {
             SegmentPolyLine segment = new SegmentPolyLine(this)
@@ -647,6 +708,11 @@ namespace EnsureBusinesss.Business
             segment.MyContainer = MyContainer;
             segment.ContextMenu = ContextMenu;
         }
+        /// <summary>
+        /// Move RiskPolyLine to new location
+        /// </summary>
+        /// <param name="deltaX">Horizontal displacement distance to apply to RiskPolyLine</param>
+        /// <param name="deltaY">Vertical displacement distance to apply to RiskPolyLine</param>
         public void Move(int deltaX, int deltaY)
         {
             Points[0] = new Point(Points[0].X + deltaX, Points[0].Y + deltaY);
@@ -662,6 +728,11 @@ namespace EnsureBusinesss.Business
                 MoveTail(deltaX, deltaY);
             }
         }
+        /// <summary>
+        /// Move RiskPolyLine segments to new location
+        /// </summary>
+        /// <param name="deltaX">Horizontal displacement distance to apply to segments</param>
+        /// <param name="deltaY">Vertical displacement distance to apply to segments</param>
         public void MoveSegments(int deltaX, int deltaY)
         {
             foreach (var segment in Segments)
@@ -671,10 +742,19 @@ namespace EnsureBusinesss.Business
                 StartDrawPoint = segment.Points[1];
             }
         }
+        /// <summary>
+        /// Move RiskPolyLine tail to new location
+        /// </summary>
+        /// <param name="deltaX">Horizontal displacement distance to apply to segments</param>
+        /// <param name="deltaY">Vertical displacement distance to apply to segments</param>
         private void MoveTail(int deltaX, int deltaY)
         {
             Points[2] = new Point(Points[2].X + deltaX, Points[2].Y + deltaY);
         }
+        /// <summary>
+        /// Get all descendant segments 
+        /// </summary>
+        /// <returns>List of descendant segments</returns>
         private List<SegmentPolyLine> GetChildAndMeSegments()
         {
             List<SegmentPolyLine> segmentsToReturn = new List<SegmentPolyLine>();
@@ -689,7 +769,10 @@ namespace EnsureBusinesss.Business
             }
             return segmentsToReturn;
         }
-
+        /// <summary>
+        /// Point that contain minimun X 
+        /// </summary>
+        /// <returns>Point that contain minimun X</returns>
         public Point MyMinXPoint()
         {
             if (Segments != null && Segments.Any())
@@ -701,7 +784,9 @@ namespace EnsureBusinesss.Business
                 return Points[0];
             }
         }
-
+        /// <summary>
+        /// Remove all segments. Include descendant segments.
+        /// </summary>
         public void AllSegmentClear()
         {
             SegmentClear();
@@ -713,7 +798,9 @@ namespace EnsureBusinesss.Business
                 }
             }
         }
-
+        /// <summary>
+        /// Remove all segments
+        /// </summary>
         public void SegmentClear()
         {
             if (Segments != null && Segments.Any())

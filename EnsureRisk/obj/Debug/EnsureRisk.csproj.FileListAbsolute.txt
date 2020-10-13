@@ -1,3 +1,11 @@
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\Color.xml
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\ConnectionServer.xml
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\EnsureRisk.exe.config
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\EnsureRisk.exe
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\EnsureRisk.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\en-US\EnsureRisk.resources.dll
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\es-ES\EnsureRisk.resources.dll
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\NL-NL\EnsureRisk.resources.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\EnsureRisk.csprojAssemblyReference.cache
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Classess\MiniMapControl.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Settings\GhostWindow.baml
@@ -49,14 +57,6 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\En
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\EnsureRisk_MarkupCompile.cache
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\EnsureRisk_MarkupCompile.lref
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\Color.xml
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\ConnectionServer.xml
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\EnsureRisk.exe.config
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\EnsureRisk.exe
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\EnsureRisk.pdb
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\en-US\EnsureRisk.resources.dll
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\es-ES\EnsureRisk.resources.dll
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\NL-NL\EnsureRisk.resources.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Classess\MyLayoutDocumentt.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Classess\MyTreeViewItem.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Classess\PopCMWindow.baml

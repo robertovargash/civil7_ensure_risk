@@ -463,50 +463,51 @@ namespace EnsureRisk.Classess
             void UpdateContentGrid()
             {
                 bool resetToDefault = true;
-                if (MapSource != null)
-                {
-                    if (this.MapSource.ExtentWidth != 0 && this.MapSource.ExtentHeight != 0)
-                    {
-                        //get width to height ratio from map source - we want to display our minimap in the same ratio
-                        double widthToHeightRatio = this.MapSource.ExtentWidth / this.MapSource.ExtentHeight;
+                //if (MapSource != null)
+                //{
+                //    if (this.MapSource.ExtentWidth != 0 && this.MapSource.ExtentHeight != 0)
+                //    {
+                //        //get width to height ratio from map source - we want to display our minimap in the same ratio
+                //        double widthToHeightRatio = this.MapSource.ExtentWidth / this.MapSource.ExtentHeight;
 
-                        //calculate current width to height ratio on the minimap
-                        double height = this.contentGrid.ActualHeight;
-                        double width = this.contentGrid.ActualWidth;
-                        //ideally - it should be 1 - whole view perfectly fits minimap 
-                        double minimapWidthToHeightRatio = (height * widthToHeightRatio) / (width > 1.0 ? width : 1.0);
+                //        //calculate current width to height ratio on the minimap
+                //        double height = this.contentGrid.ActualHeight;
+                //        double width = this.contentGrid.ActualWidth;
 
-                        //if value is greater than one - we have to reduce height
-                        if (minimapWidthToHeightRatio > 1.0)
-                        {
-                            double margin = (height - (height / minimapWidthToHeightRatio)) / 2.0;
+                //        //ideally - it should be 1 - whole view perfectly fits minimap 
+                //        double minimapWidthToHeightRatio = (height * widthToHeightRatio) / (width > 1.0 ? width : 1.0);
 
-                            this.contentGrid.ColumnDefinitions[0].MinWidth = 0.0;
-                            this.contentGrid.ColumnDefinitions[2].MinWidth = 0.0;
-                            this.contentGrid.RowDefinitions[0].MinHeight = margin;
-                            this.contentGrid.RowDefinitions[2].MinHeight = margin;
-                            resetToDefault = false;
-                        }
-                        //if value is less than one - we have to reduce width
-                        else if (minimapWidthToHeightRatio < 1.0)
-                        {
-                            double margin = (width - (width * minimapWidthToHeightRatio)) / 2.0;
-                            this.contentGrid.ColumnDefinitions[0].MinWidth = margin;
-                            this.contentGrid.ColumnDefinitions[2].MinWidth = margin;
-                            this.contentGrid.RowDefinitions[0].MinHeight = 0.0;
-                            this.contentGrid.RowDefinitions[2].MinHeight = 0.0;
-                            resetToDefault = false;
-                        }
-                    }
-                    //perfect match or nothing to display - no need to setup margins
-                    if (resetToDefault)
-                    {
-                        this.contentGrid.ColumnDefinitions[0].MinWidth = 0.0;
-                        this.contentGrid.ColumnDefinitions[2].MinWidth = 0.0;
-                        this.contentGrid.RowDefinitions[0].MinHeight = 0.0;
-                        this.contentGrid.RowDefinitions[2].MinHeight = 0.0;
-                    }
-                }                
+                //        //if value is greater than one - we have to reduce height
+                //        if (minimapWidthToHeightRatio > 1.0)
+                //        {
+                //            double margin = (height - (height / minimapWidthToHeightRatio)) / 2.0;
+
+                //            this.contentGrid.ColumnDefinitions[0].MinWidth = 0.0;
+                //            this.contentGrid.ColumnDefinitions[2].MinWidth = 0.0;
+                //            this.contentGrid.RowDefinitions[0].MinHeight = margin;
+                //            this.contentGrid.RowDefinitions[2].MinHeight = margin;
+                //            resetToDefault = false;
+                //        }
+                //        //if value is less than one - we have to reduce width
+                //        else if (minimapWidthToHeightRatio < 1.0)
+                //        {
+                //            double margin = (width - (width * minimapWidthToHeightRatio)) / 2.0;
+                //            this.contentGrid.ColumnDefinitions[0].MinWidth = margin;
+                //            this.contentGrid.ColumnDefinitions[2].MinWidth = margin;
+                //            this.contentGrid.RowDefinitions[0].MinHeight = 0.0;
+                //            this.contentGrid.RowDefinitions[2].MinHeight = 0.0;
+                //            resetToDefault = false;
+                //        }
+                //    }
+                //    //perfect match or nothing to display - no need to setup margins
+                //    if (resetToDefault)
+                //    {
+                //        this.contentGrid.ColumnDefinitions[0].MinWidth = 0.0;
+                //        this.contentGrid.ColumnDefinitions[2].MinWidth = 0.0;
+                //        this.contentGrid.RowDefinitions[0].MinHeight = 0.0;
+                //        this.contentGrid.RowDefinitions[2].MinHeight = 0.0;
+                //    }
+                //}
             }
 
             [Conditional("MINIMAP_DEBUG")]

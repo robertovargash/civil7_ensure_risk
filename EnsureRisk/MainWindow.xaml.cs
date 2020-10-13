@@ -92,7 +92,6 @@ namespace EnsureRisk
             }
         }
 
-
         public decimal IdWBSFilter
         {
             get { return idwbsfilter; }
@@ -391,9 +390,16 @@ namespace EnsureRisk
 
         public void MostrarErrorDialog(string text)
         {
-            ErrorDialogMessage.IsOpen = true;
-            TextMessage.Text = text;
-            //MessageBox.Show(text);
+            try
+            {
+                ErrorDialogMessage.IsOpen = true;
+                TextMessage.Text = text;
+                //MessageBox.Show(text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public void MostrarInfoDialog(string text)
@@ -1140,7 +1146,7 @@ namespace EnsureRisk
         {
             try
             {
-                OpenDiagramFromDiagramList(DVRisk_Tree.Count - 1);
+                OpenDiagramFromDiagramList(DVRisk_Tree.Count - 1);                
             }
             catch (Exception ex)
             {
@@ -6962,9 +6968,7 @@ namespace EnsureRisk
                 }
             }
         }
-
-       
-
+        
         private void WBSTreeViewBtnEdit_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -7051,11 +7055,6 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
                 IS_DELETING_WBS = false;
             }
-        }
-
-        private void AnchorWBSList_IsVisibleChanged(object sender, EventArgs e)
-        {
-            RefreshWBS();
         }
 
         private void BtnAddWBS_Click(object sender, RoutedEventArgs e)

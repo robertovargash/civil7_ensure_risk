@@ -442,9 +442,11 @@ namespace EnsureBusinesss
                 throw ex;
             }
         }
+
         /// <summary>
         /// Build the hierarquical tree. Asign the child to a father and father to a child
         /// </summary>
+        /// <param name="data">Risk and counter measure list</param>
         public static void Build_Tree(List<RiskPolyLine> data)
         {
             if (data.Count > 0)
@@ -1008,7 +1010,7 @@ namespace EnsureBusinesss
             }
         }
 
-        public static void BalancearDiagrama(RiskPolyLine Line)
+        public static void BalanceDiagram(RiskPolyLine Line)
         {
             double MaxUp = LinesUp.Min(x => x.HorizontalMaxXTremee(hmax).X); double MaxDown = LinesDown.Min(x => x.HorizontalMaxXTremee(hmax).X);
             RiskPolyLine t;
@@ -1049,9 +1051,9 @@ namespace EnsureBusinesss
         }
 
         /// <summary>
-        /// Draw as FishBone diagram the line and its children
+        /// Arrange and draw as FishBone diagram risk and counter measure
         /// </summary>
-        /// <param name="Line">Line and its children to draw</param>
+        /// <param name="Line">Risk and counter measure list to draw</param>
         public static void DrawEntireDiagramAsFishBone(RiskPolyLine Line)
         {
             LinesUp.Clear();
@@ -1068,8 +1070,8 @@ namespace EnsureBusinesss
             }
             if (Line.Children.Count > 2)
             {
-                BalancearDiagrama(Line);
-                BalancearDiagrama(Line);
+                BalanceDiagram(Line);
+                BalanceDiagram(Line);
             }
             if (LinesUp.Any())
             {
