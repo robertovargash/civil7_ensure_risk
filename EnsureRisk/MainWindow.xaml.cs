@@ -1645,16 +1645,8 @@ namespace EnsureRisk
                     {
                         DataRow drDiagram = dsImporting.Tables[DT_Diagram.TABLE_NAME].NewRow();
                         using (DataTable dtExcel = ExcelController.ExcelToDataTable(ofd.FileName))
-                        {                            
-                            List<HeaderExcelContent> listaHeader = ExcelController.SetColumnas(dtExcel);
-                            ServiceClasifications.WebServiceClasificator wsClasification = new ServiceClasifications.WebServiceClasificator();
-                            DataSet dsClasification = wsClasification.GetAllClasifications().Copy();
-                            wsClasification.Dispose();
-                            WindowHeaderClasification whc = new WindowHeaderClasification
-                            {
-                                MyDataset = dsClasification.Copy(),
-                                MyList = listaHeader
-                            };
+                        {
+                            WindowHeaderClasification whc = ExcelController.SelectExcelColumns(dtExcel);
                             if (whc.ShowDialog() == true)
                             {
                                 Cursor = Cursors.No;
@@ -1669,43 +1661,8 @@ namespace EnsureRisk
                                     drDiagram[DT_Diagram.ID_DIAGRAM] = 0000;
                                     drDiagram[DT_Diagram.ID_PROJECT] = IdProject;
                                     dsImporting.Tables[DT_Diagram.TABLE_NAME].Rows.Add(drDiagram);
-                                    IEnumerable<HeaderExcelContent> countDamages = whc.MyList.Where(x => x.IdClasification == 10);//Los dannos son ID 10
-                                    int colorvariant = 1;
-                                    foreach (var itemDamages in countDamages)
-                                    {
-                                        string DamageName = itemDamages.MyContent;
-                                        if (!(dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DamageName + "'").Any()))//si el nombre del daño no existe 
-                                        {
-                                            DataRow drDamage = dsImporting.Tables[DT_Damage.TABLE_NAME].NewRow();//creo un nuevo daño
-                                            drDamage[DT_Damage.TOP_RISK_COLUMN] = DamageName;
-                                            int[] R = new int[] { 255, 220, 40, 80, 54, 144, 54, 144, 158 };
-                                            int[] G = new int[] { 50, 10, 150, 200, 54, 54, 158, 158, 135 };
-                                            int[] B = new int[] { 60, 150, 25, 99, 158, 158, 130, 54, 54 };
-                                            if (colorvariant < 10)
-                                            {
-                                                System.Windows.Media.Color color = new System.Windows.Media.Color
-                                                {
-                                                    R = Convert.ToByte(R[colorvariant]),
-                                                    G = Convert.ToByte(G[colorvariant]),
-                                                    B = Convert.ToByte(B[colorvariant]),
-                                                    A = Convert.ToByte(255)
-                                                };
-                                                drDamage[DT_Damage.COLORID_COLUMNA] = color.ToString();
-                                                colorvariant++;
-                                            }
-                                            else
-                                            {
-                                                drDamage[DT_Damage.COLORID_COLUMNA] = "#FF0000FF";
-                                            }
-
-                                            dsImporting.Tables[DT_Damage.TABLE_NAME].Rows.Add(drDamage);
-                                            ExcelController.CreateDiagramDamagesExcel(dsImporting, drDamage, DamageName, drDiagram, true);
-                                        }
-                                        else
-                                        {
-                                            ExcelController.CreateDiagramDamagesExcel(dsImporting, null, DamageName, drDiagram, false);
-                                        }
-                                    }
+                                    IEnumerable<HeaderExcelContent> countDamages = whc.MyList.Where(x => x.IdClasification == 10);//Damages has 10 as ID
+                                    ExcelController.ClasifyAndCreateDamages(dsImporting, drDiagram, countDamages);
                                     //Busco el diagrama que acabo de insertar, para agregarle el riesgo padre, para agregarle los riesgos y sus dannos
                                     DataRow theDiagram = dsImporting.Tables[DT_Diagram.TABLE_NAME].Rows.Find(0000);
                                     //creo un riesgo root
@@ -1720,31 +1677,12 @@ namespace EnsureRisk
                                     ExcelController.DamagesToMainRisk(dsImporting, drRisk, theDiagram);
 
                                     //Recorrer el Excel solo para llenar los riesgos
-                                    var xIdRisk = whc.MyList.FindLast(x => x.IdClasification == 1);//1 para el idRiesgo
-                                    var xRiskShortName = whc.MyList.FindLast(x => x.IdClasification == 2);//1 para el idRiesgo
-                                    var xRiskDetail = whc.MyList.FindLast(x => x.IdClasification == 3);//1 para el idRiesgo
-                                    var xRiskEnabled = whc.MyList.FindLast(x => x.IdClasification == 4);//1 para el idRiesgo
-                                    var xRiskProb = whc.MyList.FindLast(x => x.IdClasification == 11);//1 para el idRiesgo
+                                    HeaderExcelContent xIdRisk = ExcelController.FillDataRisk(dsImporting, isCustom, wt.KeyWord, dtExcel, whc, countDamages, theDiagram, drRisk, DsWBS);
 
-                                    for (int i = 0; i < dtExcel.Rows.Count; i++)
-                                    {
-                                        DataRow drRiskN = dsImporting.Tables[DT_Risk.TABLE_NAME].NewRow();
-                                        ExcelController.SetValuesToRiskInExcel(dtExcel, theDiagram, drRisk, i, drRiskN, wt.KeyWord, dsImporting, xIdRisk, xRiskShortName, xRiskDetail, xRiskEnabled, xRiskProb, countDamages, isCustom, DsWBS);
-                                    }
-                                    var xRiskFather = whc.MyList.FindLast(x => x.IdClasification == 5);//1 para el idRiesgo
-                                    for (int i = 0; i < dtExcel.Rows.Count; i++)
-                                    {//ajustando estructura
-                                        ExcelController.SetRiskStructureInExcel(i, isCustom, dsImporting, dtExcel, xIdRisk, xRiskFather);
-                                    }
-                                    HeaderExcelContent xCmShort = whc.MyList.FindLast(x => x.IdClasification == 8);//1 para el idRiesgo
-                                    var xCmDetail = whc.MyList.FindLast(x => x.IdClasification == 9);//1 para el idRiesgo
-                                    var xCmReduction = whc.MyList.FindLast(x => x.IdClasification == 12);//1 para el idRiesgo
-                                    var xCmActive = whc.MyList.FindLast(x => x.IdClasification == 14);//1 para el idRiesgo
-                                                                                                      //var xCmActive = whc.MyList.FindLast(x => x.IdClasification == 9)
-                                    for (int i = 0; i < dtExcel.Rows.Count; i++)
-                                    {//agregando CM
-                                        ExcelController.SetValuesToCMInExcel(dsImporting, wt.KeyWord, i, theDiagram, dtExcel, xCmShort, xCmDetail, xCmReduction, xIdRisk, xCmActive, countDamages, isCustom, DsWBS);
-                                    }
+                                    ExcelController.SetRisk_RiskFatherRelation(dsImporting, isCustom, dtExcel, whc, xIdRisk);
+
+                                    ExcelController.FillCM_Data(dsImporting, isCustom, wt.KeyWord, dtExcel, whc, countDamages, theDiagram, xIdRisk, DsWBS);
+
                                     WBSOperations.AddWBSTopToDiagram(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM], DsWBS);
                                 });
                                 this.Dispatcher.Invoke(() =>
@@ -1762,7 +1700,7 @@ namespace EnsureRisk
                                         ServiceRiskController.WebServiceRisk tws = new ServiceRiskController.WebServiceRisk();
                                         UserDataSet dsT1 = new UserDataSet();
                                         dsT1.Merge(tws.GetRiskTreeID(new object[] { (decimal)drDiagram[DT_Diagram.ID_DIAGRAM] }));
-                                        TreeOperation.AjustarPosicionHijosInExcel(TreeOperation.LoadLines(dsT1, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM]).Find(x => x.IsRoot == true), dsImporting);
+                                        TreeOperation.SetPositionInExcelDiagram(TreeOperation.LoadLines(dsT1, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM]).Find(x => x.IsRoot == true), dsImporting);
                                         DataSet tempi = dsImporting.GetChanges();
                                         //tempi = dsImporting.GetChanges();
                                         tempi = tws.SaveRisk(tempi);
@@ -1778,12 +1716,13 @@ namespace EnsureRisk
                                     }
                                 });
                             }
-                        }                        
+                        }
                     }
                 }
             }
         }
 
+       
         /// <summary>
         /// Este es el metodo para Importar desde excel
         /// </summary>
@@ -1893,7 +1832,6 @@ namespace EnsureRisk
                         IdRiskFather = TheCurrentLayout.Line_Selected.ID
                     };
                     TheCurrentLayout.InsertRisk(Line_Created, TheCurrentLayout.Line_Selected, TheCurrentLayout.PointSelected);
-
                     TheCurrentLayout.DropLines();
                     TheCurrentLayout.DropRectangles();
                     TheCurrentLayout.LoadLines();

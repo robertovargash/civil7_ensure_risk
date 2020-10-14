@@ -288,7 +288,7 @@ namespace EnsureBusinesss
         {
             foreach (DataRow rowWBS in DsWBS.Tables[DT_WBS.TABLE_NAME].Rows)
             {
-                if (!(WBSOperations.HasParent((decimal)rowWBS[DT_WBS.ID_WBS], DsWBS)))
+                if (!(HasParent((decimal)rowWBS[DT_WBS.ID_WBS], DsWBS)))
                 {
                     foreach (DataRow riskRow in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + Id_Diagram))
                     {

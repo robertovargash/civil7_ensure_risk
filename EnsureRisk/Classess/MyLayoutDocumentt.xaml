@@ -13,12 +13,7 @@
              mc:Ignorable="d" CanMove="True" CanClose="True" CanFloat="True" IsActiveChanged="LayoutDocument_IsActiveChanged" Closing="MyLayoutDocument_Closed" IsSelected="True">
     <xcad:LayoutDocument.Content>
         <Grid MouseDown="LayoutDocument_MouseDown">
-            <Button x:Name="BtnUndoneScope" Panel.ZIndex="1" Click="BtnUndoneScope_Click" Visibility="Collapsed" Content="{md:PackIcon Kind=UndoVariant}" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
-            <!--<xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="Mini Map" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300">-->
-            <!--<Grid Name="gridMiniMap" Background="#FF918080">
-             <local:MiniMapControl x:Name="MiniMap" />
-            </Grid>-->
-            <!--</xcad:LayoutAnchorable>-->
+            <Button x:Name="BtnUndoneScope" Panel.ZIndex="1" Click="BtnUndoneScope_Click" Visibility="Collapsed" Content="{md:PackIcon Kind=UndoVariant}" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right"/>          
             <Grid x:Name="TheMainGrid" Background="White" MouseDown="LayoutDocument_MouseDown">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>

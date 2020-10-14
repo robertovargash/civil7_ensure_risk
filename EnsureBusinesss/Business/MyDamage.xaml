@@ -16,11 +16,11 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Name="HeaderValue" Text="Cost ($)" Grid.Row="0" VerticalAlignment="Center" Foreground="Black"/>
-                <TextBlock Name="ExpectedDamage" Text="Acum. Dam" Grid.Row="1" VerticalAlignment="Center" Foreground="Black"/>
-                <TextBlock Name="RisksDamage" Text="Dam. Risks" Grid.Row="2" VerticalAlignment="Center" Foreground="Black"/>
-                <TextBlock Name="CounterMesuareDamage" Text="Dam. CM" Grid.Row="3" VerticalAlignment="Center" Foreground="Black"/>
-                <TextBlock Name="CalculatedValue" Text="Max. Damage" Grid.Row="4" VerticalAlignment="Center" Foreground="Black"/>
+                <TextBlock Name="HeaderValue" Text="Cost ($)" Grid.Row="0" VerticalAlignment="Center" Foreground="Black" FontWeight="Bold"/>
+                <TextBlock Name="ExpectedDamage" Text="Acum. Dam" Grid.Row="1" VerticalAlignment="Center" Foreground="Black" FontWeight="Normal"/>
+                <TextBlock Name="RisksDamage" Text="Dam. Risks" Grid.Row="2" VerticalAlignment="Center" Foreground="Black" FontWeight="Normal"/>
+                <TextBlock Name="CounterMesuareDamage" Text="Dam. CM" Grid.Row="3" VerticalAlignment="Center" Foreground="Black" FontWeight="Normal"/>
+                <TextBlock Name="CalculatedValue" Text="Max. Damage" Grid.Row="4" VerticalAlignment="Center" Foreground="Black" FontWeight="Normal"/>
             </Grid>
         </Border>
     </Grid>

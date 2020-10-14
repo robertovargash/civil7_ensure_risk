@@ -106,7 +106,7 @@ namespace EnsureBusinesss
             }
         }
 
-        public static void AjustarPosicionHijosInExcel(RiskPolyLine line, DataSet Ds)
+        public static void SetPositionInExcelDiagram(RiskPolyLine line, DataSet Ds)
         {
             int count = 0;
             foreach (var item in line.Children.OrderByDescending(x => x.IsCM))
@@ -122,7 +122,7 @@ namespace EnsureBusinesss
                 count++;
                 if (item.Children.Count > 0)
                 {
-                    AjustarPosicionHijosInExcel(item, Ds);
+                    SetPositionInExcelDiagram(item, Ds);
                 }
             }
         }
