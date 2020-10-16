@@ -60,6 +60,9 @@ namespace EnsureBusinesss
 
         #region Move&Copy
 
+        /// <summary>
+        /// Delete a specific Line with its descendants
+        /// </summary>
         public static void DeleteLine(RiskPolyLine LineToDelete, DataSet DsMain)
         {
             try
@@ -71,7 +74,7 @@ namespace EnsureBusinesss
                         DsMain.Tables[DT_Risk.TABLE_NAME].Rows.Find(LineToDelete.ID)
                     };
 
-                    General.DeleteRiskAndCMFirst(lista, DsMain);
+                    DeleteRiskAndCMFirst(lista, DsMain);
                 }
                 else
                 {
@@ -83,29 +86,45 @@ namespace EnsureBusinesss
                 throw ex;
             }
         }
-        #endregion
 
-        public static void AjustarPosicionHijos(RiskPolyLine line, DataSet Ds)
+        /// <summary>
+        /// The collection list is a descendants of Data to delete in a dataset.
+        /// </summary>
+        public static void DeleteRiskAndCMFirst(List<DataRow> collection, DataSet ds)
         {
-            int count = 0;
-            foreach (var item in line.Children.OrderBy(x => x.Position))
+            foreach (DataRow itemi in collection)
             {
-                if (item.IsCM)
+                if (FishHeadController.IsLeaf(itemi, ds.Tables[DT_Risk.TABLE_NAME]))
                 {
-                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(item.ID)[DT_CounterM.POSITION] = count;
+                    DataRow[] drs = ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID + " = " + itemi[DT_Risk.ID]);
+                    foreach (DataRow item in drs)
+                    {
+                        int cantidad = ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + item[DT_Risk.ID]).Count();
+                        for (int i = 0; i < cantidad; i++)
+                        {
+                            ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + item[DT_Risk.ID]).First().Delete();
+                        }
+                        ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item[DT_Risk.ID]).Delete();
+                    }
                 }
                 else
                 {
-                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.POSITION] = count;
-                }
-                count++;
-                if (item.Children.Count > 0)
-                {
-                    AjustarPosicionHijos(item, Ds);
+                    DeleteRiskAndCMFirst(FishHeadController.GetChildss(itemi, ds.Tables[DT_Risk.TABLE_NAME]), ds);
+                    int cantidad = ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + itemi[DT_Risk.ID]).Count();
+                    for (int i = 0; i < cantidad; i++)
+                    {
+                        ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + itemi[DT_Risk.ID]).First().Delete();
+                    }
+                    ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(itemi[DT_Risk.ID]).Delete();
                 }
             }
         }
 
+        #endregion
+
+        /// <summary>
+        /// Set the line in a default position in the diagram. Takes how many siblings has in the branch
+        /// </summary>
         public static void SetPositionInExcelDiagram(RiskPolyLine line, DataSet Ds)
         {
             int count = 0;
@@ -212,7 +231,10 @@ namespace EnsureBusinesss
             }
         }
 
-        public static void DetectarMiPosicionActual(RiskPolyLine linea, Point mousePosition, DataSet Ds)
+        /// <summary>
+        /// Detect the position that user select and give it to the line
+        /// </summary>
+        public static void LinePositionByClick(RiskPolyLine linea, Point mousePosition, DataSet Ds)
         {
             RiskPolyLine hermanoMenor = new RiskPolyLine();
             bool hayHermanoMenor = false;
@@ -262,11 +284,10 @@ namespace EnsureBusinesss
                 }
             }
         }
+
         /// <summary>
-        /// Adiciona la cola a todos los CounterMeasure
+        /// Add a Tail to all Cms
         /// </summary>
-        /// <param name="Lines"></param>
-        /// <param name="Up"></param>
         public static void FixCounterMesure(List<RiskPolyLine> Lines, Boolean Up)
         {
             if (Up)
@@ -316,6 +337,9 @@ namespace EnsureBusinesss
             }
         }
 
+        /// <summary>
+        /// Add Tail to all Risks
+        /// </summary>
         private static void FixRisk(List<RiskPolyLine> lineas)
         {
             foreach (RiskPolyLine item in lineas)
@@ -378,37 +402,43 @@ namespace EnsureBusinesss
                 CalculateDepth(child, depth + 1);
         }
 
-        public static void ShiftElement(List<RiskPolyLine> lines, int oldIndex, int newIndex)
+        /// <summary>
+        /// Give to Line a new Position
+        /// </summary>
+        public static void ShiftElement(List<RiskPolyLine> lines, int oldPosition, int newPosition)
         {
             RiskPolyLine[] array = lines.ToArray();
-            if (oldIndex == newIndex)
+            if (oldPosition == newPosition)
             {
                 return;
             }
-            RiskPolyLine tmp = array[oldIndex];
-            if (newIndex < oldIndex)
+            RiskPolyLine tmp = array[oldPosition];
+            if (newPosition < oldPosition)
             {
-                Array.Copy(array, newIndex, array, newIndex + 1, oldIndex - newIndex);
+                Array.Copy(array, newPosition, array, newPosition + 1, oldPosition - newPosition);
             }
             else
             {
-                Array.Copy(array, oldIndex + 1, array, oldIndex, newIndex - oldIndex);
+                Array.Copy(array, oldPosition + 1, array, oldPosition, newPosition - oldPosition);
             }
-            array[newIndex] = tmp;
+            array[newPosition] = tmp;
             lines.Clear();
             lines.AddRange(array.ToList());
         }
 
-        public static void ShiftElementMain(List<RiskPolyLine> lines, int oldIndex, int newIndex)
+        /// <summary>
+        /// Give to Line a new Position in Main Line
+        /// </summary>
+        public static void ShiftElementMain(List<RiskPolyLine> lines, int oldPosition, int newPosition)
         {
 
-            if (oldIndex == newIndex)
+            if (oldPosition == newPosition)
             {
                 return;
             }
             RiskPolyLine[] array = new RiskPolyLine[lines.Count];
-            RiskPolyLine toMove = lines[oldIndex];
-            MoveInList(lines, toMove, newIndex);
+            RiskPolyLine toMove = lines[oldPosition];
+            MoveInList(lines, toMove, newPosition);
             int par = 0;
             int impar = 1;
             foreach (var item in lines)
@@ -430,6 +460,9 @@ namespace EnsureBusinesss
             lines.AddRange(array.ToList());
         }
 
+        /// <summary>
+        /// Move an element to new position in the list
+        /// </summary>
         public static void MoveInList(List<RiskPolyLine> lines, RiskPolyLine element, int newPosition)
         {
             try
@@ -463,6 +496,9 @@ namespace EnsureBusinesss
             }
         }
 
+        /// <summary>
+        /// Build the hierarquical tree. Asign the child to a father and father to a child giving the root line
+        /// </summary>
         public static void Build_Tree(List<RiskPolyLine> data, RiskPolyLine root)
         {
             if (data.Count > 0)
@@ -475,6 +511,7 @@ namespace EnsureBusinesss
                 CalculateDepth(root, 0);
             }
         }
+
         /// <summary>
         /// Seek the children of the father and viceversa
         /// </summary>
@@ -560,16 +597,15 @@ namespace EnsureBusinesss
         }
 
         /// <summary>
-        /// Set the values of the DataRow Risk to RiskLine
+        /// Update the Risk Value according with the value updated by user.
         /// </summary>
         public static void SetRiskLineValues(RiskPolyLine rl, DataRow RiskRow)
         {
             try
             {
-                //SET PRIMARY DATA TO A RISK
                 rl.ShortName = RiskRow[DT_Risk.NAMESHORT].ToString();
-                rl.Position = (Int32)RiskRow[DT_Risk.POSITION];
-                rl.Probability = (Decimal)RiskRow[DT_Risk.PROBABILITY] / 100;
+                rl.Position = (int)RiskRow[DT_Risk.POSITION];
+                rl.Probability = (decimal)RiskRow[DT_Risk.PROBABILITY] / 100;
 
                 if (rl.IsCM)
                 {
@@ -595,6 +631,9 @@ namespace EnsureBusinesss
             }
         }
 
+        /// <summary>
+        /// Update the CMs Value according with the value updated by user.
+        /// </summary>
         public static void SetCMLineValues(RiskPolyLine rl, DataRow CMRow)
         {
             try
@@ -618,31 +657,7 @@ namespace EnsureBusinesss
                 throw new Exception(ex.Message);
             }
         }      
-
-        private static int NivelesVerticalesTotal(RiskPolyLine line, bool IsDiagonal)
-        {
-            int result = 0;
-            try
-            {
-                foreach (var item in line.Children)
-                {
-                    if (item.Children.Count > 0)
-                    {
-                        result += NivelesVerticalesTotal(item, !IsDiagonal);
-                    }
-                    if (IsDiagonal == true)
-                    {
-                        result += 1;
-                    }
-                }
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
+        
         /// <summary>
         /// Clasifica todas los RiskPolyLine que son directamentes hijos de MainLine.
         /// El objetivo es saber que ramas se dibujan por encima y debajo de MainLine
@@ -1228,6 +1243,9 @@ namespace EnsureBusinesss
             return lista;
         }
 
+        /// <summary>
+        /// Get the last position of CM in the list. Take in count only CMs
+        /// </summary>
         public static int LastCounterMeasurePosition(List<RiskPolyLine> polyLines)
         {
             var lastPolyLine = polyLines.Where(polyLine => polyLine.IsCM).OrderBy(polyLine => polyLine.Position).LastOrDefault();

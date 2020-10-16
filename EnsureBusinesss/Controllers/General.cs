@@ -202,35 +202,6 @@ namespace EnsureBusinesss
         /// </summary>
         /// <param name="collection">List of collection to delete its childrens</param>
         /// <param name="ds"></param>
-        public static void DeleteRiskAndCMFirst(List<DataRow> collection, DataSet ds)
-        {
-            foreach (DataRow itemi in collection)
-            {
-                if (FishHeadController.IsLeaf(itemi, ds.Tables[DT_Risk.TABLE_NAME]))
-                {
-                    DataRow[] drs = ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID + " = " + itemi[DT_Risk.ID]);
-                    foreach (DataRow item in drs)
-                    {
-                        int cantidad = ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + item[DT_Risk.ID]).Count();
-                        for (int i = 0; i < cantidad; i++)
-                        {
-                            ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + item[DT_Risk.ID]).First().Delete();
-                        }
-                        ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item[DT_Risk.ID]).Delete();
-                    }
-                }
-                else
-                {
-                    DeleteRiskAndCMFirst(FishHeadController.GetChildss(itemi, ds.Tables[DT_Risk.TABLE_NAME]), ds);
-                    int cantidad = ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + itemi[DT_Risk.ID]).Count();
-                    for (int i = 0; i < cantidad; i++)
-                    {
-                        ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + itemi[DT_Risk.ID]).First().Delete();
-                    }
-                    ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(itemi[DT_Risk.ID]).Delete();
-                }
-            }
-        }
 
 
         public static decimal ConvertToDec(string word)

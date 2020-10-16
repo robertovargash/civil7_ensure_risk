@@ -119,91 +119,10 @@ namespace EnsureRisk.Windows
                 {
                     TextProbability.Text = Probability.ToString();
                     TextFather.Text = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(RiskPadre.ID)[DT_Risk.NAMESHORT].ToString();
-                    foreach (DataRow item in Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + RiskTreeID))
-                    {
-                        DataRow rowTop = Ds.Tables[DT_CounterM_Damage.TABLE_NAME].NewRow();
-                        rowTop[DT_CounterM_Damage.COLOR] = item[DT_Diagram_Damages.COLOR];
-                        rowTop[DT_CounterM_Damage.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
-                        rowTop[DT_CounterM_Damage.ID_COUNTERM] = CMRow[DT_CounterM.ID];
-                        rowTop[DT_CounterM_Damage.VALUE] = 0;
-                        rowTop[DT_CounterM_Damage.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
-                        rowTop[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.DAMAGE];
-                        rowTop[DT_CounterM_Damage.ID_RISK_TREE] = RiskTreeID;
-                        rowTop[DT_CounterM_Damage.RISK_REDUCTION] = 0;
-                        rowTop[DT_CounterM_Damage.GROUPENAME] = "None";
-                        rowTop[DT_CounterM_Damage.RISK] = TextFather.Text;
-                        rowTop[DT_CounterM_Damage.STATUS] = true;
-                        rowTop[DT_CounterM_Damage.IDRISK] = CMRow[DT_CounterM.ID_RISK];
-                        Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Add(rowTop);
-                    }
+                    SetTableCM_Damages();
                     //GIVING FATHER´S ROLE TO CHILD
-                    foreach (DataRow item in Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + RiskPadre.ID))
-                    {
-                        DataRow newRow = Ds.Tables[DT_Role_CM.TABLENAME].NewRow();
-                        newRow[DT_Role_CM.ID_CM] = CMRow[DT_CounterM.ID];
-                        newRow[DT_Role_CM.Role] = item[DT_Role_CM.Role];
-                        newRow[DT_Role_CM.IDROL_COLUMN] = item[DT_Role_CM.IDROL_COLUMN];
-                        Ds.Tables[DT_Role_CM.TABLENAME].Rows.Add(newRow);
-                    }
-                    if (RiskPadre != null)
-                    {
-                        bool hasWBS = false;
-                        foreach (DataRow itemRiskWBS in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskPadre.ID))
-                        {
-                            DataRow newRow = Ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
-                            newRow[DT_CM_WBS.ID_CM] = CMRow[DT_CounterM.ID];
-                            newRow[DT_CM_WBS.ID_WBS] = itemRiskWBS[DT_RISK_WBS.ID_WBS];
-                            newRow[DT_CM_WBS.NIVEL] = itemRiskWBS[DT_RISK_WBS.NIVEL];
-                            newRow[DT_CM_WBS.WBS] = itemRiskWBS[DT_RISK_WBS.WBS];
-                            newRow[DT_CM_WBS.IS_PRIMARY] = itemRiskWBS[DT_RISK_WBS.IS_PRIMARY];
-                            newRow[DT_CM_WBS.PROBABILITY] = 0;
-                            if ((bool)itemRiskWBS[DT_RISK_WBS.IS_PRIMARY])
-                            {
-                                ID_WBS = (decimal)itemRiskWBS[DT_RISK_WBS.ID_WBS];
-                                WBS_NAME = itemRiskWBS[DT_RISK_WBS.NIVEL].ToString() + " " + itemRiskWBS[DT_RISK_WBS.WBS].ToString();
-                                USER_NAME = itemRiskWBS[DT_RISK_WBS.USERNAME].ToString();
-                            }
-                            newRow[DT_CM_WBS.PRIMARY] = itemRiskWBS[DT_RISK_WBS.PRIMARY];
-                            newRow[DT_CM_WBS.USERNAME] = itemRiskWBS[DT_RISK_WBS.USERNAME];
-                            hasWBS = true;
-                            Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newRow);
-                            if (WBSOperations.IsCMWBSLow(newRow, dsWBS, Ds.Tables[DT_CM_WBS.TABLE_NAME]))
-                            {                                
-                                //AddWBS_CM_Damage(itemRiskWBS);
-                                WBSOperations.TabAddWBS_LINE_Damage(itemRiskWBS, (decimal)CMRow[DT_CounterM.ID], true, Ds);
-                            }
-                            else
-                            {
-                                //DeleteWBS_CM_Damage(itemRiskWBS);
-                                WBSOperations.TabDeleteWBS_LINE_Damage(itemRiskWBS, (decimal)CMRow[DT_CounterM.ID], true, Ds);
-                            }
-                        }
-                        foreach (DataRow item in dsWBS.Tables[DT_WBS.TABLE_NAME].Select())
-                        {
-                            if (!(dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + item[DT_WBS.ID_WBS]).Any()))
-                            {
-                                if (!(Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { CMRow[DT_CounterM.ID], item[DT_WBS.ID_WBS] })))
-                                {
-                                    DataRow drRCMWBS = Ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
-                                    drRCMWBS[DT_CM_WBS.ID_CM] = CMRow[DT_CounterM.ID];
-                                    drRCMWBS[DT_CM_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
-                                    drRCMWBS[DT_CM_WBS.USERNAME] = item[DT_WBS.USERNAME];
-                                    drRCMWBS[DT_CM_WBS.PROBABILITY] = 0;
-                                    if (!hasWBS)
-                                    {
-                                        drRCMWBS[DT_CM_WBS.PRIMARY] = "Primary";
-                                        drRCMWBS[DT_CM_WBS.IS_PRIMARY] = true;
-                                    }
-                                    else
-                                    {
-                                        drRCMWBS[DT_CM_WBS.PRIMARY] = "";
-                                        drRCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
-                                    }
-                                    Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(drRCMWBS);
-                                }
-                            }
-                        }
-                    }
+                    SetTableCM_Role();
+                    SetTableCM_WBS();
                 }
                 if (Operation == General.UPDATE)
                 {
@@ -291,6 +210,111 @@ namespace EnsureRisk.Windows
             catch (Exception ex)
             {
                 MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Set the WBS from the Risk Father
+        /// </summary>
+        private void SetTableCM_WBS()
+        {
+            if (RiskPadre != null)
+            {
+                bool hasWBS = false;
+                foreach (DataRow itemRiskWBS in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskPadre.ID))
+                {
+                    DataRow newRow = Ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
+                    newRow[DT_CM_WBS.ID_CM] = CMRow[DT_CounterM.ID];
+                    newRow[DT_CM_WBS.ID_WBS] = itemRiskWBS[DT_RISK_WBS.ID_WBS];
+                    newRow[DT_CM_WBS.NIVEL] = itemRiskWBS[DT_RISK_WBS.NIVEL];
+                    newRow[DT_CM_WBS.WBS] = itemRiskWBS[DT_RISK_WBS.WBS];
+                    newRow[DT_CM_WBS.IS_PRIMARY] = itemRiskWBS[DT_RISK_WBS.IS_PRIMARY];
+                    newRow[DT_CM_WBS.PROBABILITY] = 0;
+                    if ((bool)itemRiskWBS[DT_RISK_WBS.IS_PRIMARY])
+                    {
+                        ID_WBS = (decimal)itemRiskWBS[DT_RISK_WBS.ID_WBS];
+                        WBS_NAME = itemRiskWBS[DT_RISK_WBS.NIVEL].ToString() + " " + itemRiskWBS[DT_RISK_WBS.WBS].ToString();
+                        USER_NAME = itemRiskWBS[DT_RISK_WBS.USERNAME].ToString();
+                    }
+                    newRow[DT_CM_WBS.PRIMARY] = itemRiskWBS[DT_RISK_WBS.PRIMARY];
+                    newRow[DT_CM_WBS.USERNAME] = itemRiskWBS[DT_RISK_WBS.USERNAME];
+                    hasWBS = true;
+                    Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newRow);
+                    if (WBSOperations.IsCMWBSLow(newRow, dsWBS, Ds.Tables[DT_CM_WBS.TABLE_NAME]))
+                    {
+                        //AddWBS_CM_Damage(itemRiskWBS);
+                        WBSOperations.TabAddWBS_LINE_Damage(itemRiskWBS, (decimal)CMRow[DT_CounterM.ID], true, Ds);
+                    }
+                    else
+                    {
+                        //DeleteWBS_CM_Damage(itemRiskWBS);
+                        WBSOperations.TabDeleteWBS_LINE_Damage(itemRiskWBS, (decimal)CMRow[DT_CounterM.ID], true, Ds);
+                    }
+                }
+                foreach (DataRow item in dsWBS.Tables[DT_WBS.TABLE_NAME].Select())
+                {
+                    if (!(dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + item[DT_WBS.ID_WBS]).Any()))
+                    {
+                        if (!(Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { CMRow[DT_CounterM.ID], item[DT_WBS.ID_WBS] })))
+                        {
+                            DataRow drRCMWBS = Ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
+                            drRCMWBS[DT_CM_WBS.ID_CM] = CMRow[DT_CounterM.ID];
+                            drRCMWBS[DT_CM_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
+                            drRCMWBS[DT_CM_WBS.USERNAME] = item[DT_WBS.USERNAME];
+                            drRCMWBS[DT_CM_WBS.PROBABILITY] = 0;
+                            if (!hasWBS)
+                            {
+                                drRCMWBS[DT_CM_WBS.PRIMARY] = "Primary";
+                                drRCMWBS[DT_CM_WBS.IS_PRIMARY] = true;
+                            }
+                            else
+                            {
+                                drRCMWBS[DT_CM_WBS.PRIMARY] = "";
+                                drRCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
+                            }
+                            Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(drRCMWBS);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set the Roles from the Risk Father
+        /// </summary>
+        private void SetTableCM_Role()
+        {
+            foreach (DataRow item in Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + RiskPadre.ID))
+            {
+                DataRow newRow = Ds.Tables[DT_Role_CM.TABLENAME].NewRow();
+                newRow[DT_Role_CM.ID_CM] = CMRow[DT_CounterM.ID];
+                newRow[DT_Role_CM.Role] = item[DT_Role_CM.Role];
+                newRow[DT_Role_CM.IDROL_COLUMN] = item[DT_Role_CM.IDROL_COLUMN];
+                Ds.Tables[DT_Role_CM.TABLENAME].Rows.Add(newRow);
+            }
+        }
+
+        /// <summary>
+        /// Add to CM the Damages from the Diagram
+        /// </summary>
+        private void SetTableCM_Damages()
+        {
+            foreach (DataRow item in Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + RiskTreeID))
+            {
+                DataRow rowTop = Ds.Tables[DT_CounterM_Damage.TABLE_NAME].NewRow();
+                rowTop[DT_CounterM_Damage.COLOR] = item[DT_Diagram_Damages.COLOR];
+                rowTop[DT_CounterM_Damage.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
+                rowTop[DT_CounterM_Damage.ID_COUNTERM] = CMRow[DT_CounterM.ID];
+                rowTop[DT_CounterM_Damage.VALUE] = 0;
+                rowTop[DT_CounterM_Damage.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
+                rowTop[DT_CounterM_Damage.DAMAGE] = item[DT_Diagram_Damages.DAMAGE];
+                rowTop[DT_CounterM_Damage.ID_RISK_TREE] = RiskTreeID;
+                rowTop[DT_CounterM_Damage.RISK_REDUCTION] = 0;
+                rowTop[DT_CounterM_Damage.GROUPENAME] = "None";
+                rowTop[DT_CounterM_Damage.RISK] = TextFather.Text;
+                rowTop[DT_CounterM_Damage.STATUS] = true;
+                rowTop[DT_CounterM_Damage.IDRISK] = CMRow[DT_CounterM.ID_RISK];
+                Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Add(rowTop);
             }
         }
 

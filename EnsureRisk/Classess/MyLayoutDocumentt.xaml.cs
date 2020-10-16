@@ -366,6 +366,9 @@ namespace EnsureRisk.Classess
             }
         }
 
+        /// <summary>
+        /// Draw the Fish head of the Diagram in the Draw Panel
+        /// </summary>
         public void LoadRectangles()
         {
             try
@@ -492,6 +495,10 @@ namespace EnsureRisk.Classess
         //        MostrarDialog(ex.Message);
         //    }
         //}
+
+        /// <summary>
+        /// Insert and Update the Numbers visualization in the Diagram (for Lines and FishHead)
+        /// </summary>
         public void DrawNumbers()
         {
             try
@@ -551,6 +558,9 @@ namespace EnsureRisk.Classess
             }
         }
 
+        /// <summary>
+        /// Update the line Thickness of the Diagram according with its values
+        /// </summary>
         public void SetLinesThickness()
         {
             try
@@ -662,6 +672,9 @@ namespace EnsureRisk.Classess
             }
         }
 
+        /// <summary>
+        /// Delete all the rectangle of the FishHead in the Diagram
+        /// </summary>
         public void DropRectangles()
         {
             try
@@ -716,7 +729,7 @@ namespace EnsureRisk.Classess
         }
 
         /// <summary>
-        /// Create risk and counter measure shapes and arrange all of their. Show fishbone diagram.
+        /// Draw lines in the Draw Panel, as Risk and CM according with the values.
         /// </summary>
         public void LoadLines()
         {
@@ -1479,7 +1492,7 @@ namespace EnsureRisk.Classess
                     {
                         MoviendoRisk = false;
                         MoviendoCM = false;
-                        TreeOperation.DetectarMiPosicionActual(Line_Selected, e.GetPosition(GridPaintLines), Ds);
+                        TreeOperation.LinePositionByClick(Line_Selected, e.GetPosition(GridPaintLines), Ds);
                         DrawFishBone();
                         ((MainWindow)MyWindow).NormalArrowCursor();
                     }
@@ -2295,6 +2308,9 @@ namespace EnsureRisk.Classess
             }
         }
 
+        /// <summary>
+        /// Insert Risk in the Diagram, Calculating according the siblings and the user click position
+        /// </summary>
         public void InsertRisk(RiskPolyLine insertedRisk, RiskPolyLine destinationPolyLine, Point point)
         {
             int pos = TreeOperation.DetectClickPosition(point, destinationPolyLine);
@@ -2542,8 +2558,8 @@ namespace EnsureRisk.Classess
 
         private void UpdateGridRiskAndGridCM()
         {
-            ((MainWindow)MyWindow).CruzarTablaRisk(Ds);
-            ((MainWindow)MyWindow).CruzarTablaCM(Ds);
+            ((MainWindow)MyWindow).CrossRiskRightTab(Ds);
+            ((MainWindow)MyWindow).CroosCMRightTab(Ds);
         }
 
         public void SetPolyLinePosition(List<RiskPolyLine> Children)
@@ -2648,7 +2664,7 @@ namespace EnsureRisk.Classess
                                 LoadRectangles();
                                 DrawNumbers();
                                 SetLinesThickness();
-                                ((MainWindow)MyWindow).CruzarTablaRisk(Ds);
+                                ((MainWindow)MyWindow).CrossRiskRightTab(Ds);
                             }
                         }
                         GridPaintLines.Children.Remove(Line_Created);

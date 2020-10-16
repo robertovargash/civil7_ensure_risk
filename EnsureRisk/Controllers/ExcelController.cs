@@ -116,7 +116,7 @@ namespace EnsureRisk
         }
 
         /// <summary>
-        /// Clasificate the Damages in the file, validating if the damage exist or not in the global list of Damages
+        /// Classify  the Damages in the file, validating if the damage exist or not in the global list of Damages
         /// </summary>
         /// <param name="dsImporting">The Dataset with all data</param>
         /// <param name="drDiagram">The data of the diagram created</param>

@@ -902,8 +902,8 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.SetLinesThickness();
                     ////TextProbabilityChange(TheCurrentLayout.MainLine);
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
-                    CruzarTablaCM(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
+                    CroosCMRightTab(TheCurrentLayout.Ds);
                     MostrarInfoDialog("Data saved successfully!!!");
                 }
                 IS_SAVING_DATA = false;
@@ -1562,8 +1562,8 @@ namespace EnsureRisk
                 //BtnBackward.Visibility = Visibility.Hidden;
                 TheCurrentLayout.BtnUndoneScope.Visibility = Visibility.Collapsed;
 
-                CruzarTablaRisk(TheCurrentLayout.Ds);
-                CruzarTablaCM(TheCurrentLayout.Ds);
+                CrossRiskRightTab(TheCurrentLayout.Ds);
+                CroosCMRightTab(TheCurrentLayout.Ds);
                 OnResponse();
                 foreach (var item in OpenedDocuments)
                 {
@@ -1626,10 +1626,13 @@ namespace EnsureRisk
         }
 
         #region ImportFromExcel
+     
         /// <summary>
-        /// Descontinuado pero no lo borro para hacer el otro asincronico
+        /// Import an excel file and load the data, and create a diagram, validate if the Diagram will be Custom or Not.
         /// </summary>
-       
+        /// <param name="dsImporting">Dataset with the data</param>
+        /// <param name="isCustom">If the diagram imported will be from a custom Excel file or Zuidasdok format</param>
+        /// <returns></returns>
         private async Task FillDataTableToExcelAsync(DataSet dsImporting, bool isCustom)
         {
             using (System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
@@ -1839,7 +1842,7 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.SetLinesThickness();
                     ////TextProbabilityChange(TheCurrentLayout.MainLine);
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -1908,8 +1911,8 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.UpdateLinesValues();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
-                    CruzarTablaCM(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
+                    CroosCMRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -2056,7 +2059,7 @@ namespace EnsureRisk
                                 TheCurrentLayout.DrawNumbers();
                                 TheCurrentLayout.UpdateLinesValues();
                                 TheCurrentLayout.SetLinesThickness();
-                                CruzarTablaRisk(TheCurrentLayout.Ds);
+                                CrossRiskRightTab(TheCurrentLayout.Ds);
                             }
                             else
                             {
@@ -2074,7 +2077,7 @@ namespace EnsureRisk
                             TheCurrentLayout.DrawNumbers();
                             TheCurrentLayout.UpdateLinesValues();
                             TheCurrentLayout.SetLinesThickness();
-                            CruzarTablaRisk(TheCurrentLayout.Ds);
+                            CrossRiskRightTab(TheCurrentLayout.Ds);
                         }
                     }
                     else
@@ -2252,7 +2255,7 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.UpdateLinesValues();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -2272,7 +2275,7 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.UpdateLinesValues();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -2292,7 +2295,7 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.UpdateLinesValues();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -2573,7 +2576,7 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.UpdateLinesValues();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -2593,7 +2596,7 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.UpdateLinesValues();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -2613,7 +2616,7 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.UpdateLinesValues();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -2757,6 +2760,9 @@ namespace EnsureRisk
 
         #endregion
 
+        /// <summary>
+        /// Delete a line as Risk
+        /// </summary>
         private void DeleteRisk(RiskPolyLine line)
         {
             try
@@ -2779,8 +2785,8 @@ namespace EnsureRisk
             TheCurrentLayout.DrawNumbers();
             //TextProbabilityChange(TheCurrentLayout.MainLine);
             TheCurrentLayout.SetLinesThickness();
-            CruzarTablaRisk(TheCurrentLayout.Ds);
-            CruzarTablaCM(TheCurrentLayout.Ds);
+            CrossRiskRightTab(TheCurrentLayout.Ds);
+            CroosCMRightTab(TheCurrentLayout.Ds);
             IS_DELETING_RISK = false;
         }
 
@@ -2833,7 +2839,7 @@ namespace EnsureRisk
         /// <summary>
         /// Add a CounterMeasure (CM) to RIsk
         /// </summary>
-        private void MenuCM_Click(object sender, RoutedEventArgs e)
+        private void MenuAddCM_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -2856,7 +2862,6 @@ namespace EnsureRisk
                 if (windowCM.ShowDialog() == true)
                 {
                     TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Add(windowCM.CMRow);
-                    //int pos = TreeOperation.DetectClickPosition(TheCurrentLayout.PointSelected, TheCurrentLayout.Line_Selected);
                     RiskPolyLine Line_Created = new RiskPolyLine
                     {
                         ID = (decimal)windowCM.CMRow[DT_CounterM.ID],
@@ -2864,11 +2869,7 @@ namespace EnsureRisk
                         Father = TheCurrentLayout.Line_Selected,
                         ShortName = "LineCreated",
                         IdRiskFather = TheCurrentLayout.Line_Selected.ID
-                    };
-                    //TheCurrentLayout.Ds.Tables[DT_Role_CM.TABLENAME].Merge(windowCM.CM_RoleTable);
-                    //TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLE_NAME].Merge(windowCM.CM_WBS_Table);
-                    //TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Merge(windowCM.WBS_CM_Damage);
-                    //TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Merge(windowCM.CM_Damage_Table);
+                    };                   
                     TheCurrentLayout.InsertCM(Line_Created, TheCurrentLayout.Line_Selected, TheCurrentLayout.PointSelected);
 
                     TheCurrentLayout.DropLines();
@@ -2879,8 +2880,8 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.SetLinesThickness();
                     //TextProbabilityChange(TheCurrentLayout.MainLine);
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
-                    CruzarTablaCM(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
+                    CroosCMRightTab(TheCurrentLayout.Ds);
                 }
 
             }
@@ -3194,8 +3195,8 @@ namespace EnsureRisk
                     TheCurrentLayout.SetLinesThickness();
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
-                    CruzarTablaCM(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
+                    CroosCMRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -3328,8 +3329,8 @@ namespace EnsureRisk
                     TheCurrentLayout.SetLinesThickness();
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
-                    CruzarTablaCM(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
+                    CroosCMRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -3439,8 +3440,8 @@ namespace EnsureRisk
             //TextProbabilityChange(TheCurrentLayout.MainLine);
             TheCurrentLayout.SetLinesThickness();
 
-            CruzarTablaRisk(TheCurrentLayout.Ds);
-            CruzarTablaCM(TheCurrentLayout.Ds);
+            CrossRiskRightTab(TheCurrentLayout.Ds);
+            CroosCMRightTab(TheCurrentLayout.Ds);
         }
 
         #endregion
@@ -3479,8 +3480,8 @@ namespace EnsureRisk
                             TheCurrentLayout.DrawNumbers();
                             TheCurrentLayout.UpdateLinesValues();
                             TheCurrentLayout.SetLinesThickness();
-                            CruzarTablaRisk(TheCurrentLayout.Ds);                            
-                            CruzarTablaCM(TheCurrentLayout.Ds);
+                            CrossRiskRightTab(TheCurrentLayout.Ds);                            
+                            CroosCMRightTab(TheCurrentLayout.Ds);
                         }
                     }
                 }
@@ -3560,8 +3561,8 @@ namespace EnsureRisk
                                 TheCurrentLayout.DrawNumbers();
                                 TheCurrentLayout.UpdateLinesValues();
                                 TheCurrentLayout.SetLinesThickness();
-                                CruzarTablaRisk(TheCurrentLayout.Ds);
-                                CruzarTablaCM(TheCurrentLayout.Ds);
+                                CrossRiskRightTab(TheCurrentLayout.Ds);
+                                CroosCMRightTab(TheCurrentLayout.Ds);
                             }
                             else
                             {
@@ -3579,8 +3580,8 @@ namespace EnsureRisk
                             TheCurrentLayout.DrawNumbers();
                             TheCurrentLayout.UpdateLinesValues();
                             TheCurrentLayout.SetLinesThickness();
-                            CruzarTablaRisk(TheCurrentLayout.Ds);
-                            CruzarTablaCM(TheCurrentLayout.Ds);
+                            CrossRiskRightTab(TheCurrentLayout.Ds);
+                            CroosCMRightTab(TheCurrentLayout.Ds);
                         }
                     }
                     else
@@ -3643,8 +3644,8 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.UpdateLinesValues();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
-                    CruzarTablaCM(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
+                    CroosCMRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -3661,8 +3662,8 @@ namespace EnsureRisk
                 TheCurrentLayout.DrawNumbers();
                 TheCurrentLayout.UpdateLinesValues();
                 TheCurrentLayout.SetLinesThickness();
-                CruzarTablaRisk(TheCurrentLayout.Ds);
-                CruzarTablaCM(TheCurrentLayout.Ds);
+                CrossRiskRightTab(TheCurrentLayout.Ds);
+                CroosCMRightTab(TheCurrentLayout.Ds);
             }
             catch (Exception ex)
             {
@@ -3678,8 +3679,8 @@ namespace EnsureRisk
                 TheCurrentLayout.DrawNumbers();
                 TheCurrentLayout.UpdateLinesValues();
                 TheCurrentLayout.SetLinesThickness();
-                CruzarTablaRisk(TheCurrentLayout.Ds);
-                CruzarTablaCM(TheCurrentLayout.Ds);
+                CrossRiskRightTab(TheCurrentLayout.Ds);
+                CroosCMRightTab(TheCurrentLayout.Ds);
             }
             catch (Exception ex)
             {
@@ -3754,8 +3755,8 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.UpdateLinesValues();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
-                    CruzarTablaCM(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
+                    CroosCMRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -3774,8 +3775,8 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.UpdateLinesValues();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
-                    CruzarTablaCM(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
+                    CroosCMRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -3794,8 +3795,8 @@ namespace EnsureRisk
                     TheCurrentLayout.DrawNumbers();
                     TheCurrentLayout.UpdateLinesValues();
                     TheCurrentLayout.SetLinesThickness();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
-                    CruzarTablaCM(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
+                    CroosCMRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -4055,8 +4056,8 @@ namespace EnsureRisk
             TheCurrentLayout.DrawNumbers();
             //TextProbabilityChange(TheCurrentLayout.MainLine);
             TheCurrentLayout.SetLinesThickness();
-            CruzarTablaRisk(TheCurrentLayout.Ds);
-            CruzarTablaCM(TheCurrentLayout.Ds);
+            CrossRiskRightTab(TheCurrentLayout.Ds);
+            CroosCMRightTab(TheCurrentLayout.Ds);
             IS_DELETING_CM = false;
         }
 
@@ -4211,7 +4212,7 @@ namespace EnsureRisk
                             item.Group.GroupName = wg.GroupName;
                         }
                     }
-                    CruzarTablaRisk(TheCurrentLayout.Ds);//Esta Linea estaba, la borre al integrar
+                    CrossRiskRightTab(TheCurrentLayout.Ds);//Esta Linea estaba, la borre al integrar
                 }
             }
             catch (Exception ex)
@@ -4334,8 +4335,8 @@ namespace EnsureRisk
                     TheCurrentLayout.SetLinesThickness();
 
                     //TextProbabilityChange(TheCurrentLayout.MainLine);
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
-                    CruzarTablaCM(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
+                    CroosCMRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -4721,7 +4722,12 @@ namespace EnsureRisk
         #region CrossTab
 
         #region RiskCrossTab
-        public void CruzarTablaRisk(DataSet myDs)
+
+        /// <summary>
+        /// Update the right visualization panel with Risk Data
+        /// </summary>
+        /// <param name="myDs"></param>
+        public void CrossRiskRightTab(DataSet myDs)
         {
             try
             {
@@ -4917,7 +4923,7 @@ namespace EnsureRisk
         #endregion
 
         #region CMCrossTab
-        public void CruzarTablaCM(DataSet myDs)
+        public void CroosCMRightTab(DataSet myDs)
         {
             if (TheCurrentLayout != null)
             {
@@ -5488,8 +5494,8 @@ namespace EnsureRisk
             TheCurrentLayout.DrawNumbers();
             //TextProbabilityChange(TheCurrentLayout.MainLine);
             TheCurrentLayout.SetLinesThickness();
-            CruzarTablaRisk(TheCurrentLayout.Ds);
-            CruzarTablaCM(TheCurrentLayout.Ds);
+            CrossRiskRightTab(TheCurrentLayout.Ds);
+            CroosCMRightTab(TheCurrentLayout.Ds);
             IS_REMOVING_GROUP = false;
         }
 
@@ -6336,8 +6342,8 @@ namespace EnsureRisk
                     Dt_Cross_CM.AcceptChanges();
                     DrawEntireDiagram();
                     TheCurrentLayout.ClearFilters();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
-                    CruzarTablaCM(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
+                    CroosCMRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -6443,7 +6449,7 @@ namespace EnsureRisk
                                             }
                                             else
                                             {
-                                                CruzarTablaRisk(TheCurrentLayout.Ds);
+                                                CrossRiskRightTab(TheCurrentLayout.Ds);
                                                 MostrarErrorDialog("Damages Values can't be less than 0. Check again");
                                             }
                                         }
@@ -6452,21 +6458,21 @@ namespace EnsureRisk
                             }
                             else
                             {
-                                CruzarTablaRisk(TheCurrentLayout.Ds);
+                                CrossRiskRightTab(TheCurrentLayout.Ds);
                                 MostrarErrorDialog("Risk Probability Value can't be less than 0 or higher to 100. No changes apply");
                             }
                         }
                         else
                         {
-                            CruzarTablaRisk(TheCurrentLayout.Ds);
+                            CrossRiskRightTab(TheCurrentLayout.Ds);
                             MostrarErrorDialog("Risk Name Value can´t be empty. No changes apply");
                         }
                     }
                     Dt_Cross_Risk.AcceptChanges();
                     DrawEntireDiagram();
                     TheCurrentLayout.ClearFilters();
-                    CruzarTablaRisk(TheCurrentLayout.Ds);
-                    CruzarTablaCM(TheCurrentLayout.Ds);
+                    CrossRiskRightTab(TheCurrentLayout.Ds);
+                    CroosCMRightTab(TheCurrentLayout.Ds);
                 }
             }
             catch (Exception ex)
@@ -7059,8 +7065,8 @@ namespace EnsureRisk
                 {
                     if (TheCurrentLayout != null)
                     {
-                        CruzarTablaRisk(TheCurrentLayout.Ds);
-                        CruzarTablaCM(TheCurrentLayout.Ds);
+                        CrossRiskRightTab(TheCurrentLayout.Ds);
+                        CroosCMRightTab(TheCurrentLayout.Ds);
                     }
                 }                
             }           

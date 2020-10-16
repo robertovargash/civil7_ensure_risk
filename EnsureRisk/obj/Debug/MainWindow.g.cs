@@ -1200,7 +1200,7 @@ namespace EnsureRisk {
             case 6:
             
             #line 44 "..\..\MainWindow.xaml"
-            ((System.Windows.Controls.Button)(target)).Click += new System.Windows.RoutedEventHandler(this.MenuCM_Click);
+            ((System.Windows.Controls.Button)(target)).Click += new System.Windows.RoutedEventHandler(this.MenuAddCM_Click);
             
             #line default
             #line hidden

@@ -41,7 +41,7 @@
                 </MenuItem>
                 <MenuItem Height="35" x:Name="MenuCM" Visibility="{Binding Path = HasAccess, Converter={StaticResource BoolToVisConverter}}" >
                     <MenuItem.Header>
-                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonCM" Click="MenuCM_Click" Content="{md:PackIcon Kind=Minus}" Width="32" Height="32"/>
+                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonCM" Click="MenuAddCM_Click" Content="{md:PackIcon Kind=Minus}" Width="32" Height="32"/>
                     </MenuItem.Header>
                 </MenuItem>
                 <MenuItem Height="35" x:Name="MenuZoom" Visibility="{Binding Path = HasAccess, Converter={StaticResource BoolToVisConverter}}" >

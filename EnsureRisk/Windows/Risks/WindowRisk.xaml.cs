@@ -210,6 +210,9 @@ namespace EnsureRisk.Windows
             }
         }
 
+        /// <summary>
+        /// Add to Risk the Damages from the Diagram
+        /// </summary>
         private void SetTableRisk_Damages(bool useProbability, bool isEnabled)
         {
             foreach (DataRow item in Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + RiskTreeID))
@@ -238,6 +241,10 @@ namespace EnsureRisk.Windows
             }
         }
 
+           
+        /// <summary>
+        /// Set the Roles from the Risk Father
+        /// </summary>
         private void SetTableRisk_Role()
         {
             if (RiskSelected != null)
@@ -253,6 +260,9 @@ namespace EnsureRisk.Windows
             }
         }
 
+        /// <summary>
+        /// Set the WBS from the Risk Father
+        /// </summary>
         private void SetTableRisk_WBS()
         {
             if (RiskSelected != null)
@@ -313,6 +323,9 @@ namespace EnsureRisk.Windows
             }
         }
 
+        /// <summary>
+        /// Complete with the WBS Father of the Selected WBS
+        /// </summary>
         private void CompleteRiskWBSTable(bool hasWBS)
         {
             foreach (DataRow item in dsWBS.Tables[DT_WBS.TABLE_NAME].Rows)
@@ -348,6 +361,9 @@ namespace EnsureRisk.Windows
             }
         }
 
+        /// <summary>
+        /// Validate if the WBS is in the low level of the risk and Add a Damage, if not, delete the damage and not have incidence on the line.
+        /// </summary>
         private void SetTableRisk_WBS_Damage(DataRow riskWBS)
         {
             if (WBSOperations.IsRiskWBSLow(riskWBS,dsWBS,Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
@@ -362,6 +378,9 @@ namespace EnsureRisk.Windows
             }
         }
 
+        /// <summary>
+        /// Calculate the probability using an average with the WBS of the risk. just takes the lowest levels WBS
+        /// </summary>
         private void CalculateProbability()
         {
             try
