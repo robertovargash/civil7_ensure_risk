@@ -14,12 +14,12 @@ namespace EnsureRisk.Pages
     /// </summary>
     public partial class SetConnectionPage : Page
     {
-        public DataTable tableConnectionServer { get; set; }
+        public DataTable TableConnectionServer { get; set; }
         public const string CONNECTION = "ConnectionServer.xml";
         public SetConnectionPage()
         {
             InitializeComponent();
-            tableConnectionServer = new DataTable();
+            TableConnectionServer = new DataTable();
             ChangeLanguage();
         }
 
@@ -33,12 +33,12 @@ namespace EnsureRisk.Pages
         {
             try
             {
-                DataRow rowServer = tableConnectionServer.NewRow();
+                DataRow rowServer = TableConnectionServer.NewRow();
                 rowServer["Server"] = TextServer.Text;
                 rowServer["Date"] = DateTime.UtcNow;
-                tableConnectionServer.Rows[0].Delete();
-                tableConnectionServer.Rows.InsertAt(rowServer, 0);
-                tableConnectionServer.WriteXml(CONNECTION, XmlWriteMode.WriteSchema);
+                TableConnectionServer.Rows[0].Delete();
+                TableConnectionServer.Rows.InsertAt(rowServer, 0);
+                TableConnectionServer.WriteXml(CONNECTION, XmlWriteMode.WriteSchema);
             }
             catch (Exception ex)
             {
@@ -52,8 +52,8 @@ namespace EnsureRisk.Pages
             {
                 if (File.Exists(CONNECTION))
                 {
-                    tableConnectionServer.ReadXml(CONNECTION);
-                    TextServer.Text = tableConnectionServer.Select().First()["Server"].ToString();
+                    TableConnectionServer.ReadXml(CONNECTION);
+                    TextServer.Text = TableConnectionServer.Select().First()["Server"].ToString();
                     //Auto();
                 }
             }

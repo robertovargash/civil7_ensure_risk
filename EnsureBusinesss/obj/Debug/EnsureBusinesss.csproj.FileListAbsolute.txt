@@ -168,7 +168,6 @@ C:\Work\Projects\EnsureRisk\VisualDragDrop\EnsureBusinesss\obj\Debug\EnsureBusin
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\EnsureBusinesss.dll.config
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\EnsureBusinesss.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\EnsureBusinesss.pdb
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureBusinesss\obj\Debug\Business\MyDamage.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.cache
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.lref
@@ -179,3 +178,4 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureBusinesss\obj\Deb
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache

@@ -18,7 +18,7 @@
                 <TextBlock  VerticalAlignment="Center">Light</TextBlock>
                 <md:PackIcon Kind="LightbulbOnOutline" Margin="5" VerticalAlignment="Center" Width="32" Height="32"/>
             </StackPanel>
-            <ToggleButton Margin="8 0 16 0" Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked"/>
+            <ToggleButton Margin="8 0 16 0" x:Name="tglTheme" Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked"/>
             <StackPanel Orientation="Horizontal">
                 <TextBlock  VerticalAlignment="Center">Dark</TextBlock>
                 <md:PackIcon Kind="LightbulbOn" Margin="5" VerticalAlignment="Center" Width="32" Height="32"/>

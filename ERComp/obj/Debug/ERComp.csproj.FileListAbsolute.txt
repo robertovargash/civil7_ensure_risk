@@ -1,6 +1,5 @@
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\ERComp.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\ERComp.pdb
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.csprojAssemblyReference.cache
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\Themes\Aero2.NormalColor.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\Themes\classic.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\Themes\luna.homestead.baml

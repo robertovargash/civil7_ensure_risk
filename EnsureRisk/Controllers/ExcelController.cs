@@ -127,14 +127,14 @@ namespace EnsureRisk
             foreach (var itemDamages in countDamages)
             {
                 string DamageName = itemDamages.MyContent;
+                DataRow drDamage = CreateNewDamageFromDamageName(dsImporting, ref colorvariant, DamageName);
                 if (!(dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DamageName + "'").Any()))//si el nombre del daño no existe 
                 {
-                    DataRow drDamage = CreateNewDamageFromDamageName(dsImporting, ref colorvariant, DamageName);
-                    CreateDiagramDamagesExcel(dsImporting, drDamage, DamageName, drDiagram, true);
+                    CreateDiagramDamagesExcel(dsImporting, drDamage, DamageName, drDiagram, false);
                 }
                 else
                 {
-                    CreateDiagramDamagesExcel(dsImporting, null, DamageName, drDiagram, false);
+                    CreateDiagramDamagesExcel(dsImporting, drDamage, DamageName, drDiagram, true);
                 }
             }
         }

@@ -45,6 +45,7 @@ namespace EnsureRisk.Pages
             {
                 string Color = (string)cbColors.SelectedItem;
                 Application.Current.Resources.MergedDictionaries[2].Source = new Uri("pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor." + Color + ".xaml", UriKind.RelativeOrAbsolute);
+                SaveColors();
             }
             catch (Exception ex)
             {
@@ -86,6 +87,14 @@ namespace EnsureRisk.Pages
                 if (File.Exists(COLOR))
                 {
                     TableColors.ReadXml(COLOR);
+                    if (TableColors.Select().First()["Theme"].ToString() == "Light")
+                    {
+                        tglTheme.IsChecked = false;
+                    }
+                    else
+                    {
+                        tglTheme.IsChecked = true;
+                    }
                     cbTheme.Text = TableColors.Select().First()["Theme"].ToString();
                     cbColors.Text = TableColors.Select().First()["Color"].ToString();
                     Togle.IsChecked = (bool)TableColors.Select().First()["StartLogo"];
@@ -97,17 +106,29 @@ namespace EnsureRisk.Pages
             }
         }
 
+        private void SaveColors()
+        {
+            DataRow rowColors = TableColors.NewRow();
+            rowColors["Color"] = cbColors.Text;
+            if (tglTheme.IsChecked == true)
+            {
+                rowColors["Theme"] = "Dark";
+            }
+            else
+            {
+                rowColors["Theme"] = "Light";
+            }
+            rowColors["StartLogo"] = Togle.IsChecked;
+            TableColors.Rows[0].Delete();
+            TableColors.Rows.InsertAt(rowColors, 0);
+            TableColors.WriteXml(COLOR, XmlWriteMode.WriteSchema);
+        }
+
         private void BtnSet_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                DataRow rowColors = TableColors.NewRow();
-                rowColors["Color"] = cbColors.Text;
-                rowColors["Theme"] = cbTheme.Text;
-                rowColors["StartLogo"] = Togle.IsChecked;
-                TableColors.Rows[0].Delete();
-                TableColors.Rows.InsertAt(rowColors, 0);
-                TableColors.WriteXml(COLOR, XmlWriteMode.WriteSchema);
+                SaveColors();
             }
             catch (Exception ex)
             {
@@ -117,11 +138,15 @@ namespace EnsureRisk.Pages
 
         private void ToggleButton_Checked(object sender, RoutedEventArgs e)
         {
-            Application.Current.Resources.MergedDictionaries[0].Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml", UriKind.RelativeOrAbsolute);        }
+            Application.Current.Resources.MergedDictionaries[0].Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml", UriKind.RelativeOrAbsolute);
+            SaveColors();
+        }
+
 
         private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
         {
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml", UriKind.RelativeOrAbsolute);
+            SaveColors();
         }
     }
 }

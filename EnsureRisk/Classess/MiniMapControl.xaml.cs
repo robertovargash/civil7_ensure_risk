@@ -462,7 +462,7 @@ namespace EnsureRisk.Classess
             //actual view - we increase margins of the minimap to disallow this
             void UpdateContentGrid()
             {
-                bool resetToDefault = true;
+                //bool resetToDefault = true;
                 //if (MapSource != null)
                 //{
                 //    if (this.MapSource.ExtentWidth != 0 && this.MapSource.ExtentHeight != 0)

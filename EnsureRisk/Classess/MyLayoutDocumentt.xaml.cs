@@ -161,6 +161,8 @@ namespace EnsureRisk.Classess
                 {
                     ((MainWindow)MyWindow).OpenedDocuments.Remove(this);
                 }
+                ((MainWindow)MyWindow).ShowCMData = false;
+                ((MainWindow)MyWindow).ShowRiskData = false;
                 ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear();
                 ((MainWindow)MyWindow).DV_Cross_CM.Table.Clear();
             }
@@ -251,6 +253,8 @@ namespace EnsureRisk.Classess
         public void EnterWorking()
         {
             TheMainGrid.Margin = new Thickness(3);
+            //((MainWindow)MyWindow).ShowCMData = false;
+            //((MainWindow)MyWindow).ShowRiskData = false;
         }
         public void ExitWorking()
         {
@@ -2413,6 +2417,7 @@ namespace EnsureRisk.Classess
                 Line_Selected = destinationPolyLine;
             }
         }
+
         private void MoveCounterMeasure(RiskPolyLine destinationPolyLine, Point point)
         {
             if (FullAccess(destinationPolyLine))
@@ -2891,8 +2896,7 @@ namespace EnsureRisk.Classess
                 line.BringIntoView(rectangleRPL);
             }
         }
-
-
+        
         #endregion
         private void CbFilterTopR_DropDownClosed(object sender, EventArgs e)
         {
@@ -3464,6 +3468,8 @@ namespace EnsureRisk.Classess
                             item.ExitWorking();
                         }
                         this.EnterWorking();
+                        ((MainWindow)MyWindow).ShowRiskData = false;
+                        ((MainWindow)MyWindow).ShowCMData = false;
                         //((MainWindow)MyWindow).TextProbabilityChange(MainLine);
                     }
                 }
