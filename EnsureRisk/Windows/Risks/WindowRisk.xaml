@@ -16,7 +16,7 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:local1="clr-namespace:EnsureRisk.Classess"
     mc:Ignorable="d"
-        Title="Risk" Height="561" Width="677" MinWidth="677" MinHeight="561" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" >
+        Title="Risk" Height="561" Width="677" MinWidth="677" MinHeight="561" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
     </Window.Resources>

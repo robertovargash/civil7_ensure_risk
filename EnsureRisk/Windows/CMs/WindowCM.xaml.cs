@@ -240,42 +240,61 @@ namespace EnsureRisk.Windows
                     newRow[DT_CM_WBS.USERNAME] = itemRiskWBS[DT_RISK_WBS.USERNAME];
                     hasWBS = true;
                     Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newRow);
-                    if (WBSOperations.IsCMWBSLow(newRow, dsWBS, Ds.Tables[DT_CM_WBS.TABLE_NAME]))
-                    {
-                        //AddWBS_CM_Damage(itemRiskWBS);
-                        WBSOperations.TabAddWBS_LINE_Damage(itemRiskWBS, (decimal)CMRow[DT_CounterM.ID], true, Ds);
-                    }
-                    else
-                    {
-                        //DeleteWBS_CM_Damage(itemRiskWBS);
-                        WBSOperations.TabDeleteWBS_LINE_Damage(itemRiskWBS, (decimal)CMRow[DT_CounterM.ID], true, Ds);
-                    }
                 }
-                foreach (DataRow item in dsWBS.Tables[DT_WBS.TABLE_NAME].Select())
+                foreach (DataRow rowCm_WBS in Ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
                 {
-                    if (!(dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + item[DT_WBS.ID_WBS]).Any()))
+                    SetTableCM_WBS_Damage(rowCm_WBS);
+                }
+                CompleteCMWBSTable(hasWBS);
+            }
+        }
+
+        /// <summary>
+        /// Complete with the WBS Father of the Selected WBS
+        /// </summary>
+        private void CompleteCMWBSTable(bool hasWBS)
+        {
+            foreach (DataRow item in dsWBS.Tables[DT_WBS.TABLE_NAME].Select())
+            {
+                if (!(dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + item[DT_WBS.ID_WBS]).Any()))
+                {
+                    if (!(Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { CMRow[DT_CounterM.ID], item[DT_WBS.ID_WBS] })))
                     {
-                        if (!(Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { CMRow[DT_CounterM.ID], item[DT_WBS.ID_WBS] })))
+                        DataRow drRCMWBS = Ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
+                        drRCMWBS[DT_CM_WBS.ID_CM] = CMRow[DT_CounterM.ID];
+                        drRCMWBS[DT_CM_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
+                        drRCMWBS[DT_CM_WBS.USERNAME] = item[DT_WBS.USERNAME];
+                        drRCMWBS[DT_CM_WBS.PROBABILITY] = 0;
+                        if (!hasWBS)
                         {
-                            DataRow drRCMWBS = Ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
-                            drRCMWBS[DT_CM_WBS.ID_CM] = CMRow[DT_CounterM.ID];
-                            drRCMWBS[DT_CM_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
-                            drRCMWBS[DT_CM_WBS.USERNAME] = item[DT_WBS.USERNAME];
-                            drRCMWBS[DT_CM_WBS.PROBABILITY] = 0;
-                            if (!hasWBS)
-                            {
-                                drRCMWBS[DT_CM_WBS.PRIMARY] = "Primary";
-                                drRCMWBS[DT_CM_WBS.IS_PRIMARY] = true;
-                            }
-                            else
-                            {
-                                drRCMWBS[DT_CM_WBS.PRIMARY] = "";
-                                drRCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
-                            }
-                            Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(drRCMWBS);
+                            drRCMWBS[DT_CM_WBS.PRIMARY] = "Primary";
+                            drRCMWBS[DT_CM_WBS.IS_PRIMARY] = true;
                         }
+                        else
+                        {
+                            drRCMWBS[DT_CM_WBS.PRIMARY] = "";
+                            drRCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
+                        }
+                        Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(drRCMWBS);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Validate if the WBS is in the low level of the risk and Add a Damage, if not, delete the damage and not have incidence on the line.
+        /// </summary>
+        private void SetTableCM_WBS_Damage(DataRow itemRiskWBS)
+        {
+            if (WBSOperations.IsCMWBSLow(itemRiskWBS, dsWBS, Ds.Tables[DT_CM_WBS.TABLE_NAME]))
+            {
+                //AddWBS_CM_Damage(itemRiskWBS);
+                WBSOperations.TabAddWBS_LINE_Damage(itemRiskWBS, (decimal)CMRow[DT_CounterM.ID], true, Ds);
+            }
+            else
+            {
+                //DeleteWBS_CM_Damage(itemRiskWBS);
+                WBSOperations.TabDeleteWBS_LINE_Damage(itemRiskWBS, (decimal)CMRow[DT_CounterM.ID], true, Ds);
             }
         }
 
@@ -390,11 +409,11 @@ namespace EnsureRisk.Windows
             tabRoles.Header = StringResources.TabRoles;
             //Title = StringResources.RiskTitle;
         }
+
         private void BtnAddRole_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-
                 ServiceRoleController.WebServiceRole ws = new ServiceRoleController.WebServiceRole();
                 DataTable roleCodif = ws.GetRolesData().Tables[DT_Role.ROLE_TABLE].Copy();
                 ws.Dispose();
@@ -527,7 +546,7 @@ namespace EnsureRisk.Windows
                 {//y despues para  sumarlos todos en un mismo daño y encontrar el AD
                     valor += (decimal)itemWBS[DT_WBS_CM_Damage.VALUE];
                 }
-                itemDamage[DT_Risk_Damages.VALUE] = valor;
+                itemDamage[DT_CounterM_Damage.VALUE] = valor;
             }
         }
 
@@ -577,14 +596,15 @@ namespace EnsureRisk.Windows
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+            CancelCM();
             Close();
         }
+
 
         private void BtnAddWBS_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-
                 ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS();
                 DataTable roleCodif = ws.GetAllWBSFiltered(new object[] { ID_Project }).Tables[DT_WBS.TABLE_NAME].Copy();
                 ws.Dispose();
@@ -776,6 +796,34 @@ namespace EnsureRisk.Windows
             catch (Exception ex)
             {
                 MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void CancelCM()
+        {
+            foreach (DataRow rowCM_Damage in Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CMRow[DT_CounterM.ID]))
+            {
+                rowCM_Damage.Delete();
+            }
+            foreach (DataRow rowCM_wbs in Ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + CMRow[DT_CounterM.ID]))
+            {
+                rowCM_wbs.Delete();
+            }
+            foreach (DataRow rowCM_WBS_Damage in Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Select(DT_WBS_CM_Damage.ID_CM + " = " + CMRow[DT_CounterM.ID]))
+            {
+                rowCM_WBS_Damage.Delete();
+            }
+            foreach (DataRow rowCM_Role in Ds.Tables[DT_Role_CM.TABLENAME].Select(DT_Role_CM.ID_CM + " = " + CMRow[DT_CounterM.ID]))
+            {
+                rowCM_Role.Delete();
+            }
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (DialogResult == false || DialogResult == null)
+            {
+                CancelCM();
             }
         }
     }

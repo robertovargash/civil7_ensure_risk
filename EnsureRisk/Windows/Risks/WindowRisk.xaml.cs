@@ -938,8 +938,7 @@ namespace EnsureRisk.Windows
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {
-            
+        {            
             DialogResult = false;
             Close();
         }
@@ -1156,6 +1155,34 @@ namespace EnsureRisk.Windows
             catch (Exception ex)
             {
                 MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void CancelRisk()
+        {
+            foreach (DataRow rowRisk_Damage in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+            {
+                rowRisk_Damage.Delete();
+            }
+            foreach (DataRow rowRisk_wbs in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+            {
+                rowRisk_wbs.Delete();
+            }
+            foreach (DataRow rowRisk_WBS_Damage in Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+            {
+                rowRisk_WBS_Damage.Delete();
+            }
+            foreach (DataRow rowRisk_Role in Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+            {
+                rowRisk_Role.Delete();
+            }
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (DialogResult == false || DialogResult == null)
+            {
+                CancelRisk();
             }
         }
     }
