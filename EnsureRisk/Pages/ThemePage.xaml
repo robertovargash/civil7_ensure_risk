@@ -11,28 +11,43 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:EnsureRisk.Pages"
         mc:Ignorable="d"
-        Title="Top Risk List" Height="250" Width="332" Loaded="Page_Loaded">
-    <Grid Height="250" VerticalAlignment="Top" HorizontalAlignment="Left" Width="332">
-        <StackPanel Orientation="Horizontal" Margin="39,51,20,152">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock  VerticalAlignment="Center">Light</TextBlock>
-                <md:PackIcon Kind="LightbulbOnOutline" Margin="5" VerticalAlignment="Center" Width="32" Height="32"/>
+        Title="Top Risk List"  Loaded="Page_Loaded">
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
+            <StackPanel Orientation="Horizontal" >
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock  VerticalAlignment="Center">Light</TextBlock>
+                    <md:PackIcon Kind="LightbulbOnOutline" Margin="5" VerticalAlignment="Center" Width="32" Height="32"/>
+                </StackPanel>
+                <ToggleButton Margin="8 0 16 0" x:Name="tglTheme" Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock  VerticalAlignment="Center">Dark</TextBlock>
+                    <md:PackIcon Kind="LightbulbOn" Margin="5" VerticalAlignment="Center" Width="32" Height="32"/>
+                </StackPanel>
             </StackPanel>
-            <ToggleButton Margin="8 0 16 0" x:Name="tglTheme" Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock  VerticalAlignment="Center">Dark</TextBlock>
-                <md:PackIcon Kind="LightbulbOn" Margin="5" VerticalAlignment="Center" Width="32" Height="32"/>
-            </StackPanel>
+            <WrapPanel>
+                <Button x:Name="Pink" Click="Pink_Click" Background="#e91e63" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Pink" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="Red" Click="Pink_Click" Background="#f44336" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Red" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="DeepOrange" Click="Pink_Click" Background="#ff5722" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="DeepOrange" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="Orange" Click="Pink_Click" Background="#ff9800" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Orange" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="Yellow" Click="Pink_Click" Background="#ffeb3b" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Yelow" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="Amber" Click="Pink_Click" Background="#ffc107" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Amber" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="Lime" Click="Pink_Click" Background="#cddc39" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Lime" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="LightGreen" Click="Pink_Click" Background="#8bc34a" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="LightGreen" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="Green" Click="Pink_Click" Background="#4caf50" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Green" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="Cyan" Click="Pink_Click" Background="#00bcd4" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Cyan" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+
+                <Button x:Name="LightBlue" Click="Pink_Click" Background="#03a9f4" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="LightBlue" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="Blue" Click="Pink_Click" Background="#2196f3" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Blue" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="Teal" Click="Pink_Click" Background="#009688" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Teal" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="Indigo" Click="Pink_Click" Background="#3f51b5" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Indigo" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="DeepPurple" Click="Pink_Click" Background="#673ab7" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="DeepPurple" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+
+                <Button x:Name="Purple" Click="Pink_Click" Background="#9c27b0" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Purple" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                <Button x:Name="Brown" Click="Pink_Click" Background="#795548" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Brown" Width="60" Height="60" Margin="10" md:ShadowAssist.ShadowDepth="Depth5"/>
+
+            </WrapPanel>
         </StackPanel>
-       
-        <ComboBox Visibility="Hidden" Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Theme:" DropDownClosed="cbTheme_DropDownClosed" Name="cbTheme" HorizontalAlignment="Left" Margin="39,43,0,0" VerticalAlignment="Top" Width="201" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"/>
-        <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Content:" DropDownClosed="cbColors_DropDownClosed" Name="cbColors" HorizontalAlignment="Left" Margin="39,103,0,0" VerticalAlignment="Top" Width="201" VerticalContentAlignment="Center"/>
-        <StackPanel Orientation="Horizontal" Margin="39,148,-18,83">
-            <TextBlock Text="Start Logo Animation" VerticalAlignment="Center"/>
-            <TextBlock Text=" "/>
-            <ToggleButton Name="Togle" IsChecked="True" VerticalAlignment="Center"/>
-        </StackPanel>
-        <Button Content="Set" Name="BtnSet" Margin="39,182,0,36" HorizontalAlignment="Left" Width="153" Click="BtnSet_Click"/>
     </Grid>
 
 </Page>

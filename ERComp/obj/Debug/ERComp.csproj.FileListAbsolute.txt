@@ -92,3 +92,4 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.pdb
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.csproj.CopyComplete
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.csprojAssemblyReference.cache

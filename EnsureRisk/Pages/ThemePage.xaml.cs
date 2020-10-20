@@ -1,6 +1,8 @@
 ﻿using EnsureRisk.Resources;
+using MaterialDesignColors;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -12,10 +14,17 @@ namespace EnsureRisk.Pages
     /// <summary>
     /// Interaction logic for TopRiskPage.xaml
     /// </summary>
-    public partial class ThemePage : Page
+    public partial class ThemePage : Page, INotifyPropertyChanged
     {
         public DataTable TableColors { get; set; }
         public const string COLOR = "Color.xml";
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+       
         public ThemePage()
         {
             InitializeComponent();
@@ -24,33 +33,13 @@ namespace EnsureRisk.Pages
         }
         public void ChangeLanguage()
         {
-            BtnSet.Content = StringResources.SetButton;
+            //BtnSet.Content = StringResources.SetButton;
         }
-        private void cbTheme_DropDownClosed(object sender, EventArgs e)
+       
+        private void ChangeColor(string colorName)
         {
-            try
-            {
-                string Theme = (string)cbTheme.SelectedItem;
-                Application.Current.Resources.MergedDictionaries[0].Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme." + Theme + ".xaml", UriKind.RelativeOrAbsolute);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+            Application.Current.Resources.MergedDictionaries[2].Source = new Uri("pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor." + colorName + ".xaml", UriKind.RelativeOrAbsolute);
 
-        private void cbColors_DropDownClosed(object sender, EventArgs e)
-        {
-            try
-            {
-                string Color = (string)cbColors.SelectedItem;
-                Application.Current.Resources.MergedDictionaries[2].Source = new Uri("pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor." + Color + ".xaml", UriKind.RelativeOrAbsolute);
-                SaveColors();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -79,8 +68,7 @@ namespace EnsureRisk.Pages
                 "Teal",
                 "Yellow"
             };
-            cbTheme.ItemsSource = ListTheme;
-            cbColors.ItemsSource = ListColor;
+           
             
             try
             {
@@ -95,9 +83,6 @@ namespace EnsureRisk.Pages
                     {
                         tglTheme.IsChecked = true;
                     }
-                    cbTheme.Text = TableColors.Select().First()["Theme"].ToString();
-                    cbColors.Text = TableColors.Select().First()["Color"].ToString();
-                    Togle.IsChecked = (bool)TableColors.Select().First()["StartLogo"];
                 }
             }
             catch (Exception ex)
@@ -109,7 +94,7 @@ namespace EnsureRisk.Pages
         private void SaveColors()
         {
             DataRow rowColors = TableColors.NewRow();
-            rowColors["Color"] = cbColors.Text;
+            //rowColors["Color"] = cbColors.Text;
             if (tglTheme.IsChecked == true)
             {
                 rowColors["Theme"] = "Dark";
@@ -118,7 +103,7 @@ namespace EnsureRisk.Pages
             {
                 rowColors["Theme"] = "Light";
             }
-            rowColors["StartLogo"] = Togle.IsChecked;
+            //rowColors["StartLogo"] = Togle.IsChecked;
             TableColors.Rows[0].Delete();
             TableColors.Rows.InsertAt(rowColors, 0);
             TableColors.WriteXml(COLOR, XmlWriteMode.WriteSchema);
@@ -148,5 +133,15 @@ namespace EnsureRisk.Pages
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml", UriKind.RelativeOrAbsolute);
             SaveColors();
         }
+
+        private void Pink_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                ChangeColor(btn.Name);
+                SaveColors();
+            }
+        }
+
     }
 }

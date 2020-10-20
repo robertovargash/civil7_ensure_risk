@@ -11,7 +11,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EnsureRisk.Windows"
         mc:Ignorable="d"
-        Title="Options" Height="377" Width="774" WindowStyle="ToolWindow" ResizeMode="NoResize">
+        Title="Options" Height="377" Width="774" WindowStyle="ToolWindow" ResizeMode="CanResize">
     <Window.Resources>
         <ResourceDictionary>
             <md:PackIcon Kind="ChevronLeft" x:Key="Left"/>
@@ -42,6 +42,6 @@
                 </ListViewItem>
             </ListView>
         </StackPanel>
-        <Frame Grid.Column="1" Name="FrameNavigation" NavigationUIVisibility="Hidden" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" HorizontalAlignment="Left" Width="426" Height="244" VerticalAlignment="Top"/>
+        <Frame Grid.Column="1" Name="FrameNavigation" NavigationUIVisibility="Hidden" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
     </Grid>
 </Window>
