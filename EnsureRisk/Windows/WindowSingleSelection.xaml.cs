@@ -20,11 +20,11 @@ using System.Windows.Controls.Primitives;
 namespace EnsureRisk.Windows
 {
     /// <summary>
-    /// Interaction logic for WindowSelection.xaml
+    /// Interaction logic for WindowSingleSelection.xaml
     /// </summary>
-    public partial class WindowSelection : Window, INotifyPropertyChanged
+    public partial class WindowSingleSelection : Window, INotifyPropertyChanged
     {
-        public List<DataRow> RowsSelected { get; set; }
+        public DataRow RowSelected { get; set; }
         public DataTable Dt { get; set; }
         public DataView Dv { get; set; }
         public string[] DcolumToShowAlias { get; set; }
@@ -48,7 +48,7 @@ namespace EnsureRisk.Windows
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
-        public WindowSelection()
+        public WindowSingleSelection()
         {
             InitializeComponent();
             ChangeLanguage();
@@ -94,18 +94,7 @@ namespace EnsureRisk.Windows
         {
             if (dgSelection.SelectedItems.Count >= 0)
             {
-                RowsSelected = new List<DataRow>();
-                //foreach (DataRowView item in dgSelection.SelectedItems)
-                //{
-                //    RowsSelected.Add(item.Row);
-                //}
-                foreach (DataRow item in Dv.Table.Rows)
-                {
-                    if ((bool)item["Is_Selected"])
-                    {
-                        RowsSelected.Add(item);
-                    }
-                }
+                RowSelected = ((DataRowView)dgSelection.SelectedItems[0]).Row;
                 DialogResult = true;
             }
             else
@@ -124,11 +113,7 @@ namespace EnsureRisk.Windows
         {
             if (dgSelection.SelectedItems.Count > 0)
             {
-                RowsSelected = new List<DataRow>();
-                foreach (DataRowView item in dgSelection.SelectedItems)
-                {
-                    RowsSelected.Add(item.Row);
-                }
+                RowSelected = ((DataRowView)dgSelection.SelectedItems[0]).Row;
                 DialogResult = true;
             }
             else
@@ -159,33 +144,7 @@ namespace EnsureRisk.Windows
         {
             txtFilterRisk.Clear();
         }
-
-        private void DgRisksCross_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                //if (sender is DataGrid riskDataGrid && riskDataGrid.SelectedItem != null)
-                //{
-                //    if (riskDataGrid.SelectedItem is DataRowView)
-                //    {
-                //        if ((bool)((DataRowView)riskDataGrid.SelectedItem).Row["Is_Selected"])
-                //        {
-                //            ((DataRowView)riskDataGrid.SelectedItem).Row["Is_Selected"] = false;
-                //        }
-                //        else
-                //        {
-                //            ((DataRowView)riskDataGrid.SelectedItem).Row["Is_Selected"] = true;
-                //        }
-                //    }
-                //}
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-
-        }
-
+        
         private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
         {
             try
@@ -202,6 +161,13 @@ namespace EnsureRisk.Windows
         {
             try
             {
+                foreach (DataRow item in Dv.Table.Rows)
+                {
+                    if ((bool)item["Is_Selected"])
+                    {
+                        item["Is_Selected"] = false;
+                    }
+                }
                 ((DataRowView)((ToggleButton)e.Source).DataContext).Row["Is_Selected"] = true;
             }
             catch (Exception ex)

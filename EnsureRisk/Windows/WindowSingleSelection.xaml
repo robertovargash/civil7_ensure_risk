@@ -1,15 +1,14 @@
-﻿<Window    
-        TextElement.FontWeight="Medium"
+﻿<Window TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"        
-        x:Class="EnsureRisk.Windows.WindowSelection"
+        x:Class="EnsureRisk.Windows.WindowSingleSelection"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EnsureRisk.Windows"
         mc:Ignorable="d"
-        Title="WindowSelection" Height="473.646" Width="641.285" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen"  >
+        Title="Selection" Height="473.646" Width="641.285" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -31,7 +30,7 @@
             </Button>
         </Grid>
         <Grid Grid.Row="1">
-            <DataGrid Name="dgSelection" Margin="12,10,4,67" IsReadOnly="True" AutoGenerateColumns="False" MouseDoubleClick="dgSelection_MouseDoubleClick" ColumnWidth="*"  SelectionChanged="DgRisksCross_SelectionChanged" >
+            <DataGrid Name="dgSelection" Margin="12,10,4,67" IsReadOnly="True" AutoGenerateColumns="False" MouseDoubleClick="dgSelection_MouseDoubleClick" ColumnWidth="*">
                 <DataGrid.Columns>
                     <!--<DataGridCheckBoxColumn Binding="{Binding Is_Selected}" Width="60"/>-->
                     <DataGridTemplateColumn Width="80" x:Name="Selectbtn" >
@@ -70,6 +69,6 @@
                 </StackPanel>
             </md:DialogHost.DialogContent>
         </md:DialogHost>
-
     </Grid>
+
 </Window>

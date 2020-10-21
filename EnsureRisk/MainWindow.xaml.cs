@@ -3102,7 +3102,7 @@ namespace EnsureRisk
             {
                 decimal ID_DiagramImported = 0;
 
-                WindowSelection frmSelection = new WindowSelection
+                WindowSingleSelection frmSelection = new WindowSingleSelection
                 {
                     Dt = General.DeleteExists(TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Copy(),
                     TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Select(DT_Diagram.ID_DIAGRAM + " = " + TheCurrentLayout.ID_Diagram).CopyToDataTable(), DT_Diagram.ID_DIAGRAM),
@@ -3117,11 +3117,11 @@ namespace EnsureRisk
                     if (new WindowMessageYesNo("Do you want to import the selected items with all their properties(WBS, damages, probabilities etc.)?").ShowDialog() == true)
                     {
                         TheCurrentLayout.ListCopy = new List<RiskPolyLine>();
-                        ID_DiagramImported = (decimal)frmSelection.RowsSelected[0][DT_Diagram.ID_DIAGRAM];
+                        ID_DiagramImported = (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM];
                         DataSet ImportDSs = TheCurrentLayout.Ds.Copy();
-                        if (OpenedDocuments.FindIndex(o => o.ID_Diagram == (decimal)frmSelection.RowsSelected[0][DT_Diagram.ID_DIAGRAM]) >= 0)
+                        if (OpenedDocuments.FindIndex(o => o.ID_Diagram == (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM]) >= 0)
                         {
-                            ImportDSs.Merge(OpenedDocuments.Find(o => o.ID_Diagram == (decimal)frmSelection.RowsSelected[0][DT_Diagram.ID_DIAGRAM]).Ds);
+                            ImportDSs.Merge(OpenedDocuments.Find(o => o.ID_Diagram == (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM]).Ds);
                         }
                         LlenarListaDeCopiaToImport(ImportDSs, ID_DiagramImported);
                         DataRow[] drImportados = ImportDSs.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_DiagramImported);
@@ -3147,13 +3147,13 @@ namespace EnsureRisk
                     else
                     {
                         DataSet ds = TheCurrentLayout.Ds.Copy();
-                        if (OpenedDocuments.FindIndex(o => o.ID_Diagram == (decimal)frmSelection.RowsSelected[0][DT_Diagram.ID_DIAGRAM])>= 0)
+                        if (OpenedDocuments.FindIndex(o => o.ID_Diagram == (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM])>= 0)
                         {
-                            ds.Merge(OpenedDocuments.Find(o => o.ID_Diagram == (decimal)frmSelection.RowsSelected[0][DT_Diagram.ID_DIAGRAM]).Ds);
+                            ds.Merge(OpenedDocuments.Find(o => o.ID_Diagram == (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM]).Ds);
                         }
 
                         TheCurrentLayout.ListCopy = new List<RiskPolyLine>();
-                        LlenarListaDeCopiaToImport(ds, (decimal)frmSelection.RowsSelected[0][DT_Diagram.ID_DIAGRAM]);
+                        LlenarListaDeCopiaToImport(ds, (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM]);
                         TheCurrentLayout.CopyRisk.Position = TheCurrentLayout.LinesList.Find(r => r.ID == (decimal)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.ID]).Children.Count;
                         DataRow drNewRisk = CopyPasteController.CopyRiskWithoutSourceData(TheCurrentLayout.CopyRisk, ds, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), true,
                                             TheCurrentLayout.ID_Diagram, DsWBS);

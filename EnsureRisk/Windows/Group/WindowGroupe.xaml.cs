@@ -55,7 +55,7 @@ namespace EnsureRisk.Windows
                 //    DataTable topCodif = ws.GetAllGroupes().Tables[DT_Groupe.TABLE_NAME].Copy();
                     
                 //}
-                WindowSelection frmSelection = new WindowSelection
+                WindowSingleSelection frmSelection = new WindowSingleSelection
                 {
                     Dt = DT_Groups,
                     DcolumToShow = new string[] { DT_Groupe.GROUPE_NAME },
@@ -66,8 +66,8 @@ namespace EnsureRisk.Windows
                 frmSelection.ShowDialog();
                 if (frmSelection.DialogResult == true)
                 {//Arreglado por roberto pues estaba  tomando el primer elemento
-                    IdGroup = (decimal)frmSelection.RowsSelected[0][DT_Groupe.ID_GROUPE];
-                    TextGroup.Text = frmSelection.RowsSelected[0][DT_Groupe.GROUPE_NAME].ToString();
+                    IdGroup = (decimal)frmSelection.RowSelected[DT_Groupe.ID_GROUPE];
+                    TextGroup.Text = frmSelection.RowSelected[DT_Groupe.GROUPE_NAME].ToString();
                 }
             }
             catch (Exception ex)
