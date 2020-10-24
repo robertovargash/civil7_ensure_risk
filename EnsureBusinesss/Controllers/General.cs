@@ -256,6 +256,31 @@ namespace EnsureBusinesss
             riskPolyLine.UpdateSegmentsStrokeThickness();
         }
 
+        public static void RecalculateProbability(DataRow drLine, DataSet ds, decimal newProbability, bool isCM)
+        {
+            if (isCM)
+            {
+                foreach (DataRow rowRiskDamage in ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + drLine[DT_CounterM.ID]))
+                {
+                    rowRiskDamage[DT_CounterM_Damage.RISK_REDUCTION] = newProbability;
+                }
+                foreach (DataRow rowRiskWBS in ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + drLine[DT_CounterM.ID]))
+                {
+                    rowRiskWBS[DT_CM_WBS.PROBABILITY] = newProbability;
+                }
+            }
+            else
+            {
+                foreach (DataRow rowRiskDamage in ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + drLine[DT_Risk.ID]))
+                {
+                    rowRiskDamage[DT_Risk_Damages.PROBABILITY] = newProbability;
+                }
+                foreach (DataRow rowRiskWBS in ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drLine[DT_Risk.ID]))
+                {
+                    rowRiskWBS[DT_RISK_WBS.PROBABILITY] = newProbability;
+                }
+            }
+        }
 
         #region OtherFunctions
         public static byte[] Encrypt(string source)

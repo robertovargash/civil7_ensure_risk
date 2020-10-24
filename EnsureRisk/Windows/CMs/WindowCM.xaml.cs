@@ -826,5 +826,17 @@ namespace EnsureRisk.Windows
                 CancelCM();
             }
         }
+
+        private void TextProbability_LostFocus(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                General.RecalculateProbability(CMRow, Ds, Probability, true);
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
     }
 }

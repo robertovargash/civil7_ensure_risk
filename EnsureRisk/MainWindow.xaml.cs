@@ -1879,6 +1879,20 @@ namespace EnsureRisk
             }
         }
 
+
+        private void TextProbability_LostFocus(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                General.RecalculateProbability(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), TheCurrentLayout.Ds, Probability, false);
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+
         private void TextRisk_LostFocus(object sender, RoutedEventArgs e)
         {
             try
@@ -3386,6 +3400,18 @@ namespace EnsureRisk
                 }
                 //dgCMDamages.ItemsSource = DvCM_Damages;
                 CalculateRiskReduction(CMRow);
+            }
+        }
+
+        private void TextRReduction_LostFocus(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                General.RecalculateProbability(TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), TheCurrentLayout.Ds, RiskReduction, true);
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
             }
         }
 

@@ -815,9 +815,13 @@ namespace EnsureRisk.Windows
                     {
                         MostrarErrorDialog(StringResources.PROBABILITY_FIELD);
                     }
+                    else
+                    {
+                        General.RecalculateProbability(RiskRow, Ds, Probability, false);
+                    }
                 }
             }
-        }
+        }        
 
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
