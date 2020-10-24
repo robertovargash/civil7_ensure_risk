@@ -728,7 +728,7 @@ namespace EnsureRisk.Windows
                     Selected_WBS_Row = DVCMWBS[dgWBS.SelectedIndex].Row;
                     IS_DELETING_WBS = true;
                     MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_WBS_Row[DT_CM_WBS.WBS].ToString() + "]?");
-                }                
+                }
             }
             catch (Exception ex)
             {

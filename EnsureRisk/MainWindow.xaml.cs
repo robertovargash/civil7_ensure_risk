@@ -77,7 +77,7 @@ namespace EnsureRisk
                 OnPropertyChanged("HasAccess");
             }
         }
-        public MyLayoutDocumentt TheCurrentLayout { get { return theCurrentLayout; } set { theCurrentLayout = value; OnPropertyChanged("TheCurrentLayout"); } }        
+        public MyLayoutDocumentt TheCurrentLayout { get { return theCurrentLayout; } set { theCurrentLayout = value; OnPropertyChanged("TheCurrentLayout"); } }
         public decimal IdWBSFilter { get { return idwbsfilter; } set { idwbsfilter = value; OnPropertyChanged("IdWBSFilter"); } }
 
         public string DiagramName
@@ -680,6 +680,9 @@ namespace EnsureRisk
             Close();
         }
 
+        /// <summary>
+        /// Update minimap source
+        /// </summary>
         public void UpdateMiniMapSource()
         {
             try
@@ -984,11 +987,6 @@ namespace EnsureRisk
             }
         }
 
-        
-
-
-
-
         public void OpenSavedDiagram()
         {
             try
@@ -1154,7 +1152,7 @@ namespace EnsureRisk
                     OpenedDocuments.Add(myly);
                     TheCurrentLayout = myly;
                     WBSOperations.AddWBSTopToDiagram(myly.Ds, DiagramID, DsWBS);
-                    CambiosVisuales();
+                    UpdateDiagram();
                     foreach (var item in OpenedDocuments)
                     {
                         item.ExitWorking();
@@ -1229,7 +1227,7 @@ namespace EnsureRisk
                     OpenedDocuments.Add(myly);
                     TheCurrentLayout = myly;
                     WBSOperations.AddWBSTopToDiagram(myly.Ds, DiagramID, DsWBS);
-                    CambiosVisuales();
+                    UpdateDiagram();
                     foreach (var item in OpenedDocuments)
                     {
                         item.ExitWorking();
@@ -1263,7 +1261,7 @@ namespace EnsureRisk
 
                 SavingAsController.CreateRisks(originalLayout, destinyLayout.LinesList, MenuRisk);
 
-                SavingAsController.CreateCMs(originalLayout, destinyLayout.LinesList, MenuCM);               
+                SavingAsController.CreateCMs(originalLayout, destinyLayout.LinesList, MenuCM);
 
                 TreeOperation.Build_Tree(destinyLayout.LinesList);
 
@@ -1282,7 +1280,7 @@ namespace EnsureRisk
                 destinyLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
 
                 SavingAsController.CreateDamageWBSRoleRisks(destinyLayout.Ds, originalLayout.Ds, drRisk, drDiagram, drDiagram[DT_Diagram.DIAGRAM_NAME].ToString(), thecopiedline);
-                
+
                 destinyLayout.CopyRisk.ID = (decimal)drRisk[DT_Risk.ID];
 
                 //Paste(destinyLayout.CopyRisk, destinyLayout.Ds.Copy(), destinyLayout.Ds, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM], destinyLayout.LinesList);//Aca pego el resto del diagrama
@@ -1298,11 +1296,16 @@ namespace EnsureRisk
             }
         }
 
+        /// <summary>
+        /// Set up damages values to all risks and countermeasure
+        /// </summary>
+        /// <param name="idDiagramaa">Fishbone diagram id</param>
+        /// <param name="ds">Fishbone diagram dataset container</param>
         public void SetNewDamageToEntireTree(decimal idDiagramaa, DataSet ds)
         {
             foreach (DataRow damage in ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + idDiagramaa))
             {
-                //Por cada riesgo del diagrama
+                //For each diagram's risk
                 foreach (DataRow itemRisk in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + idDiagramaa))
                 {
                     if (!(ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { itemRisk[DT_Risk.ID], damage[DT_Risk_Damages.ID_DAMAGE] })))
@@ -1343,6 +1346,7 @@ namespace EnsureRisk
                         
                     }
                 }
+                //For each diagram's countermeasure
                 foreach (DataRow itemCM in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + idDiagramaa))
                 {
                     if (!(ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemCM[DT_CounterM.ID], damage[DT_CounterM_Damage.ID_DAMAGE] })))
@@ -1393,7 +1397,10 @@ namespace EnsureRisk
             //p.ProgressIsIndeterminate = false;
         }
 
-        private void CambiosVisuales()
+        /// <summary>
+        /// Draw updated fishbone diagram
+        /// </summary>
+        private void UpdateDiagram()
         {
             try
             {
@@ -1431,6 +1438,9 @@ namespace EnsureRisk
         }
         #endregion
 
+        /// <summary>
+        /// Delete selected diagram
+        /// </summary>
         private void DeleteDiagram()
         {
             try
@@ -1474,13 +1484,11 @@ namespace EnsureRisk
         }
 
         #region ImportFromExcel
-     
         /// <summary>
         /// Import an excel file and load the data, and create a diagram, validate if the Diagram will be Custom or Not.
         /// </summary>
         /// <param name="dsImporting">Dataset with the data</param>
         /// <param name="isCustom">If the diagram imported will be from a custom Excel file or Zuidasdok format</param>
-        /// <returns></returns>
         private async Task FillDataTableToExcelAsync(DataSet dsImporting, bool isCustom)
         {
             using (System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
@@ -1573,7 +1581,6 @@ namespace EnsureRisk
             }
         }
 
-       
         /// <summary>
         /// Este es el metodo para Importar desde excel
         /// </summary>
@@ -1600,6 +1607,11 @@ namespace EnsureRisk
         #endregion
 
         #region ExportarExcel
+        /// <summary>
+        /// Export to excel button click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ExportToExcel_Click(object sender, RoutedEventArgs e)
         {
             if (OpenedDocuments.Count != 0 && TheCurrentLayout != null && TheCurrentLayout.ID_Diagram >= 0 && !TheCurrentLayout.IsExportingToExcel)
@@ -1770,7 +1782,7 @@ namespace EnsureRisk
         }
 
         #region TabEditingRisk
-    
+
         public void UpdateRiskTabInformation()
         {
             if (TheCurrentLayout != null)
@@ -2732,7 +2744,7 @@ namespace EnsureRisk
                         Father = TheCurrentLayout.Line_Selected,
                         ShortName = "LineCreated",
                         IdRiskFather = TheCurrentLayout.Line_Selected.ID
-                    };                   
+                    };
                     TheCurrentLayout.InsertCM(Line_Created, TheCurrentLayout.Line_Selected, TheCurrentLayout.PointSelected);
 
                     TheCurrentLayout.DropLines();
@@ -3161,7 +3173,7 @@ namespace EnsureRisk
                     else
                     {
                         DataSet ds = TheCurrentLayout.Ds.Copy();
-                        if (OpenedDocuments.FindIndex(o => o.ID_Diagram == (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM])>= 0)
+                        if (OpenedDocuments.FindIndex(o => o.ID_Diagram == (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM]) >= 0)
                         {
                             ds.Merge(OpenedDocuments.Find(o => o.ID_Diagram == (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM]).Ds);
                         }
@@ -4047,6 +4059,11 @@ namespace EnsureRisk
         #endregion
 
         #region GroupRisk_Menu
+        /// <summary>
+        /// Group risk
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GroupingGroupRiskButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -4597,7 +4614,6 @@ namespace EnsureRisk
         #region CrossTab
 
         #region RiskCrossTab
-
         /// <summary>
         /// Update the right visualization panel with Risk Data
         /// </summary>
@@ -4797,7 +4813,11 @@ namespace EnsureRisk
 
         #endregion
 
-        #region CMCrossTab
+        #region CMCrossTab        
+        /// <summary>
+        /// Generate and show countermeasure crosstable
+        /// </summary>
+        /// <param name="myDs"></param>
         public void CroosCMRightTab(DataSet myDs)
         {
             if (TheCurrentLayout != null)
@@ -4974,6 +4994,10 @@ namespace EnsureRisk
             return listaGroup;
         }
 
+        /// <summary>
+        /// Show cross table risk and risk group
+        /// </summary>
+        /// <param name="myDs"></param>
         public void FillTableGroup(DataSet myDs)
         {
             if (TheCurrentLayout != null)

@@ -14,21 +14,19 @@ namespace EnsureRisk.Export.Trader
         public decimal id;
         public decimal value;
     }
+
+    /// <summary>
+    /// Controller to fetch data from diagram dataset source
+    /// </summary>
     public class RiskTreeDataSetTrader : DataSetTrader, IDisposable
     {
-        //public List<RiskPolyLine> LinesList
-        //{
-        //    get
-        //    {
-        //        return _linesList;
-        //    }
-        //}
-        //private IEnumerable<RiskAndCm> _acumulatedValueList;
+
         public RiskAndCm[] AcumulatedValueList { get; set; }
         public List<RiskPolyLine> LinesDiagram { get; set; }
-        //object _riskList;
-        //object _cmList;
 
+        /// <summary>
+        /// Risk data container
+        /// </summary>
         public DataTable RiskDataTable
         {
             get
@@ -37,6 +35,9 @@ namespace EnsureRisk.Export.Trader
             }
         }
 
+        /// <summary>
+        /// Counter measure data container
+        /// </summary>
         public DataTable CMDataTable
         {
             get
@@ -45,6 +46,9 @@ namespace EnsureRisk.Export.Trader
             }
         }
 
+        /// <summary>
+        /// Risk top risk data container
+        /// </summary>
         public DataTable RiskTopRiskDataTable
         {
             get
@@ -97,6 +101,13 @@ namespace EnsureRisk.Export.Trader
             LinesDiagram = linesDiagram;
         }
 
+        /// <summary>
+        /// Populate RiskTreeDataSetTrader with diagram data
+        /// </summary>
+        /// <param name="dataSet"></param>
+        /// <param name="id">Diagram id</param>
+        /// <param name="linesDiagram"></param>
+        /// <param name="drDamages"></param>
         public RiskTreeDataSetTrader(DataSet dataSet, decimal id, List<RiskPolyLine> linesDiagram, DataRow[] drDamages) : base(dataSet)
         {
             GetRiskTreeDataSet(id);
@@ -123,6 +134,11 @@ namespace EnsureRisk.Export.Trader
             }
         }
 
+        /// <summary>
+        /// Return main risk descendants
+        /// </summary>
+        /// <param name="mainRisk">Main risk descendant</param>
+        /// <returns></returns>
         public DataTable GetMainRisksDescendants(DataRow mainRisk)
         {
             DataTable dataTable = new DataTable();
@@ -205,6 +221,10 @@ namespace EnsureRisk.Export.Trader
             return riskPropertiesTypeQuery.Distinct();
         }
 
+        /// <summary>
+        /// Return main risk decendants
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<DataRow> GetMainRiskChildList()
         {
             DataRow mainRisk = RiskDataTable.AsEnumerable().FirstOrDefault(riskDataRow => (bool)(riskDataRow[ISROOT_COLUMNNAME]) == true);
@@ -259,6 +279,12 @@ namespace EnsureRisk.Export.Trader
                    select counterMChildDataRow;
             return counterMChildDataRowQuery;
         }
+
+        /// <summary>
+        /// Return diagram riskTreeID dataset
+        /// </summary>
+        /// <param name="riskTreeID">Diagram to return</param>
+        /// <returns></returns>
         private DataSet GetRiskTreeDataSet(decimal riskTreeID)
         {
             _riskTreeDataSet = new DataSet();
@@ -273,6 +299,12 @@ namespace EnsureRisk.Export.Trader
 
             return _riskTreeDataSet;
         }
+
+        /// <summary>
+        /// Return RiskTree datatable
+        /// </summary>
+        /// <param name="riskTreeID">Diagram id</param>
+        /// <returns></returns>
         private DataTable GetRiskTreeDataTable(decimal riskTreeID)
         {
             //RiskTree
@@ -280,6 +312,12 @@ namespace EnsureRisk.Export.Trader
             dataTable.ImportRow(SourceDataSet.Tables[RISKTREE_TABLENAME].Rows.Find(riskTreeID));
             return dataTable;
         }
+
+        /// <summary>
+        /// Return RiskTreeTopRisk datatable
+        /// </summary>
+        /// <param name="riskTreeID">Diagram id</param>
+        /// <returns></returns>
         private DataTable GetRiskTreeTopRiskDataTable(decimal riskTreeID)
         {
             //RiskTree_TopRisk
@@ -291,6 +329,12 @@ namespace EnsureRisk.Export.Trader
             riskTreeDamageDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
         }
+
+        /// <summary>
+        /// Return TopRisk datatable
+        /// </summary>
+        /// <param name="riskTreeTopRiskDataTable">RiskTreeTopRisk datatable</param>
+        /// <returns></returns>
         private DataTable GetTopRiskDataTable(DataTable riskTreeTopRiskDataTable)
         {
             //TopRisk 
@@ -303,6 +347,12 @@ namespace EnsureRisk.Export.Trader
             topRiskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
         }
+
+        /// <summary>
+        /// Get risk datatable
+        /// </summary>
+        /// <param name="riskTreeID">Diagram id</param>
+        /// <returns></returns>
         private DataTable GetRiskDataTable(decimal riskTreeID)
         {
             //Risk
@@ -315,6 +365,12 @@ namespace EnsureRisk.Export.Trader
             riskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
         }
+
+        /// <summary>
+        /// Return RiskTopRisk datatable
+        /// </summary>
+        /// <param name="riskDataTable">Risk datatable</param>
+        /// <returns></returns>
         private DataTable GetRiskTopRiskDataTable(DataTable riskDataTable)
         {
             //Risk_TopRisk
@@ -327,6 +383,12 @@ namespace EnsureRisk.Export.Trader
             riskTopRiskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
         }
+
+        /// <summary>
+        /// Return Counter measure datatable
+        /// </summary>
+        /// <param name="riskTreeID">Diagram id</param>
+        /// <returns></returns>
         private DataTable GetCounterMDataTable(decimal riskTreeID)
         {
             //CounterM
@@ -338,6 +400,12 @@ namespace EnsureRisk.Export.Trader
             counterMesureDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
         }
+
+        /// <summary>
+        /// Return counter measure top risk datatable
+        /// </summary>
+        /// <param name="counterMDataTable">Xounter measure datatable</param>
+        /// <returns></returns>
         private DataTable GetCounterMTopRiskDataTable(DataTable counterMDataTable)
         {
             //CounterM_TopRisk
@@ -350,6 +418,11 @@ namespace EnsureRisk.Export.Trader
             counterMeasureTopRiskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
         }
+
+        /// <summary>
+        /// Count risk and counter measure
+        /// </summary>
+        /// <returns></returns>
         public int RowsCount()
         {
             int riskCount = _riskTreeDataSet.Tables[RISK_TABLENAME].Rows.Count;

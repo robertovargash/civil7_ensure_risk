@@ -656,8 +656,8 @@ namespace EnsureBusinesss
             {
                 throw new Exception(ex.Message);
             }
-        }      
-        
+        }
+
         /// <summary>
         /// Clasifica todas los RiskPolyLine que son directamentes hijos de MainLine.
         /// El objetivo es saber que ramas se dibujan por encima y debajo de MainLine
@@ -727,7 +727,7 @@ namespace EnsureBusinesss
                     {
                         DrawDiagramAsFishBone(line.Children, new Point(line.Points[0].X, line.Points[0].Y));
                     }
-                   
+
                     if (line.Father.Father == null)
                     {
                         if (i > 0)
@@ -771,7 +771,7 @@ namespace EnsureBusinesss
             {
                 throw new Exception("TreeOperation.MoveRight: " + e.Message);
             }
-        }        
+        }
 
         private static PointToMoveRight GetPointMoveRight(List<RiskPolyLine> Lines, RiskPolyLine pLine, double altura)
         {

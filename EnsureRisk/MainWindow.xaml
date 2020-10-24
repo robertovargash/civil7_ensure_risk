@@ -348,7 +348,7 @@
                                                                             Converter={x:Static decimalconv:DecimalUIConverter.Instance},
                                                                          ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
                                                                         ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}" Margin="10" 
-                                                 md:HintAssist.IsFloating="True" HorizontalAlignment="Left" Width="150" IsEnabled="False" Height="42"/>
+                                                 md:HintAssist.IsFloating="True" HorizontalAlignment="Left" Width="150" IsEnabled="{Binding Path = HasAccess}" Height="42"/>
                                         <md:Card Background="{DynamicResource MaterialDesignBackground}">
                                             <StackPanel>
                                                 <Expander HorizontalAlignment="Stretch" Header="Risk Values" IsExpanded="True">
@@ -477,7 +477,7 @@
                                         <TextBox md:HintAssist.Hint="CounterMeasure" x:Name="TextCM" Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" 
                                                  HorizontalAlignment="Stretch" MinWidth="150" TextAlignment="Justify" VerticalScrollBarVisibility="Auto"
                                                  md:HintAssist.IsFloating="True" TextWrapping="Wrap" TextOptions.TextHintingMode="Animated"
-                                                 LostFocus="TextCM_LostFocus" TextChanged="TextCM_TextChanged">
+                                                 LostFocus="TextCM_LostFocus" TextChanged="TextCM_TextChanged" IsEnabled="{Binding Path = HasAccess}">
                                             <TextBox.Text>
                                                 <Binding Path="CMLineName" UpdateSourceTrigger="PropertyChanged">
                                                     <Binding.ValidationRules>
@@ -492,7 +492,7 @@
                                         <TextBox md:HintAssist.Hint="Risk Reduction(%)" Margin="10" x:Name="TextRReduction" LostFocus="TextRReduction_LostFocus" md:HintAssist.IsFloating="True" HorizontalAlignment="Left" Width="150" Text="{Binding Path = RiskReduction,
                                                                             Converter={x:Static decimalconv:DecimalUIConverter.Instance},
                                                                          ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
-                                                                        ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}" IsEnabled="False" Height="42"/>
+                                                                        ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}" IsEnabled="{Binding Path = HasAccess}" Height="42"/>
                                         <md:Card Background="{DynamicResource MaterialDesignBackground}">
                                             <StackPanel>
                                                 <Expander HorizontalAlignment="Stretch" Header="CM Values" IsExpanded="True">

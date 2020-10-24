@@ -16,7 +16,7 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:local1="clr-namespace:EnsureRisk.Classess"
     mc:Ignorable="d"
-        Title="Risk" Height="561" Width="677" MinWidth="677" MinHeight="561" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+        Title="Risk" Height="561" Width="677" MinWidth="677" MinHeight="561" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" >
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
     </Window.Resources>
@@ -166,7 +166,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <TextBox TabIndex="3" x:Name="TextProbability" IsEnabled="True" PreviewTextInput="NumberValidationTextBox" Text="{Binding Path = Probability}" HorizontalAlignment="Left" Height="27" Margin="157,223,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="73" LostFocus="TextProbability_LostFocus" MaxLines="2" TextAlignment="Right">
+        <TextBox TabIndex="3" x:Name="TextProbability" IsEnabled="{Binding Path = HasAccess}" PreviewTextInput="NumberValidationTextBox" Text="{Binding Path = Probability}" HorizontalAlignment="Left" Height="27" Margin="157,223,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="73" LostFocus="TextProbability_LostFocus" MaxLines="2" TextAlignment="Right">
 
         </TextBox>
         <Label x:Name="LabelProbability" Content="Probability (%):" HorizontalAlignment="Left" Margin="37,223,0,0" VerticalAlignment="Top"/>

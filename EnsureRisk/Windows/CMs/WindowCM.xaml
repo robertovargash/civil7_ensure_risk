@@ -153,7 +153,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <TextBox IsEnabled="True" x:Name="TextProbability" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Height="27" LostFocus="TextProbability_LostFocus" Margin="577,145,0,0" TextWrapping="Wrap" Text="{Binding Path = Probability}"  VerticalAlignment="Top" Width="73"  MaxLines="2" TextAlignment="Right"/>
+        <TextBox IsEnabled="{Binding Path = HasAccess}" x:Name="TextProbability" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Height="27" LostFocus="TextProbability_LostFocus" Margin="577,145,0,0" TextWrapping="Wrap" Text="{Binding Path = Probability}"  VerticalAlignment="Top" Width="73"  MaxLines="2" TextAlignment="Right"/>
         <Label x:Name="LabelProbability" Content="Risk Reduction (%):" HorizontalAlignment="Left" Margin="430,145,0,0" VerticalAlignment="Top"/>
         <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">
             <md:DialogHost.DialogContent >

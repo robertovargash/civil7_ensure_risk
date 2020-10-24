@@ -197,12 +197,7 @@ namespace EnsureBusinesss
 
         #region BorrarElementoRecursivoDatatable
 
-        /// <summary>
-        /// Delete the children's for any members of List "Colection. CM and Risk are treated as the same, like lines"
-        /// </summary>
-        /// <param name="collection">List of collection to delete its childrens</param>
-        /// <param name="ds"></param>
-
+        
 
         public static decimal ConvertToDec(string word)
         {
@@ -281,6 +276,7 @@ namespace EnsureBusinesss
                 }
             }
         }
+
 
         #region OtherFunctions
         public static byte[] Encrypt(string source)

@@ -190,7 +190,7 @@ namespace EnsureRisk
             };
             return whc;
         }
-                       
+
         /// <summary>
         /// Set to the Main risk in the Diagram, the automatic Data
         /// </summary>
@@ -346,7 +346,7 @@ namespace EnsureRisk
         /// <param name="drRisk">The Main Risk Data</param>
         /// <param name="DsWBS">The Dataset with the WBS</param>
         /// <returns></returns>
-        public static HeaderExcelContent FillDataRisk(DataSet dsImporting, bool isCustom, string isActiveKeyword, DataTable dtExcel, 
+        public static HeaderExcelContent FillDataRisk(DataSet dsImporting, bool isCustom, string isActiveKeyword, DataTable dtExcel,
             WindowHeaderClasification whc, IEnumerable<HeaderExcelContent> countDamages, DataRow theDiagram, DataRow drRisk, DataSet DsWBS)
         {
             var xIdRisk = whc.MyList.FindLast(x => x.IdClasification == 1);
@@ -467,7 +467,7 @@ namespace EnsureRisk
                 drDamage_Diagram[DT_Diagram_Damages.RISK_TREE] = "Imported Diagram";
                 drDamage_Diagram[DT_Diagram_Damages.ID_RISKTREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
                 drDamage_Diagram[DT_Diagram_Damages.TOP_RISK] = Damage;
-                dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Add(drDamage_Diagram);               
+                dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Add(drDamage_Diagram);
             }
             else
             {

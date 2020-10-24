@@ -1,5 +1,6 @@
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\ERComp.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\ERComp.pdb
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.csprojAssemblyReference.cache
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\Themes\Aero2.NormalColor.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\Themes\classic.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\Themes\luna.homestead.baml
@@ -89,7 +90,6 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\Zoombo
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.g.resources
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.Core.ErrorMessages.resources
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.csproj.GenerateResource.cache
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.csproj.CopyComplete
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.pdb
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.csproj.CopyComplete
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.csprojAssemblyReference.cache

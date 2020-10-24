@@ -55,9 +55,9 @@ namespace EnsureRisk.Windows
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
-        public bool IS_USING_NAME { get; set; }=false;
+        public bool IS_USING_NAME { get; set; } = false;
         public bool IS_DELETING_ROW { get; set; } = false;
-        public bool IS_DELETING_WBS_ROW{ get; set; } = false;
+        public bool IS_DELETING_WBS_ROW { get; set; } = false;
         public DataRow Selected_RoleRow { get; set; }
         public DataRow Selected_WBSRow { get; set; }
         public DataRow RiskRow { get; set; }
@@ -237,11 +237,11 @@ namespace EnsureRisk.Windows
                     rowTop[DT_Risk_Damages.RISK_TREE] = Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(RiskTreeID)[DT_Diagram.DIAGRAM_NAME].ToString();
                     rowTop[DT_Risk_Damages.IS_ROOT] = false;
                     Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Add(rowTop);
-                }                    
+                }
             }
         }
 
-           
+
         /// <summary>
         /// Set the Roles from the Risk Father
         /// </summary>
@@ -319,7 +319,7 @@ namespace EnsureRisk.Windows
                         }
                         SetTableRisk_WBS_Damage(itemWBS);
                     }
-                }                             
+                }
             }
         }
 
@@ -366,7 +366,7 @@ namespace EnsureRisk.Windows
         /// </summary>
         private void SetTableRisk_WBS_Damage(DataRow riskWBS)
         {
-            if (WBSOperations.IsRiskWBSLow(riskWBS,dsWBS,Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
+            if (WBSOperations.IsRiskWBSLow(riskWBS, dsWBS, Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
             {
                 //AddWBS_Risk_Damage((decimal)RiskRow[DT_Risk.ID], riskWBS);
                 WBSOperations.TabAddWBS_LINE_Damage(riskWBS, (decimal)RiskRow[DT_Risk.ID], false, Ds);
@@ -405,7 +405,7 @@ namespace EnsureRisk.Windows
                     }
                     //if (General.WBS_isSheet((decimal)rowRiskWbs[DT_RISK_WBS.ID_WBS], dsWBS))
                     //{
-                       
+
                     //}
                 }
                 if (Probabilities.Count > 0)
@@ -419,7 +419,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-               MostrarErrorDialog(ex.Message);
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -502,7 +502,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-               MostrarErrorDialog(ex.Message);
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -554,7 +554,7 @@ namespace EnsureRisk.Windows
                 {
                     MostrarErrorDialog("'Administrator' role can't be deleted!");
                 }
-            }            
+            }
         }
 
         private void BtnAddWBS_Click(object sender, RoutedEventArgs e)
@@ -741,7 +741,7 @@ namespace EnsureRisk.Windows
             }
             catch (Exception ex)
             {
-               MostrarErrorDialog(ex.Message);
+                MostrarErrorDialog(ex.Message);
             }
         }
 
@@ -779,7 +779,7 @@ namespace EnsureRisk.Windows
             {
                 IS_DELETING_WBS_ROW = false;
                 MostrarErrorDialog(ex.Message);
-            }            
+            }
         }
 
         private void BtnDelWBS_Click(object sender, RoutedEventArgs e)
@@ -821,7 +821,7 @@ namespace EnsureRisk.Windows
                     }
                 }
             }
-        }        
+        }
 
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
@@ -942,7 +942,7 @@ namespace EnsureRisk.Windows
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {            
+        {
             DialogResult = false;
             Close();
         }
@@ -1138,7 +1138,7 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                
+
                 decimal idWBS = (decimal)((DataRowView)((ToggleButton)e.Source).DataContext).Row[DT_RISK_WBS.ID_WBS];
 
                 if (dgWBS.SelectedIndex >= 0)
@@ -1150,7 +1150,7 @@ namespace EnsureRisk.Windows
                         item[DT_RISK_WBS.IS_PRIMARY] = false;
                         item[DT_RISK_WBS.PRIMARY] = "";
                     }
-                    
+
                     ID_WBS = (decimal)DvRiskWBS[dgWBS.SelectedIndex].Row[DT_RISK_WBS.ID_WBS];
                     WBS_NAME = DvRiskWBS[dgWBS.SelectedIndex].Row[DT_RISK_WBS.NIVEL].ToString() + " " + DvRiskWBS[dgWBS.SelectedIndex].Row[DT_RISK_WBS.WBS].ToString();
                     USER_NAME = DvRiskWBS[dgWBS.SelectedIndex].Row[DT_RISK_WBS.USERNAME].ToString();

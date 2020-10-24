@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="EnsureRisk.Classess.MyLayouttDocument"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"      
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Medium"
+             TextElement.FontSize="14"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EnsureRisk.Classess"
+             xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+             xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
+             mc:Ignorable="d" Background="Transparent">
+    <Grid MouseDown="LayoutDocument_MouseDown" Background="Red">
+        <Button x:Name="BtnUndoneScope" Panel.ZIndex="1" Click="BtnUndoneScope_Click" Visibility="Collapsed" Content="{md:PackIcon Kind=UndoVariant}" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+        <Grid x:Name="TheMainGrid" Background="White" MouseDown="LayoutDocument_MouseDown">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer x:Name="ScrollGridPaint" Grid.Row="0" VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" >
+                <Grid x:Name="CanvasMain">
+                    <Grid Width="200" Height="200" x:Name="GridPaintLines" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel" Background="#FFFAF3FA">
+                        <TextBox x:Name="TextChangeName" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+            <local:PopWindow x:Name="MyPopWindow" Visibility="Collapsed" Panel.ZIndex="1" Grid.Row="0" Foreground="Black"/>
+            <local:PopCMWindow x:Name="MyPopCMWindow" Visibility="Collapsed" Panel.ZIndex="1" Grid.Row="0" Foreground="Black"/>
+            <Grid Grid.Row="1" Background="{DynamicResource MaterialDesignPaper}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="25"/>
+                </Grid.ColumnDefinitions>
+                <ProgressBar Grid.Column="1" x:Name="TheProgressBar" VerticalAlignment="Center" Visibility="Collapsed" HorizontalAlignment="Stretch" IsIndeterminate="True"/>
+                <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <ComboBox x:Name="CbFilterTopR" ItemsSource="{Binding DvDamage}" DisplayMemberPath="{x:Static data:DT_Diagram_Damages.TOP_RISK}" SelectedValuePath="{x:Static data:DT_Diagram_Damages.ID_DAMAGE}" SelectedValue="{Binding IdDamageSelected}" IsEditable="False" HorizontalContentAlignment="Center"  Style="{StaticResource MaterialDesignFloatingHintComboBox}"  DropDownClosed="CbFilterTopR_DropDownClosed">
+                        <md:HintAssist.Hint>
+                            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+                                <md:PackIcon Kind="Warning" />
+                                <TextBlock> 
+                                        Damages
+                                </TextBlock>
+                            </StackPanel>
+                        </md:HintAssist.Hint>
+                    </ComboBox>
+                </StackPanel>
+                <ComboBox x:Name="TheZoomComboBox" Text="{Binding ZoomValue}" Style="{DynamicResource MaterialDesignComboBox}" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" HorizontalContentAlignment="Right" IsEditable="True">
+                    <ComboBoxItem Content="10"/>
+                    <ComboBoxItem Content="25"/>
+                    <ComboBoxItem Content="50"/>
+                    <ComboBoxItem Content="75"/>
+                    <ComboBoxItem Content="100"/>
+                    <ComboBoxItem Content="150"/>
+                    <ComboBoxItem Content="200"/>
+                </ComboBox>
+                <TextBlock Text="%" Grid.Column="3" VerticalAlignment="Center"/>
+                <Button Content="{md:PackIcon Kind=MinusCircleOutline}" x:Name="BtnMinus" Grid.Column="4" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignToolButton}" HorizontalAlignment="Right" Click="BtnMinusZoom_Click"/>
+                <Slider Style="{DynamicResource MaterialDesignSlider}" x:Name="SliderZoom" Value="{Binding ZoomValue}" ValueChanged="SliderZoom_ValueChanged" MouseWheel="SliderZoom_MouseWheel"  Grid.Column="5" Minimum="10" Maximum="200" VerticalAlignment="Center" TickPlacement="TopLeft" SmallChange="10" LargeChange="20" TickFrequency="10"/>
+                <Button Content="{md:PackIcon Kind=PlusCircleOutline}" x:Name="BtnPlus" Grid.Column="6" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignToolButton}" HorizontalAlignment="Right" Click="BtnPlusZoom_Click"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -67,6 +67,11 @@ namespace EnsureRisk.Export
 
         #endregion
 
+            /// <summary>
+            /// Export diagram data to excel file
+            /// </summary>
+            /// <param name="ds">DataSet that contain data</param>
+            /// <param name="destination">destination file name</param>
         private void ExportDataSet(DataSet ds, string destination)
         {
             using (var workbook = SpreadsheetDocument.Create(destination, SpreadsheetDocumentType.Workbook))
@@ -347,6 +352,11 @@ namespace EnsureRisk.Export
             sheetPart.Worksheet.InsertAfter(mergeCells, sheetPart.Worksheet.Elements<SheetData>().First());
         }
 
+        /// <summary>
+        /// Export diagram to excel
+        /// </summary>
+        /// <param name="riskTreeDataSetTrader">Controller to fetch data from diagram dataset source</param>
+        /// <param name="fileName">Excel filename</param>
         public ExportRiskTree(RiskTreeDataSetTrader riskTreeDataSetTrader, string fileName)
         {
             _riskTreeDataSetTrader = riskTreeDataSetTrader ?? throw new ArgumentNullException(nameof(riskTreeDataSetTrader));
@@ -379,6 +389,11 @@ namespace EnsureRisk.Export
             }
         }
 
+        /// <summary>
+        /// Asynchronous export to excel
+        /// </summary>
+        /// <param name="backgroundWorker"></param>
+        /// <param name="e"></param>
         public void ExportShortExcel(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
         {
             InitializeExcel();
@@ -401,6 +416,10 @@ namespace EnsureRisk.Export
                 //CloseExcel();
             }
         }
+
+        /// <summary>
+        /// Initialize datatable container
+        /// </summary>
         private void InitializeExcel()
         {
             DtToExport = new DataTable();
@@ -412,6 +431,9 @@ namespace EnsureRisk.Export
             SetCounterMHeader();
         }
 
+        /// <summary>
+        /// Set up row with risk and counter measure header
+        /// </summary>
         private void SetHeaderShort()
         {
             SetRiskHeaderShort();
@@ -451,6 +473,9 @@ namespace EnsureRisk.Export
             SetDynamicHeader(false);           
         }
 
+        /// <summary>
+        /// Set up row header for risk
+        /// </summary>
         private void SetRiskHeaderShort()
         {
             _columnIndex = 1;
@@ -467,6 +492,9 @@ namespace EnsureRisk.Export
             SetDynamicHeader(false);
         }
 
+        /// <summary>
+        /// Set up row header for counter measure
+        /// </summary>
         private void SetCounterMHeaderShort()
         {
             _columnIndex++;
@@ -530,12 +558,24 @@ namespace EnsureRisk.Export
             FillWithRisk(_riskTreeDataSetTrader.GetMainRiskChildList(), backgroundWorker, e, true);
         }
 
+        /// <summary>
+        /// Fill excel file with diagram risk and countermeasure
+        /// </summary>
+        /// <param name="backgroundWorker"></param>
+        /// <param name="e"></param>
         private void FillShort(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
         {
             _rowIndex = BEGIN_AT_ROWINDEX;
             FillWithRiskShort(_riskTreeDataSetTrader.GetMainRiskChildList(), backgroundWorker, e, true);
         }
 
+        /// <summary>
+        /// Fill rows with risk and countermeasure 
+        /// </summary>
+        /// <param name="mainRiskChildDataRowQuery"></param>
+        /// <param name="backgroundWorker"></param>
+        /// <param name="e"></param>
+        /// <param name="isMain"></param>
         private void FillWithRiskShort(IEnumerable<DataRow> mainRiskChildDataRowQuery, BackgroundWorker backgroundWorker, DoWorkEventArgs e, bool isMain)
         {
             IEnumerable<DataRow> riskProperties = _riskTreeDataSetTrader.ObtenerTiposDamagesRisk();
