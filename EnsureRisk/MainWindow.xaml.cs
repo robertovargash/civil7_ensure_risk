@@ -33,6 +33,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
+using EnsureRisk.Windows.Logs;
 
 namespace EnsureRisk
 {
@@ -532,8 +533,8 @@ namespace EnsureRisk
 
         private void OptionMiniMap_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            AnchorMiniMap.IsVisible = true;
-            AnchorMiniMap.IsSelected = true;
+            WindowLogs wl = new WindowLogs();
+            wl.Show();
         }
 
         private void LoginCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -689,11 +690,11 @@ namespace EnsureRisk
             {
                 if (TheCurrentLayout != null)
                 {
-                    MiniMap.MapSource = TheCurrentLayout.ScrollGridPaint;
+                    //MiniMap.MapSource = TheCurrentLayout.ScrollGridPaint;
                 }
                 else
                 {
-                    MiniMap.MapSource = new ScrollViewer();
+                    //MiniMap.MapSource = new ScrollViewer();
                 }
             }
             catch (Exception ex)

@@ -38,5 +38,8 @@
     <Setting Name="EnsureRisk_ServiceClasifications_WebServiceClasificator" Type="(Web Service URL)" Scope="Application">
       <Value Profile="(Default)">http://localhost/EnsureRiskWS/WebServiceClasificator.asmx</Value>
     </Setting>
+    <Setting Name="EnsureRisk_ServiceLog_WebServiceMyLog" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost/EnsureRiskWS/WebServiceMyLog.asmx</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

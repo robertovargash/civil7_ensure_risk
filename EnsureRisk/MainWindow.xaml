@@ -268,7 +268,7 @@
         <CommandBinding Command="local:CustomCommands.Damage" Executed="DamageCommandBinding_Executed" />
         <CommandBinding Command="local:CustomCommands.Default" Executed="DefaultCommandBinding_Executed" />
         <CommandBinding Command="local:CustomCommands.Settings" Executed="OptionCommandBinding_Executed" />
-        <CommandBinding Command="local:CustomCommands.MiniMap" Executed="OptionMiniMap_Executed" />
+        <CommandBinding Command="local:CustomCommands.Logs" Executed="OptionMiniMap_Executed" />
         <CommandBinding Command="local:CustomCommands.Risk" Executed="RiskCommandBinding_Executed" />
         <CommandBinding Command="local:CustomCommands.CounterMeasure" Executed="CounterMeasureCommandBinding_Executed" />
         <CommandBinding Command="local:CustomCommands.WBS" Executed="WBS_CommandBinding_Executed" />
@@ -289,7 +289,7 @@
         <KeyBinding Key="O" Modifiers="Control" Command="local:CustomCommands.Settings"/>
         <KeyBinding Key="R" Modifiers="Control" Command="local:CustomCommands.Risk"/>
         <KeyBinding Key="M" Modifiers="Control" Command="local:CustomCommands.CounterMeasure"/>
-        <KeyBinding Key="M" Modifiers="Control+Shift" Command="local:CustomCommands.MiniMap"/>
+        <KeyBinding Key="L" Modifiers="Control+Shift" Command="local:CustomCommands.Logs"/>
         <KeyBinding Key="P" Modifiers="Control+Shift" Command="local:CustomCommands.Properties"/>
         <KeyBinding Key="E" Modifiers="Control" Command="local:CustomCommands.Export"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="SaveAs"/>
@@ -314,6 +314,27 @@
             <xcad:LayoutRoot x:Name="_layoutRoot">
                 <xcad:LayoutPanel Orientation="Horizontal">                    
                     <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200" >
+                        <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="60"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0">
+                                    <md:PopupBox ToolTip="More" Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}" PlacementMode="RightAndAlignMiddles" HorizontalAlignment="Left" VerticalAlignment="Top" UnfurlOrientation="Horizontal" >
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnAddWBS" Click="BtnAddWBS_Click" Content="{md:PackIcon Kind=Add}" Width="32" Height="32" ToolTip="Add WBS"/>
+                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnCollapseWBS" Click="WBSTreeviewBtnCollapse_Click" Content="{md:PackIcon Kind=ContentCopy}" Width="32" Height="32" ToolTip="Collapse All"/>
+                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnDeselect" Click="WBSTreeviewBtnDeselect_Click" Content="{md:PackIcon Kind=ArrowBack}" Width="32" Height="32" ToolTip="DeSelect"/>
+                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnSettings" Click="WBSTreeviewBtnDeselect_Click" Content="{md:PackIcon Kind=Settings}" Width="32" Height="32" ToolTip="WBS Settings"/>
+                                        </StackPanel>
+                                    </md:PopupBox>
+                                </Grid>
+                                <Grid Grid.Row="1">
+                                    <TreeView Name="TreeViewWBS" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                </Grid>
+                            </Grid>
+                        </xcad:LayoutAnchorable>
                         <xcad:LayoutAnchorable ContentId="properties" x:Name="LayoutProperties"  Title="Properties"  CanHide="true" CanClose="False" AutoHideWidth="240">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" >
                                 <StackPanel Orientation="Vertical">
@@ -623,32 +644,11 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </xcad:LayoutAnchorable>
-                        <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="60"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Grid Grid.Row="0">
-                                    <md:PopupBox ToolTip="More" Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}" PlacementMode="RightAndAlignMiddles" HorizontalAlignment="Left" VerticalAlignment="Top" UnfurlOrientation="Horizontal" >
-                                        <StackPanel Orientation="Horizontal">
-                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnAddWBS" Click="BtnAddWBS_Click" Content="{md:PackIcon Kind=Add}" Width="32" Height="32" ToolTip="Add WBS"/>
-                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnCollapseWBS" Click="WBSTreeviewBtnCollapse_Click" Content="{md:PackIcon Kind=ContentCopy}" Width="32" Height="32" ToolTip="Collapse All"/>
-                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnDeselect" Click="WBSTreeviewBtnDeselect_Click" Content="{md:PackIcon Kind=ArrowBack}" Width="32" Height="32" ToolTip="DeSelect"/>
-                                            <Button Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" x:Name="BtnSettings" Click="WBSTreeviewBtnDeselect_Click" Content="{md:PackIcon Kind=Settings}" Width="32" Height="32" ToolTip="WBS Settings"/>
-                                        </StackPanel>
-                                    </md:PopupBox>
-                                </Grid>
-                                <Grid Grid.Row="1">
-                                    <TreeView Name="TreeViewWBS" Foreground="{DynamicResource MaterialDesignBody}"/>
-                                </Grid>
-                            </Grid>
-                        </xcad:LayoutAnchorable>
-                        <xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="Mini Map" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300">
-                            <Grid Name="gridMiniMap" Background="#FF918080">
-                                <classess:MiniMapControl x:Name="MiniMap" />
-                            </Grid>
-                        </xcad:LayoutAnchorable>
+                        <!--<xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="Mini Map" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300" IsVisible="False">
+                            --><!--<Grid Name="gridMiniMap" Background="#FF918080">
+                                --><!--<classess:MiniMapControl x:Name="MiniMap" />--><!--
+                            </Grid>--><!--
+                        </xcad:LayoutAnchorable>-->
                     </xcad:LayoutAnchorablePane>
                     <xcad:LayoutDocumentPaneGroup x:Name="LayoutDocPaneGroup">
                         <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel">                            
@@ -864,7 +864,7 @@
                             <MenuItem Header="View Group List" Icon="{md:PackIcon Kind=Group}" Click="MenuItem_Click_3"/>
                             <MenuItem Header="View WBS" Icon="{md:PackIcon Kind=FileTree}" Command="local:CustomCommands.WBS" InputGestureText="Ctrl+W"/>
                             <MenuItem Header="View Properties" Icon="{md:PackIcon Kind=FileTree}" Command="local:CustomCommands.Properties" InputGestureText="Ctrl+Shift+P"/>
-                            <MenuItem Header="View MiniMap" Icon="{md:PackIcon Kind=MapSearch}" Command="local:CustomCommands.MiniMap" InputGestureText="Ctrl+Shift+M"/>
+                            <MenuItem Header="View Logs" Icon="{md:PackIcon Kind=Message}" Command="local:CustomCommands.Logs" InputGestureText="Ctrl+Shift+L"/>
                         </MenuItem> 
                         <MenuItem x:Name="MenuItemOption" Header="Settings" Command="local:CustomCommands.Settings" Icon="{md:PackIcon Kind=Settings}" InputGestureText="Ctrl+O"/>
                         <MenuItem x:Name="MenuItemExit" Header="Exit" Click="MenuItemExit_Click" Icon="{md:PackIcon Kind=Close}" InputGestureText="Alt+F4"/>

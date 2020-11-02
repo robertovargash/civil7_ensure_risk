@@ -148,5 +148,15 @@ namespace EnsureRisk.Properties {
                 return ((string)(this["EnsureRisk_ServiceClasifications_WebServiceClasificator"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost/EnsureRiskWS/WebServiceMyLog.asmx")]
+        public string EnsureRisk_ServiceLog_WebServiceMyLog {
+            get {
+                return ((string)(this["EnsureRisk_ServiceLog_WebServiceMyLog"]));
+            }
+        }
     }
 }

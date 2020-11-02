@@ -205,6 +205,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Compile Include="Web References\ServiceLog\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
     <Compile Include="Web References\ServiceProject\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -243,6 +248,9 @@
     </Compile>
     <Compile Include="Windows\Excel\MyExcelButton.cs" />
     <Compile Include="Windows\Excel\MyRadio.cs" />
+    <Compile Include="Windows\Logs\WindowLogs.xaml.cs">
+      <DependentUpon>WindowLogs.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Settings\SetConnectionWindow.xaml.cs">
       <DependentUpon>SetConnectionWindow.xaml</DependentUpon>
     </Compile>
@@ -388,6 +396,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\LoginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Logs\WindowLogs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -589,6 +601,11 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
     <None Include="Web References\ServiceClasifications\WebServiceClasificator.wsdl" />
+    <None Include="Web References\ServiceLog\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\ServiceLog\WebServiceMyLog.wsdl" />
     <None Include="Web References\ServiceProject\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -681,6 +698,17 @@
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>EnsureRisk_GroupService_WebServiceGroupe</CachedSettingsPropName>
     </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost/EnsureRiskWS/WebServiceMyLog.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\ServiceLog\</RelPath>
+      <UpdateFromURL>http://localhost/EnsureRiskWS/WebServiceMyLog.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>EnsureRisk_ServiceLog_WebServiceMyLog</CachedSettingsPropName>
+    </WebReferenceUrl>
     <WebReferenceUrl Include="http://localhost/EnsureRiskWS/WebServiceProject.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\ServiceProject\</RelPath>
@@ -749,6 +777,7 @@
     </WebReferenceUrl>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Web References\ServiceLog\WebServiceMyLog.disco" />
     <None Include="Web References\ServiceClasifications\WebServiceClasificator.disco" />
     <None Include="Web References\ServiceProject\WebServiceProject.disco" />
     <None Include="Web References\ServiceWBS\WebServiceWBS.disco" />

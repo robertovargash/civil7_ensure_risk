@@ -52,6 +52,9 @@
     <Compile Include="Data\DT_CM_WBS.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Data\DT_MyLog.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Data\DT_WBS_CM_Damage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -116,6 +119,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\DT_WBS_STRUCTURE.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Data\MyLogDataset.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\UserDataSet.cs">

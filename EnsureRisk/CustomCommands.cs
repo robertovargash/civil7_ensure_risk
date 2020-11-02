@@ -11,7 +11,7 @@ namespace EnsureRisk
         public static RoutedCommand Damage = new RoutedCommand();
         public static RoutedCommand Default = new RoutedCommand();
         public static RoutedCommand Settings = new RoutedCommand();
-        public static RoutedCommand MiniMap = new RoutedCommand();
+        public static RoutedCommand Logs = new RoutedCommand();
         public static RoutedCommand Risk = new RoutedCommand();
         public static RoutedCommand CounterMeasure = new RoutedCommand();
         public static RoutedCommand WBS = new RoutedCommand();

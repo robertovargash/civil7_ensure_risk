@@ -73,6 +73,7 @@
     <Content Include="WebServiceAuthentication.asmx" />
     <Content Include="WebServiceClasificator.asmx" />
     <Content Include="WebServiceGroupe.asmx" />
+    <Content Include="WebServiceMyLog.asmx" />
     <Content Include="WebServiceProject.asmx" />
     <Content Include="WebServiceRisk.asmx" />
     <Content Include="WebServiceRole.asmx" />
@@ -93,6 +94,10 @@
     </Compile>
     <Compile Include="WebServiceGroupe.asmx.cs">
       <DependentUpon>WebServiceGroupe.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WebServiceMyLog.asmx.cs">
+      <DependentUpon>WebServiceMyLog.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="WebServiceProject.asmx.cs">

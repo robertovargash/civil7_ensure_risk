@@ -1,0 +1,87 @@
+﻿<Window Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        x:Class="EnsureRisk.Windows.Logs.WindowLogs"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EnsureRisk.Windows.Logs"
+        xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
+        mc:Ignorable="d"
+        Title="Logs" WindowStartupLocation="CenterScreen" WindowState="Maximized" Width="708" Loaded="Window_Loaded">
+    
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
+                <WrapPanel Grid.Column="0">
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="Key" VerticalAlignment="Center"/>
+                        <TextBox x:Name="textID" md:HintAssist.Hint="ID" Margin="10" md:HintAssist.IsFloating="True" Width="50"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="MessageAlert" VerticalAlignment="Center"/>
+                        <TextBox x:Name="textLog" md:HintAssist.Hint="Message" md:HintAssist.IsFloating="True" Margin="10" Width="250"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="UserAlert" VerticalAlignment="Center"/>
+                        <TextBox x:Name="textUser" md:HintAssist.Hint="User" md:HintAssist.IsFloating="True" Margin="10" Width="100"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="Server" VerticalAlignment="Center"/>
+                        <DatePicker x:Name="dtpServerStart" Width="140" md:HintAssist.Hint="Server time (start)"  Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Margin="5" IsTodayHighlighted="True" DisplayDateEnd="{Binding Path=SelectedDate, ElementName=dtpServerEnd}"/>
+                        <md:PackIcon Kind="Server" VerticalAlignment="Center"/>
+                        <DatePicker x:Name="dtpServerEnd"  Width="140" md:HintAssist.Hint="Server time (end)" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Margin="5" DisplayDateStart="{Binding Path=SelectedDate, ElementName=dtpServerStart}" />
+                    </StackPanel>                    
+                </WrapPanel>
+                <Button Grid.Column="1" Click="btnSerch_Click" x:Name="btnSerch" Content="{md:PackIcon Kind=Magnify}" Style="{StaticResource MaterialDesignFloatingActionButton}" VerticalAlignment="center" HorizontalAlignment="Right"/>
+                </Grid>
+            <Separator/>
+            <Grid>
+                <DataGrid  x:Name="dgLogs" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn x:Name="idLog" Binding="{Binding {x:Static data:DT_MyLog.ID}}" Width="*" IsReadOnly="True">
+                            <DataGridTextColumn.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Kind="Key" VerticalAlignment="Center"/>
+                                    <TextBlock Text="ID" VerticalAlignment="Center" Margin="10 0 0 0"/>
+                                </StackPanel>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn x:Name="Log" Binding="{Binding {x:Static data:DT_MyLog.LOG}}" Width="*" IsReadOnly="True">
+                            <DataGridTextColumn.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Kind="Message" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Message" VerticalAlignment="Center" Margin="10 0 0 0"/>
+                                </StackPanel>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn x:Name="USERNAME" Binding="{Binding {x:Static data:DT_MyLog.USERNAME}}" Width="*" IsReadOnly="True">
+                            <DataGridTextColumn.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Kind="User" VerticalAlignment="Center"/>
+                                    <TextBlock Text="User" VerticalAlignment="Center" Margin="10 0 0 0"/>
+                                </StackPanel>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn x:Name="SERVERTIME" Binding="{Binding {x:Static data:DT_MyLog.SERVERTIME}}" Width="*" IsReadOnly="True">
+                            <DataGridTextColumn.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Kind="Server" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Server time" VerticalAlignment="Center" Margin="10 0 0 0"/>
+                                </StackPanel>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>
