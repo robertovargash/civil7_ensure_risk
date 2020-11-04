@@ -683,7 +683,7 @@ namespace EnsureBusinesss
         }
 
         /// <summary>
-        /// Dibuja los RiskPolyLine dados siempre por encima de MainLine
+        /// Draw RiskPolyLine upper MainLine
         /// </summary>
         /// <param name="Lines"></param>
         /// <param name="StartPoint"></param>

@@ -65,5 +65,92 @@ namespace EnsureBusinesss.Business
             }
         }
 
+        /// <summary>
+        /// Sets Segment PolyLine width
+        /// </summary>
+        /// <param name="cost"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        public void SetThickness(decimal cost, decimal min, decimal max)
+        {
+
+            decimal value = max - min;
+
+            decimal skoda = value / 10;
+
+            if (cost <= skoda)
+            {
+                this.StrokeThickness = 2;
+            }
+            else
+            {
+                if (cost > skoda && cost <= 4 * skoda)
+                {
+                    //this.StrokeThickness = 2;
+                    this.StrokeThickness = 4;
+                }
+                else
+                {
+                    if (cost > 4 * skoda && cost <= 6 * skoda)
+                    {
+                        this.StrokeThickness = 6;
+                    }
+                    else
+                    {
+                        if (cost > 6 * skoda && cost <= 8 * skoda)
+                        {
+                            this.StrokeThickness = 8;
+                            //this.StrokeThickness = 6;
+                        }
+                        else
+                        {
+                            if (cost > 8 * skoda && cost <= 10 * skoda)
+                            {
+                                this.StrokeThickness = 10;
+                                //this.StrokeThickness = 8;
+
+                            }
+                            else
+                            {
+                                if (cost > 10 * skoda && cost <= 12 * skoda)
+                                {
+                                    this.StrokeThickness = 12;
+                                    //this.StrokeThickness = 8;
+                                }
+                                else
+                                {
+                                    if (cost > 12 * skoda && cost <= 14 * skoda)
+                                    {
+                                        this.StrokeThickness = 14;
+                                        //this.StrokeThickness = 8;
+                                    }
+                                    else
+                                    {
+                                        if (cost > 14 * skoda && cost <= 16 * skoda)
+                                        {
+                                            this.StrokeThickness = 16;
+                                            //this.StrokeThickness = 8;
+                                        }
+                                        else
+                                        {
+                                            if (cost > 16 * skoda && cost <= 18 * skoda)
+                                            {
+                                                this.StrokeThickness = 18;
+                                                //this.StrokeThickness = 8;
+                                            }
+                                            else
+                                            {
+                                                this.StrokeThickness = General.MaxThickness;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }
