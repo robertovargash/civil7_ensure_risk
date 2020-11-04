@@ -176,7 +176,7 @@ namespace EnsureRisk.Classess
             }
         }
 
-        public void MostrarPopWindow(Point pointToShow, string lineName, string probability, string value, string acumDamage, string acumValue, string EL, string totalAcumDamage)
+        public void MostrarPopWindow(Point pointToShow, string lineName, string probability, string value, string acumDamage, string acumValue, string EL)
         {
             MyPopWindow.Visibility = Visibility.Visible;
             MyPopWindow.Margin = new Thickness(pointToShow.X, pointToShow.Y, 0, 0);
@@ -186,9 +186,6 @@ namespace EnsureRisk.Classess
             MyPopWindow.TextAcumDamage.Text = acumDamage;
             MyPopWindow.TextAcumValue.Text = acumValue;
             MyPopWindow.TextEL.Text = EL;
-
-            MyPopWindow.TextTotalAcumDamage.Text = totalAcumDamage;
-
         }
 
         public void OcultarPopWindow()
@@ -760,7 +757,6 @@ namespace EnsureRisk.Classess
                 TreeOperation.DrawEntireDiagramAsFishBone(MainLine);
                 FixDrawPanel();
                 UpdateLinesValues();
-                UpdateTotalAcumulatedValue(MainLine);
                 SetRightMenu(LinesList);
                 foreach (var item in MainLine.Segments)
                 {
@@ -2198,17 +2194,14 @@ namespace EnsureRisk.Classess
                         string ED = General.MyRound(TheLine.AcDamage, 4).ToString();
                         string probability = General.MyRound(TheLine.Probability * 100, 2).ToString() + " %";
                         string EL = General.MyRound(TheLine.AcLike * 100, 2).ToString() + " %";
-
-                        string TotalAcumaletedDamage = General.MyRound(TheLine.AcDamage2, 4).ToString();
-
                         if (!showPopup)
                         {
                             Point point = new Point(pointToShowPopup.X - ScrollGridPaint.ContentHorizontalOffset, pointToShowPopup.Y - ScrollGridPaint.ContentVerticalOffset);
-                            MostrarPopWindow(point, TheLine.ShortName, probability, Valuee, ED, AcumValue, EL, TotalAcumaletedDamage);
+                            MostrarPopWindow(point, TheLine.ShortName, probability, Valuee, ED, AcumValue, EL);
                         }
                         else
                         {
-                            MostrarPopWindow(pointToShowPopup, TheLine.ShortName, probability, Valuee, ED, AcumValue, EL, TotalAcumaletedDamage);
+                            MostrarPopWindow(pointToShowPopup, TheLine.ShortName, probability, Valuee, ED, AcumValue, EL);
                         }
                         if ((bool)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheLine.ID)[DT_Risk.ENABLED])
                         {
@@ -3676,33 +3669,6 @@ namespace EnsureRisk.Classess
                 {
                     MiniMapGHT.Height = height;
                     MiniMapGHT.Width = width;
-                }
-            }
-        }
-
-        private static void UpdateTotalAcumulatedValue(RiskPolyLine riskPolyLine)
-        {
-            if (riskPolyLine.Children.Any())
-            {
-                IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderByDescending(pl => pl.Points[1].X);
-
-                int itemCount = orderedChild.Count();
-                int index = itemCount - 1;
-                while (index >= 0)
-                {
-                    RiskPolyLine currentPolyLine = orderedChild.ElementAt(index);
-                    UpdateTotalAcumulatedValue(currentPolyLine);
-
-                    if (index == itemCount - 1)
-                    {
-                        currentPolyLine.AcDamage2 = currentPolyLine.AcDamage + currentPolyLine.Father.AcDamage;
-                    }
-                    else
-                    {
-                        RiskPolyLine lastPolyLine = orderedChild.ElementAt(index + 1);
-                        currentPolyLine.AcDamage2 = currentPolyLine.AcDamage + lastPolyLine.AcDamage2;
-                    }
-                    index--;
                 }
             }
         }

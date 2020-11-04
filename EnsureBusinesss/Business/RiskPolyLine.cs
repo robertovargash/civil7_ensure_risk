@@ -185,8 +185,6 @@ namespace EnsureBusinesss.Business
         }
 
         public int Position { get; set; }
-        //Valor total de Acumulated Damagen (Las suma del valor de mis hijos mas el mio.)
-        public decimal AcDamage2 { set; get; }
 
         #endregion
 
@@ -879,37 +877,6 @@ namespace EnsureBusinesss.Business
                             {
                                 segment.StrokeThickness = lastSegment.StrokeThickness;
                             }
-                        }
-                        else
-                        {
-                            segment.StrokeThickness = lastSegment.StrokeThickness;
-                        }
-                        lastSegment = segment;
-                    }
-                }
-            }
-        }
-
-        public void UpdateSegmentsStrokeThickness(decimal min, decimal max)
-        {
-            if (Segments.Any())
-            {
-                IEnumerable<RiskPolyLine> orderedChild = Children.OrderBy(pl => pl.Points[1].X);
-                int segmentIndex = Segments.Count - 1;
-                SegmentPolyLine segment;
-                SegmentPolyLine lastSegment = Segments[segmentIndex];
-                lastSegment.StrokeThickness = 1;
-
-                foreach (RiskPolyLine rpl in orderedChild)
-                {
-                    segmentIndex--;
-                    if (segmentIndex >= 0)
-                    {
-                        segment = Segments[segmentIndex];
-                        segment.StrokeThickness = 1;
-                        if (!rpl.IsCM)
-                        {
-                            segment.SetThickness(rpl.AcDamage2, min, max);
                         }
                         else
                         {

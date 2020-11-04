@@ -221,60 +221,34 @@ namespace EnsureBusinesss
             decimal max = 0;
             if (linesList.Where(p => !p.IsRoot).Any())
             {
-                //min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage);
-                //max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage);
-
-                min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage2);
-                max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage2);
+                min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage);
+                max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage);
             }
 
             foreach (var item in linesList)
             {
                 if (!(item.IsCM))
                 {
-                    if (item.IsLeaf())
-                    {
-                        item.SetThickness(item.AcDamage, min, max);
-                    }
-                    else
-                    {
-                        item.SetThickness(item.Children.First().AcDamage2, min, max);
-                    }
+                    item.SetThickness(item.AcDamage, min, max);
                 }
             }
             RiskPolyLine rootPolyLine = linesList.Find(r => r.IsRoot);
             rootPolyLine.StrokeThickness = MaxThickness;
-            //UpdateSegmentsStrokeThickness(rootPolyLine);
-            UpdateSegmentsStrokeThickness(rootPolyLine, min, max);
+            UpdateSegmentsStrokeThickness(rootPolyLine);
         }
 
-        //private static void UpdateSegmentsStrokeThickness(RiskPolyLine riskPolyLine)
-        //{
-        //    if (riskPolyLine.Children.Any())
-        //    {
-        //        IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderBy(pl => pl.Points[1].X);
-        //        foreach (RiskPolyLine polyLine in orderedChild)
-        //        {
-        //            UpdateSegmentsStrokeThickness(polyLine);
-        //            polyLine.UpdateSegmentsStrokeThickness();
-        //        }
-        //    }
-        //    riskPolyLine.UpdateSegmentsStrokeThickness();
-        //}
-
-        private static void UpdateSegmentsStrokeThickness(RiskPolyLine riskPolyLine, decimal min, decimal max)
+        private static void UpdateSegmentsStrokeThickness(RiskPolyLine riskPolyLine)
         {
             if (riskPolyLine.Children.Any())
             {
                 IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderBy(pl => pl.Points[1].X);
                 foreach (RiskPolyLine polyLine in orderedChild)
                 {
-                    //UpdateSegmentsStrokeThickness(polyLine);
-                    UpdateSegmentsStrokeThickness(polyLine, min, max);
-                    polyLine.UpdateSegmentsStrokeThickness(min, max);
+                    UpdateSegmentsStrokeThickness(polyLine);
+                    polyLine.UpdateSegmentsStrokeThickness();
                 }
             }
-            riskPolyLine.UpdateSegmentsStrokeThickness(min, max);
+            riskPolyLine.UpdateSegmentsStrokeThickness();
         }
 
         public static void RecalculateProbability(DataRow drLine, DataSet ds, decimal newProbability, bool isCM)
