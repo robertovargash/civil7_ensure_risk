@@ -760,7 +760,6 @@ namespace EnsureRisk.Classess
                 TreeOperation.DrawEntireDiagramAsFishBone(MainLine);
                 FixDrawPanel();
                 UpdateLinesValues();
-                UpdateTotalAcumulatedValue(MainLine);
                 SetRightMenu(LinesList);
                 foreach (var item in MainLine.Segments)
                 {
@@ -961,52 +960,123 @@ namespace EnsureRisk.Classess
         /// </summary>
         public void UpdateLinesValues()
         {
-            foreach (var item in LinesList)
+            foreach (var riskLine in LinesList)
             {
-                if (!item.IsCM)
+                if (!riskLine.IsCM)
                 {
-                    decimal al = FishHeadController.AcumulatedLikelihood(item);
-                    decimal valor = FishHeadController.CalcDiagramDamageValue(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID),
+                    decimal al = FishHeadController.AcumulatedLikelihood(riskLine);
+                    decimal AcValue = FishHeadController.CalcDiagramDamageValue(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(riskLine.ID),
                         Ds.Tables[DT_Risk.TABLE_NAME], IdDamageSelected, Ds.Tables[DT_Risk_Damages.TABLE_NAME],
                             Ds.Tables[DT_CounterM.TABLE_NAME], Ds.Tables[DT_CounterM_Damage.TABLE_NAME]);
-                    decimal myvalue = 0;
-                    if (Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { item.ID, IdDamageSelected }))
-                    {
-                        myvalue = (decimal)Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Find(new object[] { item.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
-                    }
+                    decimal myvalue = GetValueRisk_Damage(riskLine);
+                    riskLine.OwnDamage = myvalue * al;//Setting the own damage according with 
                     decimal AcumDamage = 0;
-                    foreach (var itemI in TreeOperation.GetMeAndMyChildrenWithCM(item))
+                    foreach (var itemI in TreeOperation.GetMeAndMyChildrenWithCM(riskLine))
                     {
                         if (itemI.IsActivated)
                         {
-                            decimal value = 0;
                             if (itemI.IsCM)
                             {
                                 if (itemI.IsActivated)
                                 {
-                                    if (Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
-                                    {
-                                        value = (decimal)Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_CounterM_Damage.VALUE];
-                                    }
-                                    AcumDamage += value;
+                                    AcumDamage += GetValueCM_Damage(itemI);
                                 }
                             }
                             else
                             {
-                                if (Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
-                                {
-                                    value = (decimal)Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
-                                }
-                                AcumDamage += value * FishHeadController.AcumulatedLikelihood(itemI);
+                                AcumDamage += GetValueRisk_Damage(itemI) * FishHeadController.AcumulatedLikelihood(itemI);
                             }
                         }
                     }
-
-                    item.AcLike = al;
-                    item.AcValue = valor;
-                    item.OwnValue = myvalue;
-                    item.AcDamage = AcumDamage;
+                    riskLine.AcLike = al;
+                    riskLine.AcValue = AcValue;
+                    riskLine.OwnValue = myvalue;
+                    riskLine.AcDamage = AcumDamage;
                 }
+            }
+            UpdateTotalAcumulatedValue(MainLine);
+        }
+
+        private void UpdateTotalAcumulatedValue(RiskPolyLine riskPolyLine)
+        {
+            if (riskPolyLine.Children.Any())
+            {
+                List<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderByDescending(pl => pl.Points[1].X).ToList();
+                //IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderBy(pl => pl.Position);
+                int itemCount = orderedChild.Count();
+                int index = itemCount - 1;
+                while (index >= 0)
+                {
+                    RiskPolyLine currentChild = orderedChild.ElementAt(index);
+                    UpdateTotalAcumulatedValue(currentChild);
+                    //if (index == 0)
+                    //{
+                    //    currentChild.AcDamage2 = currentChild.Father.AcDamage;
+                    //}
+                    if (index == itemCount - 1)
+                    {
+                        //    Extreme Left element in the List
+                        //    currentChild.AcDamage2 = currentChild.Father.AcDamage;
+                        currentChild.AcDamage2 = currentChild.AcDamage + currentChild.Father.AcDamage;
+                    }
+                    else
+                    {
+                        RiskPolyLine previousSibling = orderedChild.ElementAt(index + 1);
+                        currentChild.AcDamage2 = currentChild.AcDamage + previousSibling.AcDamage2;
+                    }
+                    //currentChild.AcDamage2 = SectionAcumDamage(currentChild);
+                    index--;
+                }
+            }
+        }
+
+        private  decimal SectionAcumDamage(RiskPolyLine riskPolyLine)
+        {
+            decimal AcumDamage2 = 0;
+            List<RiskPolyLine> meAndMinorSiblings = riskPolyLine.Father.Children.Where(pl => pl.Points[1].X <= riskPolyLine.Points[1].X).ToList();
+            decimal al = FishHeadController.SectionAcumulatedLikelihood(riskPolyLine.Father, meAndMinorSiblings);
+            meAndMinorSiblings.Add(riskPolyLine.Father);
+            foreach (var itemI in meAndMinorSiblings)
+            {
+                if (itemI.IsActivated)
+                {
+                    if (itemI.IsCM)
+                    {
+                        if (itemI.IsActivated)
+                        {
+                            AcumDamage2 += GetValueCM_Damage(itemI);
+                        }
+                    }
+                    else
+                    {
+                        AcumDamage2 += GetValueRisk_Damage(itemI) * FishHeadController.AcumulatedLikelihood(itemI);
+                    }
+                }
+            }
+            return AcumDamage2;
+        }
+
+        private decimal GetValueCM_Damage(RiskPolyLine itemI)
+        {
+            if (Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
+            {
+                return (decimal)Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_CounterM_Damage.VALUE];
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        
+        private decimal GetValueRisk_Damage(RiskPolyLine riskLine)
+        {
+            if (Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { riskLine.ID, IdDamageSelected }))
+            {
+                return (decimal)Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Find(new object[] { riskLine.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
+            }
+            else
+            {
+                return 0;
             }
         }
 
@@ -3680,31 +3750,6 @@ namespace EnsureRisk.Classess
             }
         }
 
-        private static void UpdateTotalAcumulatedValue(RiskPolyLine riskPolyLine)
-        {
-            if (riskPolyLine.Children.Any())
-            {
-                IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderByDescending(pl => pl.Points[1].X);
-
-                int itemCount = orderedChild.Count();
-                int index = itemCount - 1;
-                while (index >= 0)
-                {
-                    RiskPolyLine currentPolyLine = orderedChild.ElementAt(index);
-                    UpdateTotalAcumulatedValue(currentPolyLine);
-
-                    if (index == itemCount - 1)
-                    {
-                        currentPolyLine.AcDamage2 = currentPolyLine.AcDamage + currentPolyLine.Father.AcDamage;
-                    }
-                    else
-                    {
-                        RiskPolyLine lastPolyLine = orderedChild.ElementAt(index + 1);
-                        currentPolyLine.AcDamage2 = currentPolyLine.AcDamage + lastPolyLine.AcDamage2;
-                    }
-                    index--;
-                }
-            }
-        }
+        
     }
 }

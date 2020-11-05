@@ -187,7 +187,7 @@ namespace EnsureBusinesss.Business
         public int Position { get; set; }
         //Valor total de Acumulated Damagen (Las suma del valor de mis hijos mas el mio.)
         public decimal AcDamage2 { set; get; }
-
+        public decimal OwnDamage { set; get; }
         #endregion
 
         #region Stringss
