@@ -126,17 +126,58 @@ namespace EnsureRisk
             int colorvariant = 1;
             foreach (var itemDamages in countDamages)
             {
-                string DamageName = itemDamages.MyContent;
-                DataRow drDamage = CreateNewDamageFromDamageName(dsImporting, ref colorvariant, DamageName);
-                if (!(dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DamageName + "'").Any()))//si el nombre del daño no existe 
+                string DamageName = itemDamages.MyContent;                 
+                List<string> DamageUM = DamageNameParsing(DamageName);
+                if (dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DamageUM[0] + "' and " + DT_Damage.UM + " = '" + DamageUM[1] + "'").Any())
                 {
-                    CreateDiagramDamagesExcel(dsImporting, drDamage, DamageName, drDiagram, false);
+                    CreateDiagramDamagesExcel(dsImporting, dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DamageUM[0] + "' and " + DT_Damage.UM + " = '" + DamageUM[1] + "'")
+                        .First(), drDiagram);
                 }
                 else
                 {
-                    CreateDiagramDamagesExcel(dsImporting, drDamage, DamageName, drDiagram, true);
+                    CreateDiagramDamagesExcel(dsImporting, CreateNewDamageFromDamageName(dsImporting, ref colorvariant, DamageUM), drDiagram);
+                }
+
+            }
+        }
+
+        private static List<string> DamageNameParsing(string damageName)
+        {
+            List<string> damageSplit = new List<string>();
+            int startindex = 0;
+            int endIndex = 0;
+            int index = 0;
+            foreach (var item in damageName)
+            {
+                index++;
+                if (item == '(' || item == '[')
+                {
+                    startindex = index;
+                }
+                if (item == ')' || item == ']')
+                {
+                    endIndex = index;
                 }
             }
+            
+            if (endIndex == 0 || startindex == 0)
+            {
+                damageSplit.Add(damageName);
+                damageSplit.Add("UM");
+            }
+            else
+            {
+                if (startindex > 0)
+                {
+                    damageSplit.Add(damageName.Substring(0, startindex - 1));
+                }
+                if (endIndex > 0)
+                {
+                    damageSplit.Add(damageName.Substring(startindex, endIndex - (startindex + 1)));
+                }
+            }
+
+            return damageSplit;
         }
 
         /// <summary>
@@ -146,10 +187,10 @@ namespace EnsureRisk
         /// <param name="colorvariant">A numeric flag to know which color select</param>
         /// <param name="DamageName">The name of the Damage in the file</param>
         /// <returns>Return the new Datarow with the data of the Damage created</returns>
-        private static DataRow CreateNewDamageFromDamageName(DataSet dsImporting, ref int colorvariant, string DamageName)
+        private static DataRow CreateNewDamageFromDamageName(DataSet dsImporting, ref int colorvariant, List<string> DamageUM)
         {
             DataRow drDamage = dsImporting.Tables[DT_Damage.TABLE_NAME].NewRow();//creo un nuevo daño
-            drDamage[DT_Damage.TOP_RISK_COLUMN] = DamageName;
+            drDamage[DT_Damage.TOP_RISK_COLUMN] = DamageUM[0];
             int[] R = new int[] { 255, 220, 40, 80, 54, 144, 54, 144, 158 };
             int[] G = new int[] { 50, 10, 150, 200, 54, 54, 158, 158, 135 };
             int[] B = new int[] { 60, 150, 25, 99, 158, 158, 130, 54, 54 };
@@ -169,7 +210,7 @@ namespace EnsureRisk
             {
                 drDamage[DT_Damage.COLORID_COLUMNA] = "#FF0000FF";
             }
-
+            drDamage[DT_Damage.UM] = DamageUM[1];
             dsImporting.Tables[DT_Damage.TABLE_NAME].Rows.Add(drDamage);
             return drDamage;
         }
@@ -456,29 +497,17 @@ namespace EnsureRisk
         /// <param name="drDamage">The Damage datarow</param>
         /// <param name="Damage">The name of the Damage in the </param>
         /// <param name="drDiagram">The diagram data created</param>
-        /// <param name="existDamage">A flag if the Damage is created or an existing Damage</param>
-        public static void CreateDiagramDamagesExcel(DataSet dsImporting, DataRow drDamage, string Damage, DataRow drDiagram, bool existDamage)
+        public static void CreateDiagramDamagesExcel(DataSet dsImporting, DataRow drDamage, DataRow drDiagram)
         {
-            if (existDamage)
-            {
-                DataRow drDamage_Diagram = dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].NewRow();//create a new Diagram with existing Damages
-                drDamage_Diagram[DT_Diagram_Damages.ID_DAMAGE] = dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + Damage + "'").First()[DT_Damage.ID_COLUMNA];
-                drDamage_Diagram[DT_Diagram_Damages.COLOR] = dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + Damage + "'").First()[DT_Damage.COLORID_COLUMNA];
-                drDamage_Diagram[DT_Diagram_Damages.RISK_TREE] = "Imported Diagram";
-                drDamage_Diagram[DT_Diagram_Damages.ID_RISKTREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
-                drDamage_Diagram[DT_Diagram_Damages.TOP_RISK] = Damage;
-                dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Add(drDamage_Diagram);
-            }
-            else
-            {
-                DataRow drDamage_Diagram = dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].NewRow();//create a new Diagram with the Created Damages
-                drDamage_Diagram[DT_Diagram_Damages.ID_DAMAGE] = drDamage[DT_Damage.ID_COLUMNA];
-                drDamage_Diagram[DT_Diagram_Damages.COLOR] = drDamage[DT_Damage.COLORID_COLUMNA];
-                drDamage_Diagram[DT_Diagram_Damages.RISK_TREE] = "Imported Diagram";
-                drDamage_Diagram[DT_Diagram_Damages.ID_RISKTREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
-                drDamage_Diagram[DT_Diagram_Damages.TOP_RISK] = Damage;
-                dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Add(drDamage_Diagram);
-            }
+            DataRow drDamage_Diagram = dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].NewRow();//create a new Diagram with the Created Damages
+            drDamage_Diagram[DT_Diagram_Damages.ID_DAMAGE] = drDamage[DT_Damage.ID_COLUMNA];
+            drDamage_Diagram[DT_Diagram_Damages.COLOR] = drDamage[DT_Damage.COLORID_COLUMNA];
+            drDamage_Diagram[DT_Diagram_Damages.RISK_TREE] = "Imported Diagram";
+            drDamage_Diagram[DT_Diagram_Damages.ID_RISKTREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
+            drDamage_Diagram[DT_Diagram_Damages.TOP_RISK] = drDamage[DT_Damage.TOP_RISK_COLUMN];
+            drDamage_Diagram[DT_Diagram_Damages.UM] = drDamage[DT_Damage.UM];
+            drDamage_Diagram[DT_Diagram_Damages.DAMAGE] = drDamage[DT_Damage.TOP_RISK_COLUMN].ToString() + "(" +  drDamage[DT_Damage.UM].ToString() + ")";
+            dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Add(drDamage_Diagram);
         }
 
         /// <summary>

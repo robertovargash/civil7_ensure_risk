@@ -6,7 +6,7 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"             
              xmlns:local="clr-namespace:EnsureRisk.Classess"
              mc:Ignorable="d" 
-             VerticalAlignment="Top" HorizontalAlignment="Left" Background="Transparent" md:ShadowAssist.ShadowDepth="Depth5" RenderTransformOrigin="0.0,0.0">
+             VerticalAlignment="Top" HorizontalAlignment="Left" Background="Transparent" md:ShadowAssist.ShadowEdges="Bottom" RenderTransformOrigin="0.0,0.0">
     <Grid Background="Transparent">
         <Border CornerRadius="10" Background="#FFCDC3B5" >
             <Grid x:Name="GridBorder">
