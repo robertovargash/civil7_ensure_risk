@@ -142,11 +142,11 @@ namespace EnsureBusinesss.Business
         public static readonly DependencyProperty AcDamageProperty =
           DependencyProperty.Register("AcDamage", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
 
-        public decimal AcDamage
-        {
-            set { SetValue(AcDamageProperty, value); }
-            get { return (decimal)GetValue(AcDamageProperty); }
-        }
+        public decimal AcDamage { get; set; }
+        //{
+        //    set { SetValue(AcDamageProperty, value); }
+        //    get { return (decimal)GetValue(AcDamageProperty); }
+        //}
 
         public static readonly DependencyProperty AcValueProperty =
            DependencyProperty.Register("AcValue", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
@@ -175,6 +175,8 @@ namespace EnsureBusinesss.Business
             get { return (decimal)GetValue(AcLikeProperty); }
         }
 
+        public decimal AcLike2 { get; set; }
+
         public static readonly DependencyProperty ProbabilityProperty =
             DependencyProperty.Register("Probability", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
 
@@ -187,7 +189,6 @@ namespace EnsureBusinesss.Business
         public int Position { get; set; }
         //Valor total de Acumulated Damagen (Las suma del valor de mis hijos mas el mio.)
         public decimal AcDamage2 { set; get; }
-        public decimal OwnDamage { set; get; }
         #endregion
 
         #region Stringss
@@ -907,14 +908,16 @@ namespace EnsureBusinesss.Business
                     {
                         segment = Segments[segmentIndex];
                         segment.StrokeThickness = 1;
-                        if (!rpl.IsCM)
-                        {
-                            segment.SetThickness(rpl.AcDamage2, min, max);
-                        }
-                        else
-                        {
-                            segment.StrokeThickness = lastSegment.StrokeThickness;
-                        }
+                        //Aqui lo cambio pues ahora las cm inciden en el ancho del segment
+                        //if (!rpl.IsCM)
+                        //{
+                        //    segment.SetThickness(rpl.AcDamage2, min, max);
+                        //}
+                        //else
+                        //{
+                        //    segment.StrokeThickness = lastSegment.StrokeThickness;
+                        //}
+                        segment.SetThickness(rpl.AcDamage2, min, max);
                         lastSegment = segment;
                     }
                 }

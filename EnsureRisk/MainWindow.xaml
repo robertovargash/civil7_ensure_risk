@@ -258,6 +258,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
         </ResourceDictionary>
     </Window.Resources>
     <Window.CommandBindings>
@@ -335,7 +336,12 @@
                                 </Grid>
                             </Grid>
                         </xcad:LayoutAnchorable>
-                        <xcad:LayoutAnchorable ContentId="properties" x:Name="LayoutProperties"  Title="Properties"  CanHide="true" CanClose="False" AutoHideWidth="240">
+                        <!--<xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="Mini Map" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300" IsVisible="False">
+                            --><!--<Grid Name="gridMiniMap" Background="#FF918080">
+                                --><!--<classess:MiniMapControl x:Name="MiniMap" />--><!--
+                            </Grid>--><!--
+                        </xcad:LayoutAnchorable>-->
+                        <xcad:LayoutAnchorable ContentId="properties" x:Name="LayoutProperties"  Title="Properties" CanHide="true" CanClose="False" AutoHideWidth="240">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" >
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel Orientation="Vertical" x:Name="WrapRisk" Visibility="{Binding Path = ShowRiskData, Converter={StaticResource BoolToVisConverter} }">
@@ -375,7 +381,13 @@
                                                 <Expander HorizontalAlignment="Stretch" Header="Risk Values" IsExpanded="True">
                                                     <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
                                                         <Grid Background="#FFE5E5E5">
-                                                            <DataGrid TabIndex="4" x:Name="DgRiskDamages" ItemsSource="{Binding DvRiskDamages}" Margin="1,1,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" SelectedCellsChanged="DgRiskDamages_SelectedCellsChanged" CellEditEnding="DgRiskDamages_CellEditEnding" SelectionChanged="DgRiskDamages_SelectionChanged" CanUserDeleteRows="False" CanUserAddRows="False">
+                                                            <DataGrid TabIndex="4" x:Name="DgRiskDamages" ItemsSource="{Binding DvRiskDamages}" Margin="1,1,0,0" 
+                                                                      ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" 
+                                                                      SelectedCellsChanged="DgRiskDamages_SelectedCellsChanged" 
+                                                                      CellEditEnding="DgRiskDamages_CellEditEnding" 
+                                                                      SelectionChanged="DgRiskDamages_SelectionChanged" 
+                                                                      CanUserDeleteRows="False" CanUserAddRows="False"
+                                                                      VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
                                                                 <DataGrid.Resources>
                                                                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                                                         <Setter Property="Padding" Value="-2"/>
@@ -392,7 +404,7 @@
                                                                     <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_WBS_RISK_DAMAGE.DAMAGE}}" Width="*" IsReadOnly="True"/>
                                                                     <DataGridTextColumn x:Name="TopValue" Header="Value" EditingElementStyle="{StaticResource errorStyle}" Width="*" IsReadOnly="False">
                                                                         <DataGridTextColumn.Binding>
-                                                                            <Binding Path="value" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"  ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">                                                                                
+                                                                            <Binding Path="value" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"  ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                                                                 <Binding.ValidationRules >
                                                                                     <classes:NegativeValidation ValidationStep="UpdatedValue" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
                                                                                 </Binding.ValidationRules>
@@ -407,8 +419,13 @@
                                                 <Border Background="{DynamicResource MaterialDesignDivider}" Height="5" HorizontalAlignment="Stretch" SnapsToDevicePixels="True" />
                                                 <Expander HorizontalAlignment="Stretch" Header="WBS-Probability" IsExpanded="True">
                                                     <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                                                        <Grid Background="{DynamicResource MaterialDesignPaper}" Name="gridRiskWBS">
-                                                            <DataGrid Name="DgRiskWBS" ItemsSource="{Binding DvRiskWBS}" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" SelectedCellsChanged="DgRiskWBS_SelectedCellsChanged" CellEditEnding="DgRiskWBS_CellEditEnding" SelectionChanged="DgRiskWBS_SelectionChanged" CanUserAddRows="False" CanUserDeleteRows="False">
+                                                        <Grid Background="#FFE5E5E5">
+                                                            <DataGrid Name="DgRiskWBS" ItemsSource="{Binding DvRiskWBS}" Margin="1,1,0,0" 
+                                                                      ColumnHeaderStyle="{StaticResource CustomColumnHeader}" 
+                                                                      AutoGenerateColumns="False" SelectedCellsChanged="DgRiskWBS_SelectedCellsChanged" 
+                                                                      CellEditEnding="DgRiskWBS_CellEditEnding" 
+                                                                      SelectionChanged="DgRiskWBS_SelectionChanged" CanUserAddRows="False" 
+                                                                      CanUserDeleteRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
                                                                 <DataGrid.Resources>
                                                                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                                                         <Setter Property="Padding" Value="-2"/>
@@ -468,8 +485,11 @@
                                                 <Border Background="{DynamicResource MaterialDesignDivider}" Height="5" HorizontalAlignment="Stretch" SnapsToDevicePixels="True" />
                                                 <Expander HorizontalAlignment="Stretch" Header="Roles" IsExpanded="True">
                                                     <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                                                        <Grid Name="gridTabRoles" IsEnabled="{Binding Path = HasAccess}">
-                                                            <DataGrid TabIndex="5" Name="DgRiskRoles" ItemsSource="{Binding DvRoleRisk}" ColumnHeaderStyle="{StaticResource CustomColumnHeader}"  AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False">
+                                                        <Grid Background="#FFE5E5E5">
+                                                            <DataGrid TabIndex="5" Name="DgRiskRoles" ItemsSource="{Binding DvRoleRisk}" Margin="1,1,0,0" 
+                                                                      ColumnHeaderStyle="{StaticResource CustomColumnHeader}"  
+                                                                      AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" 
+                                                                      CanUserDeleteRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
                                                                 <DataGrid.Columns>
                                                                     <DataGridTemplateColumn x:Name="roleBtn">
                                                                         <DataGridTemplateColumn.Header>
@@ -518,8 +538,13 @@
                                             <StackPanel>
                                                 <Expander HorizontalAlignment="Stretch" Header="CM Values" IsExpanded="True">
                                                     <StackPanel Orientation="Vertical" Margin="24,8,24,16">
-                                                        <Grid>
-                                                            <DataGrid Name="dgCMDamages" ItemsSource="{Binding DvCM_Damages}" Margin="1,1,0,0" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" SelectedCellsChanged="DgCMDamages_SelectedCellsChanged" CellEditEnding="DgCMDamages_CellEditEnding" SelectionChanged="DgCMDamages_SelectionChanged" CanUserDeleteRows="False" CanUserAddRows="False">
+                                                        <Grid Background="#FFE5E5E5">
+                                                            <DataGrid Name="dgCMDamages" ItemsSource="{Binding DvCM_Damages}" Margin="1,1,0,0" 
+                                                                      ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" 
+                                                                      SelectedCellsChanged="DgCMDamages_SelectedCellsChanged" 
+                                                                      CellEditEnding="DgCMDamages_CellEditEnding" 
+                                                                      SelectionChanged="DgCMDamages_SelectionChanged" CanUserDeleteRows="False" 
+                                                                      CanUserAddRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
                                                                 <DataGrid.Resources>
                                                                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                                                         <Setter Property="Padding" Value="-2"/>
@@ -553,8 +578,12 @@
                                                 <Border Background="{DynamicResource MaterialDesignDivider}" Height="5" HorizontalAlignment="Stretch" SnapsToDevicePixels="True" />
                                                 <Expander HorizontalAlignment="Stretch" Header="WBS-Risk Reduction" IsExpanded="True">
                                                     <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                                                        <Grid Name="gridTabWBSCM" >
-                                                            <DataGrid Name="dgWBSCM" ItemsSource="{Binding DVCMWBS}" CanUserDeleteRows="False" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" SelectedCellsChanged="DgWBSCM_SelectedCellsChanged" CellEditEnding="DgWBSCM_CellEditEnding" SelectionChanged="DgWBSCM_SelectionChanged" CanUserAddRows="False">
+                                                        <Grid Background="#FFE5E5E5">
+                                                            <DataGrid Name="dgWBSCM" ItemsSource="{Binding DVCMWBS}" CanUserDeleteRows="False" Margin="1,1,0,0" 
+                                                                      ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" 
+                                                                      SelectedCellsChanged="DgWBSCM_SelectedCellsChanged" 
+                                                                      CellEditEnding="DgWBSCM_CellEditEnding" SelectionChanged="DgWBSCM_SelectionChanged" 
+                                                                      CanUserAddRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
                                                                 <DataGrid.Resources>
                                                                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                                                                         <Setter Property="Padding" Value="-2"/>
@@ -606,7 +635,6 @@
                                                                             </DataTemplate>
                                                                         </DataGridTemplateColumn.CellTemplate>
                                                                     </DataGridTemplateColumn>
-
                                                                 </DataGrid.Columns>
                                                             </DataGrid>
                                                         </Grid>
@@ -615,8 +643,10 @@
                                                 <Border Background="{DynamicResource MaterialDesignDivider}" Height="5" HorizontalAlignment="Stretch" SnapsToDevicePixels="True" />
                                                 <Expander HorizontalAlignment="Stretch" Header="Roles" IsExpanded="True">
                                                     <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                                                        <Grid Name="gridTabRolesCM" IsEnabled="{Binding Path = HasAccess}">
-                                                            <DataGrid Name="dgRolesCM" ItemsSource="{Binding DvRoleCM}" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False">
+                                                        <Grid Background="#FFE5E5E5">
+                                                            <DataGrid Name="dgRolesCM" ItemsSource="{Binding DvRoleCM}" Margin="1,1,0,0" 
+                                                                      ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" 
+                                                                      IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
                                                                 <DataGrid.Columns>
                                                                     <DataGridTemplateColumn x:Name="roleCMBtn">
                                                                         <DataGridTemplateColumn.Header>
@@ -644,11 +674,7 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </xcad:LayoutAnchorable>
-                        <!--<xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="Mini Map" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300" IsVisible="False">
-                            --><!--<Grid Name="gridMiniMap" Background="#FF918080">
-                                --><!--<classess:MiniMapControl x:Name="MiniMap" />--><!--
-                            </Grid>--><!--
-                        </xcad:LayoutAnchorable>-->
+
                     </xcad:LayoutAnchorablePane>
                     <xcad:LayoutDocumentPaneGroup x:Name="LayoutDocPaneGroup">
                         <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel">                            

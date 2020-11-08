@@ -50,7 +50,7 @@
                         </Grid>
                     </ScrollViewer>
                 </Grid>
-                <local:MiniMapControl x:Name="MiniMapGHT" Panel.ZIndex="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20" BorderBrush="Red" BorderThickness="2">
+                <local:MiniMapControl x:Name="MiniMapGHT" Panel.ZIndex="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20" BorderBrush="Black" BorderThickness="2">
                   
                 </local:MiniMapControl>
 

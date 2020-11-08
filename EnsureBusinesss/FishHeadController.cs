@@ -114,7 +114,7 @@ namespace EnsureBusinesss
                 }
                 else
                 {
-                    //ELSE FOR EACH CHILDS EXECUTE THE FUNCTION RECURSIVELY
+                    //ELSE FOR EACH CHILDS EXECUTE THE FUNCTION 
                     if ((bool)item[DT_Risk.ENABLED])
                     {
                         riskValue += CalcDiagramDamageValue(item, dtRisk, idDamage, dtRisk_Damage, dtCM, dtCM_Damage);
@@ -198,13 +198,13 @@ namespace EnsureBusinesss
             }
         }
 
-        public static decimal SectionAcumulatedLikelihood(RiskPolyLine LineFather, List<RiskPolyLine> SectionChildren)
+        public static decimal AcumulatedLikelihood(RiskPolyLine LineFather, List<RiskPolyLine> Children)
         {
             decimal AcumulatedLikelihood;//This will be the value to return
             bool hasChildren = false;//the flag ill be activated if the risk has children,
             List<decimal> Probability_List = new List<decimal>();
             List<decimal> CM_Probabilities = new List<decimal>();
-            foreach (var item in SectionChildren)
+            foreach (var item in Children)
             {
                 if (item.IsCM)
                 {
@@ -231,7 +231,7 @@ namespace EnsureBusinesss
                     {
                         if (item.IsActivated)
                         {
-                            Probability_List.Add(FishHeadController.AcumulatedLikelihood(item));//else, call the function as recursive
+                            Probability_List.Add(FishHeadController.AcumulatedLikelihood(item,item.Children));//else, call the function as recursive
                         }
                         else
                         {
@@ -253,6 +253,77 @@ namespace EnsureBusinesss
             else
             {
                 AcumulatedLikelihood = LineFather.IsActivated ? LineFather.Probability : 1;//If don´t have child, Acum. Likelihood = its Probability
+                foreach (var item in CM_Probabilities)
+                {
+                    AcumulatedLikelihood *= (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure
+                }
+            }
+            if (AcumulatedLikelihood > 1)
+            {
+                return 1;
+            }
+            else
+            {
+                return AcumulatedLikelihood;
+            }
+        }
+
+
+        public static decimal SectAcmLike(RiskPolyLine line)
+        {
+            decimal AcumulatedLikelihood;//This will be the value to return
+            bool hasChildren = false;//the flag ill be activated if the risk has children,
+            List<decimal> Probability_List = new List<decimal>();
+            List<decimal> CM_Probabilities = new List<decimal>();
+            List<RiskPolyLine> hermanos = line.Father.Children.Where(l => l.Points[1].X <= line.Points[1].X).ToList();
+            foreach (var sibling in hermanos.OrderBy(l => l.Points[1].X))
+            {
+                if (sibling.IsCM)
+                {
+                    if (sibling.IsActivated)
+                    {
+                        CM_Probabilities.Add(sibling.Probability);
+                    }
+                }
+                else
+                {
+                    hasChildren = true;
+                    if (sibling.IsLeaf())
+                    {
+                        if (!(sibling.IsActivated))
+                        {
+                            Probability_List.Add(1);
+                        }
+                        else
+                        {
+                            Probability_List.Add(sibling.Probability);//if don´t have child, Acum. Likelihhod = its Probability
+                        }
+                    }
+                    else
+                    {
+                        if (sibling.IsActivated)
+                        {
+                            Probability_List.Add(SectAcmLike(sibling));//else, call the function as recursive
+                        }
+                        else
+                        {
+                            Probability_List.Add(1);
+                        }
+                    }
+                }
+            }
+            if (hasChildren)
+            {
+                //Here the formula, the probability of the father mult. by the probabilities of their children according with the In_Exclusion_Formula
+                AcumulatedLikelihood = (line.Father.IsActivated ? line.Father.Probability : 1) * EL_Inclusion_Exclusion(Probability_List);
+                foreach (var item in CM_Probabilities)
+                {
+                    AcumulatedLikelihood *= (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure
+                }
+            }
+            else
+            {
+                AcumulatedLikelihood = line.Father.IsActivated ? line.Father.Probability : 1;//If don´t have child, Acum. Likelihood = its Probability
                 foreach (var item in CM_Probabilities)
                 {
                     AcumulatedLikelihood *= (1M - item);//adding to the return value the Risk Reduction Formula for each CounterMeasure

@@ -196,13 +196,14 @@ namespace EnsureRisk.Classess
             MyPopWindow.Visibility = Visibility.Collapsed;
         }
 
-        public void MostrarPopCMWindow(Point pointToShow, string lineName, string probability, string value)
+        public void MostrarPopCMWindow(Point pointToShow, string lineName, string probability, string value, string acd2)
         {
             MyPopCMWindow.Visibility = Visibility.Visible;
             MyPopCMWindow.Margin = new Thickness(pointToShow.X, pointToShow.Y, 0, 0);
             MyPopCMWindow.TextRiskName.Text = lineName;
             MyPopCMWindow.TextProb.Text = probability;
             MyPopCMWindow.TextValue.Text = value;
+            MyPopCMWindow.TextTotalAcumDamage.Text = acd2;
         }
 
         public void OcultarPopCMWindow()
@@ -398,8 +399,6 @@ namespace EnsureRisk.Classess
                 for (int i = thisTopRisk.Length - 1; i >= 0; i--)
                 {
                     DataRow item = thisTopRisk[i];
-                    //System.Drawing.Color colorete = System.Drawing.Color.FromArgb(int.Parse(item[DT_Diagram_Damages.COLOR].ToString()));
-                    //Color mediaColor = Color.FromArgb(colorete.A, colorete.R, colorete.G, colorete.B);
                     Color mediaColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(item[DT_Diagram_Damages.COLOR].ToString())).Color;
 
                     MyDamage rectangle = new MyDamage(GridPaintLines, new Point(puntoinicialX, puntoinicialY),
@@ -508,7 +507,7 @@ namespace EnsureRisk.Classess
         //    }
         //}
 
-            /// <summary>
+        /// <summary>
             /// Update value damage properties
             /// </summary>
         public void DrawNumbers()
@@ -554,8 +553,8 @@ namespace EnsureRisk.Classess
                                 }
                             }
                         }
-                        decimal AcumulatedRiskDamage = LinesList.Sum(Risk => (!Risk.IsCM ? Risk.AcValue : 0));
-                        decimal AcumulatedCounterMeasureDamage = LinesList.Sum(Risk => (Risk.IsCM ? Risk.AcValue : 0));
+                        decimal AcumulatedRiskDamage = LinesList.Sum(Risk => (!Risk.IsCM ? Risk.OwnValue : 0));
+                        decimal AcumulatedCounterMeasureDamage = LinesList.Sum(Risk => (Risk.IsCM ? Risk.OwnValue : 0));
 
                         item.ExpecteDamage.Text = StringResources.ACUM_DAMAGE + General.MyRound(AcumDamage, 2).ToString() + " " + item.UM;
                         item.RisksDamageValue.Text = String.Format(StringResources.ACUM_RISK_DAMAGE, AcumulatedRiskDamage.ToString(), item.UM);
@@ -962,14 +961,16 @@ namespace EnsureRisk.Classess
         {
             foreach (var riskLine in LinesList)
             {
-                if (!riskLine.IsCM)
+                if (riskLine.IsCM)
+                {
+                    riskLine.OwnValue = GetValueCM_Damage(riskLine);
+                }
+                else
                 {
                     decimal al = FishHeadController.AcumulatedLikelihood(riskLine);
                     decimal AcValue = FishHeadController.CalcDiagramDamageValue(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(riskLine.ID),
                         Ds.Tables[DT_Risk.TABLE_NAME], IdDamageSelected, Ds.Tables[DT_Risk_Damages.TABLE_NAME],
                             Ds.Tables[DT_CounterM.TABLE_NAME], Ds.Tables[DT_CounterM_Damage.TABLE_NAME]);
-                    decimal myvalue = GetValueRisk_Damage(riskLine);
-                    riskLine.OwnDamage = myvalue * al;//Setting the own damage according with 
                     decimal AcumDamage = 0;
                     foreach (var itemI in TreeOperation.GetMeAndMyChildrenWithCM(riskLine))
                     {
@@ -990,71 +991,85 @@ namespace EnsureRisk.Classess
                     }
                     riskLine.AcLike = al;
                     riskLine.AcValue = AcValue;
-                    riskLine.OwnValue = myvalue;
+                    riskLine.OwnValue = GetValueRisk_Damage(riskLine);
                     riskLine.AcDamage = AcumDamage;
                 }
             }
-            UpdateTotalAcumulatedValue(MainLine);
+            UpdateLinesValues2();
         }
 
-        private void UpdateTotalAcumulatedValue(RiskPolyLine riskPolyLine)
+        /// <summary>
+        /// Update a value called AcDamage2 to right update of the segment line
+        /// </summary>
+        public void UpdateLinesValues2()
         {
-            if (riskPolyLine.Children.Any())
+            foreach (var line in LinesList)
             {
-                List<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderByDescending(pl => pl.Points[1].X).ToList();
-                //IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderBy(pl => pl.Position);
-                int itemCount = orderedChild.Count();
-                int index = itemCount - 1;
-                while (index >= 0)
+                if (!line.IsRoot)
                 {
-                    RiskPolyLine currentChild = orderedChild.ElementAt(index);
-                    UpdateTotalAcumulatedValue(currentChild);
-                    //if (index == 0)
-                    //{
-                    //    currentChild.AcDamage2 = currentChild.Father.AcDamage;
-                    //}
-                    if (index == itemCount - 1)
+                    if (line.IsCM)
                     {
-                        //    Extreme Left element in the List
-                        //    currentChild.AcDamage2 = currentChild.Father.AcDamage;
-                        currentChild.AcDamage2 = currentChild.AcDamage + currentChild.Father.AcDamage;
-                    }
-                    else
-                    {
-                        RiskPolyLine previousSibling = orderedChild.ElementAt(index + 1);
-                        currentChild.AcDamage2 = currentChild.AcDamage + previousSibling.AcDamage2;
-                    }
-                    //currentChild.AcDamage2 = SectionAcumDamage(currentChild);
-                    index--;
-                }
-            }
-        }
-
-        private  decimal SectionAcumDamage(RiskPolyLine riskPolyLine)
-        {
-            decimal AcumDamage2 = 0;
-            List<RiskPolyLine> meAndMinorSiblings = riskPolyLine.Father.Children.Where(pl => pl.Points[1].X <= riskPolyLine.Points[1].X).ToList();
-            decimal al = FishHeadController.SectionAcumulatedLikelihood(riskPolyLine.Father, meAndMinorSiblings);
-            meAndMinorSiblings.Add(riskPolyLine.Father);
-            foreach (var itemI in meAndMinorSiblings)
-            {
-                if (itemI.IsActivated)
-                {
-                    if (itemI.IsCM)
-                    {
-                        if (itemI.IsActivated)
+                        decimal ad2 = 0;
+                        foreach (var hermanito in HermanosMenores(line))
                         {
-                            AcumDamage2 += GetValueCM_Damage(itemI);
+                            if (hermanito.IsCM)
+                            {
+                                ad2 += GetValueCM_Damage(hermanito);
+                            }
+                            else
+                            {
+                                ad2 += hermanito.AcDamage;
+                            }
                         }
+                        line.AcDamage2 = ad2 + GetValueCM_Damage(line) + FatherThingAmbit(line.Father, line);
                     }
                     else
                     {
-                        AcumDamage2 += GetValueRisk_Damage(itemI) * FishHeadController.AcumulatedLikelihood(itemI);
+                        decimal ad2 = 0;
+                        foreach (var hermanito in HermanosMenores(line))
+                        {
+                            ad2 += hermanito.AcDamage;
+                        }
+                        line.AcDamage2 = ad2 + line.AcDamage + FatherThingAmbit(line.Father, line);
                     }
                 }
             }
-            return AcumDamage2;
         }
+        
+        private decimal FatherThingAmbit(RiskPolyLine father, RiskPolyLine child)
+        {
+            return FishHeadController.AcumulatedLikelihood(father, father.Children.Where(rl => rl.Points[1].X <= child.Points[1].X).ToList()) * GetValueRisk_Damage(child.Father);
+        }
+
+        private List<RiskPolyLine> HermanosMenores(RiskPolyLine hermanoMayor)
+        {
+            if (hermanoMayor.Father != null)
+            {
+                return hermanoMayor.Father.Children.Where(p => p.Points[1].X < hermanoMayor.Points[1].X).OrderByDescending(p => p.Points[1].X).ToList();
+            }
+            else
+            {
+                return new List<RiskPolyLine>();
+            }
+        }
+
+        //private void UpdateTotalAcumulatedValue(RiskPolyLine riskPolyLine)
+        //{
+        //    if (riskPolyLine.Children.Any())
+        //    {
+        //        List<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderByDescending(pl => pl.Points[1].X).ToList();
+        //        //IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderBy(pl => pl.Position);
+        //        int itemCount = orderedChild.Count();
+        //        int index = itemCount - 1;
+        //        while (index >= 0)
+        //        {
+        //            RiskPolyLine currentChild = orderedChild.ElementAt(index);
+        //            UpdateTotalAcumulatedValue(currentChild);
+        //            currentChild.AcDamage2 = SectionAcumDamage(currentChild);
+        //            index--;
+        //        }
+        //    }
+        //}
 
         private decimal GetValueCM_Damage(RiskPolyLine itemI)
         {
@@ -1498,18 +1513,18 @@ namespace EnsureRisk.Classess
                 string Value = General.MyRound(valor, 4).ToString();
 
                 string probability = General.MyRound(CMLine.Probability * 100, 2).ToString() + " %";
-
+                string TotalAcumaletedDamage = General.MyRound(CMLine.AcDamage2, 4).ToString();
                 //Popin = new Popin(GridPaintLines, pointToShowPopup, "CM: " + CMLine.ShortName, probability, Value)
                 //{
                 //    Visibility = Visibility.Visible
                 //};
                 if (!showPopup)
                 {
-                    MostrarPopCMWindow(new Point(pointToShowPopup.X - ScrollGridPaint.ContentHorizontalOffset, pointToShowPopup.Y - ScrollGridPaint.ContentVerticalOffset), CMLine.ShortName, probability, Value);
+                    MostrarPopCMWindow(new Point(pointToShowPopup.X - ScrollGridPaint.ContentHorizontalOffset, pointToShowPopup.Y - ScrollGridPaint.ContentVerticalOffset), CMLine.ShortName, probability, Value, TotalAcumaletedDamage);
                 }
                 else
                 {
-                    MostrarPopCMWindow(pointToShowPopup, CMLine.ShortName, probability, Value);
+                    MostrarPopCMWindow(pointToShowPopup, CMLine.ShortName, probability, Value, TotalAcumaletedDamage);
                 }
                 if ((bool)Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(CMLine.ID)[DT_CounterM.ENABLED])
                 {

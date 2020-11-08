@@ -33,7 +33,7 @@
         <Button Name="BtnOK" Content="OK" Height="25" Margin="0,0,143,19" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
         <Button Name="BtnCancel" Content="CLOSE" Height="25" Margin="0,0,39,19" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
         <StackPanel Orientation="Vertical" Margin="34,7,347,0">
-            <TextBox TabIndex="1" IsEnabled="{Binding Path = HasAccess}" KeyUp="RiskName_KeyUp" md:HintAssist.Hint="Short Name" md:HintAssist.IsFloating="True" x:Name="RiskName" MaxLength="250"  TextWrapping="Wrap"  VerticalAlignment="Top" LostFocus="RiskName_LostFocus" MaxLines="1" TextOptions.TextHintingMode="Animated" TextChanged="RiskName_TextChanged">
+            <TextBox TabIndex="1" md:ShadowAssist.ShadowDepth="Depth5" IsEnabled="{Binding Path = HasAccess}" KeyUp="RiskName_KeyUp" md:HintAssist.Hint="Short Name" md:HintAssist.IsFloating="True" x:Name="RiskName" MaxLength="250"  TextWrapping="Wrap"  VerticalAlignment="Top" LostFocus="RiskName_LostFocus" MaxLines="1" TextOptions.TextHintingMode="Animated" TextChanged="RiskName_TextChanged">
                 <TextBox.Text>
                     <Binding Path="ShortName" UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>

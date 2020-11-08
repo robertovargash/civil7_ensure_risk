@@ -32,6 +32,14 @@
                             <TextBlock x:Name="TextValue" Text="(Value)" TextWrapping="Wrap" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Grid>
+                    <Grid x:Name="GridTotalED" >
+                        <StackPanel Orientation="Horizontal" Margin="10 5 10 5" >
+                            <md:PackIcon Kind="WarningOctagram"/>
+                            <TextBlock Text="Total Acum. Dam: " TextWrapping="Wrap" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TextTotalAcumDamage" Text="(TED)" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+
                 </StackPanel>
             </Grid>
         </Border>
