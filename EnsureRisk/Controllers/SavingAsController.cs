@@ -156,6 +156,7 @@ namespace EnsureRisk
                     newRow[DT_RISK_WBS.PRIMARY] = item[DT_RISK_WBS.PRIMARY];
                     newRow[DT_RISK_WBS.IS_PRIMARY] = item[DT_RISK_WBS.IS_PRIMARY];
                     newRow[DT_RISK_WBS.PROBABILITY] = item[DT_RISK_WBS.PROBABILITY];
+                    newRow[DT_RISK_WBS.WBS_USER] = item[DT_RISK_WBS.WBS] + "[" + item[DT_RISK_WBS.USERNAME] + "]";
                     targetDS.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRow);
                 }
             }
@@ -168,6 +169,7 @@ namespace EnsureRisk
                 newRow[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = item[DT_WBS_RISK_DAMAGE.ID_DAMAGE];
                 newRow[DT_WBS_RISK_DAMAGE.VALUE] = item[DT_WBS_RISK_DAMAGE.VALUE];
                 newRow[DT_WBS_RISK_DAMAGE.DAMAGE] = item[DT_WBS_RISK_DAMAGE.DAMAGE];
+                newRow[DT_WBS_RISK_DAMAGE.WBS_USER] = item[DT_WBS_RISK_DAMAGE.WBS_USER];
                 targetDS.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(newRow);
             }
         }

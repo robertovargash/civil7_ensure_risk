@@ -6,15 +6,36 @@ namespace DataMapping.Data
     {
         public const string TABLE_NAME = "CM_WBS";
 
-        public const string ID_CM = "idCM";
-        public const string ID_WBS = "idWBS";
-        public const string CM = "CM";
-        public const string WBS = "WBS_Name";
-        public const string NIVEL = "Nivel";
-        public const string IS_PRIMARY = "isPrimary";
-        public const string PRIMARY = "Primaryy";
-        public const string USERNAME = "userName";
-        public const string PROBABILITY = "probability";
+        private const string iD_CM = "idCM";
+        private const string iD_WBS = "idWBS";
+        private const string cM = "CM";
+        private const string wBS = "WBS_Name";
+        private const string nIVEL = "Nivel";
+        private const string iS_PRIMARY = "isPrimary";
+        private const string pRIMARY = "Primaryy";
+        private const string uSERNAME = "userName";
+        private const string pROBABILITY = "probability";
+        private const string wBS_USER = "WBS_User";
+
+        public static string WBS_USER => wBS_USER;
+
+        public static string ID_CM => iD_CM;
+
+        public static string ID_WBS => iD_WBS;
+
+        public static string CM => cM;
+
+        public static string WBS => wBS;
+
+        public static string NIVEL => nIVEL;
+
+        public static string IS_PRIMARY => iS_PRIMARY;
+
+        public static string PRIMARY => pRIMARY;
+
+        public static string USERNAME => uSERNAME;
+
+        public static string PROBABILITY => pROBABILITY;
 
         public DT_CM_WBS() : base()
         {

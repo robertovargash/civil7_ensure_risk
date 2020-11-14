@@ -5,13 +5,19 @@ namespace DataMapping.Data
     public class DT_WBS_RISK_DAMAGE:DataTable
     {
         public const string ID_WBS = "idWBS";
-        public const string WBS = "WBSName";
+        private const string wBS = "WBSName";
+        private const string wBS_USER = "WBS_User";
         public const string ID_RISK = "idRisk";
         public const string ID_DAMAGE = "idTopRisk";
         public const string DAMAGE = "Damage";
-        public const string VALUE = "value";
+        private const string vALUE = "value";
         public const string TABLE_NAME = "Risk_WBS_Damage";
 
+        public static string WBS_USER => wBS_USER;
+
+        public static string WBS => wBS;
+
+        public static string VALUE => vALUE;
 
         public DT_WBS_RISK_DAMAGE():base()
         {

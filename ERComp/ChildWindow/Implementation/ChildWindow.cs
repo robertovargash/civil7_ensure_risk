@@ -276,7 +276,7 @@ namespace ERComp
 
     protected virtual void OnWindowStartupLocationChanged( WindowStartupLocation oldValue, WindowStartupLocation newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
+      //
     }
 
     #endregion //WindowStartupLocation

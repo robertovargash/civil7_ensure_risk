@@ -1333,6 +1333,7 @@ namespace EnsureRisk
                                 drwbsDamage[DT_WBS_RISK_DAMAGE.ID_WBS] = riskWBS[DT_RISK_WBS.ID_WBS];
                                 drwbsDamage[DT_WBS_RISK_DAMAGE.WBS] = riskWBS[DT_RISK_WBS.WBS];
                                 drwbsDamage[DT_WBS_RISK_DAMAGE.ID_RISK] = itemRisk[DT_Risk.ID];
+                                drwbsDamage[DT_WBS_RISK_DAMAGE.WBS_USER] = riskWBS[DT_RISK_WBS.WBS_USER];
                                 drwbsDamage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
                                 ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(drwbsDamage);
                             }                                
@@ -1373,6 +1374,7 @@ namespace EnsureRisk
                                 drwbsDamage[DT_WBS_CM_Damage.DAMAGE] = damage[DT_Diagram_Damages.DAMAGE];
                                 drwbsDamage[DT_WBS_CM_Damage.ID_WBS] = cmkWBS[DT_CM_WBS.ID_WBS];
                                 drwbsDamage[DT_WBS_CM_Damage.WBS] = cmkWBS[DT_CM_WBS.WBS];
+                                drwbsDamage[DT_WBS_CM_Damage.WBS_USER] = cmkWBS[DT_CM_WBS.WBS_USER];
                                 drwbsDamage[DT_WBS_CM_Damage.ID_CM] = itemCM[DT_CounterM.ID];
                                 drwbsDamage[DT_WBS_CM_Damage.VALUE] = 0;
                                 ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(drwbsDamage);
@@ -1835,6 +1837,7 @@ namespace EnsureRisk
             }
         }
 
+        //TODO: AQUI LA PROBABILIDAD
         private void CalculateProbability(DataRow RiskRow)
         {
             try
@@ -1897,6 +1900,7 @@ namespace EnsureRisk
         {
             try
             {
+                //Probability = decimal.Parse(TextProbability.Text);
                 General.RecalculateProbability(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), TheCurrentLayout.Ds, Probability, false);
             }
             catch (Exception ex)
@@ -2226,6 +2230,7 @@ namespace EnsureRisk
                             drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = false;
                             drRiskWBS[DT_RISK_WBS.PRIMARY] = "";
                             drRiskWBS[DT_RISK_WBS.USERNAME] = itemWBS[DT_WBS.USERNAME];
+                            drRiskWBS[DT_RISK_WBS.WBS_USER] = itemWBS[DT_WBS.WBS_NAME] + "[" + itemWBS[DT_WBS.USERNAME] + "]";
                             drRiskWBS[DT_RISK_WBS.PROBABILITY] = 100;
                             TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(drRiskWBS);
                             foreach (DataRow itemAncestors in WBSOperations.GetAncestors((decimal)itemWBS[DT_WBS.ID_WBS], DsWBS.Tables[DT_WBS.TABLE_NAME].Clone(), DsWBS).Rows)
@@ -2239,6 +2244,7 @@ namespace EnsureRisk
                                     drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
                                     drRiskWBSi[DT_RISK_WBS.NIVEL] = itemAncestors[DT_WBS.NIVEL].ToString().TrimStart();
                                     drRiskWBSi[DT_RISK_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
+                                    drRiskWBSi[DT_RISK_WBS.WBS_USER] = itemAncestors[DT_WBS.WBS_NAME] + "[" + itemAncestors[DT_WBS.USERNAME] + "]";
                                     drRiskWBSi[DT_RISK_WBS.IS_PRIMARY] = false;
                                     drRiskWBSi[DT_RISK_WBS.PRIMARY] = "";
                                     drRiskWBSi[DT_RISK_WBS.PROBABILITY] = 100;
@@ -2258,6 +2264,7 @@ namespace EnsureRisk
                                         drCMWBS[DT_CM_WBS.ID_WBS] = itemWBS[DT_WBS.ID_WBS];
                                         drCMWBS[DT_CM_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
                                         drCMWBS[DT_CM_WBS.USERNAME] = itemWBS[DT_WBS.USERNAME];
+                                        drCMWBS[DT_CM_WBS.WBS_USER] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart() + "[" + itemWBS[DT_WBS.USERNAME] + "]";
                                         drCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
                                         drCMWBS[DT_CM_WBS.PRIMARY] = "";
                                         TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(drCMWBS);
@@ -2287,6 +2294,7 @@ namespace EnsureRisk
                                                 drCMWBS[DT_CM_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
                                                 drCMWBS[DT_CM_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
                                                 drCMWBS[DT_CM_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
+                                                drCMWBS[DT_CM_WBS.WBS_USER] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart() + "[" + itemAncestors[DT_WBS.USERNAME] + "]";
                                                 drCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
                                                 drCMWBS[DT_CM_WBS.PRIMARY] = "";
                                                 TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(drCMWBS);
@@ -2305,6 +2313,7 @@ namespace EnsureRisk
                                         drRiskWBSS[DT_RISK_WBS.ID_WBS] = itemWBS[DT_WBS.ID_WBS];
                                         drRiskWBSS[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
                                         drRiskWBSS[DT_RISK_WBS.USERNAME] = itemWBS[DT_WBS.USERNAME];
+                                        drRiskWBSS[DT_RISK_WBS.WBS_USER] = itemWBS[DT_WBS.WBS_NAME] + "[" + itemWBS[DT_WBS.USERNAME] + "]";
                                         drRiskWBSS[DT_RISK_WBS.IS_PRIMARY] = false;
                                         drRiskWBSS[DT_RISK_WBS.PRIMARY] = "";
                                         drRiskWBSS[DT_RISK_WBS.PROBABILITY] = 100;
@@ -2334,6 +2343,7 @@ namespace EnsureRisk
                                                 drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
                                                 drRiskWBSi[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
                                                 drRiskWBSi[DT_RISK_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
+                                                drRiskWBSi[DT_RISK_WBS.WBS_USER] = itemAncestors[DT_WBS.WBS_NAME] + "[" + itemAncestors[DT_WBS.USERNAME] + "]";
                                                 drRiskWBSi[DT_RISK_WBS.IS_PRIMARY] = false;
                                                 drRiskWBSi[DT_RISK_WBS.PRIMARY] = "";
                                                 drRiskWBSi[DT_RISK_WBS.PROBABILITY] = 100;
@@ -3420,6 +3430,7 @@ namespace EnsureRisk
         {
             try
             {
+                //RiskReduction = decimal.Parse(TextRReduction.Text);
                 General.RecalculateProbability(TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), TheCurrentLayout.Ds, RiskReduction, true);
             }
             catch (Exception ex)
@@ -3578,6 +3589,7 @@ namespace EnsureRisk
         #endregion
 
         #region DgWBSCM_Events
+        //TODO:  AQUI LA PROBABILIDAD
         private void CalculateRiskReduction(DataRow CMRow)
         {
             try
@@ -3733,6 +3745,7 @@ namespace EnsureRisk
                             drCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
                             drCMWBS[DT_CM_WBS.PRIMARY] = "";
                             drCMWBS[DT_CM_WBS.USERNAME] = item[DT_WBS.USERNAME];
+                            drCMWBS[DT_CM_WBS.WBS_USER] = item[DT_WBS.WBS_NAME].ToString().TrimStart() + "[" + item[DT_WBS.USERNAME] + "]";
                             drCMWBS[DT_CM_WBS.PROBABILITY] = 0;
                             TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(drCMWBS);
                         }
@@ -3742,17 +3755,18 @@ namespace EnsureRisk
                             {
                                 if (!(TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { TheCurrentLayout.Line_Selected.ID, itemAncestors[DT_WBS.ID_WBS] })))
                                 {
-                                    DataRow drRiskWBSi = TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
-                                    drRiskWBSi[DT_CM_WBS.ID_CM] = TheCurrentLayout.Line_Selected.ID;
-                                    drRiskWBSi[DT_CM_WBS.CM] = TextCM.Text;
-                                    drRiskWBSi[DT_CM_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
-                                    drRiskWBSi[DT_CM_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
-                                    drRiskWBSi[DT_CM_WBS.NIVEL] = itemAncestors[DT_WBS.NIVEL].ToString().TrimStart();
-                                    drRiskWBSi[DT_CM_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
-                                    drRiskWBSi[DT_CM_WBS.IS_PRIMARY] = false;
-                                    drRiskWBSi[DT_CM_WBS.PRIMARY] = "";
-                                    drRiskWBSi[DT_CM_WBS.PROBABILITY] = 0;
-                                    TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(drRiskWBSi);
+                                    DataRow drCMWBSi = TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
+                                    drCMWBSi[DT_CM_WBS.ID_CM] = TheCurrentLayout.Line_Selected.ID;
+                                    drCMWBSi[DT_CM_WBS.CM] = TextCM.Text;
+                                    drCMWBSi[DT_CM_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
+                                    drCMWBSi[DT_CM_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
+                                    drCMWBSi[DT_CM_WBS.NIVEL] = itemAncestors[DT_WBS.NIVEL].ToString().TrimStart();
+                                    drCMWBSi[DT_CM_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
+                                    drCMWBSi[DT_CM_WBS.IS_PRIMARY] = false;
+                                    drCMWBSi[DT_CM_WBS.WBS_USER] = drCMWBSi[DT_CM_WBS.WBS] + "[" + itemAncestors[DT_WBS.USERNAME] + "]";
+                                    drCMWBSi[DT_CM_WBS.PRIMARY] = "";
+                                    drCMWBSi[DT_CM_WBS.PROBABILITY] = 0;
+                                    TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(drCMWBSi);
                                 }
                             }
                         }
@@ -4189,6 +4203,7 @@ namespace EnsureRisk
                             newRow[DT_CM_WBS.NIVEL] = item[DT_RISK_WBS.NIVEL];
                             newRow[DT_CM_WBS.PRIMARY] = item[DT_RISK_WBS.PRIMARY];
                             newRow[DT_CM_WBS.USERNAME] = item[DT_RISK_WBS.USERNAME];
+                            newRow[DT_CM_WBS.WBS_USER] = item[DT_RISK_WBS.WBS] + "[" + item[DT_RISK_WBS.USERNAME] + "]";
                             newRow[DT_CM_WBS.WBS] = item[DT_RISK_WBS.WBS];
                             TheCurrentLayout.Ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newRow);
                         }
@@ -4201,6 +4216,7 @@ namespace EnsureRisk
                             newRow[DT_WBS_CM_Damage.ID_WBS] = item[DT_WBS_RISK_DAMAGE.ID_WBS];
                             newRow[DT_WBS_CM_Damage.VALUE] = 0;
                             newRow[DT_WBS_CM_Damage.WBS] = item[DT_WBS_RISK_DAMAGE.WBS];
+                            newRow[DT_WBS_CM_Damage.WBS_USER] = item[DT_WBS_RISK_DAMAGE.WBS_USER];
                             TheCurrentLayout.Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newRow);
                         }
                         TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Add(CMRow);

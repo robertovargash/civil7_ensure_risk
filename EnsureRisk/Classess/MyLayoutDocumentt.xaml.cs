@@ -1499,8 +1499,7 @@ namespace EnsureRisk.Classess
         {
             try
             {
-                CMLine.StrokeThickness = 3;
-                CMLine.StrokeThickness = 3;
+                CMLine.StrokeDashArray = new DoubleCollection { 1, 0 };
                 decimal valor;
                 if (Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { CMLine.ID, IdDamageSelected }))
                 {
@@ -1568,7 +1567,8 @@ namespace EnsureRisk.Classess
         {
             if (CMLeave != null)
             {
-                CMLeave.StrokeThickness = 2;
+                CMLeave.StrokeThickness = 3;
+                CMLeave.StrokeDashArray = new DoubleCollection { 5, 2 };
             }
             OcultarPopCMWindow();
             //if (Popin != null)

@@ -146,7 +146,7 @@ namespace ERComp
 
     protected virtual void OnDisplayTextChanged( string oldValue, string newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
+      //
     }
 
     #endregion //DisplayText

@@ -167,6 +167,7 @@ namespace EnsureBusinesss
                     newRiskWBS[DT_RISK_WBS.RISK] = drTargetRisk[DT_Risk.NAMESHORT];
                     newRiskWBS[DT_RISK_WBS.USERNAME] = rowRiskWbs[DT_RISK_WBS.USERNAME];
                     newRiskWBS[DT_RISK_WBS.WBS] = rowRiskWbs[DT_RISK_WBS.WBS];
+                    newRiskWBS[DT_RISK_WBS.WBS_USER] = rowRiskWbs[DT_RISK_WBS.WBS] + "[" + rowRiskWbs[DT_RISK_WBS.USERNAME] + "]";
                     targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
                 }
             }
@@ -207,6 +208,7 @@ namespace EnsureBusinesss
                     newRiskWBSDamage[DT_WBS_RISK_DAMAGE.ID_WBS] = targetWBS[DT_RISK_WBS.ID_WBS];
                     newRiskWBSDamage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
                     newRiskWBSDamage[DT_WBS_RISK_DAMAGE.WBS] = targetWBS[DT_RISK_WBS.WBS];
+                    newRiskWBSDamage[DT_WBS_RISK_DAMAGE.WBS_USER] = targetWBS[DT_RISK_WBS.WBS_USER];
                     targetDataset.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(newRiskWBSDamage);
                 }
             }
@@ -276,6 +278,7 @@ namespace EnsureBusinesss
                         newRiskWBS[DT_RISK_WBS.RISK] = drRiskCopied[DT_Risk.NAMESHORT];
                         newRiskWBS[DT_RISK_WBS.USERNAME] = targetWBS[DT_RISK_WBS.USERNAME];
                         newRiskWBS[DT_RISK_WBS.WBS] = targetWBS[DT_RISK_WBS.WBS];
+                        newRiskWBS[DT_RISK_WBS.WBS_USER] = targetWBS[DT_RISK_WBS.WBS] + "[" + targetWBS[DT_RISK_WBS.USERNAME] + "]";
                         targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
                     }
                 }
@@ -294,6 +297,7 @@ namespace EnsureBusinesss
                                 newRiskWBS[DT_RISK_WBS.WBS] = wbs[DT_WBS.WBS_NAME];
                                 newRiskWBS[DT_RISK_WBS.NIVEL] = wbs[DT_WBS.NIVEL];
                                 newRiskWBS[DT_RISK_WBS.USERNAME] = wbs[DT_WBS.USERNAME];
+                                newRiskWBS[DT_RISK_WBS.WBS_USER] = wbs[DT_WBS.WBS_NAME] + "[" +  wbs[DT_WBS.USERNAME] + "]";
                                 newRiskWBS[DT_RISK_WBS.IS_PRIMARY] = primary;
                                 newRiskWBS[DT_RISK_WBS.PROBABILITY] = 100;
                                 primary = false;
@@ -317,6 +321,7 @@ namespace EnsureBusinesss
                         newRiskWBS[DT_RISK_WBS.WBS] = topWBS[DT_WBS.WBS_NAME];
                         newRiskWBS[DT_RISK_WBS.NIVEL] = topWBS[DT_WBS.NIVEL];
                         newRiskWBS[DT_RISK_WBS.USERNAME] = topWBS[DT_WBS.USERNAME];
+                        newRiskWBS[DT_RISK_WBS.WBS_USER] = topWBS[DT_WBS.WBS_NAME] + "[" + topWBS[DT_WBS.USERNAME] + "]";
                         newRiskWBS[DT_RISK_WBS.IS_PRIMARY] = primary;
                         newRiskWBS[DT_RISK_WBS.PROBABILITY] = 100;
                         newRiskWBS[DT_RISK_WBS.PRIMARY] = primary ? "PRIMARY" : "";
@@ -437,6 +442,7 @@ namespace EnsureBusinesss
                     newCMWBS[DT_CM_WBS.CM] = drNewCM[DT_CounterM.NAMESHORT];
                     newCMWBS[DT_CM_WBS.USERNAME] = targetWBS[DT_RISK_WBS.USERNAME];
                     newCMWBS[DT_CM_WBS.WBS] = targetWBS[DT_RISK_WBS.WBS];
+                    newCMWBS[DT_CM_WBS.WBS_USER] = targetWBS[DT_RISK_WBS.WBS] + "[" +  targetWBS[DT_RISK_WBS.USERNAME] + "]";
                     targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
                 }
             }
@@ -455,6 +461,7 @@ namespace EnsureBusinesss
                             newCMWBS[DT_CM_WBS.WBS] = wbs[DT_WBS.WBS_NAME];
                             newCMWBS[DT_CM_WBS.NIVEL] = wbs[DT_WBS.NIVEL];
                             newCMWBS[DT_CM_WBS.USERNAME] = wbs[DT_WBS.USERNAME];
+                            newCMWBS[DT_CM_WBS.WBS_USER] = wbs[DT_WBS.WBS_NAME] + "[" + wbs[DT_WBS.USERNAME] + "]";
                             newCMWBS[DT_CM_WBS.IS_PRIMARY] = primary;
                             newCMWBS[DT_CM_WBS.PROBABILITY] = 0;
                             primary = false;
@@ -501,6 +508,7 @@ namespace EnsureBusinesss
                     newCMWBSDamage[DT_WBS_CM_Damage.ID_WBS] = newCMWBS[DT_CM_WBS.ID_WBS];
                     newCMWBSDamage[DT_WBS_CM_Damage.VALUE] = 0;
                     newCMWBSDamage[DT_WBS_CM_Damage.WBS] = newCMWBS[DT_CM_WBS.WBS];
+                    newCMWBSDamage[DT_WBS_CM_Damage.WBS_USER] = newCMWBS[DT_CM_WBS.WBS_USER];
                     targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(newCMWBSDamage);
                 }
             }
@@ -688,6 +696,7 @@ namespace EnsureBusinesss
                     newRiskWBS[DT_RISK_WBS.RISK] = drRiskCreated[DT_Risk.NAMESHORT];
                     newRiskWBS[DT_RISK_WBS.USERNAME] = targetWBS[DT_RISK_WBS.USERNAME];
                     newRiskWBS[DT_RISK_WBS.WBS] = targetWBS[DT_RISK_WBS.WBS];
+                    newRiskWBS[DT_RISK_WBS.WBS_USER] = targetWBS[DT_RISK_WBS.WBS] + "[" + targetWBS[DT_RISK_WBS.USERNAME] + "]";
                     targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
                 }
             }
@@ -707,6 +716,7 @@ namespace EnsureBusinesss
                     newRiskWBS[DT_RISK_WBS.RISK] = drRiskCreated[DT_Risk.NAMESHORT];
                     newRiskWBS[DT_RISK_WBS.USERNAME] = targetWBS[DT_RISK_WBS.USERNAME];
                     newRiskWBS[DT_RISK_WBS.WBS] = targetWBS[DT_RISK_WBS.WBS];
+                    newRiskWBS[DT_RISK_WBS.WBS_USER] = targetWBS[DT_RISK_WBS.WBS] + "[" + targetWBS[DT_RISK_WBS.USERNAME] + "]";
                     targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
                 }
             }
@@ -725,6 +735,7 @@ namespace EnsureBusinesss
                             newRiskWBS[DT_RISK_WBS.WBS] = wbs[DT_WBS.WBS_NAME];
                             newRiskWBS[DT_RISK_WBS.NIVEL] = wbs[DT_WBS.NIVEL];
                             newRiskWBS[DT_RISK_WBS.USERNAME] = wbs[DT_WBS.USERNAME];
+                            newRiskWBS[DT_RISK_WBS.WBS_USER] = wbs[DT_WBS.WBS_NAME] + "[" +  wbs[DT_WBS.USERNAME] + "]";
                             newRiskWBS[DT_RISK_WBS.IS_PRIMARY] = primary;
                             newRiskWBS[DT_RISK_WBS.PROBABILITY] = drRiskCreated[DT_Risk.PROBABILITY];
                             primary = false;
@@ -835,7 +846,7 @@ namespace EnsureBusinesss
             //Los DAMAGES del TARGET DIAGRAM
             foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
             {
-                if (!(targetDataset.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { drNewCM[DT_Risk.ID], diagramDamages[DT_Diagram_Damages.ID_DAMAGE] })))
+                if (!(targetDataset.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], diagramDamages[DT_Diagram_Damages.ID_DAMAGE] })))
                 {
                     DataRow drCMDamage = targetDataset.Tables[DT_CounterM_Damage.TABLE_NAME].NewRow();
                     drCMDamage[DT_CounterM_Damage.COLOR] = diagramDamages[DT_Diagram_Damages.COLOR];
@@ -873,6 +884,7 @@ namespace EnsureBusinesss
                     newCMWBS[DT_CM_WBS.CM] = drNewCM[DT_CounterM.NAMESHORT];
                     newCMWBS[DT_CM_WBS.USERNAME] = sourceWBS[DT_CM_WBS.USERNAME];
                     newCMWBS[DT_CM_WBS.WBS] = sourceWBS[DT_CM_WBS.WBS];
+                    newCMWBS[DT_CM_WBS.WBS_USER] = sourceWBS[DT_CM_WBS.WBS] + "[" + sourceWBS[DT_CM_WBS.USERNAME] + "]";
                     targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
                 }
             }
@@ -890,6 +902,7 @@ namespace EnsureBusinesss
                     newCMWBS[DT_CM_WBS.PROBABILITY] = drNewCM[DT_CounterM.PROBABILITY];
                     newCMWBS[DT_CM_WBS.CM] = drNewCM[DT_CounterM.NAMESHORT];
                     newCMWBS[DT_CM_WBS.USERNAME] = targetWBS[DT_RISK_WBS.USERNAME];
+                    newCMWBS[DT_CM_WBS.WBS_USER] = targetWBS[DT_RISK_WBS.WBS] + "[" + targetWBS[DT_RISK_WBS.USERNAME] + "]";
                     newCMWBS[DT_CM_WBS.WBS] = targetWBS[DT_RISK_WBS.WBS];
                     targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
                 }
@@ -971,6 +984,7 @@ namespace EnsureBusinesss
                 rwbs[DT_RISK_WBS.IS_PRIMARY] = itemi[DT_RISK_WBS.IS_PRIMARY];
                 rwbs[DT_RISK_WBS.PRIMARY] = itemi[DT_RISK_WBS.PRIMARY];
                 rwbs[DT_RISK_WBS.USERNAME] = itemi[DT_RISK_WBS.USERNAME];
+                rwbs[DT_RISK_WBS.WBS_USER] = itemi[DT_RISK_WBS.WBS] + "[" + itemi[DT_RISK_WBS.USERNAME] + "]";
                 rwbs[DT_RISK_WBS.PROBABILITY] = itemi[DT_RISK_WBS.PROBABILITY];
                 dsTarget.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(rwbs);
             }
@@ -988,6 +1002,7 @@ namespace EnsureBusinesss
                     rwbs[DT_RISK_WBS.IS_PRIMARY] = false;
                     rwbs[DT_RISK_WBS.PRIMARY] = "";
                     rwbs[DT_RISK_WBS.USERNAME] = wbsFather[DT_RISK_WBS.USERNAME];
+                    rwbs[DT_RISK_WBS.WBS_USER] = wbsFather[DT_RISK_WBS.WBS] + "[" + wbsFather[DT_RISK_WBS.USERNAME] + "]";
                     rwbs[DT_RISK_WBS.PROBABILITY] = 0;
                     dsTarget.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(rwbs);
                 }
@@ -1002,6 +1017,7 @@ namespace EnsureBusinesss
                 rwbs[DT_WBS_RISK_DAMAGE.VALUE] = itemi[DT_WBS_RISK_DAMAGE.VALUE];
                 rwbs[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = itemi[DT_WBS_RISK_DAMAGE.ID_DAMAGE];
                 rwbs[DT_WBS_RISK_DAMAGE.DAMAGE] = itemi[DT_WBS_RISK_DAMAGE.DAMAGE];
+                rwbs[DT_WBS_RISK_DAMAGE.WBS_USER] = itemi[DT_WBS_RISK_DAMAGE.WBS_USER];
                 dsTarget.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(rwbs);
             }
             //Los WBS values que faltan por completar
@@ -1017,6 +1033,7 @@ namespace EnsureBusinesss
                     rwbs[DT_WBS_RISK_DAMAGE.VALUE] = 0;
                     rwbs[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = fatherWBSValues[DT_WBS_RISK_DAMAGE.ID_DAMAGE];
                     rwbs[DT_WBS_RISK_DAMAGE.DAMAGE] = fatherWBSValues[DT_WBS_RISK_DAMAGE.DAMAGE];
+                    rwbs[DT_WBS_RISK_DAMAGE.WBS_USER] = fatherWBSValues[DT_WBS_RISK_DAMAGE.WBS_USER];
                     dsTarget.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(rwbs);
                 }
             }
@@ -1089,6 +1106,7 @@ namespace EnsureBusinesss
                 rwbs[DT_CM_WBS.IS_PRIMARY] = itemi[DT_CM_WBS.IS_PRIMARY];
                 rwbs[DT_CM_WBS.PRIMARY] = itemi[DT_CM_WBS.PRIMARY];
                 rwbs[DT_CM_WBS.USERNAME] = itemi[DT_CM_WBS.USERNAME];
+                rwbs[DT_CM_WBS.WBS_USER] = itemi[DT_CM_WBS.WBS] + "[" + itemi[DT_CM_WBS.USERNAME] +"]";
                 rwbs[DT_CM_WBS.CM] = itemi[DT_CM_WBS.CM];
                 rwbs[DT_CM_WBS.PROBABILITY] = itemi[DT_CM_WBS.PROBABILITY];
                 dsResult.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(rwbs);
@@ -1108,6 +1126,7 @@ namespace EnsureBusinesss
                     rwbs[DT_CM_WBS.IS_PRIMARY] = false;
                     rwbs[DT_CM_WBS.PRIMARY] = "";
                     rwbs[DT_CM_WBS.USERNAME] = wbsFather[DT_RISK_WBS.USERNAME];
+                    rwbs[DT_CM_WBS.WBS_USER] = wbsFather[DT_RISK_WBS.WBS] + "[" + wbsFather[DT_RISK_WBS.USERNAME] + "]";
                     rwbs[DT_CM_WBS.CM] = drCM[DT_CounterM.NAMESHORT];
                     rwbs[DT_CM_WBS.PROBABILITY] = 0;
                     dsResult.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(rwbs);
@@ -1123,6 +1142,7 @@ namespace EnsureBusinesss
                 rwbs[DT_WBS_CM_Damage.DAMAGE] = itemi[DT_WBS_CM_Damage.DAMAGE];
                 rwbs[DT_WBS_CM_Damage.VALUE] = itemi[DT_WBS_CM_Damage.VALUE];
                 rwbs[DT_WBS_CM_Damage.WBS] = itemi[DT_WBS_CM_Damage.WBS];
+                rwbs[DT_WBS_CM_Damage.WBS_USER] = itemi[DT_WBS_CM_Damage.WBS_USER];
                 dsResult.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(rwbs);
             }
             //Los valores WBSDamage que tiene el padre originalmente
@@ -1138,6 +1158,7 @@ namespace EnsureBusinesss
                     rwbs[DT_WBS_CM_Damage.DAMAGE] = fatherWBSValues[DT_WBS_RISK_DAMAGE.DAMAGE];
                     rwbs[DT_WBS_CM_Damage.VALUE] = 0;
                     rwbs[DT_WBS_CM_Damage.WBS] = fatherWBSValues[DT_WBS_RISK_DAMAGE.WBS];
+                    rwbs[DT_WBS_CM_Damage.WBS_USER] = fatherWBSValues[DT_WBS_RISK_DAMAGE.WBS_USER];
                     dsResult.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(rwbs);
                 }
             }

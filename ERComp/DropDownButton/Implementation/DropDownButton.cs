@@ -104,7 +104,7 @@ namespace ERComp
 
     protected virtual void OnDropDownContentChanged( object oldValue, object newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
+      //
     }
 
     #endregion //DropDownContent
@@ -237,7 +237,7 @@ namespace ERComp
 
     protected virtual void OnMaxDropDownHeightChanged( double oldValue, double newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
+      //
     }
 
     #endregion

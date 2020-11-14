@@ -24,6 +24,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml"/>
+                <!--<ResourceDictionary Source="/EnsureRisk;component/Menus/MenuDictionary.xaml"/>-->
+                <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/Styless.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
             <ContextMenu x:Key="MenuRisk" Visibility="Hidden" Background="Transparent">
@@ -185,80 +187,9 @@
             <md:PackIcon Kind="ChevronDoubleRight" x:Key="Right"/>
             <md:PackIcon Kind="Lan" x:Key="Tree"/>
             <md:PackIcon Kind="Fish" x:Key="Fish"/>
-            <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Key="DeleteRow" Content="{md:PackIcon Kind=Delete}" ToolTip="Remove this group"/>
             <!--<TextBox Style="{StaticResource MaterialDesignFilledTextFieldTextBox}" x:Key="TextName"/>-->
             <Slider x:Key="CommonSlider"/>
             <ComboBox x:Key="CommonCB"/>
-            <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Key="Delete" Content="{md:PackIcon Kind=Delete}" ToolTip="Remove this group"/>
-            <ToggleButton x:Key="togleStyle" Style="{StaticResource MaterialDesignActionToggleButton}" Content="{md:PackIcon Kind=Close}"/>           
-            <Style x:Key="TextStyle">
-                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
-                <Setter Property="TextBlock.TextAlignment" Value="Justify"/>
-            </Style>
-            <Style x:Key="CustomColumnHeader" TargetType="{x:Type DataGridColumnHeader}">
-                <Setter Property="BorderThickness" Value="0,0,1,0"/>
-                <Setter Property="BorderBrush" Value="LightGray"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="TextBlock.FontSize" Value="12" />
-                <Setter Property="TextBlock.FontWeight" Value="Medium" />
-                <Setter Property="Padding" Value="{Binding RelativeSource={RelativeSource Self}, Path=(md:DataGridAssist.ColumnHeaderPadding)}" />
-                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignColumnHeader}" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                            <ControlTemplate.Resources>
-                                <Storyboard x:Key="GoToVisible">
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SortDirectionIndicator" Storyboard.TargetProperty="Width">
-                                        <EasingDoubleKeyFrame KeyTime="0:0:0.0" Value="0" />
-                                        <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="12" />
-                                    </DoubleAnimationUsingKeyFrames>
-                                </Storyboard>
-                                <Storyboard x:Key="GoToHidden">
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SortDirectionIndicator" Storyboard.TargetProperty="Width">
-                                        <EasingDoubleKeyFrame KeyTime="0:0:0.0" Value="12" />
-                                        <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0" />
-                                    </DoubleAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </ControlTemplate.Resources>
-                            <Grid>
-                                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
-                                    <Grid Background="Transparent">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <md:ListSortDirectionIndicator Grid.Column="0" Width="0" Height="12" x:Name="SortDirectionIndicator" ListSortDirection="{TemplateBinding SortDirection}"/>
-                                        <ContentPresenter Grid.Column="1" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}"/>
-                                    </Grid>
-                                </Border>
-                                <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignGridColumnHeaderGripper}"/>
-                                <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignGridColumnHeaderGripper}"/>
-                            </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-                                </Trigger>
-                                <Trigger Property="SortDirection" Value="Ascending">
-                                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-                                </Trigger>
-                                <Trigger Property="SortDirection" Value="Descending">
-                                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-                                </Trigger>
-                                <Trigger SourceName="SortDirectionIndicator" Property="IsNeutral" Value="False">
-                                    <Trigger.EnterActions>
-                                        <BeginStoryboard Storyboard="{StaticResource GoToVisible}" Name="GoToVisible" />
-                                    </Trigger.EnterActions>
-                                    <Trigger.ExitActions>
-                                        <RemoveStoryboard BeginStoryboardName="GoToVisible" />
-                                        <BeginStoryboard Storyboard="{StaticResource GoToHidden}" />
-                                    </Trigger.ExitActions>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            
         </ResourceDictionary>
     </Window.Resources>
     <Window.CommandBindings>
@@ -374,7 +305,7 @@
                                         <TextBox md:HintAssist.Hint="Probability(%)" LostFocus="TextProbability_LostFocus" x:Name="TextProbability" Text="{Binding Path = Probability,
                                                                             Converter={x:Static decimalconv:DecimalUIConverter.Instance},
                                                                          ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
-                                                                        ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}" Margin="10" 
+                                                                        ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}, UpdateSourceTrigger=PropertyChanged}" Margin="10" 
                                                  md:HintAssist.IsFloating="True" HorizontalAlignment="Left" Width="150" IsEnabled="{Binding Path = HasAccess}" Height="42"/>
                                         <md:Card Background="{DynamicResource MaterialDesignBackground}">
                                             <StackPanel>
@@ -388,21 +319,10 @@
                                                                       SelectionChanged="DgRiskDamages_SelectionChanged" 
                                                                       CanUserDeleteRows="False" CanUserAddRows="False"
                                                                       VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
-                                                                <DataGrid.Resources>
-                                                                    <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
-                                                                        <Setter Property="Padding" Value="-2"/>
-                                                                        <Style.Triggers>
-                                                                            <Trigger Property="Validation.HasError" Value="True">
-                                                                                <Setter Property="Background" Value="Red"/>
-                                                                                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
-                                                                            </Trigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </DataGrid.Resources>
                                                                 <DataGrid.Columns>
-                                                                    <DataGridTextColumn x:Name="WBSn" Header="WBS" Binding="{Binding {x:Static data:DT_WBS_RISK_DAMAGE.WBS}}" Width="*" IsReadOnly="True"/>
-                                                                    <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_WBS_RISK_DAMAGE.DAMAGE}}" Width="*" IsReadOnly="True"/>
-                                                                    <DataGridTextColumn x:Name="TopValue" Header="Value" EditingElementStyle="{StaticResource errorStyle}" Width="*" IsReadOnly="False">
+                                                                    <DataGridTextColumn x:Name="WBSn" Header="WBS/User" Binding="{Binding {x:Static data:DT_WBS_RISK_DAMAGE.WBS_USER}}" Width="*" IsReadOnly="True"/>
+                                                                    <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_WBS_RISK_DAMAGE.DAMAGE}}" Width="200" IsReadOnly="True"/>
+                                                                    <DataGridTextColumn x:Name="TopValue" Header="Value" EditingElementStyle="{StaticResource errorStyle}" Width="100" IsReadOnly="False">
                                                                         <DataGridTextColumn.Binding>
                                                                             <Binding Path="value" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"  ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                                                                 <Binding.ValidationRules >
@@ -426,17 +346,6 @@
                                                                       CellEditEnding="DgRiskWBS_CellEditEnding" 
                                                                       SelectionChanged="DgRiskWBS_SelectionChanged" CanUserAddRows="False" 
                                                                       CanUserDeleteRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
-                                                                <DataGrid.Resources>
-                                                                    <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
-                                                                        <Setter Property="Padding" Value="-2"/>
-                                                                        <Style.Triggers>
-                                                                            <Trigger Property="Validation.HasError" Value="True">
-                                                                                <Setter Property="Background" Value="Red"/>
-                                                                                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
-                                                                            </Trigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </DataGrid.Resources>
                                                                 <DataGrid.Columns>
                                                                     <DataGridTemplateColumn x:Name="wbsBtn">
                                                                         <DataGridTemplateColumn.Header>
@@ -454,9 +363,8 @@
                                                                     </DataGridTemplateColumn>
                                                                     <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding {x:Static data:DT_RISK_WBS.NIVEL}}" Width="100" IsReadOnly="True">
                                                                     </DataGridTextColumn>
-                                                                    <DataGridTextColumn x:Name="WBS" Header="WBS Name" Binding="{Binding {x:Static data:DT_RISK_WBS.WBS}}" Width="*" IsReadOnly="True"/>
-                                                                    <DataGridTextColumn x:Name="WBSUser" Header="User" Binding="{Binding {x:Static data:DT_RISK_WBS.USERNAME}}" Width="*" IsReadOnly="True"/>
-                                                                    <DataGridTextColumn x:Name="WBProbability" Header="Prob (%)" Width="*" EditingElementStyle="{StaticResource errorStyle}" IsReadOnly="False" >
+                                                                    <DataGridTextColumn x:Name="WBS" Header="WBS/User" Binding="{Binding {x:Static data:DT_RISK_WBS.WBS_USER}}" Width="*" IsReadOnly="True"/>
+                                                                    <DataGridTextColumn x:Name="WBProbability" Header="Prob (%)" Width="100" EditingElementStyle="{StaticResource errorStyle}" IsReadOnly="False" >
                                                                         <DataGridTextColumn.Binding>
                                                                             <Binding Path="probability" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
                                                                          ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
@@ -533,7 +441,7 @@
                                         <TextBox md:HintAssist.Hint="Risk Reduction(%)" Margin="10" x:Name="TextRReduction" LostFocus="TextRReduction_LostFocus" md:HintAssist.IsFloating="True" HorizontalAlignment="Left" Width="150" Text="{Binding Path = RiskReduction,
                                                                             Converter={x:Static decimalconv:DecimalUIConverter.Instance},
                                                                          ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
-                                                                        ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}" IsEnabled="{Binding Path = HasAccess}" Height="42"/>
+                                                                        ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}, UpdateSourceTrigger = PropertyChanged}" IsEnabled="{Binding Path = HasAccess}" Height="42"/>
                                         <md:Card Background="{DynamicResource MaterialDesignBackground}">
                                             <StackPanel>
                                                 <Expander HorizontalAlignment="Stretch" Header="CM Values" IsExpanded="True">
@@ -545,21 +453,10 @@
                                                                       CellEditEnding="DgCMDamages_CellEditEnding" 
                                                                       SelectionChanged="DgCMDamages_SelectionChanged" CanUserDeleteRows="False" 
                                                                       CanUserAddRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
-                                                                <DataGrid.Resources>
-                                                                    <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
-                                                                        <Setter Property="Padding" Value="-2"/>
-                                                                        <Style.Triggers>
-                                                                            <Trigger Property="Validation.HasError" Value="True">
-                                                                                <Setter Property="Background" Value="Red"/>
-                                                                                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
-                                                                            </Trigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </DataGrid.Resources>
                                                                 <DataGrid.Columns>
-                                                                    <DataGridTextColumn x:Name="WBSName" Header="WBS" Binding="{Binding {x:Static data:DT_WBS_CM_Damage.WBS}}" Width="*"/>
-                                                                    <DataGridTextColumn x:Name="DamageName" Header="Damage" Binding="{Binding {x:Static data:DT_WBS_CM_Damage.DAMAGE}}" Width="*"/>
-                                                                    <DataGridTextColumn x:Name="CMDamageValue" Header="Value" Width="*">
+                                                                    <DataGridTextColumn x:Name="WBSName" Header="WBS/User" Binding="{Binding {x:Static data:DT_WBS_CM_Damage.WBS_USER}}" Width="*"/>
+                                                                    <DataGridTextColumn x:Name="DamageName" Header="Damage" Binding="{Binding {x:Static data:DT_WBS_CM_Damage.DAMAGE}}" Width="200"/>
+                                                                    <DataGridTextColumn x:Name="CMDamageValue" Header="Value" Width="100">
                                                                         <DataGridTextColumn.Binding>
                                                                             <Binding Path="value" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
                                                                          ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}"
@@ -584,17 +481,6 @@
                                                                       SelectedCellsChanged="DgWBSCM_SelectedCellsChanged" 
                                                                       CellEditEnding="DgWBSCM_CellEditEnding" SelectionChanged="DgWBSCM_SelectionChanged" 
                                                                       CanUserAddRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
-                                                                <DataGrid.Resources>
-                                                                    <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
-                                                                        <Setter Property="Padding" Value="-2"/>
-                                                                        <Style.Triggers>
-                                                                            <Trigger Property="Validation.HasError" Value="True">
-                                                                                <Setter Property="Background" Value="Red"/>
-                                                                                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
-                                                                            </Trigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </DataGrid.Resources>
                                                                 <DataGrid.Columns>
                                                                     <DataGridTemplateColumn x:Name="cmwbsBtn">
                                                                         <DataGridTemplateColumn.Header>
@@ -611,8 +497,7 @@
                                                                         </DataGridTemplateColumn.CellTemplate>
                                                                     </DataGridTemplateColumn>
                                                                     <DataGridTextColumn x:Name="LevelCM" Header="Level" Binding="{Binding  {x:Static data:DT_CM_WBS.NIVEL}}" Width="100" IsReadOnly="True"/>
-                                                                    <DataGridTextColumn x:Name="WBSCM" Header="WBS Name" Binding="{Binding  {x:Static data:DT_CM_WBS.WBS}}" Width="*" IsReadOnly="True"/>
-                                                                    <DataGridTextColumn x:Name="WBSUserCM" Header="User" Binding="{Binding  {x:Static data:DT_CM_WBS.USERNAME}}" Width="*" IsReadOnly="True"/>
+                                                                    <DataGridTextColumn x:Name="WBSCM" Header="WBS/User" Binding="{Binding  {x:Static data:DT_CM_WBS.WBS_USER}}" Width="*" IsReadOnly="True"/>
                                                                     <DataGridTextColumn x:Name="WBSProbCM" Header="Risk Red.(%)" Width="100" IsReadOnly="False">
                                                                         <DataGridTextColumn.Binding >
                                                                             <Binding Path="probability" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"

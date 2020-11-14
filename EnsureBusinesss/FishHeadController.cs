@@ -267,8 +267,8 @@ namespace EnsureBusinesss
                 return AcumulatedLikelihood;
             }
         }
-
-
+        
+        //todo: borrar
         public static decimal SectAcmLike(RiskPolyLine line)
         {
             decimal AcumulatedLikelihood;//This will be the value to return

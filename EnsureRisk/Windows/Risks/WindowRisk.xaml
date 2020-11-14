@@ -16,9 +16,15 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:local1="clr-namespace:EnsureRisk.Classess"
     mc:Ignorable="d"
-        Title="Risk" Height="561" Width="677" MinWidth="677" MinHeight="561" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" >
+        Title="Risk" Height="561" Width="677" MinWidth="677" MinHeight="561" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" Closing="Window_Closing" WindowStartupLocation="CenterScreen" >
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="/EnsureRisk;component/Menus/MenuDictionary.xaml"/>-->
+                <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/Styless.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+        </ResourceDictionary>
     </Window.Resources>
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
@@ -48,28 +54,17 @@
                 </ScrollViewer>
             </Border>
         </StackPanel>
-        
+
         <TextBox md:HintAssist.Hint="Father" md:HintAssist.IsFloating="True" x:Name="TextFather" Margin="0,7,15,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" IsReadOnly="True" IsEnabled="False" HorizontalAlignment="Right" Width="246"/>
         <TextBox Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" TabIndex="2" IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" Name="TextDetail" Height="71" Margin="34,119,13,0" TextWrapping="Wrap"  VerticalAlignment="Top" TextAlignment="Justify" MaxLength="250" VerticalScrollBarVisibility="Auto"/>
         <TabControl Margin="37,269,28,71">
             <TabItem Header="Values" Name="tabValues" >
                 <Grid>
                     <DataGrid TabIndex="4" Name="dgTopRisk" AutoGenerateColumns="False">
-                        <DataGrid.Resources>
-                            <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
-                                <Setter Property="Padding" Value="-2"/>
-                                <Style.Triggers>
-                                    <Trigger Property="Validation.HasError" Value="True">
-                                        <Setter Property="Background" Value="Red"/>
-                                        <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.Resources>
                         <DataGrid.Columns>
-                            <DataGridTextColumn x:Name="WBSn" Header="WBS" Binding="{Binding Path= WBSName}" Width="*" IsReadOnly="True"/>
-                            <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding Path= Damage}" Width="*" IsReadOnly="True"/>
-                            <DataGridTextColumn x:Name="TopValue" Header="Value" EditingElementStyle="{StaticResource errorStyle}" Width="*" IsReadOnly="False">
+                            <DataGridTextColumn x:Name="WBSn" Header="WBS/User" Binding="{Binding {x:Static data:DT_WBS_RISK_DAMAGE.WBS_USER}}" Width="*" IsReadOnly="True"/>
+                            <DataGridTextColumn x:Name="TopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_WBS_RISK_DAMAGE.DAMAGE}}" Width="200" IsReadOnly="True"/>
+                            <DataGridTextColumn x:Name="TopValue" Header="Value" EditingElementStyle="{StaticResource errorStyle}" Width="100" IsReadOnly="False">
                                 <DataGridTextColumn.Binding>
                                     <Binding Path="value" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
@@ -85,17 +80,6 @@
             <TabItem Header="WBS" Name="tabWBS" >
                 <Grid Name="gridTabWBS">
                     <DataGrid Name="dgWBS" CanUserDeleteRows="False" CanUserAddRows="False"  AutoGenerateColumns="False" SelectedCellsChanged="DgWBS_SelectedCellsChanged" LostFocus="DgWBS_LostFocus" SelectionChanged="DgWBS_SelectionChanged" CellEditEnding="DgWBS_CellEditEnding">
-                        <DataGrid.Resources>
-                            <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
-                                <Setter Property="Padding" Value="-2"/>
-                                <Style.Triggers>
-                                    <Trigger Property="Validation.HasError" Value="True">
-                                        <Setter Property="Background" Value="Red"/>
-                                        <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTemplateColumn x:Name="wbsBtn">
                                 <DataGridTemplateColumn.Header>
@@ -111,10 +95,9 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding Path= Nivel}" Width="100" IsReadOnly="True"/>
-                            <DataGridTextColumn x:Name="WBS" Header="WBS Name" Binding="{Binding Path= WBS_Name}" Width="*" IsReadOnly="True"/>
-                            <DataGridTextColumn x:Name="WBSUser" Header="User" Binding="{Binding Path= userName}" Width="*" IsReadOnly="True"/>
-                            <DataGridTextColumn x:Name="WBProbability" Header="Prob (%)" Width="*"  EditingElementStyle="{StaticResource errorStyle}" IsReadOnly="false">
+                            <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding {x:Static data:DT_RISK_WBS.NIVEL}}" Width="100" IsReadOnly="True"/>
+                            <DataGridTextColumn x:Name="WBS" Header="WBS/User" Binding="{Binding {x:Static data:DT_RISK_WBS.WBS_USER}}" Width="*" IsReadOnly="True"/>
+                            <DataGridTextColumn x:Name="WBProbability" Header="Prob (%)" Width="100"  EditingElementStyle="{StaticResource errorStyle}" IsReadOnly="false">
                                 <DataGridTextColumn.Binding>
                                     <Binding Path="probability" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
@@ -156,7 +139,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn x:Name="Role" Binding="{Binding Path= Role}" Width="*">
+                            <DataGridTextColumn x:Name="Role" Binding="{Binding {x:Static data:DT_Role_Risk.Role}}" Width="*">
                                 <DataGridTextColumn.Header>
                                     <TextBlock Text="Role" VerticalAlignment="Center"/>
                                 </DataGridTextColumn.Header>
@@ -166,10 +149,10 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <TextBox TabIndex="3" x:Name="TextProbability" IsEnabled="{Binding Path = HasAccess}" PreviewTextInput="NumberValidationTextBox" Text="{Binding Path = Probability}" HorizontalAlignment="Left" Height="27" Margin="157,223,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="73" LostFocus="TextProbability_LostFocus" MaxLines="2" TextAlignment="Right">
+        <TextBox TabIndex="3" x:Name="TextProbability" IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Probability (%)" md:HintAssist.IsFloating="True" PreviewTextInput="NumberValidationTextBox" Text="{Binding Path = Probability, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="41" Margin="37,209,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132" LostFocus="TextProbability_LostFocus" MaxLines="2" TextAlignment="Right">
 
         </TextBox>
-        <Label x:Name="LabelProbability" Content="Probability (%):" HorizontalAlignment="Left" Margin="37,223,0,0" VerticalAlignment="Top"/>
+        <!--<Label x:Name="LabelProbability" Content="Probability (%):" HorizontalAlignment="Left" Margin="37,223,0,0" VerticalAlignment="Top"/>-->
         <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">
             <md:DialogHost.DialogContent >
                 <StackPanel Margin="15">

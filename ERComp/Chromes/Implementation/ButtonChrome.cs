@@ -65,7 +65,7 @@ namespace ERComp.Chromes
 
     protected virtual void OnInnerCornerRadiusChanged( CornerRadius oldValue, CornerRadius newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
+      //
     }
 
     #endregion //InnerCornerRadius
@@ -94,7 +94,7 @@ namespace ERComp.Chromes
 
     protected virtual void OnRenderCheckedChanged( bool oldValue, bool newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
+      //
     }
 
     #endregion //RenderChecked
@@ -123,7 +123,7 @@ namespace ERComp.Chromes
 
     protected virtual void OnRenderEnabledChanged( bool oldValue, bool newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
+      //
     }
 
     #endregion //RenderEnabled
@@ -152,7 +152,7 @@ namespace ERComp.Chromes
 
     protected virtual void OnRenderFocusedChanged( bool oldValue, bool newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
+      //
     }
 
     #endregion //RenderFocused
@@ -181,7 +181,7 @@ namespace ERComp.Chromes
 
     protected virtual void OnRenderMouseOverChanged( bool oldValue, bool newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
+      //
     }
 
     #endregion //RenderMouseOver
@@ -210,7 +210,7 @@ namespace ERComp.Chromes
 
     protected virtual void OnRenderNormalChanged( bool oldValue, bool newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
+      //
     }
 
     #endregion //RenderNormal
@@ -239,7 +239,7 @@ namespace ERComp.Chromes
 
     protected virtual void OnRenderPressedChanged( bool oldValue, bool newValue )
     {
-      // TODO: Add your property changed side-effects. Descendants can override as well.
+      //
     }
 
     #endregion //RenderPressed

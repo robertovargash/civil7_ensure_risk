@@ -163,6 +163,7 @@ namespace EnsureBusinesss
                     drWBS_CM_Damage[DT_WBS_CM_Damage.DAMAGE] = itemDamage[DT_Risk_Damages.DAMAGE];
                     drWBS_CM_Damage[DT_WBS_CM_Damage.VALUE] = 0;
                     drWBS_CM_Damage[DT_WBS_CM_Damage.WBS] = itemWBS[DT_CM_WBS.WBS];
+                    drWBS_CM_Damage[DT_WBS_CM_Damage.WBS_USER] = itemWBS[DT_CM_WBS.WBS_USER];
                     if (!(Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemWBS[DT_CM_WBS.ID_WBS], itemDamage[DT_CounterM_Damage.ID_DAMAGE], idLine })))
                     {
                         Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(drWBS_CM_Damage);
@@ -182,6 +183,7 @@ namespace EnsureBusinesss
                         drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.DAMAGE] = itemDamage[DT_Risk_Damages.DAMAGE];
                         drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
                         drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.WBS] = itemWBS[DT_RISK_WBS.WBS];
+                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.WBS_USER] = itemWBS[DT_RISK_WBS.WBS] + "[" + itemWBS[DT_RISK_WBS.USERNAME] + "]";
                         Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(drWBS_RISK_Damage);
                     }
                 }
@@ -304,6 +306,7 @@ namespace EnsureBusinesss
                             newRiskWBS[DT_RISK_WBS.RISK] = riskRow[DT_Risk.NAMESHORT];
                             newRiskWBS[DT_RISK_WBS.USERNAME] = rowWBS[DT_WBS.USERNAME];
                             newRiskWBS[DT_RISK_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
+                            newRiskWBS[DT_RISK_WBS.WBS_USER] = rowWBS[DT_WBS.WBS_NAME] + "[" + rowWBS[DT_WBS.USERNAME] + "]";
                             ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
                         }
                         riskRow[DT_Risk.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
@@ -330,6 +333,7 @@ namespace EnsureBusinesss
                             newCMWBS[DT_CM_WBS.CM] = rowCM[DT_CounterM.NAMESHORT];
                             newCMWBS[DT_CM_WBS.USERNAME] = rowWBS[DT_WBS.USERNAME];
                             newCMWBS[DT_CM_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
+                            newCMWBS[DT_CM_WBS.WBS_USER] = rowWBS[DT_WBS.WBS_NAME] + "[" + rowWBS[DT_WBS.USERNAME] + "]";
                             ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
                         }
                         rowCM[DT_CounterM.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();

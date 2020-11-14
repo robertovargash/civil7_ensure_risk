@@ -242,7 +242,7 @@ namespace EnsureBusinesss.Business
             Container.Children.Add(this);
             MyContainer = Container;
             Panel.SetZIndex(this, 1);
-            StrokeThickness = 2;
+            StrokeThickness = 3;
             Stroke = new SolidColorBrush(Colors.RoyalBlue);
             ContextMenu = Menu;
             MyName = new LabelPolyLine

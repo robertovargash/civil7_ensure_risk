@@ -599,6 +599,7 @@ namespace EnsureRisk
                         drRiskWBS[DT_RISK_WBS.WBS] = item[DT_WBS.WBS_NAME];
                         drRiskWBS[DT_RISK_WBS.NIVEL] = item[DT_WBS.NIVEL];
                         drRiskWBS[DT_RISK_WBS.USERNAME] = item[DT_WBS.USERNAME];
+                        drRiskWBS[DT_RISK_WBS.WBS_USER] = item[DT_WBS.WBS_NAME] + "[" + item[DT_WBS.USERNAME] + "]";
                         drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = primary;
                         drRiskWBS[DT_RISK_WBS.PROBABILITY] = drRisk[DT_Risk.PROBABILITY];
                         primary = false;
