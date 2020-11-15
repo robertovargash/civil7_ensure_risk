@@ -20,7 +20,7 @@ namespace EnsureRisk.Windows
     public partial class WindowText : Window
     {
         public string KeyWord { get; set; }
-        public string MyTitle { get; set; }
+        public bool IsMarkedAll { get; set; }
 
         public WindowText()
         {
@@ -30,6 +30,7 @@ namespace EnsureRisk.Windows
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
             KeyWord = txtKeyword.Text;
+            IsMarkedAll = false;
             DialogResult = true;
         }
 
@@ -41,7 +42,13 @@ namespace EnsureRisk.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Title = MyTitle;
+            IsMarkedAll = false;
+        }
+
+        private void BtnAllActive_Click(object sender, RoutedEventArgs e)
+        {
+            IsMarkedAll = true;
+            DialogResult = true;
         }
     }
 }

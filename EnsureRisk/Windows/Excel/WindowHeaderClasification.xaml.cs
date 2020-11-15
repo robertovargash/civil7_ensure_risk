@@ -26,7 +26,8 @@ namespace EnsureRisk.Windows
         public List<HeaderExcelContent> MyList { get; set; }
         public List<MyExcelButton> BtnList { get; set; }
         public List<int> ChipList { get; set; }
-        public DataSet MyDataset { get; set; }       
+        public DataSet MyDataset { get; set; }
+        public bool IsCustom { get; set; }
 
         public WindowHeaderClasification()
         {
@@ -37,6 +38,8 @@ namespace EnsureRisk.Windows
         {
             try
             {
+                chkIsCustom.IsChecked = true;
+                IsCustom = true;
                 BtnList = new List<MyExcelButton>();
                 ListBox listBox = new ListBox();
                 foreach (var item in MyList)
@@ -131,6 +134,16 @@ namespace EnsureRisk.Windows
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+        }
+
+        private void chkIsCustom_Unchecked(object sender, RoutedEventArgs e)
+        {
+            IsCustom = false;
+        }
+
+        private void chkIsCustom_Checked(object sender, RoutedEventArgs e)
+        {
+            IsCustom = true;
         }
     }
 }

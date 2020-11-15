@@ -269,9 +269,6 @@
     <Compile Include="Windows\Risks\WindowDefaultRiskList.xaml.cs">
       <DependentUpon>WindowDefaultRiskList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Excel\WindowExcelClasification.xaml.cs">
-      <DependentUpon>WindowExcelClasification.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\Group\WindowGroupe.xaml.cs">
       <DependentUpon>WindowGroupe.xaml</DependentUpon>
     </Compile>
@@ -432,10 +429,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Risks\WindowDefaultRiskList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\Excel\WindowExcelClasification.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1492,16 +1492,13 @@ namespace EnsureRisk
         /// </summary>
         /// <param name="dsImporting">Dataset with the data</param>
         /// <param name="isCustom">If the diagram imported will be from a custom Excel file or Zuidasdok format</param>
-        private async Task FillDataTableToExcelAsync(DataSet dsImporting, bool isCustom)
+        private async Task FillDataTableToExcelAsync(DataSet dsImporting)
         {
             using (System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
             {
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    WindowText wt = new WindowText
-                    {
-                        MyTitle = "Key Word for Disable"
-                    };
+                    WindowText wt = new WindowText();
                     wt.txtKeyword.Focus();
                     if (wt.ShowDialog() == true)
                     {
@@ -1511,6 +1508,7 @@ namespace EnsureRisk
                             WindowHeaderClasification whc = ExcelController.SelectExcelColumns(dtExcel);
                             if (whc.ShowDialog() == true)
                             {
+                                bool isMarkedAll = wt.IsMarkedAll;
                                 Cursor = Cursors.No;
                                 TheProgress.Visibility = Visibility.Visible;
                                 HabilitarBotones(false);
@@ -1539,11 +1537,11 @@ namespace EnsureRisk
                                     ExcelController.DamagesToMainRisk(dsImporting, drRisk, theDiagram);
 
                                     //Recorrer el Excel solo para llenar los riesgos
-                                    HeaderExcelContent xIdRisk = ExcelController.FillDataRisk(dsImporting, isCustom, wt.KeyWord, dtExcel, whc, countDamages, theDiagram, drRisk, DsWBS);
+                                    HeaderExcelContent xIdRisk = ExcelController.FillDataRisk(dsImporting, whc.IsCustom, wt.KeyWord, dtExcel, whc, countDamages, theDiagram, drRisk, DsWBS);
 
-                                    ExcelController.SetRisk_RiskFatherRelation(dsImporting, isCustom, dtExcel, whc, xIdRisk);
+                                    ExcelController.SetRisk_RiskFatherRelation(dsImporting, whc.IsCustom, dtExcel, whc, xIdRisk);
 
-                                    ExcelController.FillCM_Data(dsImporting, isCustom, wt.KeyWord, dtExcel, whc, countDamages, theDiagram, xIdRisk, DsWBS);
+                                    ExcelController.FillCM_Data(dsImporting, whc.IsCustom, wt.KeyWord, dtExcel, whc, countDamages, theDiagram, xIdRisk, DsWBS, isMarkedAll);
 
                                     WBSOperations.AddWBSTopToDiagram(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM], DsWBS);
                                 });
@@ -1591,11 +1589,7 @@ namespace EnsureRisk
         {
             try
             {
-                WindowExcelClasification wxc = new WindowExcelClasification();
-                if (wxc.ShowDialog() == true)
-                {
-                    await FillDataTableToExcelAsync(DsMain, wxc.Custom);
-                }
+                await FillDataTableToExcelAsync(DsMain);
             }
             catch (Exception ex)
             {

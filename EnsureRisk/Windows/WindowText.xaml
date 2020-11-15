@@ -11,11 +11,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EnsureRisk.Windows"
         mc:Ignorable="d"
-        Title="WindowText" Height="205" Width="529" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="Enter key-phrase for CounterMeasures' status" Height="259.23" Width="539.012" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid Margin="0,0,2,0">
-        <TextBox  md:HintAssist.Hint="Key word" md:HintAssist.IsFloating="True" Name="txtKeyword" MaxLength="250" HorizontalAlignment="Left" Margin="34,40,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="463" MaxLines="1" TextOptions.TextHintingMode="Animated" Height="48"/>
+        <StackPanel Orientation="Vertical">
+            <md:ColorZone Mode="Accent">
+                <StackPanel Orientation="Horizontal">
+                    <md:PackIcon Kind="Alert" Height="62" Width="65" VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Margin="10" Text="Please enter the key-phrase used in the risk table to indicate that a CounterMeasure is not expected to be applied (not active). " TextWrapping="Wrap" Width="446"/>
+                        <TextBlock Margin="10 0 10 5" Text="If there is no such key-phrase in the table or if you prefer to enter all CounterMeasures as active, click [Mark all as Active]" TextWrapping="Wrap" Width="446">
+                        </TextBlock>
+                    </StackPanel>
 
-        <Button Name="BtnOK" Content="OK" HorizontalAlignment="Right" Height="25" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" Margin="0,0,164,10" md:ShadowAssist.ShadowDepth="Depth5"/>
+                </StackPanel>
+            </md:ColorZone>
+            <TextBox  md:HintAssist.Hint="Enter key-phrase" md:HintAssist.IsFloating="True" Name="txtKeyword" MaxLength="250" HorizontalAlignment="Left" Margin="10,10,0,10" TextWrapping="Wrap"  VerticalAlignment="Top" Width="511" MaxLines="1" TextOptions.TextHintingMode="Animated" Height="48"/>
+        </StackPanel>
+        <Button Name="BtnOK" Content="OK" HorizontalAlignment="Right" Height="25" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" Margin="0,0,419.8,9.6" md:ShadowAssist.ShadowDepth="Depth5"/>
         <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Right" Height="25"  VerticalAlignment="Bottom" Width="90" Click="BtnCancel_Click" IsCancel="True" Margin="0,0,22,10" md:ShadowAssist.ShadowDepth="Depth5"/>
+        <Button x:Name="BtnAllActive" Content="Mark all as active" HorizontalAlignment="Right" Height="25" Style="{StaticResource MaterialDesignRaisedAccentButton}" VerticalAlignment="Bottom" Width="153" Click="BtnAllActive_Click" IsDefault="True" Margin="0,0,186.8,9.6" md:ShadowAssist.ShadowDepth="Depth5"/>
     </Grid>
 </Window>

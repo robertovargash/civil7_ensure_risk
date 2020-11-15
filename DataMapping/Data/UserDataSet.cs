@@ -27,7 +27,9 @@ namespace DataMapping.Data
         public const string RISK_WBS_RELATION = "RISK_WBS";
         public const string CM_WBS_RELATION = "CM_WBS";
         public const string RISK_WITH_WBS_RISK_DAMAGE = "WBS_RISK_DAMAGE";
+        public const string DAMAGE_WITH_WBS_RISK_DAMAGE = "DAMAGE_WBS_RISK_DAMAGE";
         public const string CM_WITH_WBS_CM_DAMAGE = "WBS_CM_DAMAGE";
+        public const string DAMAGE_WITH_WBS_CM_DAMAGE = "DAMAGE_WBS_CM_DAMAGE";
         //public const string USER_WBS_RELATION = "User_WBS";
 
         public UserDataSet()
@@ -168,6 +170,13 @@ namespace DataMapping.Data
             dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
             dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
 
+            _ = this.Relations.Add(DAMAGE_WITH_WBS_RISK_DAMAGE, this.Tables[DT_Damage.TABLE_NAME].Columns[DT_Damage.ID_COLUMNA],
+                                        this.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Columns[DT_WBS_RISK_DAMAGE.ID_DAMAGE]);
+
+            dr1 = this.Relations[DAMAGE_WITH_WBS_RISK_DAMAGE];
+            dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
+            dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
+
             _ = this.Relations.Add(RISK_TOPRISK_RELATION1, this.Tables[DT_Damage.TABLE_NAME].Columns[DT_Damage.ID_COLUMNA],
                                        this.Tables[DT_Risk_Damages.TABLE_NAME].Columns[DT_Risk_Damages.ID_DAMAGE]);
 
@@ -228,6 +237,13 @@ namespace DataMapping.Data
                                         this.Tables[DT_WBS_CM_Damage.TABLE_NAME].Columns[DT_WBS_CM_Damage.ID_CM]);
 
             dr1 = this.Relations[CM_WITH_WBS_CM_DAMAGE];
+            dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
+            dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
+
+            _ = this.Relations.Add(DAMAGE_WITH_WBS_CM_DAMAGE, this.Tables[DT_Damage.TABLE_NAME].Columns[DT_Damage.ID_COLUMNA],
+                                       this.Tables[DT_WBS_CM_Damage.TABLE_NAME].Columns[DT_WBS_CM_Damage.ID_DAMAGE]);
+
+            dr1 = this.Relations[DAMAGE_WITH_WBS_CM_DAMAGE];
             dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
             dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
 

@@ -27,7 +27,6 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Wi
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCMGroup.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCM.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Risks\WindowDefaultRiskList.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Excel\WindowExcelClasification.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Group\WindowGroupe.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Excel\WindowHeaderClasification.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageYesNo.g.cs
@@ -73,7 +72,6 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Wi
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCMGroup.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\CMs\WindowCM.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Risks\WindowDefaultRiskList.baml
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Excel\WindowExcelClasification.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Group\WindowGroupe.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Excel\WindowHeaderClasification.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Messages\WindowMessageYesNo.baml
