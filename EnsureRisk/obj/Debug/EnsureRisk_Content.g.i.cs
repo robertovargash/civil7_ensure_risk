@@ -11,8 +11,6 @@
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("referencias/materialdesign.dll")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("referencias/materialdesigncolors.dll")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("referencias/materialdesignthemes.wpf.dll")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("referencias/xceed.wpf.avalondock.dll")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("referencias/xceed.wpf.toolkit.dll")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("scripts/jquery-2.1.1.intellisense.js")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("scripts/jquery-2.1.1.js")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("scripts/jquery-2.1.1.min.js")]

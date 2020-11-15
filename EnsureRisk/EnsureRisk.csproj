@@ -825,8 +825,6 @@
     <Content Include="Referencias\MaterialDesign.dll" />
     <Content Include="Referencias\MaterialDesignColors.dll" />
     <Content Include="Referencias\MaterialDesignThemes.Wpf.dll" />
-    <Content Include="Referencias\Xceed.Wpf.AvalonDock.dll" />
-    <Content Include="Referencias\Xceed.Wpf.Toolkit.dll" />
     <Content Include="Scripts\jquery-2.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />

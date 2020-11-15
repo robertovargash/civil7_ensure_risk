@@ -82,8 +82,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\CopyPasteController.cs" />
-    <Compile Include="CrossTabController.cs" />
-    <Compile Include="FishHeadController.cs" />
+    <Compile Include="Controllers\CrossTabController.cs" />
+    <Compile Include="Controllers\FishHeadController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
