@@ -595,11 +595,16 @@
                                             <Button x:Name="ImportExcel" ToolTip="Load from Excel" HorizontalAlignment="Left" Click="ImportExcel_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=FileExcel}" md:ShadowAssist.ShadowDepth="Depth5"/>
                                         </StackPanel>
                                     </Grid>
+                                    <md:DialogHost Grid.RowSpan="2" x:Name="DialogDIagram" IsOpen="{Binding IsImporting,UpdateSourceTrigger=PropertyChanged}">
+                                        <md:Card UniformCornerRadius="14" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter}}">
+                                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="50" IsIndeterminate="True" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter} }"/>
+                                        </md:Card>
+                                    </md:DialogHost>
                                 </Grid>
                                 <!--</ScrollViewer>-->
                             </xcad:LayoutAnchorable>
                             <xcad:LayoutAnchorable x:Name="AnchorRiskList" Title="Risks"  CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Risks" AutoHideWidth="300" FloatingWidth="300" >
-                                <Grid x:Name="GridRisksCross">
+                                <Grid x:Name="GridRisksCross">                                    
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="50"/>
                                         <RowDefinition Height="50"/>
@@ -658,6 +663,11 @@
                                                                 MinWidth="100" MaxWidth="300"/>
                                         </DataGrid.Columns>
                                     </DataGrid>
+                                    <md:DialogHost Grid.RowSpan="3" x:Name="DialogCrossRisk" IsOpen="{Binding IsCalculating,UpdateSourceTrigger=PropertyChanged}">
+                                        <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculating, Converter={StaticResource BoolToVisConverter} }">
+                                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="50" IsIndeterminate="True" Visibility="{Binding Path = IsCalculating, Converter={StaticResource BoolToVisConverter} }"/>
+                                        </md:Card>
+                                    </md:DialogHost>
                                 </Grid>
                             </xcad:LayoutAnchorable>
                             <xcad:LayoutAnchorable x:Name="AnchorCMList"  Title="CounterMeasure"  CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Countermeasure" AutoHideWidth="300" FloatingWidth="300">
@@ -721,6 +731,11 @@
 
                                         </DataGrid.Columns>
                                     </DataGrid>
+                                    <md:DialogHost Grid.RowSpan="3" x:Name="DialogCrossCM" IsOpen="{Binding IsCalculating,UpdateSourceTrigger=PropertyChanged}">
+                                        <md:Card UniformCornerRadius="14" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculating, Converter={StaticResource BoolToVisConverter}}">
+                                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="50" IsIndeterminate="True" Visibility="{Binding Path = IsCalculating, Converter={StaticResource BoolToVisConverter} }"/>
+                                        </md:Card>
+                                    </md:DialogHost>
                                 </Grid>
                             </xcad:LayoutAnchorable>
                             <xcad:LayoutAnchorable x:Name="AnchorGroupRisk"  Title="Groups"  CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Groups" AutoHideWidth="300" FloatingWidth="300">

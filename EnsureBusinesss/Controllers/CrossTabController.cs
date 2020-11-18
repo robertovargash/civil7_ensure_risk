@@ -15,9 +15,10 @@ namespace EnsureBusinesss
         {
             try
             {
-                if (dtRisk_WBS.Select(DT_RISK_WBS.ID_WBS + " = " + IdWBSFilter + " and " + DT_RISK_WBS.ID_RISK + " = " + drRiskDamage[DT_Risk_Damages.ID_RISK]).Any())
+                if (dtRisk_WBS.Rows.Contains(new object[] {drRiskDamage[DT_Risk_Damages.ID_RISK], IdWBSFilter }))
                 {
-                    drRiskDamage[DT_Risk_Damages.PROBABILITY] = dtRisk_WBS.Select(DT_RISK_WBS.ID_WBS + " = " + IdWBSFilter + " and " + DT_RISK_WBS.ID_RISK + " = " + drRiskDamage[DT_Risk_Damages.ID_RISK]).First()[DT_RISK_WBS.PROBABILITY];
+                    drRiskDamage[DT_Risk_Damages.PROBABILITY] = dtRisk_WBS.Rows.Find(new object[] { drRiskDamage[DT_Risk_Damages.ID_RISK], IdWBSFilter })[DT_RISK_WBS.PROBABILITY];
+
                 }
                 if ((decimal)drRiskDamage[DT_Risk_Damages.PROBABILITY] == 0)
                 {
@@ -29,13 +30,14 @@ namespace EnsureBusinesss
                 throw ex;
             }
         }
-        public static void AjustarProbabilidadCM(DataRow drRiskDamage, DataTable dtCM_WBS, decimal IdWBSFilter)
+
+        public static void AjustarProbabilidadCM(DataRow drCMDamage, DataTable dtCM_WBS, decimal IdWBSFilter)
         {
             try
             {
-                if (dtCM_WBS.Select(DT_CM_WBS.ID_WBS + " = " + IdWBSFilter + " and " + DT_CM_WBS.ID_CM + " = " + drRiskDamage[DT_CounterM_Damage.ID_COUNTERM]).Any())
+                if (dtCM_WBS.Rows.Contains(new object[] {drCMDamage[DT_CounterM_Damage.ID_COUNTERM], IdWBSFilter }))
                 {
-                    drRiskDamage[DT_CounterM_Damage.RISK_REDUCTION] = dtCM_WBS.Select(DT_CM_WBS.ID_WBS + " = " + IdWBSFilter + " and " + DT_CM_WBS.ID_CM + " = " + drRiskDamage[DT_CounterM_Damage.ID_COUNTERM]).First()[DT_CM_WBS.PROBABILITY];
+                    drCMDamage[DT_CounterM_Damage.RISK_REDUCTION] = dtCM_WBS.Rows.Find(new object[] { drCMDamage[DT_CounterM_Damage.ID_COUNTERM], IdWBSFilter })[DT_CM_WBS.PROBABILITY];
                 }
             }
             catch
@@ -48,9 +50,9 @@ namespace EnsureBusinesss
         {
             try
             {
-                if (dtRisk_WBS_Damage.Select(DT_WBS_RISK_DAMAGE.ID_WBS + " = " + IdWBSFilter + " and " + DT_WBS_RISK_DAMAGE.ID_RISK + " = " + drRiskDamage[DT_Risk_Damages.ID_RISK] + " and " + DT_WBS_RISK_DAMAGE.ID_DAMAGE + " = " + drRiskDamage[DT_Risk_Damages.ID_DAMAGE]).Any())
+                if (dtRisk_WBS_Damage.Rows.Contains(new object[] { IdWBSFilter, drRiskDamage[DT_Risk_Damages.ID_DAMAGE], drRiskDamage[DT_Risk_Damages.ID_RISK] }))
                 {
-                    drRiskDamage[DT_Risk_Damages.VALUE] = dtRisk_WBS_Damage.Select(DT_WBS_RISK_DAMAGE.ID_WBS + " = " + IdWBSFilter + " and " + DT_WBS_RISK_DAMAGE.ID_RISK + " = " + drRiskDamage[DT_Risk_Damages.ID_RISK] + " and " + DT_WBS_RISK_DAMAGE.ID_DAMAGE + " = " + drRiskDamage[DT_Risk_Damages.ID_DAMAGE]).First()[DT_WBS_RISK_DAMAGE.VALUE];
+                    drRiskDamage[DT_Risk_Damages.VALUE] = dtRisk_WBS_Damage.Rows.Find(new object[] { IdWBSFilter, drRiskDamage[DT_Risk_Damages.ID_DAMAGE], drRiskDamage[DT_Risk_Damages.ID_RISK] })[DT_WBS_RISK_DAMAGE.VALUE];
                 }
                 if ((decimal)drRiskDamage[DT_Risk_Damages.VALUE] == 0)
                 {
@@ -67,9 +69,9 @@ namespace EnsureBusinesss
         {
             try
             {
-                if (dtCM_WBS_Damage.Select(DT_WBS_CM_Damage.ID_WBS + " = " + IdWBSFilter + " and " + DT_WBS_CM_Damage.ID_CM + " = " + drCMDamage[DT_CounterM_Damage.ID_COUNTERM] + " and " + DT_WBS_CM_Damage.ID_DAMAGE + " = " + drCMDamage[DT_CounterM_Damage.ID_DAMAGE]).Any())
+                if (dtCM_WBS_Damage.Rows.Contains(new object[] {IdWBSFilter, drCMDamage[DT_CounterM_Damage.ID_DAMAGE], drCMDamage[DT_CounterM_Damage.ID_COUNTERM] }))
                 {
-                    drCMDamage[DT_CounterM_Damage.VALUE] = dtCM_WBS_Damage.Select(DT_WBS_CM_Damage.ID_WBS + " = " + IdWBSFilter + " and " + DT_WBS_CM_Damage.ID_CM + " = " + drCMDamage[DT_CounterM_Damage.ID_COUNTERM] + " and " + DT_WBS_CM_Damage.ID_DAMAGE + " = " + drCMDamage[DT_CounterM_Damage.ID_DAMAGE]).First()[DT_WBS_CM_Damage.VALUE];
+                    drCMDamage[DT_CounterM_Damage.VALUE] = dtCM_WBS_Damage.Rows.Find(new object[] { IdWBSFilter, drCMDamage[DT_CounterM_Damage.ID_DAMAGE], drCMDamage[DT_CounterM_Damage.ID_COUNTERM] })[DT_WBS_CM_Damage.VALUE];
                 }
             }
             catch
@@ -151,6 +153,7 @@ namespace EnsureBusinesss
                 throw ex;
             }
         }
+
         public static void CleanDynamicCMColumns(DataGrid dataGrid)
         {
             int i = 0;

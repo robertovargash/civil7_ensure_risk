@@ -1148,99 +1148,36 @@ namespace EnsureBusinesss
             }
         }
 
-        public static List<RiskPolyLine> LoadLines(DataSet ds, decimal idDiagram)
+        public static void SetDiagramImportedPositions(DataSet ds, decimal idDiagram)
         {
-            List<RiskPolyLine> lista = new List<RiskPolyLine>();
-            foreach (DataRow item in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + idDiagram))
+            foreach (DataRow rowRisk in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + idDiagram))
             {
-                if ((bool)item[DT_Risk.IS_ROOT])
+                if ((bool)rowRisk[DT_Risk.IS_ROOT])
                 {
-                    RiskPolyLine MainLine = new RiskPolyLine()
-                    {
-                        IsRoot = true,
-                        IsCM = false,
-                        FromTop = (bool)item[DT_Risk.FROM_TOP],
-                        StrokeThickness = General.MaxThickness,
-                        ID = (decimal)item[DT_Risk.ID],
-                        Probability = (decimal)item[DT_Risk.PROBABILITY],
-                        ShortName = item[DT_Risk.NAMESHORT].ToString(),
-                        MyLevel = 0
-                    };
-                    MainLine.Group = new LineGroup()
-                    {
-                        IdGroup = 0,
-                        GroupName = "None"
-                    };
-                    lista.Add(MainLine);
+                    rowRisk[DT_Risk.POSITION] = 0;
                 }
-                else
-                {
-                    RiskPolyLine riskLine = new RiskPolyLine()
-                    {
-                        ShortName = item[DT_Risk.NAMESHORT].ToString(),
-                        ID = (decimal)item[DT_Risk.ID],
-                        Position = (int)item[DT_Risk.POSITION],
-                        Collapsed = (bool)item[DT_Risk.ISCOLLAPSED],
-                        Probability = (decimal)item[DT_Risk.PROBABILITY],
-                        IsActivated = (bool)item[DT_Risk.ENABLED],
-                        StrokeThickness = 2,
-                        IsCM = false,
-                        IdRiskFather = (decimal)item[DT_Risk.IDRISK_FATHER]
-                    };
-                    if (item[DT_Risk.ID_GROUPE] != DBNull.Value)
-                    {
-                        riskLine.Group = new LineGroup()
-                        {
-                            IdGroup = (decimal)item[DT_Risk.ID_GROUPE],
-                            GroupName = item[DT_Risk.GROUPE_NAME].ToString()
-                        };
-                    }
-                    else
-                    {
-                        riskLine.Group = new LineGroup()
-                        {
-                            IdGroup = 0,
-                            GroupName = item[DT_Risk.GROUPE_NAME].ToString()
-                        };
-                    }
-
-                    lista.Add(riskLine);
-                }
+                SetPositionRiskChildren(rowRisk, ds, SetPositionCMChildren(rowRisk, ds));
             }
-            foreach (DataRow item in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + idDiagram))
+        }
+
+        public static void SetPositionRiskChildren(DataRow drRiskFather, DataSet ds, int positionOfCM)
+        {
+            for (int i = 0; i < ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID]).Count(); i++)
             {
-                RiskPolyLine cmline = new RiskPolyLine()
-                {
-                    IsCM = true,
-                    Position = (int)item[DT_CounterM.POSITION],
-                    ShortName = item[DT_CounterM.NAMESHORT].ToString(),
-                    IdRiskFather = (decimal)item[DT_CounterM.ID_RISK],
-                    ID = (decimal)item[DT_CounterM.ID],
-                    Probability = (decimal)item[DT_CounterM.PROBABILITY],
-                    IsActivated = (bool)item[DT_CounterM.ENABLED],
-                };
-                if (item[DT_Risk.ID_GROUPE] != DBNull.Value)
-                {
-                    cmline.Group = new LineGroup()
-                    {
-                        IdGroup = (decimal)item[DT_Risk.ID_GROUPE],
-                        GroupName = item[DT_Risk.GROUPE_NAME].ToString()
-                    };
-                }
-                else
-                {
-                    cmline.Group = new LineGroup()
-                    {
-                        IdGroup = 0,
-                        GroupName = item[DT_Risk.GROUPE_NAME].ToString()
-                    };
-                }
-
-                lista.Add(cmline);
+                decimal idRIsk = (decimal)ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID])[i][DT_RiskStructure.IDRISK];
+                ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRIsk)[DT_Risk.POSITION] = i + positionOfCM;
             }
+        }
 
-            Build_Tree(lista);
-            return lista;
+        public static int SetPositionCMChildren(DataRow drRiskFather, DataSet ds)
+        {
+            int cmposition = 0;
+            while (cmposition < ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + drRiskFather[DT_Risk.ID]).Count())
+            {
+                ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + drRiskFather[DT_Risk.ID])[cmposition][DT_CounterM.POSITION] = 0;
+                cmposition++;
+            }
+            return cmposition;
         }
 
         /// <summary>
