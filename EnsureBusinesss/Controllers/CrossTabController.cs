@@ -10,7 +10,7 @@ using System.Windows.Controls;
 namespace EnsureBusinesss
 {
     public class CrossTabController
-    {
+    {       
         public static void AjustarProbabilidadRisk(DataRow drRiskDamage, DataTable dtRisk_WBS, decimal IdWBSFilter)
         {
             try

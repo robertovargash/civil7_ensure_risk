@@ -129,10 +129,12 @@ namespace EnsureRisk.Classess
             exportToExcelWorker.DoWork += ExportToExcelWorker_DoWork;
             exportToExcelWorker.ProgressChanged += ExportToExcelWorker_ProgressChanged;
             exportToExcelWorker.RunWorkerCompleted += ExportToExcelWorker_RunWorkerCompleted;
+
+            
             CbFilterTopR.DataContext = this;
             MiniMapGHT.DataContext = this;
             MiniMapGHT.MapSource = this.ScrollGridPaint;
-        }
+        }        
 
         public void MostrarYesNo(string text)
         {
@@ -3528,11 +3530,9 @@ namespace EnsureRisk.Classess
         void ExportToExcelWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             ExportRiskTree exportRiskTree = (ExportRiskTree)e.Argument;
-
-            //exportRiskTree.Export(sender as BackgroundWorker, e);
-
             exportRiskTree.ExportShortExcel(sender as BackgroundWorker, e);
         }
+
         void ExportToExcelWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             this.TheProgressBar.Value = e.ProgressPercentage;

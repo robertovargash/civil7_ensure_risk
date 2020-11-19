@@ -596,8 +596,11 @@
                                         </StackPanel>
                                     </Grid>
                                     <md:DialogHost Grid.RowSpan="2" x:Name="DialogDIagram" IsOpen="{Binding IsImporting,UpdateSourceTrigger=PropertyChanged}">
-                                        <md:Card UniformCornerRadius="14" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter}}">
-                                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="50" IsIndeterminate="True" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter} }"/>
+                                        <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter}}">
+                                            <Grid>
+                                                <ProgressBar x:Name="pp" Style="{StaticResource MaterialDesignCircularProgressBar}" Value="50" IsIndeterminate="True" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter} }"/>
+                    
+                                            </Grid>
                                         </md:Card>
                                     </md:DialogHost>
                                 </Grid>
@@ -663,9 +666,12 @@
                                                                 MinWidth="100" MaxWidth="300"/>
                                         </DataGrid.Columns>
                                     </DataGrid>
-                                    <md:DialogHost Grid.RowSpan="3" x:Name="DialogCrossRisk" IsOpen="{Binding IsCalculating,UpdateSourceTrigger=PropertyChanged}">
-                                        <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculating, Converter={StaticResource BoolToVisConverter} }">
-                                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="50" IsIndeterminate="True" Visibility="{Binding Path = IsCalculating, Converter={StaticResource BoolToVisConverter} }"/>
+                                    <md:DialogHost Grid.RowSpan="3" x:Name="DialogCrossRisk" IsOpen="{Binding IsCalculatingRisk,UpdateSourceTrigger=PropertyChanged}">
+                                        <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculatingRisk, Converter={StaticResource BoolToVisConverter} }">
+                                            <Grid>
+                                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=Value,ElementName=progressCrossRisk,UpdateSourceTrigger=PropertyChanged}" FontSize="10"/>
+                                                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" x:Name="progressCrossRisk" IsIndeterminate="false" Minimum="0" Maximum="100" Value="0" Visibility="{Binding Path = IsCalculatingRisk, Converter={StaticResource BoolToVisConverter} }"/>
+                                            </Grid>
                                         </md:Card>
                                     </md:DialogHost>
                                 </Grid>
@@ -731,9 +737,14 @@
 
                                         </DataGrid.Columns>
                                     </DataGrid>
-                                    <md:DialogHost Grid.RowSpan="3" x:Name="DialogCrossCM" IsOpen="{Binding IsCalculating,UpdateSourceTrigger=PropertyChanged}">
-                                        <md:Card UniformCornerRadius="14" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculating, Converter={StaticResource BoolToVisConverter}}">
-                                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="50" IsIndeterminate="True" Visibility="{Binding Path = IsCalculating, Converter={StaticResource BoolToVisConverter} }"/>
+                                    <md:DialogHost Grid.RowSpan="3" x:Name="DialogCrossCM" IsOpen="{Binding IsCalculatingCM,UpdateSourceTrigger=PropertyChanged}">
+                                        <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculatingCM, Converter={StaticResource BoolToVisConverter}}">
+                                            <Grid>
+                                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=Value,ElementName=progressCrossCM,UpdateSourceTrigger=PropertyChanged}" FontSize="10"/>
+
+                                                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" x:Name="progressCrossCM" IsIndeterminate="false" Minimum="0" Maximum="100" Value="0" Visibility="{Binding Path = IsCalculatingCM, Converter={StaticResource BoolToVisConverter} }"/>
+
+                                            </Grid>
                                         </md:Card>
                                     </md:DialogHost>
                                 </Grid>
@@ -801,7 +812,7 @@
         <Image x:Name="ImageLanguage" Visibility="Collapsed" Source="Images/English.png" HorizontalAlignment="Left" Margin="16,6,0,4" Width="25" RenderTransformOrigin="0.5,0.5"/>
         <ComboBox x:Name="cbLanguage" Visibility="Collapsed" HorizontalAlignment="left" Margin="58,3,0,0" Width="162" HorizontalContentAlignment="Center" VerticalAlignment="Center" DropDownClosed="CbLanguage_DropDownClosed"/>
         <Grid Grid.Row="2">
-            <ProgressBar Name="TheProgress" IsIndeterminate="True" Visibility="Hidden"/>
+            <ProgressBar x:Name="TheProgress" IsIndeterminate="true" Visibility="{Binding IsImporting, Converter={StaticResource BoolToVisConverter},UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
         <md:DialogHost IsOpen="False" x:Name="ErrorDialogMessage" Grid.RowSpan="3" >
             <md:DialogHost.DialogContent >

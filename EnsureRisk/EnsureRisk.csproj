@@ -138,6 +138,7 @@
     <Compile Include="Classess\PopWindow.xaml.cs">
       <DependentUpon>PopWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\Import\ImportFromExcel.cs" />
     <Compile Include="CursorHelper.cs" />
     <Compile Include="CustomCommands.cs" />
     <Compile Include="DecimalUIConverter.cs" />

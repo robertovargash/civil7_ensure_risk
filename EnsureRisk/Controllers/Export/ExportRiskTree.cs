@@ -179,31 +179,6 @@ namespace EnsureRisk.Export
             sheetPart.Worksheet.Append(sheetViews);
         }
 
-        private static void SetColumnsWidth(DataTable dataTable, WorksheetPart sheetPart)
-        {
-            Columns columns = new Columns();
-            for (uint i = 0; i < dataTable.Columns.Count; i++)
-            {
-                if (dataTable.Columns[(int)i].ColumnName == "Risk Name")
-                {
-                    columns.Append(new Column() { Min = i + 1, Max = i + 1, Width = 20, CustomWidth = true });
-                }
-                if (dataTable.Columns[(int)i].ColumnName == "Risk Comments")
-                {
-                    columns.Append(new Column() { Min = i + 1, Max = i + 1, Width = 50, CustomWidth = true });
-                }
-                if (dataTable.Columns[(int)i].ColumnName == "CM Name")
-                {
-                    columns.Append(new Column() { Min = i + 1, Max = i + 1, Width = 20, CustomWidth = true });
-                }
-                if (dataTable.Columns[(int)i].ColumnName == "CM Comments")
-                {
-                    columns.Append(new Column() { Min = i + 1, Max = i + 1, Width = 50, CustomWidth = true });
-                }
-            }
-            sheetPart.Worksheet.Append(columns);
-        }
-
         private static void SetColumnsWidthShort(DataTable dataTable, WorksheetPart sheetPart)
         {
             Columns columns = new Columns();
@@ -365,29 +340,29 @@ namespace EnsureRisk.Export
             CellFormats = new CellFormats();
             Fills = new Fills();
         }
-        public void Export(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
-        {
-            InitializeExcel();
-            SetHeader();
-            //FreezeFirstRow();
-            Fill(backgroundWorker, e);
-            try
-            {
-                if (!e.Cancel)
-                {
-                    //SaveToExcel();
-                    using (DataSet ds = new DataSet())
-                    {
-                        ds.Tables.Add(DtToExport);
-                        ExportDataSet(ds, _fileName);
-                    }
-                }
-            }
-            finally
-            {
-                //CloseExcel();
-            }
-        }
+        //public void Export(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
+        //{
+        //    InitializeExcel();
+        //    SetHeader();
+        //    //FreezeFirstRow();
+        //    Fill(backgroundWorker, e);
+        //    try
+        //    {
+        //        if (!e.Cancel)
+        //        {
+        //            //SaveToExcel();
+        //            using (DataSet ds = new DataSet())
+        //            {
+        //                ds.Tables.Add(DtToExport);
+        //                ExportDataSet(ds, _fileName);
+        //            }
+        //        }
+        //    }
+        //    finally
+        //    {
+        //        //CloseExcel();
+        //    }
+        //}
 
         /// <summary>
         /// Asynchronous export to excel
@@ -423,12 +398,6 @@ namespace EnsureRisk.Export
         private void InitializeExcel()
         {
             DtToExport = new DataTable();
-        }
-        private void SetHeader()
-        {
-            
-            SetRiskHeader();
-            SetCounterMHeader();
         }
 
         /// <summary>
@@ -611,10 +580,6 @@ namespace EnsureRisk.Export
                     _columnIndex++;
                 }
             }
-           
-            
-            
-           
         }
 
         private void FillWithRisk(IEnumerable<DataRow> mainRiskChildDataRowQuery, BackgroundWorker backgroundWorker, DoWorkEventArgs e, bool isMain)
