@@ -824,7 +824,7 @@
                     <StackPanel Orientation="Vertical">                       
                         <Expander HorizontalAlignment="Stretch" Header="Expand for details" IsExpanded="True">
                             <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                                <TextBlock x:Name="TextMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="" TextWrapping="Wrap" />
+                                <TextBox x:Name="TextMessage" MaxWidth="500" MaxHeight="500" Opacity=".68" SpellCheck.IsEnabled="True" VerticalScrollBarVisibility="Auto" TextAlignment="Justify" Text="" VerticalAlignment="Stretch" TextWrapping="Wrap" />
                             </StackPanel>
                         </Expander>
                     </StackPanel>

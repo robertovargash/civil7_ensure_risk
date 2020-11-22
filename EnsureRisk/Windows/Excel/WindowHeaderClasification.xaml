@@ -10,6 +10,13 @@
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Specify input data" Height="575.237" Width="602.782" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" >
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/Styless.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="90"/>
@@ -26,9 +33,27 @@
                 </StackPanel>
             </StackPanel>
         </md:ColorZone>
-        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" Grid.Row="1">
+        <DataGrid Grid.Row="1" x:Name="dgHeaders" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" GridLinesVisibility="All" SelectionChanged="dgHeaders_SelectionChanged" MouseDoubleClick="dgHeaders_MouseDoubleClick">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn x:Name="headBTN" Header="Action" Width="80">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <local:MyExcelButton x:Name="BtnDelWBSRisk" HorizontalAlignment="Left" Height="20" Width="20" ToolTip="Select Action" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Click="Mck_Click" md:ShadowAssist.ShadowDepth="Depth5">
+                                    <md:PackIcon Kind="DotsHorizontal"/>
+                                </local:MyExcelButton>
+                                <Button  HorizontalAlignment="Left" Content="{md:PackIcon Kind=Trash}" Margin="10 0 0 0" Height="20" Width="20" ToolTip="Delete Action" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Click="Button_Click" md:ShadowAssist.ShadowDepth="Depth5"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn x:Name="Heaader" Header="Excel Column Header" Binding="{Binding Header}"  Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="Type" Header="Type Selected" Binding="{Binding Type}"  Width="*" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <!--<ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" Grid.Row="1">
             <StackPanel Orientation="Vertical" Name="TheStackPanel"/>
-        </ScrollViewer>
+        </ScrollViewer>-->
         <Grid Grid.Row="2">
             <Button Name="BtnOK" Content="OK" Margin="0,0,100,13" Click="BtnOK_Click" IsDefault="True" TabIndex="1" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom"/>
             <Button x:Name="BtnCancel" Content="Cancel" Margin="0,0,8,13" Click="BtnCancel_Click" IsCancel="True" TabIndex="2" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom"/>

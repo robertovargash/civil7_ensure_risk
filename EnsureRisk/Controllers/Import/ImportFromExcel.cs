@@ -72,13 +72,11 @@ namespace EnsureRisk.Controllers.Import
             dsImporting.Tables[DT_Diagram.TABLE_NAME].Rows.Add(drDiagram);
             IEnumerable<HeaderExcelContent> countDamages = MyList.Where(x => x.IdClasification == 10);//Damages has 10 as ID
             ClasifyAndCreateDamages(dsImporting, drDiagram, countDamages);
-            backgroundWorker.ReportProgress(10);
             //Busco el diagrama que acabo de insertar, para agregarle el riesgo padre, para agregarle los riesgos y sus dannos
             DataRow theDiagram = dsImporting.Tables[DT_Diagram.TABLE_NAME].Rows.Find(0000);
             //creo un riesgo root
             DataRow drRisk = dsImporting.Tables[DT_Risk.TABLE_NAME].NewRow();
             SetDataToMainRisk(drRisk, theDiagram);
-            backgroundWorker.ReportProgress(15);
             dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
 
             //Asignarle al riesgo Root el rol admin
@@ -88,16 +86,11 @@ namespace EnsureRisk.Controllers.Import
             DamagesToMainRisk(dsImporting, drRisk, theDiagram);
 
             //Recorrer el Excel solo para llenar los riesgos
-            HeaderExcelContent xIdRisk = FillDataRisk(dsImporting, IsCustom, keyPhrase, dtExcel, MyList, countDamages, theDiagram, drRisk, DsWBS);
-            backgroundWorker.ReportProgress(40);
+            HeaderExcelContent xIdRisk = FillDataRisk(dsImporting, IsCustom, dtExcel, MyList, countDamages, theDiagram, drRisk, DsWBS);
             SetRisk_RiskFatherRelation(dsImporting, IsCustom, dtExcel, MyList, xIdRisk);
-            backgroundWorker.ReportProgress(50);
             FillCM_Data(dsImporting, IsCustom, keyPhrase, dtExcel, MyList, countDamages, theDiagram, xIdRisk, DsWBS, isMarkedAll);
-            backgroundWorker.ReportProgress(80);
             WBSOperations.AddWBSTopToDiagram(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM], DsWBS);
-            backgroundWorker.ReportProgress(90);
             TreeOperation.SetDiagramImportedPositions(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM]);
-            backgroundWorker.ReportProgress(95);
             if (dsImporting.HasChanges())
             {
                 using (ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk())
@@ -106,7 +99,6 @@ namespace EnsureRisk.Controllers.Import
                     temp = ws.SaveRisk(temp);
                     dsImporting.Merge(temp);
                     dsImporting.AcceptChanges();
-                    ws.Dispose();
                 }
             }
         }
@@ -279,7 +271,7 @@ namespace EnsureRisk.Controllers.Import
         /// <param name="drRisk">The Main Risk Data</param>
         /// <param name="DsWBS">The Dataset with the WBS</param>
         /// <returns></returns>
-        public HeaderExcelContent FillDataRisk(DataSet dsImporting, bool isCustom, string isActiveKeyword, DataTable dtExcel, List<HeaderExcelContent> MyList,
+        public HeaderExcelContent FillDataRisk(DataSet dsImporting, bool isCustom, DataTable dtExcel, List<HeaderExcelContent> MyList,
             IEnumerable<HeaderExcelContent> countDamages, DataRow theDiagram, DataRow drRisk, DataSet DsWBS)
         {
             var xIdRisk = MyList.FindLast(x => x.IdClasification == 1);
@@ -293,9 +285,10 @@ namespace EnsureRisk.Controllers.Import
 
                 if (xIdRisk != null && dtExcel.Rows[rowPosition][xIdRisk.MyContent].ToString() != "")
                 {
+                    drRiskN[DT_Risk.ID] = General.ConvertToDec(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
                     if (isCustom)
                     {
-                        drRiskN[DT_Risk.ID] = Convert.ToDecimal(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
+                        
                         if (xRiskShortName != null && dtExcel.Rows[rowPosition][xRiskShortName.MyContent.ToString()].ToString() != "")
                         {
                             drRiskN[DT_Risk.NAMESHORT] = dtExcel.Rows[rowPosition][xRiskShortName.MyContent.ToString()].ToString();
@@ -307,7 +300,6 @@ namespace EnsureRisk.Controllers.Import
                     }
                     else
                     {
-                        drRiskN[DT_Risk.ID] = Convert.ToDecimal((dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()]).ToString().Split(new char[] { '-' })[1]);
                         if (dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString() != "")
                         {
                             drRiskN[DT_Risk.NAMESHORT] = dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString();
@@ -523,17 +515,9 @@ namespace EnsureRisk.Controllers.Import
                     {
                         drCM[DT_CounterM.PROBABILITY] = 0;
                     }
-                    if (xIdRisk != null && dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString() != "")
+                    if (xIdRisk != null && !string.IsNullOrWhiteSpace(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString()))
                     {
-                        if (isCustom)
-                        {
-                            drCM[DT_CounterM.ID_RISK] = Convert.ToDecimal(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
-                        }
-                        else
-                        {
-                            drCM[DT_CounterM.ID_RISK] = Convert.ToDecimal(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString().Split(new char[] { '-' })[1]);
-
-                        }
+                        drCM[DT_CounterM.ID_RISK] = General.ConvertToDec(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
                     }
                     else
                     {

@@ -19,6 +19,12 @@ namespace EnsureRisk.Classess
             this.MyContent = MyContent;
             this.Column = Column;
         }
+        public HeaderExcelContent(string MyContent, int Column, int idClasification)
+        {
+            this.MyContent = MyContent;
+            this.Column = Column;
+            this.IdClasification = IdClasification;
+        }
         public HeaderExcelContent()
         {
 

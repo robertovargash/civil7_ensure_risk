@@ -28,10 +28,17 @@ namespace EnsureRisk.Windows
         public List<int> ChipList { get; set; }
         public DataSet MyDataset { get; set; }
         public bool IsCustom { get; set; }
+        public DataView DataVieww { get; set; }
+        public DataTable MyTable { get; set; }
+
+        private const string ID_CLASIFICATION = "idClasification";
+        private const string HEADER = "Header";
+        private const string TYPE = "Type";
 
         public WindowHeaderClasification()
         {
             InitializeComponent();
+
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -41,34 +48,46 @@ namespace EnsureRisk.Windows
                 chkIsCustom.IsChecked = true;
                 IsCustom = true;
                 BtnList = new List<MyExcelButton>();
-                ListBox listBox = new ListBox();
+                MyTable = new DataTable();
+                MyTable.Columns.Add(HEADER, typeof(string));
+                MyTable.Columns.Add(ID_CLASIFICATION, typeof(int));
+                MyTable.Columns.Add(TYPE, typeof(string));
                 foreach (var item in MyList)
                 {
-                    var margin = new Thickness(10, 10, 10, 10);
-                    StackPanel stk = new StackPanel
-                    {
-                        Orientation = Orientation.Horizontal,
-                        Margin = margin,
-                        HorizontalAlignment = HorizontalAlignment.Right
-                    };
-                    TextBlock texting = new TextBlock
-                    {
-                        Text = item.MyContent,
-                        Margin = margin,
-                        Width = 125
-                    };
-                    MyExcelButton btnExcel = new MyExcelButton
-                    {
-                        Content = "...",
-                        Style = BtnOK.Style
-                    };
-                    btnExcel.Click += Mck_Click;
-                    BtnList.Add(btnExcel);
-                    stk.Children.Add(texting);
-                    stk.Children.Add(btnExcel);
-                    listBox.Items.Add(stk);
+                    DataRow dr = MyTable.NewRow();
+                    dr[HEADER] = item.MyContent;
+                    dr[ID_CLASIFICATION] = 0;
+                    dr[TYPE] = "-";
+                    MyTable.Rows.Add(dr);
+                    //MyExcelButton btnExcel = new MyExcelButton
+                    //{
+                    //    Content = "...",
+                    //    Style = BtnOK.Style
+                    //};
+                    //btnExcel.Click += Mck_Click;
+                    //BtnList.Add(btnExcel);
+                    //var margin = new Thickness(10, 10, 10, 10);
+                    //StackPanel stk = new StackPanel
+                    //{
+                    //    Orientation = Orientation.Horizontal,
+                    //    Margin = margin,
+                    //    HorizontalAlignment = HorizontalAlignment.Left
+                    //};
+                    //TextBlock texting = new TextBlock
+                    //{
+                    //    Text = item.MyContent,
+                    //    Margin = margin,
+                    //    Width = 150,
+                    //    HorizontalAlignment = HorizontalAlignment.Right,
+                    //    TextWrapping = TextWrapping.Wrap
+                    //};
+
+                    //stk.Children.Add(texting);
+                    //stk.Children.Add(btnExcel);
+                    //TheStackPanel.Children.Add(stk);
                 }
-                TheStackPanel.Children.Add(listBox);
+                DataVieww= new DataView(MyTable);
+                dgHeaders.ItemsSource = DataVieww;
             }
             catch (Exception ex)
             {
@@ -83,16 +102,23 @@ namespace EnsureRisk.Windows
                 WindowMultiRadio wmr = new WindowMultiRadio();
                 if (wmr.ShowDialog() == true)
                 {
-                    ((MyExcelButton)sender).MyValue = wmr.ValueSelected;
-                    Chip chip = new Chip()
-                    {
-                        Content = wmr.ContentSelected,
-                        Icon = wmr.ContentSelected.ToString().ToCharArray()[0].ToString().ToUpper(),
-                        IsDeletable = true
-                    };
-                    chip.DeleteClick += Chip_DeleteClick;
-                    ((StackPanel)((MyExcelButton)sender).Parent).Children.Add(chip);
-                    ((MyExcelButton)sender).Visibility = Visibility.Collapsed;
+                    if (dgHeaders.SelectedIndex >= 0)
+                    {                        
+                        DataVieww[dgHeaders.SelectedIndex].Row[ID_CLASIFICATION] = wmr.ValueSelected;
+                        DataVieww[dgHeaders.SelectedIndex].Row[TYPE] = wmr.ContentSelected;
+                    }
+
+                    //((MyExcelButton)sender).MyValue = wmr.ValueSelected;
+                    //Chip chip = new Chip()
+                    //{
+                    //    Content = wmr.ContentSelected,
+                    //    Icon = wmr.ContentSelected.ToString().ToCharArray()[0].ToString().ToUpper(),
+                    //    IsDeletable = true
+                    //};
+                    //chip.DeleteClick += Chip_DeleteClick;
+                    //((StackPanel)((MyExcelButton)sender).Parent).Children.Add(chip);
+                    //((MyExcelButton)sender).Visibility = Visibility.Collapsed;
+
                 }
             }
             catch (Exception ex)
@@ -105,9 +131,9 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                ((MyExcelButton)((StackPanel)((Chip)sender).Parent).Children[1]).Visibility = Visibility.Visible;
-                ((MyExcelButton)((StackPanel)((Chip)sender).Parent).Children[1]).MyValue = 0;
-                ((StackPanel)((Chip)sender).Parent).Children.RemoveAt(2);
+                ((MyExcelButton)((StackPanel)((Chip)sender).Parent).Children[0]).Visibility = Visibility.Visible;
+                ((MyExcelButton)((StackPanel)((Chip)sender).Parent).Children[0]).MyValue = 0;
+                ((StackPanel)((Chip)sender).Parent).Children.RemoveAt(1);
             }
             catch (Exception ex)
             {
@@ -119,9 +145,9 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                for (int i = 0; i < BtnList.Count; i++)
+                for (int i = 0; i < MyTable.Rows.Count; i++)
                 {
-                    MyList[i].IdClasification = BtnList[i].MyValue;
+                    MyList[i].IdClasification = (int)MyTable.Rows[i][ID_CLASIFICATION];
                 }
                 DialogResult = true;
             }
@@ -144,6 +170,48 @@ namespace EnsureRisk.Windows
         private void chkIsCustom_Checked(object sender, RoutedEventArgs e)
         {
             IsCustom = true;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgHeaders.SelectedIndex >= 0)
+            {
+                DataVieww[dgHeaders.SelectedIndex].Row["idClasification"] = 0;
+                DataVieww[dgHeaders.SelectedIndex].Row["Type"] = "-";
+            }
+        }
+
+        private void dgHeaders_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (dgHeaders.SelectedIndex >= 0)
+                {
+                    WindowMultiRadio wmr = new WindowMultiRadio();
+                    if (wmr.ShowDialog() == true)
+                    {
+                        DataVieww[dgHeaders.SelectedIndex].Row[ID_CLASIFICATION] = wmr.ValueSelected;
+                        DataVieww[dgHeaders.SelectedIndex].Row[TYPE] = wmr.ContentSelected;
+                    }
+                }                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void dgHeaders_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (dgHeaders.SelectedIndex >= 0)
+            {
+                WindowMultiRadio wmr = new WindowMultiRadio();
+                if (wmr.ShowDialog() == true)
+                {
+                    DataVieww[dgHeaders.SelectedIndex].Row[ID_CLASIFICATION] = wmr.ValueSelected;
+                    DataVieww[dgHeaders.SelectedIndex].Row[TYPE] = wmr.ContentSelected;
+                }
+            }
         }
     }
 }

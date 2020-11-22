@@ -516,7 +516,12 @@ namespace EnsureRisk.Classess
         {
             try
             {
+
                 RiskPolyLine MyMainLine = IsScoping ? LinesList.Find(x => x.ID == ScopeLine.ID) : MainLine;
+                //await Task.Run(() =>
+                //{
+
+                //});
                 foreach (MyDamage item in Rectangles)
                 {
                     decimal RiskValue = 0;
@@ -557,13 +562,20 @@ namespace EnsureRisk.Classess
                         }
                         decimal AcumulatedRiskDamage = LinesList.Sum(Risk => (!Risk.IsCM ? Risk.OwnValue : 0));
                         decimal AcumulatedCounterMeasureDamage = LinesList.Sum(Risk => (Risk.IsCM ? Risk.OwnValue : 0));
-
+                        //item.Dispatcher.BeginInvoke(new Action(() =>
+                        //{
+                        //    item.ExpecteDamage.Text = StringResources.ACUM_DAMAGE + General.MyRound(AcumDamage, 2).ToString() + " " + item.UM;
+                        //    item.RisksDamageValue.Text = String.Format(StringResources.ACUM_RISK_DAMAGE, AcumulatedRiskDamage.ToString(), item.UM);
+                        //    item.CounterMesuareDamageValue.Text = String.Format(StringResources.ACUM_CM_DAMAGE, AcumulatedCounterMeasureDamage.ToString(), item.UM);
+                        //    item.CalculateValue.Text = StringResources.ACUM_VALUE + General.MyRound(RiskValue, 2).ToString() + " " + item.UM;
+                        //}));
                         item.ExpecteDamage.Text = StringResources.ACUM_DAMAGE + General.MyRound(AcumDamage, 2).ToString() + " " + item.UM;
                         item.RisksDamageValue.Text = String.Format(StringResources.ACUM_RISK_DAMAGE, AcumulatedRiskDamage.ToString(), item.UM);
                         item.CounterMesuareDamageValue.Text = String.Format(StringResources.ACUM_CM_DAMAGE, AcumulatedCounterMeasureDamage.ToString(), item.UM);
                         item.CalculateValue.Text = StringResources.ACUM_VALUE + General.MyRound(RiskValue, 2).ToString() + " " + item.UM;
                     }
                 }
+
             }
             catch (Exception ex)
             {
@@ -1054,24 +1066,6 @@ namespace EnsureRisk.Classess
                 return new List<RiskPolyLine>();
             }
         }
-
-        //private void UpdateTotalAcumulatedValue(RiskPolyLine riskPolyLine)
-        //{
-        //    if (riskPolyLine.Children.Any())
-        //    {
-        //        List<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderByDescending(pl => pl.Points[1].X).ToList();
-        //        //IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderBy(pl => pl.Position);
-        //        int itemCount = orderedChild.Count();
-        //        int index = itemCount - 1;
-        //        while (index >= 0)
-        //        {
-        //            RiskPolyLine currentChild = orderedChild.ElementAt(index);
-        //            UpdateTotalAcumulatedValue(currentChild);
-        //            currentChild.AcDamage2 = SectionAcumDamage(currentChild);
-        //            index--;
-        //        }
-        //    }
-        //}
 
         private decimal GetValueCM_Damage(RiskPolyLine itemI)
         {

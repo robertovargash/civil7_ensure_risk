@@ -389,7 +389,6 @@ namespace EnsureRisk
                 importToExcelWorker.WorkerReportsProgress = true;
                 importToExcelWorker.WorkerSupportsCancellation = true;
                 importToExcelWorker.DoWork += ImportToExcelWorker_DoWork; ;
-                importToExcelWorker.ProgressChanged += ImportToExcelWorker_ProgressChanged; ;
                 importToExcelWorker.RunWorkerCompleted += ImportToExcelWorker_RunWorkerCompleted; ;
             }
             catch (Exception ex)
@@ -1479,17 +1478,16 @@ namespace EnsureRisk
                     OpenedDocuments.Find(x => x.ID_Diagram == id).Close();
                 }
                 DVRisk_Tree[dgTreeDiagrams.SelectedIndex].Delete();
-                SaveData(DsMain, true);
+                
+                SaveData(DsMain, true);               
                 IS_DELETING_DIAGRAM = false;
             }
             catch (Exception ex)
             {
                 IS_DELETING_DIAGRAM = false;
+                IsImporting = false;
                 MostrarErrorDialog(ex.Message);
             }
-            
-            //CruzarTablaRisk();
-            //CruzarTablaCM();
         }
         /// <summary>
         /// Delete an existing Diagram
@@ -1508,34 +1506,39 @@ namespace EnsureRisk
             {
                 MostrarErrorDialog(ex.Message);
             }
-        }
-
-       
+        }       
 
         #region ImportFromExcel
 
         private void ImportToExcelWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            
-            RefreshData();
-            //p.ProgressVisible = false;
-            this.TheProgress.Visibility = Visibility.Collapsed;
-            Cursor = Cursors.Arrow;
-            IsImporting = false;
-            MostrarInfoDialog("Importing succeed!!");
-            HabilitarBotones(true);         
-        }
-
-        private void ImportToExcelWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            //this.TheProgress.Value = e.ProgressPercentage;
+            try
+            {
+                RefreshData();
+                Cursor = Cursors.Arrow;
+                IsImporting = false;
+                MostrarInfoDialog("Importing succeed!!");
+                HabilitarBotones(true);
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
         }
 
         private void ImportToExcelWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            ImportFromExcel importRiskTree = (ImportFromExcel)e.Argument;
-
-            importRiskTree.ImportExcel(sender as BackgroundWorker, e);
+            try
+            {
+                ImportFromExcel importRiskTree = (ImportFromExcel)e.Argument;
+                importRiskTree.ImportExcel(sender as BackgroundWorker, e);
+            }
+            catch (Exception ex)
+            {
+                this.Dispatcher.Invoke(() => {
+                    MostrarErrorDialog(ex.Message);
+                });                
+            }
         }
 
         private void ImportExcel_Click(object sender, RoutedEventArgs e)
@@ -5917,25 +5920,34 @@ namespace EnsureRisk
         /// <summary>
         /// Save the data in Database
         /// </summary>
-        public void SaveData(DataSet ds, bool cartel)
+        public async void SaveData(DataSet ds, bool cartel)
         {
             try
             {
                 if (ds.HasChanges())
                 {
-                    ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk();
-                    DataSet temp = ds.GetChanges();
-                    temp = ws.SaveRisk(temp);
-                    ds.Merge(temp);
-                    ds.AcceptChanges();
-                    ws.Dispose();
-                    RefreshData();
-                    Cursor = Cursors.Arrow;
-                    if (cartel)
+                    await Task.Run(() =>
                     {
-                        MostrarInfoDialog("Data saved successfully!!!");
-                    }
-                    IS_SAVING_DATA = false;
+                        IsImporting = true;
+                        ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk();
+                        DataSet temp = ds.GetChanges();
+                        temp = ws.SaveRisk(temp);
+                        ds.Merge(temp);
+                        ds.AcceptChanges();
+                        ws.Dispose();
+                    });
+
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        RefreshData();
+                        Cursor = Cursors.Arrow;
+                        if (cartel)
+                        {
+                            MostrarInfoDialog("Data saved successfully!!!");
+                        }
+                        IS_SAVING_DATA = false;
+                        IsImporting = false;
+                    });
                 }
             }
             catch (Exception ex)
