@@ -4028,6 +4028,7 @@ namespace EnsureRisk
                         result = true;
                     }
                 }
+                TheCurrentLayout.UpdateLinesValues();
                 return result;
             }
             catch (Exception ex)

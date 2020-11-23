@@ -55,6 +55,7 @@ namespace DataMapping.Data
             Columns.Add(PRIMARY, typeof(string));
             Columns.Add(USERNAME, typeof(string));
             Columns.Add(PROBABILITY, typeof(decimal));
+            Columns.Add(WBS_USER, typeof(string));
             PrimaryKey = PK_COLUMN;
         }
     }

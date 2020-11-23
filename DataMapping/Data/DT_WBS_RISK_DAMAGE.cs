@@ -33,6 +33,7 @@ namespace DataMapping.Data
             PK_COLUMN[2] = this.Columns.Add(ID_RISK, typeof(decimal));
             Columns.Add(WBS, typeof(string));
             Columns.Add(DAMAGE, typeof(string));
+            Columns.Add(WBS_USER, typeof(string));
             Columns.Add(VALUE, typeof(decimal));
             this.PrimaryKey = PK_COLUMN;
         }

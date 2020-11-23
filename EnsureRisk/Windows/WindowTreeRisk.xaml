@@ -24,27 +24,31 @@
                 </Binding>
             </TextBox.Text>
         </TextBox>
-        <Button x:Name="BtnOK" Content="OK" HorizontalAlignment="Right" Margin="0,0,146,17" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5"/>
-        <Button x:Name="BtnCancel" Content="Cancel" Margin="0,0,25,17" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5"/>
-        <DataGrid x:Name="dgTopRisk" HorizontalAlignment="Left" CanUserAddRows="False" CanUserDeleteRows="False" Height="244" Margin="101,70,0,0" VerticalAlignment="Top" Width="284" AutoGenerateColumns="False"  CanUserSortColumns="False">
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Foreground" Value="{Binding {x:Static data:DT_Diagram_Damages.COLOR}}">
-                    </Setter>
-                    <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}">
-                    </Setter>
-                </Style>
-            </DataGrid.RowStyle>
-            <DataGrid.Columns>
-                <DataGridTextColumn x:Name="cTopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_Diagram_Damages.DAMAGE}}" Width="*" IsReadOnly="True" />
-            </DataGrid.Columns>
-        </DataGrid>
-        <Button x:Name="BtnAdd"  HorizontalAlignment="Left"  Margin="42,85,0,0" VerticalAlignment="Top"  Click="BtnAdd_Click" TabIndex="2" md:ShadowAssist.ShadowDepth="Depth5">
-            <md:PackIcon Kind="Plus"/>
-        </Button>
-        <Button x:Name="BtnDel"  HorizontalAlignment="Left"  Margin="42,136,0,0" VerticalAlignment="Top" Click="BtnDel_Click" TabIndex="3" md:ShadowAssist.ShadowDepth="Depth5">
-            <md:PackIcon Kind="Minus"/>
-        </Button>
+        <Grid x:Name="gridControls">
+            <DataGrid x:Name="dgTopRisk" HorizontalAlignment="Left" CanUserAddRows="False" CanUserDeleteRows="False" Height="244" Margin="101,70,0,0" VerticalAlignment="Top" Width="284" AutoGenerateColumns="False"  CanUserSortColumns="False">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Foreground" Value="{Binding {x:Static data:DT_Diagram_Damages.COLOR}}">
+                        </Setter>
+                        <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}">
+                        </Setter>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="cTopRisk" Header="Damage" Binding="{Binding {x:Static data:DT_Diagram_Damages.DAMAGE}}" Width="*" IsReadOnly="True" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <Button x:Name="BtnAdd"  HorizontalAlignment="Left"  Margin="42,85,0,0" VerticalAlignment="Top"  Click="BtnAdd_Click" TabIndex="2" md:ShadowAssist.ShadowDepth="Depth5">
+                <md:PackIcon Kind="Plus"/>
+            </Button>
+            <Button x:Name="BtnDel"  HorizontalAlignment="Left"  Margin="42,136,0,0" VerticalAlignment="Top" Click="BtnDel_Click" TabIndex="3" md:ShadowAssist.ShadowDepth="Depth5">
+                <md:PackIcon Kind="Minus"/>
+            </Button>
+            <Button x:Name="BtnOK" Content="OK" HorizontalAlignment="Right" Margin="0,0,146,17" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5"/>
+            <Button x:Name="BtnCancel" Content="Cancel" Margin="0,0,25,17" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5"/>
+
+        </Grid>
+
         <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">
             <md:DialogHost.DialogContent >
                 <StackPanel Margin="15">

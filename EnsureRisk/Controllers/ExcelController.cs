@@ -24,6 +24,7 @@ namespace EnsureRisk
         public static DataTable ExcelToDataTable(string filpath)
         {
             DataTable dt = new DataTable();
+            List<int> nonEmptyColumns = new List<int>();
             using (SpreadsheetDocument spreadSheetDocument = SpreadsheetDocument.Open(filpath, false))
             {
                 WorkbookPart workbookPart = spreadSheetDocument.WorkbookPart;
@@ -33,10 +34,27 @@ namespace EnsureRisk
                 Worksheet workSheet = worksheetPart.Worksheet;
                 SheetData sheetData = workSheet.GetFirstChild<SheetData>();
                 IEnumerable<Row> rows = sheetData.Descendants<Row>();
-
-                foreach (Cell cell in rows.ElementAt(0))
+                
+                for (int i = 0; i < rows.ElementAt(0).Count(); i++)
                 {
-                    dt.Columns.Add(GetCellValue(spreadSheetDocument, cell));
+                    string cellValue = GetCellValue(spreadSheetDocument, rows.ElementAt(0).Descendants<Cell>().ElementAt(i));
+                    if (string.IsNullOrWhiteSpace(cellValue))
+                    {
+                        nonEmptyColumns.Add(i);
+                    }
+                    if (dt.Columns.Contains(cellValue))
+                    {
+                        int number = 1;
+                        while (dt.Columns.Contains(cellValue + number))
+                        {
+                            number++;
+                        }
+                        dt.Columns.Add(cellValue + number);
+                    }
+                    else
+                    {
+                        dt.Columns.Add(cellValue);
+                    }
                 }
 
                 foreach (Row row in rows) //this will also include your header row...
@@ -54,6 +72,10 @@ namespace EnsureRisk
                 }
             }
             dt.Rows.RemoveAt(0); //...so i'm taking it out here.
+            for (int i = nonEmptyColumns.Count - 1; i >= 0; i--)
+            {
+                dt.Columns.RemoveAt(nonEmptyColumns[i]);
+            }
             return dt;
         }
 
@@ -63,7 +85,7 @@ namespace EnsureRisk
             string reference = cell.CellReference.ToString().ToUpper();
             foreach (char ch in reference)
             {
-                if (Char.IsLetter(ch))
+                if (char.IsLetter(ch))
                 {
                     int value = (int)ch - (int)'A';
                     index = (index + 1) * 26 + value;

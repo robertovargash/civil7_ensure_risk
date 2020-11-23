@@ -174,5 +174,14 @@ namespace EnsureRisk
             }
         }
 
+        public static void CreateNewDiagram(DataSet sourceDs, DataSet targetDS, DataRow drSourceDiagram, DataRow drTargetDiagram)
+        {
+            foreach (var riskRow in sourceDs.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + drSourceDiagram[DT_Diagram.ID_DIAGRAM]))
+            {
+                DataRow drRisk = targetDS.Tables[DT_Risk.TABLE_NAME].NewRow();
+
+            }
+        }
+
     }
 }
