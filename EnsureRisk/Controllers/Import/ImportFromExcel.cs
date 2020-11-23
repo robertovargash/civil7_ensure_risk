@@ -63,42 +63,52 @@ namespace EnsureRisk.Controllers.Import
 
         public void ImportExcel(BackgroundWorker backgroundWorker, DoWorkEventArgs e)
         {
-           ServiceTopRiskController.WebServiceTopRisk wstop = new ServiceTopRiskController.WebServiceTopRisk();
-            dsImporting.Tables[DT_Damage.TABLE_NAME].Merge(wstop.GetAllTopRisk().Tables[DT_Damage.TABLE_NAME]);
-            wstop.Dispose();
-            drDiagram[DT_Diagram.DIAGRAM_NAME] = "Imported Diagram at " + DateTime.Now;
-            drDiagram[DT_Diagram.ID_DIAGRAM] = 0000;
-            drDiagram[DT_Diagram.ID_PROJECT] = IdProject;
-            dsImporting.Tables[DT_Diagram.TABLE_NAME].Rows.Add(drDiagram);
-            IEnumerable<HeaderExcelContent> countDamages = MyList.Where(x => x.IdClasification == 10);//Damages has 10 as ID
-            ClasifyAndCreateDamages(dsImporting, drDiagram, countDamages);
-            //Busco el diagrama que acabo de insertar, para agregarle el riesgo padre, para agregarle los riesgos y sus dannos
-            DataRow theDiagram = dsImporting.Tables[DT_Diagram.TABLE_NAME].Rows.Find(0000);
-            //creo un riesgo root
-            DataRow drRisk = dsImporting.Tables[DT_Risk.TABLE_NAME].NewRow();
-            SetDataToMainRisk(drRisk, theDiagram);
-            dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
-
-            //Asignarle al riesgo Root el rol admin
-            AsignRoleAdminToRisk(dsImporting, drRisk);
-
-            //por cada daño del diagrama
-            DamagesToMainRisk(dsImporting, drRisk, theDiagram);
-
-            //Recorrer el Excel solo para llenar los riesgos
-            HeaderExcelContent xIdRisk = FillDataRisk(dsImporting, IsCustom, dtExcel, MyList, countDamages, theDiagram, drRisk, DsWBS);
-            SetRisk_RiskFatherRelation(dsImporting, IsCustom, dtExcel, MyList, xIdRisk);
-            FillCM_Data(dsImporting, IsCustom, keyPhrase, dtExcel, MyList, countDamages, theDiagram, xIdRisk, DsWBS, isMarkedAll);
-            WBSOperations.AddWBSTopToDiagram(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM], DsWBS);
-            TreeOperation.SetDiagramImportedPositions(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM]);
-            if (dsImporting.HasChanges())
+            if (!e.Cancel)
             {
-                using (ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk())
+                ServiceTopRiskController.WebServiceTopRisk wstop = new ServiceTopRiskController.WebServiceTopRisk();
+                dsImporting.Tables[DT_Damage.TABLE_NAME].Merge(wstop.GetAllTopRisk().Tables[DT_Damage.TABLE_NAME]);
+                wstop.Dispose();
+                drDiagram[DT_Diagram.DIAGRAM_NAME] = "Imported Diagram at " + DateTime.Now;
+                drDiagram[DT_Diagram.ID_DIAGRAM] = 0000;
+                drDiagram[DT_Diagram.ID_PROJECT] = IdProject;
+                dsImporting.Tables[DT_Diagram.TABLE_NAME].Rows.Add(drDiagram);
+                IEnumerable<HeaderExcelContent> countDamages = MyList.Where(x => x.IdClasification == 10);//Damages has 10 as ID
+                ClasifyAndCreateDamages(dsImporting, drDiagram, countDamages);
+                //Busco el diagrama que acabo de insertar, para agregarle el riesgo padre, para agregarle los riesgos y sus dannos
+                DataRow theDiagram = dsImporting.Tables[DT_Diagram.TABLE_NAME].Rows.Find(0000);
+                //creo un riesgo root
+                DataRow drRisk = dsImporting.Tables[DT_Risk.TABLE_NAME].NewRow();
+                SetDataToMainRisk(drRisk, theDiagram);
+                dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
+
+                //Asignarle al riesgo Root el rol admin
+                AsignRoleAdminToRisk(dsImporting, drRisk);
+
+                //por cada daño del diagrama
+                DamagesToMainRisk(dsImporting, drRisk, theDiagram);
+
+                //Recorrer el Excel solo para llenar los riesgos
+                HeaderExcelContent xIdRisk = FillDataRisk(dsImporting, IsCustom, dtExcel, MyList, countDamages, theDiagram, drRisk, DsWBS);
+                SetRisk_RiskFatherRelation(dsImporting, IsCustom, dtExcel, MyList, xIdRisk);
+                FillCM_Data(dsImporting, IsCustom, keyPhrase, dtExcel, MyList, countDamages, theDiagram, xIdRisk, DsWBS, isMarkedAll);
+                WBSOperations.AddWBSTopToDiagram(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM], DsWBS);
+                TreeOperation.SetDiagramImportedPositions(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM]);
+                if (dsImporting.HasChanges())
                 {
-                    DataSet temp = dsImporting.GetChanges();
-                    temp = ws.SaveRisk(temp);
-                    dsImporting.Merge(temp);
-                    dsImporting.AcceptChanges();
+                    using (ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk())
+                    {
+                        DataSet temp = dsImporting.GetChanges();
+                        temp = ws.SaveRisk(temp);
+                        dsImporting.Merge(temp);
+                        dsImporting.AcceptChanges();
+                    }
+                }
+            }
+            else
+            {
+                if (backgroundWorker.CancellationPending)
+                {
+                    e.Cancel = true;
                 }
             }
         }
@@ -112,18 +122,18 @@ namespace EnsureRisk.Controllers.Import
         public void ClasifyAndCreateDamages(DataSet dsImporting, DataRow drDiagram, IEnumerable<HeaderExcelContent> countDamages)
         {
             int colorvariant = 1;
-            foreach (var itemDamages in countDamages)
+            foreach (var itemDamage in countDamages)
             {
-                string DamageName = itemDamages.MyContent;
+                string DamageName = itemDamage.MyContent;
                 List<string> DamageUM = DamageNameParsing(DamageName);
                 if (dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DamageUM[0] + "' and " + DT_Damage.UM + " = '" + DamageUM[1] + "'").Any())
                 {
                     CreateDiagramDamagesExcel(dsImporting, dsImporting.Tables[DT_Damage.TABLE_NAME].Select(DT_Damage.TOP_RISK_COLUMN + " = '" + DamageUM[0] + "' and " + DT_Damage.UM + " = '" + DamageUM[1] + "'")
-                        .First(), drDiagram);
+                        .First(), drDiagram, itemDamage);
                 }
                 else
                 {
-                    CreateDiagramDamagesExcel(dsImporting, CreateNewDamageFromDamageName(dsImporting, ref colorvariant, DamageUM), drDiagram);
+                    CreateDiagramDamagesExcel(dsImporting, CreateNewDamageFromDamageName(dsImporting, ref colorvariant, DamageUM), drDiagram, itemDamage);
                 }               
             }
         }
@@ -135,7 +145,7 @@ namespace EnsureRisk.Controllers.Import
         /// <param name="drDamage">The Damage datarow</param>
         /// <param name="Damage">The name of the Damage in the </param>
         /// <param name="drDiagram">The diagram data created</param>
-        public void CreateDiagramDamagesExcel(DataSet dsImporting, DataRow drDamage, DataRow drDiagram)
+        public void CreateDiagramDamagesExcel(DataSet dsImporting, DataRow drDamage, DataRow drDiagram, HeaderExcelContent damageContent)
         {
             DataRow drDamage_Diagram = dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].NewRow();//create a new Diagram with the Created Damages
             drDamage_Diagram[DT_Diagram_Damages.ID_DAMAGE] = drDamage[DT_Damage.ID_COLUMNA];
@@ -146,7 +156,10 @@ namespace EnsureRisk.Controllers.Import
             drDamage_Diagram[DT_Diagram_Damages.UM] = drDamage[DT_Damage.UM];
             drDamage_Diagram[DT_Diagram_Damages.DAMAGE] = drDamage[DT_Damage.TOP_RISK_COLUMN].ToString() + "(" + drDamage[DT_Damage.UM].ToString() + ")";
             dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Add(drDamage_Diagram);
+            damageContent.MyContent = drDamage_Diagram[DT_Diagram_Damages.DAMAGE].ToString();
         }
+        
+
 
         private List<string> DamageNameParsing(string damageName)
         {
@@ -340,9 +353,9 @@ namespace EnsureRisk.Controllers.Import
                     {
                         string DamageWithUM = itemDamages.MyContent;
                         decimal value = 0;
-                        if (itemDamages != null && dtExcel.Rows[rowPosition][itemDamages.MyContent.ToString()].ToString() != "")
+                        if (itemDamages != null && dtExcel.Rows[rowPosition][itemDamages.Column].ToString() != "")
                         {
-                            value = Convert.ToDecimal(dtExcel.Rows[rowPosition][itemDamages.MyContent.ToString()]);
+                            value = Convert.ToDecimal(dtExcel.Rows[rowPosition][itemDamages.Column]);
                         }
                         else
                         {

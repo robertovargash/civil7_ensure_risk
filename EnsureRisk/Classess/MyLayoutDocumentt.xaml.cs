@@ -129,7 +129,6 @@ namespace EnsureRisk.Classess
             exportToExcelWorker.DoWork += ExportToExcelWorker_DoWork;
             exportToExcelWorker.ProgressChanged += ExportToExcelWorker_ProgressChanged;
             exportToExcelWorker.RunWorkerCompleted += ExportToExcelWorker_RunWorkerCompleted;
-
             
             CbFilterTopR.DataContext = this;
             MiniMapGHT.DataContext = this;

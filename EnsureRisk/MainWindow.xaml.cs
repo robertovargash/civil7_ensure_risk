@@ -389,7 +389,7 @@ namespace EnsureRisk
                 importToExcelWorker.WorkerReportsProgress = true;
                 importToExcelWorker.WorkerSupportsCancellation = true;
                 importToExcelWorker.DoWork += ImportToExcelWorker_DoWork; ;
-                importToExcelWorker.RunWorkerCompleted += ImportToExcelWorker_RunWorkerCompleted; ;
+                importToExcelWorker.RunWorkerCompleted += ImportToExcelWorker_RunWorkerCompleted;
             }
             catch (Exception ex)
             {
@@ -5927,7 +5927,7 @@ namespace EnsureRisk
                 if (ds.HasChanges())
                 {
                     await Task.Run(() =>
-                    {
+                    {                        
                         IsImporting = true;
                         ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk();
                         DataSet temp = ds.GetChanges();
@@ -7367,7 +7367,7 @@ namespace EnsureRisk
                 return tempObtenerAcceso;
             }
         }
-
+                
         private void Autenticar()
         {
             if (TextUser.Text != "")
