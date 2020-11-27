@@ -148,36 +148,45 @@ namespace EnsureRisk.Export.Trader
             dataTable.Columns.Add("CM Name");
             List<DataRow> mainRisksRiskDescendats = new List<DataRow>();
             List<DataRow> mainRisksCMDescendats = new List<DataRow>();
-            foreach (var item in TreeOperation.GetOnlyMyChildrenWithCM(LinesDiagram.Find(l => l.ID == (decimal)mainRisk[IDRISK_COLUMNNAME])))
+            foreach (var descendant in TreeOperation.GetOnlyMyChildrenWithCM(LinesDiagram.Find(l => l.ID == (decimal)mainRisk[IDRISK_COLUMNNAME])))
             {
-                if (item.IsCM)
+                if (descendant.IsCM)
                 {
-                    mainRisksCMDescendats.Add(CMDataTable.Rows.Find(item.ID));
-
+                    mainRisksCMDescendats.Add(CMDataTable.Rows.Find(descendant.ID));
                 }
                 else
                 {
-                    mainRisksRiskDescendats.Add(RiskDataTable.Rows.Find(item.ID));
+                    mainRisksRiskDescendats.Add(RiskDataTable.Rows.Find(descendant.ID));
                 }
             }            
-            int max = MaxValue(mainRisksRiskDescendats.Count, mainRisksCMDescendats.Count); 
-            for (int i = 0; i < max; i++)
+            int max = MaxValue(mainRisksRiskDescendats.Count, mainRisksCMDescendats.Count);
+            if (max == 0)
             {
                 DataRow drNewTable = dataTable.NewRow();
-                if (i==0)
-                {
-                    drNewTable["Main Branch"] = mainRisk[DT_Risk.NAMESHORT];
-                    drNewTable["Risk_ID"] = mainRisk[DT_Risk.ID];
-                }
-                if (mainRisksRiskDescendats.Count > i)
-                {
-                    drNewTable["Risk Name"] = mainRisksRiskDescendats[i][DT_Risk.NAMESHORT];
-                }
-                if (mainRisksCMDescendats.Count > i)
-                {
-                    drNewTable["CM Name"] = mainRisksCMDescendats[i][DT_CounterM.NAMESHORT];
-                }
+                drNewTable["Main Branch"] = mainRisk[DT_Risk.NAMESHORT];
+                drNewTable["Risk_ID"] = mainRisk[DT_Risk.ID];
                 dataTable.Rows.Add(drNewTable);
+            }
+            else
+            {
+                for (int i = 0; i < max; i++)
+                {
+                    DataRow drNewTable = dataTable.NewRow();
+                    if (i == 0)
+                    {
+                        drNewTable["Main Branch"] = mainRisk[DT_Risk.NAMESHORT];
+                        drNewTable["Risk_ID"] = mainRisk[DT_Risk.ID];
+                    }
+                    if (mainRisksRiskDescendats.Count > i)
+                    {
+                        drNewTable["Risk Name"] = mainRisksRiskDescendats[i][DT_Risk.NAMESHORT];
+                    }
+                    if (mainRisksCMDescendats.Count > i)
+                    {
+                        drNewTable["CM Name"] = mainRisksCMDescendats[i][DT_CounterM.NAMESHORT];
+                    }
+                    dataTable.Rows.Add(drNewTable);
+                }
             }
             return dataTable;
         }
@@ -363,6 +372,7 @@ namespace EnsureRisk.Export.Trader
                 orderby riskDataRow.Field<int?>(POSITION_COLUMNNAME)
                 select riskDataRow;
             riskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
+            //TODO: Ojo con esto
             return dataTable;
         }
 

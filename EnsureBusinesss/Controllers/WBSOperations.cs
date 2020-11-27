@@ -319,7 +319,7 @@ namespace EnsureBusinesss
                             rowRiskDamage[DT_Risk_Damages.USERNAME] = rowWBS[DT_WBS.USERNAME];
                         }
                     }
-                    foreach (DataRow rowCM in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + Id_Diagram))
+                    foreach (DataRow rowCM in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + Id_Diagram))
                     {
                         if (!(ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { rowCM[DT_CounterM.ID], rowWBS[DT_WBS.ID_WBS] })))
                         {

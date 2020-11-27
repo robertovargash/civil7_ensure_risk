@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System;
 using System.Windows;
+using System.Windows.Input;
 
 namespace EnsureRisk.Classess
 {
@@ -93,6 +94,91 @@ namespace EnsureRisk.Classess
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value as Visibility? == TrueValue;
+        }
+    }
+
+    public class OpositeBoolToVisibilityConverter : IValueConverter
+    {
+        public Visibility TrueValue { get; set; } = Visibility.Visible;
+        public Visibility FalseValue { get; set; } = Visibility.Collapsed;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool bValue = false;
+            if (value is bool)
+            {
+                bValue = (bool)value;
+            }
+
+            return (bValue) ? FalseValue : TrueValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value as Visibility? == FalseValue;
+        }
+    }
+
+    public class BoolToCursorConverter : IValueConverter
+    {
+        public Cursor TrueValue { get; set; } = CursorHelper.FromByteArray(Properties.Resources.HandOpen);
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter == null)
+                return ((bool)value == true) ? TrueValue : Cursors.Arrow;
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Cursor cursor)
+                return cursor == TrueValue;
+            return false;
+        }
+    }
+
+    public class BoolToIconConverter : IValueConverter
+    {
+
+        public ContentControl TrueValue { get; set; } = new ContentControl{Content = new MaterialDesignThemes.Wpf.PackIcon() {Kind = MaterialDesignThemes.Wpf.PackIconKind.CursorDefaultOutline }};
+        public ContentControl FalseValue { get; set; } = new ContentControl{Content = new MaterialDesignThemes.Wpf.PackIcon() {Kind = MaterialDesignThemes.Wpf.PackIconKind.Hand   } };
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool bValue = false;
+            if (value is bool)
+            {
+                bValue = (bool)value;
+            }
+
+            return (bValue) ? TrueValue : FalseValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value as ContentControl == TrueValue;
+        }
+    }
+
+    public class BoolToCheckConverter : IValueConverter
+    {
+        public ContentControl TrueValue { get; set; } = new ContentControl { Content = new MaterialDesignThemes.Wpf.PackIcon() { Kind = MaterialDesignThemes.Wpf.PackIconKind.CheckboxMarkedOutline } };
+        public ContentControl FalseValue { get; set; } = new ContentControl { Content = new MaterialDesignThemes.Wpf.PackIcon() { Kind = MaterialDesignThemes.Wpf.PackIconKind.CloseBoxOutline } };
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool bValue = false;
+            if (value is bool)
+            {
+                bValue = (bool)value;
+            }
+
+            return (bValue) ? TrueValue : FalseValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value as ContentControl == TrueValue;
         }
     }
 }

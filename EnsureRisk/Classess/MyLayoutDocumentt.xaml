@@ -10,9 +10,9 @@
              xmlns:local="clr-namespace:EnsureRisk.Classess"
              xmlns:xcad="http://civil7.nl/wpf/xaml/avalondock"
              xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
-             mc:Ignorable="d" CanMove="True" CanClose="True" CanFloat="True" IsActiveChanged="LayoutDocument_IsActiveChanged" Closing="MyLayoutDocument_Closed" IsSelected="True">
+             mc:Ignorable="d" CanMove="True" CanClose="True" CanFloat="True" IsActiveChanged="LayoutDocument_IsActiveChanged" Closing="MyLayoutDocument_Closed" IsSelected="True">    
     <xcad:LayoutDocument.Content>
-        <Grid MouseDown="LayoutDocument_MouseDown">
+        <Grid  MouseDown="LayoutDocument_MouseDown">
             <Button x:Name="BtnUndoneScope" Panel.ZIndex="1" Click="BtnUndoneScope_Click" Visibility="Collapsed" Content="{md:PackIcon Kind=UndoVariant}" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
             <Grid x:Name="TheMainGrid" Background="White" MouseDown="LayoutDocument_MouseDown">
                 <Grid.RowDefinitions>
@@ -43,9 +43,16 @@
                     <ScrollViewer Name="ScrollGridPaint" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="8" Grid.RowSpan="8" VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" 
                               Loaded="ScrollGridPaint_Loaded"  ScrollChanged="ScrollGridPaint_ScrollChanged" SizeChanged="ScrollGridPaint_SizeChanged"
                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <ScrollViewer.Resources>
+                            <local:BoolToCursorConverter x:Key="CursorConverter" />
+                        </ScrollViewer.Resources>
                         <Grid x:Name="CanvasMain" Background="#FFFAF3FA">
-                            <Grid Width="200" Height="200" x:Name="GridPaintLines" MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" MouseWheel="GridPaintLines_MouseWheel" Background="#FFFAF3FA">
-                                <TextBox x:Name="TextChangeName" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>
+                            <Grid Width="200" Height="200"
+                                  x:Name="GridPaintLines" Cursor="{Binding IsPanEnable, Converter={StaticResource CursorConverter}}"
+                                  PreviewMouseDown="GridPaintLines_PreviewMouseDown" PreviewMouseMove="GridPaintLines_PreviewMouseMove" PreviewMouseUp="GridPaintLines_PreviewMouseUp"
+                                  MouseMove="GridPaintLines_MouseMove" MouseDown="GridPaintLines_MouseDown" MouseUp="GridPaintLines_MouseUp" 
+                                  MouseWheel="GridPaintLines_MouseWheel" Background="#FFFAF3FA" >
+                                <TextBox x:Name="TextChangeName" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left" KeyDown="TextChangeName_KeyDown" LostFocus="TextChangeName_LostFocus" IsVisibleChanged="TextChangeName_IsVisibleChanged"/>                                
                             </Grid>
                         </Grid>
                     </ScrollViewer>

@@ -81,7 +81,7 @@ namespace EnsureRisk
         /// <param name="menuCM">Menu for all CMs</param>
         public static void CreateCMs(MyLayoutDocumentt originalLayout, List<RiskPolyLine> cmPolyLines, ContextMenu menuCM)
         {
-            foreach (DataRow item in originalLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + originalLayout.ID_Diagram))
+            foreach (DataRow item in originalLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + originalLayout.ID_Diagram))
             {
                 RiskPolyLine cmline = new RiskPolyLine(new Grid(), menuCM, true)
                 {
@@ -174,14 +174,212 @@ namespace EnsureRisk
             }
         }
 
+
         public static void CreateNewDiagram(DataSet sourceDs, DataSet targetDS, DataRow drSourceDiagram, DataRow drTargetDiagram)
         {
-            foreach (var riskRow in sourceDs.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + drSourceDiagram[DT_Diagram.ID_DIAGRAM]))
+            using (DataSet lahostia = sourceDs.Copy())
             {
-                DataRow drRisk = targetDS.Tables[DT_Risk.TABLE_NAME].NewRow();
+                foreach (var riskRow in lahostia.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + drSourceDiagram[DT_Diagram.ID_DIAGRAM]))
+                {
+                    foreach (var riskDamageRow in lahostia.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + riskRow[DT_Risk.ID]))
+                    {
+                        DataRow drRiskDamage = targetDS.Tables[DT_Risk_Damages.TABLE_NAME].NewRow();
+                        if ((decimal)riskDamageRow[DT_Risk_Damages.ID_RISK] >= 0)
+                        {
+                            drRiskDamage[DT_Risk_Damages.ID_RISK] = (decimal)riskDamageRow[DT_Risk_Damages.ID_RISK] * (-1);
+                        }
+                        else
+                        {
+                            drRiskDamage[DT_Risk_Damages.ID_RISK] = riskDamageRow[DT_Risk_Damages.ID_RISK];
+                        }
+                        drRiskDamage[DT_Risk_Damages.ID_DAMAGE] = riskDamageRow[DT_Risk_Damages.ID_DAMAGE];
+                        drRiskDamage[DT_Risk_Damages.ID_WBS] = riskDamageRow[DT_Risk_Damages.ID_WBS];
+                        drRiskDamage[DT_Risk_Damages.VALUE] = riskDamageRow[DT_Risk_Damages.VALUE];
+                        targetDS.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Add(drRiskDamage);
+                    }
+                    foreach (var riskWBSRow in lahostia.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + riskRow[DT_Risk.ID]))
+                    {
+                        DataRow drRiskWBS = targetDS.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
+                        if ((decimal)riskWBSRow[DT_RISK_WBS.ID_RISK] >= 0)
+                        {
+                            drRiskWBS[DT_RISK_WBS.ID_RISK] = (decimal)riskWBSRow[DT_RISK_WBS.ID_RISK] * (-1);
+                        }
+                        else
+                        {
+                            drRiskWBS[DT_RISK_WBS.ID_RISK] = riskWBSRow[DT_RISK_WBS.ID_RISK];
+                        }
+                        drRiskWBS[DT_RISK_WBS.ID_WBS] = riskWBSRow[DT_RISK_WBS.ID_WBS];
+                        drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = riskWBSRow[DT_RISK_WBS.IS_PRIMARY];
+                        drRiskWBS[DT_RISK_WBS.PROBABILITY] = riskWBSRow[DT_RISK_WBS.PROBABILITY];
+                        targetDS.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(drRiskWBS);
+                    }
+                    foreach (var riskRoleRow in lahostia.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + riskRow[DT_Risk.ID]))
+                    {
+                        DataRow drRiskRole = targetDS.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                        if ((decimal)riskRoleRow[DT_Role_Risk.ID_RISK] >= 0)
+                        {
+                            drRiskRole[DT_Role_Risk.ID_RISK] = (decimal)riskRoleRow[DT_Role_Risk.ID_RISK] * (-1);
+                        }
+                        else
+                        {
+                            drRiskRole[DT_Role_Risk.ID_RISK] = riskRoleRow[DT_Role_Risk.ID_RISK];
+                        }
+                        drRiskRole[DT_Role_Risk.IDROL_COLUMN] = riskRoleRow[DT_Role_Risk.IDROL_COLUMN];
+                        targetDS.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRiskRole);
+                    }
+                    foreach (var riskDamageWBSRow in lahostia.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + riskRow[DT_Risk.ID]))
+                    {
+                        DataRow drRiskDamageWBS = targetDS.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
+                        if ((decimal)riskDamageWBSRow[DT_WBS_RISK_DAMAGE.ID_RISK] >= 0)
+                        {
+                            drRiskDamageWBS[DT_WBS_RISK_DAMAGE.ID_RISK] = (decimal)riskDamageWBSRow[DT_WBS_RISK_DAMAGE.ID_RISK] * (-1);
+                        }
+                        else
+                        {
+                            drRiskDamageWBS[DT_WBS_RISK_DAMAGE.ID_RISK] = riskDamageWBSRow[DT_WBS_RISK_DAMAGE.ID_RISK];
+                        }
+                        drRiskDamageWBS[DT_WBS_RISK_DAMAGE.ID_WBS] = riskDamageWBSRow[DT_WBS_RISK_DAMAGE.ID_WBS];
+                        drRiskDamageWBS[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = riskDamageWBSRow[DT_WBS_RISK_DAMAGE.ID_DAMAGE];
+                        drRiskDamageWBS[DT_WBS_RISK_DAMAGE.VALUE] = riskDamageWBSRow[DT_WBS_RISK_DAMAGE.VALUE];
+                        targetDS.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(drRiskDamageWBS);
+                    }
+                    foreach (var riskFather in lahostia.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + riskRow[DT_Risk.ID]))
+                    {
+                        DataRow drFather = targetDS.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
+                        if ((decimal)riskFather[DT_RiskStructure.IDRISK] >= 0)
+                        {
+                            drFather[DT_RiskStructure.IDRISK] = (decimal)riskFather[DT_RiskStructure.IDRISK] * (-1);
+                        }
+                        else
+                        {
+                            drFather[DT_RiskStructure.IDRISK] = riskFather[DT_RiskStructure.IDRISK];
+                        }
+                        if ((decimal)riskFather[DT_RiskStructure.IDRISK_FATHER] >= 0)
+                        {
+                            drFather[DT_RiskStructure.IDRISK_FATHER] = (decimal)riskFather[DT_RiskStructure.IDRISK_FATHER] * (-1);
+                        }
+                        else
+                        {
+                            drFather[DT_RiskStructure.IDRISK_FATHER] = riskFather[DT_RiskStructure.IDRISK_FATHER];
+                        }
+                        targetDS.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(drFather);
+                    }
+                    DataRow drRisk = targetDS.Tables[DT_Risk.TABLE_NAME].NewRow();                    
+                    if ((decimal)riskRow[DT_Risk.ID] >= 0)
+                    {
+                        drRisk[DT_Risk.ID] = (decimal)riskRow[DT_Risk.ID] * (-1);
+                    }
+                    else
+                    {
+                        drRisk[DT_Risk.ID] = riskRow[DT_Risk.ID];
+                    }
+                    drRisk[DT_Risk.ID_DIAGRAM] = drTargetDiagram[DT_Diagram.ID_DIAGRAM];
+                    drRisk[DT_Risk.NAMESHORT] = riskRow[DT_Risk.NAMESHORT];
+                    drRisk[DT_Risk.COMMENTS] = riskRow[DT_Risk.COMMENTS];
+                    drRisk[DT_Risk.ISCOLLAPSED] = riskRow[DT_Risk.ISCOLLAPSED];
+                    drRisk[DT_Risk.IS_ROOT] = riskRow[DT_Risk.IS_ROOT];
+                    drRisk[DT_Risk.FROM_TOP] = riskRow[DT_Risk.FROM_TOP];
+                    drRisk[DT_Risk.PROBABILITY] = riskRow[DT_Risk.PROBABILITY];
+                    drRisk[DT_Risk.POSITION] = riskRow[DT_Risk.POSITION];
+                    drRisk[DT_Risk.ENABLED] = riskRow[DT_Risk.ENABLED];
+                    drRisk[DT_Risk.ID_GROUPE] = riskRow[DT_Risk.ID_GROUPE];
+                    drRisk[DT_Risk.ID_WBS] = riskRow[DT_Risk.ID_WBS];
+                    targetDS.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
+                }                
 
+                foreach (var cmRow in lahostia.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + drSourceDiagram[DT_Diagram.ID_DIAGRAM]))
+                {
+                    foreach (var cmDamageRow in lahostia.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cmRow[DT_CounterM.ID]))
+                    {
+                        DataRow drCMDamage = targetDS.Tables[DT_CounterM_Damage.TABLE_NAME].NewRow();
+                        if ((decimal)cmDamageRow[DT_CounterM_Damage.ID_COUNTERM] >= 0)
+                        {
+                            drCMDamage[DT_CounterM_Damage.ID_COUNTERM] = (decimal)cmDamageRow[DT_CounterM_Damage.ID_COUNTERM] * (-1);
+                        }
+                        else
+                        {
+                            drCMDamage[DT_CounterM_Damage.ID_COUNTERM] = cmDamageRow[DT_CounterM_Damage.ID_COUNTERM];
+                        }
+                        drCMDamage[DT_CounterM_Damage.ID_DAMAGE] = cmDamageRow[DT_CounterM_Damage.ID_DAMAGE];
+                        drCMDamage[DT_CounterM_Damage.VALUE] = cmDamageRow[DT_CounterM_Damage.VALUE];
+                        targetDS.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Add(drCMDamage);
+                    }
+                    foreach (var cmWBSRow in lahostia.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + cmRow[DT_CounterM.ID]))
+                    {
+                        DataRow drCMWBS = targetDS.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
+                        if ((decimal)cmWBSRow[DT_CM_WBS.ID_CM] >= 0)
+                        {
+                            drCMWBS[DT_CM_WBS.ID_CM] = (decimal)cmWBSRow[DT_CM_WBS.ID_CM] * (-1);
+                        }
+                        else
+                        {
+                            drCMWBS[DT_CM_WBS.ID_CM] = cmWBSRow[DT_CM_WBS.ID_CM];
+                        }
+
+                        drCMWBS[DT_CM_WBS.ID_WBS] = cmWBSRow[DT_CM_WBS.ID_WBS];
+                        drCMWBS[DT_CM_WBS.IS_PRIMARY] = cmWBSRow[DT_CM_WBS.IS_PRIMARY];
+                        drCMWBS[DT_CM_WBS.PROBABILITY] = cmWBSRow[DT_CM_WBS.PROBABILITY];
+                        targetDS.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(drCMWBS);
+                    }
+                    foreach (var cmRoleRow in lahostia.Tables[DT_Role_CM.TABLENAME].Select(DT_Role_CM.ID_CM + " = " + cmRow[DT_CounterM.ID]))
+                    {
+                        DataRow drCMRole = targetDS.Tables[DT_Role_CM.TABLENAME].NewRow();
+                        if ((decimal)cmRoleRow[DT_Role_CM.ID_CM] >= 0)
+                        {
+                            drCMRole[DT_Role_CM.ID_CM] = (decimal)cmRoleRow[DT_Role_CM.ID_CM] * (-1);
+                        }
+                        else
+                        {
+                            drCMRole[DT_Role_CM.ID_CM] = cmRoleRow[DT_Role_CM.ID_CM];
+                        }
+                        drCMRole[DT_Role_CM.IDROL_COLUMN] = cmRoleRow[DT_Role_CM.IDROL_COLUMN];
+                        targetDS.Tables[DT_Role_CM.TABLENAME].Rows.Add(drCMRole);
+                    }
+                    foreach (var cmDamageWBSRow in lahostia.Tables[DT_WBS_CM_Damage.TABLE_NAME].Select(DT_WBS_CM_Damage.ID_CM + " = " + cmRow[DT_CounterM.ID]))
+                    {
+                        DataRow drCMWBSDamage = targetDS.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
+                        if ((decimal)cmDamageWBSRow[DT_WBS_CM_Damage.ID_CM] >= 0)
+                        {
+                            drCMWBSDamage[DT_WBS_CM_Damage.ID_CM] = (decimal)cmDamageWBSRow[DT_WBS_CM_Damage.ID_CM] * (-1);
+                        }
+                        else
+                        {
+                            drCMWBSDamage[DT_WBS_CM_Damage.ID_CM] = cmDamageWBSRow[DT_WBS_CM_Damage.ID_CM];
+                        }
+                        drCMWBSDamage[DT_WBS_CM_Damage.ID_WBS] = cmDamageWBSRow[DT_WBS_CM_Damage.ID_WBS];
+                        drCMWBSDamage[DT_WBS_CM_Damage.ID_DAMAGE] = cmDamageWBSRow[DT_WBS_CM_Damage.ID_DAMAGE];
+                        drCMWBSDamage[DT_WBS_CM_Damage.VALUE] = cmDamageWBSRow[DT_WBS_CM_Damage.VALUE];
+                        targetDS.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(drCMWBSDamage);
+                    }
+                    DataRow drCM = targetDS.Tables[DT_CounterM.TABLE_NAME].NewRow();
+                    drCM[DT_CounterM.ID_DIAGRAM] = drTargetDiagram[DT_Diagram.ID_DIAGRAM];
+                    if ((decimal)cmRow[DT_CounterM.ID] >= 0)
+                    {
+                        drCM[DT_CounterM.ID] = (decimal)cmRow[DT_CounterM.ID] * (-1);
+                    }
+                    else
+                    {
+                        drCM[DT_CounterM.ID] = cmRow[DT_CounterM.ID];
+                    }
+                    if ((decimal)cmRow[DT_CounterM.ID_RISK] >= 0)
+                    {
+                        drCM[DT_CounterM.ID_RISK] = (decimal)cmRow[DT_CounterM.ID_RISK] * (-1);
+                    }
+                    else
+                    {
+                        drCM[DT_CounterM.ID_RISK] = cmRow[DT_CounterM.ID_RISK];
+                    }
+                    drCM[DT_CounterM.NAMESHORT] = cmRow[DT_CounterM.NAMESHORT];
+                    drCM[DT_CounterM.DETAIL] = cmRow[DT_CounterM.DETAIL];
+                    drCM[DT_CounterM.FROM_TOP] = cmRow[DT_CounterM.FROM_TOP];
+                    drCM[DT_CounterM.PROBABILITY] = cmRow[DT_CounterM.PROBABILITY];
+                    drCM[DT_CounterM.POSITION] = cmRow[DT_CounterM.POSITION];
+                    drCM[DT_CounterM.ENABLED] = cmRow[DT_CounterM.ENABLED];
+                    drCM[DT_CounterM.ID_GROUPE] = cmRow[DT_CounterM.ID_GROUPE];
+                    drCM[DT_CounterM.ID_WBS] = cmRow[DT_CounterM.ID_WBS];
+                    targetDS.Tables[DT_CounterM.TABLE_NAME].Rows.Add(drCM);
+                }
             }
         }
-
     }
 }

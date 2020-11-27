@@ -510,7 +510,7 @@ namespace EnsureRisk.Controllers.Import
                 {
                     DataRow drCM = dsImporting.Tables[DT_CounterM.TABLE_NAME].NewRow();
                     drCM[DT_CounterM.NAMESHORT] = dtExcel.Rows[rowPosition][xCmShort.MyContent.ToString()].ToString();
-                    drCM[DT_CounterM.ID_RISK_TREE] = theDiagram[DT_Diagram.ID_DIAGRAM];
+                    drCM[DT_CounterM.ID_DIAGRAM] = theDiagram[DT_Diagram.ID_DIAGRAM];
                     if (xCmDetail != null && dtExcel.Rows[rowPosition][xCmDetail.MyContent.ToString()].ToString() != "")
                     {
                         drCM[DT_CounterM.DETAIL] = dtExcel.Rows[rowPosition][xCmDetail.MyContent.ToString()].ToString();

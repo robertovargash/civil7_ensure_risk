@@ -53,7 +53,8 @@ namespace EnsureRisk
         private bool showRiskData = false;
         private bool isCalculatingRisk = false;
         private bool isCalculatingCM = false;
-
+        private bool isPanEnabled = false;
+        public bool IsPanEnabled { get { return isPanEnabled; } set { isPanEnabled = value; OnPropertyChanged("IsPanEnabled"); } }
         private bool isImporting = false;
         private DataView dvCBWBS;
         private DataView dv_CrossRisk;
@@ -77,91 +78,23 @@ namespace EnsureRisk
         public string RiskLineName { get { return _riskshortName; } set { _riskshortName = value; OnPropertyChanged("RiskLineName"); } }
         public bool COPIANDO { get { return copiando; } set { copiando = value; OnPropertyChanged("COPIANDO"); } }
         public string CMLineName { get { return _cmshortName; } set { _cmshortName = value; OnPropertyChanged("CMLineName"); } }
-        public bool HasAccess
-        {
-            get
-            {
-                return hasAccess;
-            }
-
-            set
-            {
-                hasAccess = value;
-                OnPropertyChanged("HasAccess");
-            }
-        }
+        public bool HasAccess { get { return hasAccess; } set { hasAccess = value; OnPropertyChanged("HasAccess"); } }
         public MyLayoutDocumentt TheCurrentLayout { get { return theCurrentLayout; } set { theCurrentLayout = value; OnPropertyChanged("TheCurrentLayout"); } }
         public decimal IdWBSFilter { get { return idwbsfilter; } set { idwbsfilter = value; OnPropertyChanged("IdWBSFilter"); } }
 
-        public string DiagramName
-        {
-            get { return diagramName; }
-            set
-            {
-                line_Selected = value;
-                OnPropertyChanged("DiagramName");
-            }
-        }
+        public string DiagramName { get { return diagramName; } set { line_Selected = value; OnPropertyChanged("DiagramName"); } }
 
-        public string LSelected
-        {
-            get { return line_Selected; }
-            set
-            {
-                line_Selected = value;
-                OnPropertyChanged("LSelected");
-            }
-        }
+        public string LSelected { get { return line_Selected; } set { line_Selected = value; OnPropertyChanged("LSelected"); } }
 
-        public string TSelected
-        {
-            get { return type_selected; }
-            set
-            {
-                type_selected = value;
-                OnPropertyChanged("TSelected");
-            }
-        }
+        public string TSelected { get { return type_selected; } set { type_selected = value; OnPropertyChanged("TSelected"); } }
 
-        public bool ShowCMData
-        {
-            get { return showCMData; }
-            set
-            {
-                showCMData = value;
-                OnPropertyChanged("ShowCMData");
-            }
-        }
+        public bool ShowCMData { get { return showCMData; } set { showCMData = value; OnPropertyChanged("ShowCMData"); } }
 
-        public decimal RiskReduction
-        {
-            get { return riskreduction; }
-            set
-            {
-                riskreduction = value;
-                OnPropertyChanged("RiskReduction");
-            }
-        }
+        public decimal RiskReduction { get { return riskreduction; } set { riskreduction = value; OnPropertyChanged("RiskReduction"); } }
 
-        public decimal Probability
-        {
-            get { return probability; }
-            set
-            {
-                probability = value;
-                OnPropertyChanged("Probability");
-            }
-        }
+        public decimal Probability { get { return probability; } set { probability = value; OnPropertyChanged("Probability"); } }
 
-        public bool ShowRiskData
-        {
-            get { return showRiskData; }
-            set
-            {
-                showRiskData = value;
-                OnPropertyChanged("ShowRiskData");
-            }
-        }
+        public bool ShowRiskData { get { return showRiskData; } set { showRiskData = value; OnPropertyChanged("ShowRiskData"); } }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string property)
@@ -173,64 +106,18 @@ namespace EnsureRisk
         #region Attributes&Properties 
         public const string CLEAR = "pack://application:,,,/Images/DelMine.png";
         #region Pan
-        //private Point scrollStartPoint;
-        //private Point scrollStartOffset;
+        private Point scrollStartPoint;
+        private Point scrollStartOffset;
         public List<MyLayoutDocumentt> OpenedDocuments { get; set; }
-        private readonly Cursor OpenHand = CursorHelper.FromByteArray(Properties.Resources.HandOpen);
-
-        private readonly Cursor GrabHand = CursorHelper.FromByteArray(Properties.Resources.HandGrabbing);
         #endregion
         
         #region Menus
-        ContextMenu MenuRisk
-        {
-            get
-            {
-                return (ContextMenu)Resources["MenuRisk"];
-            }
-        }
-        ContextMenu MenuRiskLimited
-        {
-            get
-            {
-                return (ContextMenu)Resources["MenuRiskLimited"];
-            }
-        }
-        ContextMenu MenuMainRisk
-        {
-            get
-            {
-                return (ContextMenu)Resources["MenuMainRisk"];
-            }
-        }
-        ContextMenu MenuCM
-        {
-            get
-            {
-                return (ContextMenu)Resources["MenuCM"];
-            }
-        }
-        ContextMenu MenuGroupRisk
-        {
-            get
-            {
-                return (ContextMenu)Resources["MenuGroupRisk"];
-            }
-        }
-        ContextMenu MenuGroupCM
-        {
-            get
-            {
-                return (ContextMenu)Resources["MenuGroupCM"];
-            }
-        }
-        ContextMenu MenuGroupMixed
-        {
-            get
-            {
-                return (ContextMenu)Resources["MenuGroupMixed"];
-            }
-        }
+        ContextMenu MenuRisk { get { return (ContextMenu)Resources["MenuRisk"]; } }
+        ContextMenu MenuMainRisk { get { return (ContextMenu)Resources["MenuMainRisk"]; } }
+        ContextMenu MenuCM { get { return (ContextMenu)Resources["MenuCM"]; } }
+        ContextMenu MenuGroupRisk { get { return (ContextMenu)Resources["MenuGroupRisk"]; } }
+        ContextMenu MenuGroupCM { get { return (ContextMenu)Resources["MenuGroupCM"]; } }
+        ContextMenu MenuGroupMixed { get { return (ContextMenu)Resources["MenuGroupMixed"]; } }
         #endregion
 
         #region Lists       
@@ -274,7 +161,7 @@ namespace EnsureRisk
         #endregion
         #region Another Properties & Atributes
         //public int IdWBS { get; set; }
-        private bool Flag_login, isPanEnabled;
+        private bool Flag_login;
         private int Indexx = 0;
         public string LoginUser { get; set; }
         public decimal IdProject { get; set; }
@@ -367,6 +254,7 @@ namespace EnsureRisk
                 dgCrossCM.DataContext = this;
                 MenuRisk.DataContext = this;
                 MenuCM.DataContext = this;
+                ButtonHand.DataContext = this;
                 DialogCrossCM.DataContext = this;
                 DialogCrossRisk.DataContext = this;
                 DialogDIagram.DataContext = this;
@@ -390,6 +278,7 @@ namespace EnsureRisk
                 importToExcelWorker.WorkerSupportsCancellation = true;
                 importToExcelWorker.DoWork += ImportToExcelWorker_DoWork; ;
                 importToExcelWorker.RunWorkerCompleted += ImportToExcelWorker_RunWorkerCompleted;
+
             }
             catch (Exception ex)
             {
@@ -443,7 +332,6 @@ namespace EnsureRisk
                 ValidateAccess();
                 //BtnBackward.Visibility = Visibility.Hidden;
                 MenuRisk.Visibility = Visibility.Visible;
-                MenuRiskLimited.Visibility = Visibility.Visible;
                 MenuMainRisk.Visibility = Visibility.Visible;
                 MenuCM.Visibility = Visibility.Visible;
                 MenuGroupRisk.Visibility = Visibility.Visible;
@@ -841,35 +729,6 @@ namespace EnsureRisk
             }
         }
 
-        private void ButtonHand_Click(object sender, RoutedEventArgs e)
-        {
-            if (TheCurrentLayout != null)
-            {
-                if (sender is Button buttonHandLocal)
-                {
-                    if (!isPanEnabled)
-                    {
-                        ContentControl contentHand = new ContentControl
-                        {
-                            Content = new MaterialDesignThemes.Wpf.PackIcon() { Kind = MaterialDesignThemes.Wpf.PackIconKind.CursorDefault }
-                        };
-                        buttonHandLocal.Content = contentHand;
-                        this.Cursor = OpenHand;
-                        isPanEnabled = true;
-                    }
-                    else
-                    {
-                        ContentControl contentArrow = new ContentControl
-                        {
-                            Content = new MaterialDesignThemes.Wpf.PackIcon() { Kind = MaterialDesignThemes.Wpf.PackIconKind.Hand }
-                        };
-                        buttonHandLocal.Content = contentArrow;
-                        this.Cursor = Cursors.Arrow;
-                        isPanEnabled = false;
-                    }
-                }
-            }
-        }
 
         private void CbProjects_DropDownClosed(object sender, EventArgs e)
         {
@@ -889,7 +748,6 @@ namespace EnsureRisk
         {
             try
             {
-                Cursor = Cursors.Wait;
                 ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk();
                 DataSet temp = TheCurrentLayout.Ds.GetChanges();
                 temp = ws.SaveRisk(temp);
@@ -903,7 +761,7 @@ namespace EnsureRisk
                 RefreshData();
                 TheCurrentLayout.Ds = DsMain.Copy();
                 TheCurrentLayout.Ds.AcceptChanges();
-                Cursor = Cursors.Arrow;
+                
                 if (TheCurrentLayout.ID_Diagram > 0)
                 {
                     //CurrentLayout.Ds = DsMain;
@@ -934,95 +792,81 @@ namespace EnsureRisk
         #region SavingAs
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveAsFunction();
+            SaveAsAsyncFunction();
         }
 
         /// <summary>
         /// Open and Save an opened diagram as new diagram. Not save the source value.
         /// </summary>
-        private void SaveAsFunction()
+        /// 
+        private async void SaveAsAsyncFunction()
         {
             try
             {
                 if (TheCurrentLayout != null)
                 {
-                    //TheProgress.Visibility = Visibility.Visible;
-                    DataRow currentDiagram = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram);
                     HabilitarBotones(false);
-                    string diagramName = currentDiagram[DT_Diagram.DIAGRAM_NAME].ToString();
+                    IsImporting = true; 
                     DataSet tempDS = new UserDataSet();
-                    TheCurrentLayout.ListCopy = new List<RiskPolyLine>();
-                    //Creando el diagrama
+                    DataRow currentDiagram = TheCurrentLayout.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(TheCurrentLayout.ID_Diagram);
                     DataRow drDiagram = tempDS.Tables[DT_Diagram.TABLE_NAME].NewRow();
                     drDiagram[DT_Diagram.ID_PROJECT] = currentDiagram[DT_Diagram.ID_PROJECT];
-                    drDiagram[DT_Diagram.DIAGRAM_NAME] = diagramName;
+                    drDiagram[DT_Diagram.DIAGRAM_NAME] = currentDiagram[DT_Diagram.DIAGRAM_NAME] + " Copy";
                     tempDS.Tables[DT_Diagram.TABLE_NAME].Rows.Add(drDiagram);
-
-                    SavingAsController.CreateDiagramDamages(tempDS, drDiagram, TheCurrentLayout.Ds, TheCurrentLayout);
-
-                    SavingAsController.CreateRisks(TheCurrentLayout, TheCurrentLayout.ListCopy, MenuRisk);
-
-                    SavingAsController.CreateCMs(TheCurrentLayout, TheCurrentLayout.ListCopy, MenuCM);
-
-                    TreeOperation.Build_Tree(TheCurrentLayout.ListCopy);
-                    TheCurrentLayout.CopyRisk = TheCurrentLayout.ListCopy.FirstOrDefault(p => p.IsRoot);
-                    DataRow drRisk = tempDS.Tables[DT_Risk.TABLE_NAME].NewRow();
-                    drRisk[DT_Risk.COMMENTS] = "Detail Total Risk";
-                    drRisk[DT_Risk.ENABLED] = true;
-                    drRisk[DT_Risk.ID_DIAGRAM] = drDiagram[DT_Diagram.ID_DIAGRAM];
-                    drRisk[DT_Risk.ISCOLLAPSED] = false;
-                    drRisk[DT_Risk.IS_ROOT] = true;
-                    drRisk[DT_Risk.NAMESHORT] = "Total Risk";
-                    drRisk[DT_Risk.POSITION] = 0;
-                    drRisk[DT_Risk.PROBABILITY] = 0;
-                    drRisk[DT_Risk.IDRISK_FATHER] = 0;
-                    tempDS.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
-
-                    SavingAsController.CreateDamageWBSRoleRisks(tempDS, TheCurrentLayout.Ds, drRisk, drDiagram, drDiagram[DT_Diagram.DIAGRAM_NAME].ToString(), TheCurrentLayout.CopyRisk);
-                    //--------------------------------------------------------------------------------------
-                    TheCurrentLayout.CopyRisk.ID = (decimal)drRisk[DT_Risk.ID];
-
-                    CopyPasteController.Paste(TheCurrentLayout.CopyRisk, TheCurrentLayout.Ds, tempDS, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM]);
-                    TheCurrentLayout.CopyRisk.IdRiskFather = 0;
-                    COPIANDO = false;
-                    if (tempDS.HasChanges())
+                    foreach (var rowDamage in TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram))
                     {
-                        ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk();
-                        DataSet temp = tempDS.GetChanges();
-                        temp = ws.SaveRisk(temp);
-                        tempDS.Merge(temp);
-                        tempDS.AcceptChanges();
-                        ws.Dispose();
-                        RefreshData();
-                        Cursor = Cursors.Arrow;
-                        OpenSavedDiagram();
+                        DataRow drDamageDIag = tempDS.Tables[DT_Diagram_Damages.TABLE_NAME].NewRow();
+                        drDamageDIag[DT_Diagram_Damages.COLOR] = rowDamage[DT_Diagram_Damages.COLOR];
+                        drDamageDIag[DT_Diagram_Damages.DAMAGE] = rowDamage[DT_Diagram_Damages.DAMAGE];
+                        drDamageDIag[DT_Diagram_Damages.ID_DAMAGE] = rowDamage[DT_Diagram_Damages.ID_DAMAGE];
+                        drDamageDIag[DT_Diagram_Damages.ID_RISKTREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
+                        drDamageDIag[DT_Diagram_Damages.RISK_TREE] = rowDamage[DT_Diagram_Damages.RISK_TREE];
+                        drDamageDIag[DT_Diagram_Damages.TOP_RISK] = rowDamage[DT_Diagram_Damages.TOP_RISK];
+                        drDamageDIag[DT_Diagram_Damages.UM] = rowDamage[DT_Diagram_Damages.UM];
+                        tempDS.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Add(drDamageDIag);
                     }
-                    IS_SAVING_DATA = false;
-                    TheProgress.Visibility = Visibility.Hidden;
-                    HabilitarBotones(true);
+                    WindowTreeRisk riskTree = new WindowTreeRisk
+                    {
+                        Operation = General.UPDATE,
+                        TopRiskTable = tempDS.Tables[DT_Diagram_Damages.TABLE_NAME].Copy(),
+                        DRow = drDiagram,
+                        Icon = Icon,
+                        IDProject = IdProject,
+                        CM_TopRisk = tempDS.Tables[DT_CounterM_Damage.TABLE_NAME].Copy(),
+                        Risk_TopRisk = tempDS.Tables[DT_Risk_Damages.TABLE_NAME].Copy()
+                    };
+                    riskTree.gridControls.IsEnabled = false;
+                    if (riskTree.ShowDialog() == true)
+                    {
+                        await Task.Run(() =>
+                        {
+                            SavingAsController.CreateNewDiagram(TheCurrentLayout.Ds, tempDS, currentDiagram, drDiagram);
+                            ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk();
+                            DataSet temp = tempDS.GetChanges();
+                            temp = ws.SaveRisk(temp);
+                            tempDS.Merge(temp);
+                            tempDS.AcceptChanges();
+                            ws.Dispose();                            
+                        });
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            RefreshData();
+                            HabilitarBotones(true);
+                            IsImporting = false;
+                            OpenDiagramFromDiagramList((decimal)drDiagram[DT_Diagram.ID_DIAGRAM]);
+                            //OpenSavedDiagram();
+                        });
+                    }
+                    tempDS.Dispose();
                 }
             }
             catch (Exception ex)
             {
-                IS_SAVING_DATA = false;
-                TheProgress.Visibility = Visibility.Hidden;
-                HabilitarBotones(true);
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        public void OpenSavedDiagram()
-        {
-            try
-            {
-                OpenDiagramFromDiagramList(DVRisk_Tree.Count - 1);                
-            }
-            catch (Exception ex)
-            {
-                IS_SAVING_DATA = false;
-                TheProgress.Visibility = Visibility.Hidden;
-                HabilitarBotones(true);
-                MostrarErrorDialog(ex.Message);
+                this.Dispatcher.Invoke(()=>{
+                    HabilitarBotones(true);
+                    IsImporting = false;
+                    MostrarErrorDialog(ex.Message);
+                });
             }
         }
 
@@ -1051,7 +895,8 @@ namespace EnsureRisk
                     MyWindow = this,
                     MenuGroupCM = MenuGroupCM,
                     MenuGroupRisk = MenuGroupRisk,
-                    MenuGroupMixed = MenuGroupMixed
+                    MenuGroupMixed = MenuGroupMixed,
+                    IsPanEnable = isPanEnabled
                 };
                 WindowTreeRisk riskTree = new WindowTreeRisk
                 {
@@ -1122,11 +967,12 @@ namespace EnsureRisk
 
         }
 
-        private void OpenDiagramFromDiagramList(int indexx)
+        //private void OpenDiagramFromDiagramList(int indexx)
+
+        private void OpenDiagramFromDiagramList(decimal DIAGRAM_ID)
         {
-            DiagramID = 0;
-            DiagramID = (decimal)DVRisk_Tree[indexx].Row[DT_Diagram.ID_DIAGRAM];
-            MyLayoutDocumentt openDoc = OpenedDocuments.FirstOrDefault(docu => docu.ID_Diagram == (decimal)DVRisk_Tree[indexx][DT_Diagram.ID_DIAGRAM]);
+            MyLayoutDocumentt openDoc = OpenedDocuments.FirstOrDefault(docu => docu.ID_Diagram == DIAGRAM_ID);
+            DiagramID = DIAGRAM_ID;
 
             if (openDoc != null)
             {
@@ -1146,13 +992,14 @@ namespace EnsureRisk
                     MyWindow = this,
                     MenuGroupCM = MenuGroupCM,
                     MenuGroupRisk = MenuGroupRisk,
-                    MenuGroupMixed = MenuGroupMixed
+                    MenuGroupMixed = MenuGroupMixed,
+                    IsPanEnable = isPanEnabled
                 }; 
                 WindowTreeRisk riskTree = new WindowTreeRisk
                 {
                     Operation = General.UPDATE,
                     TopRiskTable = myly.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Copy(),
-                    DRow = myly.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(DVRisk_Tree[indexx].Row[DT_Diagram.ID_DIAGRAM]),
+                    DRow = myly.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(DIAGRAM_ID),
                     Icon = Icon,
                     IDProject = IdProject,
                     CM_TopRisk = myly.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Copy(),
@@ -1160,7 +1007,7 @@ namespace EnsureRisk
                 };
                 if (riskTree.ShowDialog() == true)
                 {
-                    DVRisk_Tree[indexx].Row[DT_Diagram.DIAGRAM_NAME] = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
+                    DVRisk_Tree.Table.Rows.Find(DIAGRAM_ID)[DT_Diagram.DIAGRAM_NAME] = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
                     myly.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Merge(riskTree.TopRiskTable);
                     myly.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Merge(riskTree.CM_TopRisk);
                     myly.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Merge(riskTree.Risk_TopRisk);
@@ -1195,7 +1042,7 @@ namespace EnsureRisk
             {
                 if (dgTreeDiagrams.SelectedIndex >= 0)
                 {
-                    OpenDiagramFromDiagramList(Indexx);
+                    OpenDiagramFromDiagramList((decimal)DVRisk_Tree[dgTreeDiagrams.SelectedIndex].Row[DT_Diagram.ID_DIAGRAM]);
                 }
             }
             catch (Exception ex)
@@ -1222,7 +1069,8 @@ namespace EnsureRisk
                     MyWindow = this,
                     MenuGroupCM = MenuGroupCM,
                     MenuGroupRisk = MenuGroupRisk,
-                    MenuGroupMixed = MenuGroupMixed
+                    MenuGroupMixed = MenuGroupMixed,
+                    IsPanEnable = isPanEnabled
                 };
                 myly.ID_Diagram = CreateAndOpenNewDiagram(DiagramID, DVRisk_Tree[Indexx].Row[DT_Diagram.DIAGRAM_NAME].ToString(), myly);
                 WindowTreeRisk riskTree = new WindowTreeRisk
@@ -1372,7 +1220,7 @@ namespace EnsureRisk
                     }
                 }
                 //For each diagram's countermeasure
-                foreach (DataRow itemCM in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + idDiagramaa))
+                foreach (DataRow itemCM in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + idDiagramaa))
                 {
                     if (!(ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemCM[DT_CounterM.ID], damage[DT_CounterM_Damage.ID_DAMAGE] })))
                     {
@@ -1381,7 +1229,7 @@ namespace EnsureRisk
                         drDamage[DT_CounterM_Damage.VALUE] = 0;
                         drDamage[DT_CounterM_Damage.TOP_RISK] = damage[DT_Diagram_Damages.TOP_RISK];
                         drDamage[DT_CounterM_Damage.ID_COUNTERM] = itemCM[DT_CounterM.ID];
-                        drDamage[DT_CounterM_Damage.ID_RISK_TREE] = itemCM[DT_CounterM.ID_RISK_TREE];
+                        drDamage[DT_CounterM_Damage.ID_RISK_TREE] = itemCM[DT_CounterM.ID_DIAGRAM];
                         drDamage[DT_CounterM_Damage.COLOR] = damage[DT_Diagram_Damages.COLOR];
                         drDamage[DT_CounterM_Damage.DAMAGE] = damage[DT_Diagram_Damages.DAMAGE].ToString() + "(" + damage[DT_Diagram_Damages.UM].ToString() + ")";
                         ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Add(drDamage);
@@ -1515,7 +1363,6 @@ namespace EnsureRisk
             try
             {
                 RefreshData();
-                Cursor = Cursors.Arrow;
                 IsImporting = false;
                 MostrarInfoDialog("Importing succeed!!");
                 HabilitarBotones(true);
@@ -1558,7 +1405,6 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
                 TheProgress.Visibility = Visibility.Hidden;
                 HabilitarBotones(true);
-                Cursor = Cursors.Arrow;
             }
         }
 
@@ -3078,7 +2924,7 @@ namespace EnsureRisk
                 else { riskLine.IdRiskFather = 0; }
                 TheCurrentLayout.ListCopy.Add(riskLine);
             }
-            foreach (DataRow item in targetDataSet.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + SelectedDiagram_ID))
+            foreach (DataRow item in targetDataSet.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + SelectedDiagram_ID))
             {
                 RiskPolyLine cmline = new RiskPolyLine(new Grid(), MenuCM, true)
                 {
@@ -3320,7 +3166,7 @@ namespace EnsureRisk
                     };
                     windowCM.HasAccess = TheCurrentLayout.FullAccess(TheCurrentLayout.Line_Selected);
                     windowCM.RiskPadre = TheCurrentLayout.LinesList.Find(l => l.ID == TheCurrentLayout.Line_Selected.IdRiskFather);
-                    windowCM.RiskTreeID = (decimal)TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_CounterM.ID_RISK_TREE];
+                    windowCM.RiskTreeID = (decimal)TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_CounterM.ID_DIAGRAM];
 
                     if (windowCM.ShowDialog() == true)
                     {
@@ -3411,7 +3257,7 @@ namespace EnsureRisk
                 {
                     if (TextCM.Text != string.Empty)
                     {
-                        if (TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + DiagramID + " and " + DT_CounterM.NAMESHORT + " = '" + TextCM.Text + "' and " + DT_CounterM.ID + " <> " + TheCurrentLayout.Line_Selected.ID).Any())
+                        if (TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + DiagramID + " and " + DT_CounterM.NAMESHORT + " = '" + TextCM.Text + "' and " + DT_CounterM.ID + " <> " + TheCurrentLayout.Line_Selected.ID).Any())
                         {
                             if (new WindowMessageYesNo("The name [" + TextCM.Text + "] Already exists in this diagram. Do you want to use it again?").ShowDialog() == true)
                             {
@@ -4132,7 +3978,7 @@ namespace EnsureRisk
 
                         CMRow[DT_CounterM.NAMESHORT] = windowCMGroup.NameShort;
                         CMRow[DT_CounterM.DETAIL] = windowCMGroup.Detail;
-                        CMRow[DT_CounterM.ID_RISK_TREE] = RiskTreeID;
+                        CMRow[DT_CounterM.ID_DIAGRAM] = RiskTreeID;
                         CMRow[DT_CounterM.ID_RISK] = itemRisk.ID;
                         CMRow[DT_CounterM.FROM_TOP] = RowFather[DT_Risk.FROM_TOP];
                         CMRow[DT_CounterM.POSITION] = Posicion + 1;
@@ -4583,7 +4429,7 @@ namespace EnsureRisk
         }
         #endregion
 
-        #region Functions
+        #region Functions       
 
         #region CursorsFunctions
 
@@ -4605,10 +4451,10 @@ namespace EnsureRisk
         {
             try
             {
+                IsCalculatingRisk = true;
                 DataTable Dt_Cross_Risk = new DataTable();
                 if (TheCurrentLayout != null)
-                {
-                    IsCalculatingRisk = true;
+                {                    
                     await Task.Run(() =>
                     {
 
@@ -4692,8 +4538,8 @@ namespace EnsureRisk
                     AddDynamicRiskColumns(Dt_Cross_Risk);
                     TreeOperation.OrderTableHierarquical(Dt_Cross_Risk, TheCurrentLayout.LinesList, DT_Risk_Damages.ID_RISK);
                     DV_CrossRisk = new DataView(Dt_Cross_Risk);
-                    dgRisksCross.ItemsSource = DV_CrossRisk;
-                    dgRisksCross.DataContext = DV_CrossRisk;
+                    //dgRisksCross.ItemsSource = DV_CrossRisk;
+                    //dgRisksCross.DataContext = DV_CrossRisk;
                     FillTableGroup(myDs);
                     IsCalculatingRisk = false;
                 });
@@ -4701,6 +4547,7 @@ namespace EnsureRisk
             }
             catch (Exception ex)
             {
+                IsCalculatingRisk = false;
                 MostrarErrorDialog(ex.Message + "- CruzandoTablaRisk");
             }
         }
@@ -4766,71 +4613,20 @@ namespace EnsureRisk
             }
         }
 
-        public void RiskToggleButtonChecked(object sender, RoutedEventArgs e)
+
+        private void ActiveRisk_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                //TheDataRowVieww = (DataRowView)((ToggleButton)e.Source).DataContext;
-                decimal riskID = (decimal)((DataRowView)((ToggleButton)e.Source).DataContext).Row[DT_Risk.ID];
-                TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(riskID)[DT_Risk.ENABLED] = true;
-                foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + riskID))
-                {
-                    damageRow[DT_Risk_Damages.STATUS] = true;
-                }
-                //System.Drawing.Color drawingCColor = System.Drawing.Color.FromArgb(int.Parse(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
-                System.Windows.Media.Color drawingCColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
-
-                (TheCurrentLayout.LinesList.Find(item => (item.ID == riskID))).SetColor(new SolidColorBrush(drawingCColor));
-                (TheCurrentLayout.LinesList.Find(item => (item.ID == riskID))).IsActivated = true;
-
-                foreach (var itemi in TheCurrentLayout.LinesList.Find(item => (item.ID == riskID)).Children)
-                {
-                    if (itemi.IsCM)
-                    {
-                        DisableCounterMeasure(itemi, true, !TheCurrentLayout.LinesListCMState[Convert.ToDecimal(itemi.ID)]);
-                    }
-                }
+                decimal riskID = (decimal)((DataRowView)((Button)e.Source).DataContext).Row[DT_Risk.ID];
+                bool result = EnableRisk(TheCurrentLayout.LinesList.Find(x => x.ID == riskID), false, false);
+                OnProjectChange();
             }
             catch (Exception ex)
             {
                 MostrarErrorDialog(ex.Message);
             }
         }
-
-        public void RiskToggleButtonUnChecked(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                decimal riskID = (decimal)((DataRowView)((ToggleButton)e.Source).DataContext).Row[DT_Risk.ID];
-                TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(riskID)[DT_Risk.ENABLED] = false;
-                foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + riskID))
-                {
-                    damageRow[DT_Risk_Damages.STATUS] = false;
-                }
-                (TheCurrentLayout.LinesList.Find(item => (item.ID == riskID))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
-                (TheCurrentLayout.LinesList.Find(item => (item.ID == riskID))).IsActivated = false;
-                foreach (var itemi in TheCurrentLayout.LinesList.Find(item => (item.ID == riskID)).Children)
-                {
-                    if (itemi.IsCM)
-                    {
-                        itemi.IsActivated = false;
-                        itemi.SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
-                        (TheCurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
-                        (TheCurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).IsActivated = false;
-                        TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(itemi.ID)[DT_CounterM.ENABLED] = false;
-                        foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + itemi.ID))
-                        {
-                            damageRow[DT_CounterM_Damage.STATUS] = false;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
         #endregion
 
         #region CMCrossTab        
@@ -4847,16 +4643,15 @@ namespace EnsureRisk
             {
                 if (TheCurrentLayout != null)
                 {
-
                     Dt_Cross_CM = myDs.Tables[DT_CounterM_Damage.TABLE_NAME].Clone();
 
                     if (IdWBSFilter != -1)
                     {
                         if (myDs.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_WBS + " = " + IdWBSFilter).Any())
                         {
-                            int value = myDs.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + TheCurrentLayout.ID_Diagram).Count();
+                            int value = myDs.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + TheCurrentLayout.ID_Diagram).Count();
                             int couter = 1;
-                            foreach (var rowCM in myDs.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + TheCurrentLayout.ID_Diagram))
+                            foreach (var rowCM in myDs.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + TheCurrentLayout.ID_Diagram))
                             {
                                 progressCrossCM.Dispatcher.BeginInvoke(new Action(() =>
                                 {
@@ -4924,7 +4719,7 @@ namespace EnsureRisk
                 AddDynamicCMColumns(Dt_Cross_CM);
                 TreeOperation.OrderTableHierarquical(Dt_Cross_CM, TheCurrentLayout.LinesList, DT_CounterM_Damage.ID_COUNTERM);
                 DV_Cross_CM = new DataView(Dt_Cross_CM);
-                dgCrossCM.ItemsSource = DV_Cross_CM;
+                //dgCrossCM.ItemsSource = DV_Cross_CM;
                 FillTableGroup(myDs);
                 IsCalculatingCM = false;
             });
@@ -4987,43 +4782,13 @@ namespace EnsureRisk
 
         }
 
-        public void CMToggleButtonChecked(object sender, RoutedEventArgs e)
+        private void ActiveCM_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                decimal cmID = (decimal)((DataRowView)((ToggleButton)e.Source).DataContext).Row[DT_CounterM.ID];
-                TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cmID)[DT_CounterM.ENABLED] = true;
-                foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cmID))
-                {
-                    damageRow[DT_CounterM_Damage.STATUS] = true;
-                }
-                TheCurrentLayout.LinesListCMState[Convert.ToDecimal(cmID)] = true;
-                (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Black));
-
-                (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).IsActivated = true;
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        public void CMToggleButtonUnChecked(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                decimal cmID = (decimal)((DataRowView)((ToggleButton)e.Source).DataContext).Row[DT_CounterM.ID];
-                if (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM)).Father.IsActivated) // si el padre esta disabled no habilito cm
-                {
-                    TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cmID)[DT_CounterM.ENABLED] = false;
-                    foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cmID))
-                    {
-                        damageRow[DT_CounterM_Damage.STATUS] = false;
-                    }
-                    TheCurrentLayout.LinesListCMState[Convert.ToDecimal(cmID)] = false;
-                    (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
-                    (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM))).IsActivated = false;
-                }
+                decimal cmID = (decimal)((DataRowView)((Button)e.Source).DataContext).Row[DT_CounterM.ID];
+                bool result = DisableCounterMeasure(TheCurrentLayout.LinesList.Find(x => x.ID == cmID));
+                OnProjectChange();
             }
             catch (Exception ex)
             {
@@ -5276,7 +5041,7 @@ namespace EnsureRisk
                     else
                     {
                         foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID + " = " + row[0] + " and "
-                                                                                    + DT_CounterM.ID_RISK_TREE + " = " + TheCurrentLayout.ID_Diagram))
+                                                                                    + DT_CounterM.ID_DIAGRAM + " = " + TheCurrentLayout.ID_Diagram))
                         {
                             item[DT_CounterM.GROUPE_NAME] = "None";
                             item[DT_CounterM.ID_GROUPE] = DBNull.Value;
@@ -5325,7 +5090,7 @@ namespace EnsureRisk
             try
             {
                 foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.GROUPE_NAME + " = '" + senderTable.TableName + "' and "
-                                                                                 + DT_CounterM.ID_RISK_TREE + " = " + TheCurrentLayout.ID_Diagram))
+                                                                                 + DT_CounterM.ID_DIAGRAM + " = " + TheCurrentLayout.ID_Diagram))
                 {
                     if (!(senderTable.Select("ID = " + item[DT_CounterM.ID] + " and Element = 'CounterMeasure'").Any()))
                     {
@@ -5876,11 +5641,6 @@ namespace EnsureRisk
                 ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Import]).ToolTip = StringResources.MENU_IMPORT;
                 ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
 
-                ((MenuItem)MenuRiskLimited.Items[(int)MRLimited.EditRisk]).ToolTip = StringResources.EditRiskMenu;
-                ((MenuItem)MenuRiskLimited.Items[(int)MRLimited.Scope]).ToolTip = StringResources.MENU_SCOPE;
-                ((MenuItem)MenuRiskLimited.Items[(int)MRLimited.Copy]).ToolTip = StringResources.COPY_MENU;
-                ((MenuItem)MenuRiskLimited.Items[(int)MRLimited.Enable]).ToolTip = StringResources.DisableValue;
-
                 ((MenuItem)MenuCM.Items[(int)MenuCMm.Edit]).ToolTip = StringResources.EditCMMenu;
                 ((MenuItem)MenuCM.Items[(int)MenuCMm.Delete]).ToolTip = StringResources.DeleteCMMenu;
                 ((MenuItem)MenuCM.Items[(int)MenuCMm.Move]).ToolTip = StringResources.MoveCMMenu;
@@ -6143,7 +5903,7 @@ namespace EnsureRisk
                 //Es una contramedida
                 decimal RiskTreeID = (decimal)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.IdRiskFather)[DT_Risk.ID_DIAGRAM];
 
-                if (TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + RiskTreeID + " and "
+                if (TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + RiskTreeID + " and "
                     + DT_CounterM.NAMESHORT + " = '" + proposedPolyLineName + "' and " + DT_CounterM.ID + " <> " + TheCurrentLayout.Line_Selected.ID).Any())
                 {
                     yesNo = new WindowMessageYesNo("The name [" + proposedPolyLineName + "] Already exists in this diagram. Do you want to use it again?");
@@ -6161,7 +5921,7 @@ namespace EnsureRisk
         {
             if (sender is DataGrid dgRiskCross)
             {
-                SalvarDatosRiskCross(((DataView)dgRiskCross.ItemsSource).Table);
+                UpdateDSetValuesFromRiskCrossTable(((DataView)dgRiskCross.ItemsSource).Table);
             }
             if (TheCurrentLayout != null)
             {
@@ -6175,7 +5935,7 @@ namespace EnsureRisk
             {
                 if (sender is DataGrid dgRiskCross)
                 {
-                    SalvarDatosRiskCross(((DataView)dgRiskCross.ItemsSource).Table);
+                    UpdateDSetValuesFromRiskCrossTable(((DataView)dgRiskCross.ItemsSource).Table);
                 }
             }
             catch (Exception ex)
@@ -6192,10 +5952,10 @@ namespace EnsureRisk
                 {
                     if (sender is DataGrid dgRiskCross)
                     {
-                        SalvarDatosRiskCross(((DataView)dgRiskCross.ItemsSource).Table);
+                        UpdateDSetValuesFromRiskCrossTable(((DataView)dgRiskCross.ItemsSource).Table);
                         TheCurrentLayout.RiskLeave();
                     }
-                    
+
                 }
             }
             catch (Exception ex)
@@ -6204,7 +5964,7 @@ namespace EnsureRisk
             }
         }
 
-        private void SalvarDatosCMCross(DataTable Dt_Cross_CM)
+        private void UpdateDSetValuesFromCMCrossTable(DataTable Dt_Cross_CM)
         {
             try
             {
@@ -6325,7 +6085,7 @@ namespace EnsureRisk
 
         }
 
-        private void SalvarDatosRiskCross(DataTable Dt_Cross_Risk)
+        private void UpdateDSetValuesFromRiskCrossTable(DataTable Dt_Cross_Risk)
         {
             try
             {
@@ -6463,7 +6223,7 @@ namespace EnsureRisk
                     //SalvarDatosCMCross();
                     if (sender is DataGrid dgCMCross)
                     {
-                        SalvarDatosCMCross(((DataView)dgCMCross.ItemsSource).Table);
+                        UpdateDSetValuesFromCMCrossTable(((DataView)dgCMCross.ItemsSource).Table);
                     }
                     TheCurrentLayout.CMLeave(TheCurrentLayout.Line_Selected);
                 }
@@ -6479,7 +6239,7 @@ namespace EnsureRisk
             //SalvarDatosCMCross();
             if (sender is DataGrid dgCMCross)
             {
-                SalvarDatosCMCross(((DataView)dgCMCross.ItemsSource).Table);
+                UpdateDSetValuesFromCMCrossTable(((DataView)dgCMCross.ItemsSource).Table);
             }
         }
 
@@ -6488,7 +6248,7 @@ namespace EnsureRisk
             //SalvarDatosCMCross();
             if (sender is DataGrid dgCMCross)
             {
-                SalvarDatosCMCross(((DataView)dgCMCross.ItemsSource).Table);
+                UpdateDSetValuesFromCMCrossTable(((DataView)dgCMCross.ItemsSource).Table);
             }
             TheCurrentLayout.CMLeave(TheCurrentLayout.Line_Selected);
         }
@@ -6649,7 +6409,6 @@ namespace EnsureRisk
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -7060,7 +6819,7 @@ namespace EnsureRisk
         {
             try
             {
-                //UpdateCbFilterWBSRisk(sender);
+                UpdateCbFilterWBSRisk(sender);
             }
             catch (Exception ex)
             {
@@ -7101,6 +6860,95 @@ namespace EnsureRisk
         }
 
         #endregion
+
+        #region Pan Mouse Events
+        //protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        //{
+        //    if (TheCurrentLayout != null && TheCurrentLayout.IsPanEnable)
+        //    {
+        //        if (TheCurrentLayout.ScrollGridPaint.IsMouseOver && e.LeftButton == MouseButtonState.Pressed)
+        //        {
+        //            // Save starting point, used later when determining how much to scroll.
+        //            scrollStartPoint = e.GetPosition(this);
+        //            scrollStartOffset.X = TheCurrentLayout.ScrollGridPaint.HorizontalOffset;
+        //            scrollStartOffset.Y = TheCurrentLayout.ScrollGridPaint.VerticalOffset;
+        //            this.CaptureMouse();
+        //        }
+        //    }
+        //    base.OnPreviewMouseDown(e);
+        //}
+
+        //protected override void OnPreviewMouseMove(MouseEventArgs e)
+        //{
+        //    if (TheCurrentLayout != null && TheCurrentLayout.IsPanEnable)
+        //    {
+        //        if (this.IsMouseCaptured)
+        //        {
+        //            // Get the new scroll position.
+        //            Point point = e.GetPosition(this);
+
+        //            // Determine the new amount to scroll.
+        //            Point delta = new Point(
+        //                (point.X > this.scrollStartPoint.X) ?
+        //                    -(point.X - this.scrollStartPoint.X) :
+        //                    (this.scrollStartPoint.X - point.X),
+
+        //                (point.Y > this.scrollStartPoint.Y) ?
+        //                    -(point.Y - this.scrollStartPoint.Y) :
+        //                    (this.scrollStartPoint.Y - point.Y));
+
+        //            // Scroll to the new position.
+        //            TheCurrentLayout.ScrollGridPaint.ScrollToHorizontalOffset(this.scrollStartOffset.X + delta.X);
+        //            TheCurrentLayout.ScrollGridPaint.ScrollToVerticalOffset(this.scrollStartOffset.Y + delta.Y);
+        //        }
+        //    }
+        //    base.OnPreviewMouseMove(e);
+        //}
+
+        //protected override void OnPreviewMouseUp(MouseButtonEventArgs e)
+        //{
+        //    if (TheCurrentLayout != null)
+        //    {
+        //        if (TheCurrentLayout != null && TheCurrentLayout.IsPanEnable)
+        //        {
+        //            if (this.IsMouseCaptured)
+        //            {
+        //                //TheCurrentLayout.pipinto.Cursor = OpenHand;
+        //                this.ReleaseMouseCapture();
+        //            }
+        //        }
+        //        else
+        //        {
+        //            //TheCurrentLayout.pipinto.Cursor = Cursors.ArrowCD;
+        //        }
+        //    }
+        //    base.OnPreviewMouseUp(e);
+        //}
+
+        private void ButtonHand_Click(object sender, RoutedEventArgs e)
+        {
+            if (TheCurrentLayout != null)
+            {
+                if (!TheCurrentLayout.IsPanEnable)
+                {
+                    foreach (var item in OpenedDocuments)
+                    {
+                        item.IsPanEnable = true;
+                    }
+                    IsPanEnabled = true;
+                }
+                else
+                {
+                    foreach (var item in OpenedDocuments)
+                    {
+                        item.IsPanEnable = false;
+                    }
+                    IsPanEnabled = false;
+                }
+            }
+        }
+        #endregion
+
 
         private void CloseOpenedDiagrams()
         {
@@ -7413,7 +7261,10 @@ namespace EnsureRisk
             IS_LOGIN = false;
         }
 
+
         #endregion
+
+        
     }
     class Lang: DependencyObject
     {

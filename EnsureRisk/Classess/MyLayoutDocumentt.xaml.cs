@@ -37,11 +37,19 @@ namespace EnsureRisk.Classess
         public double X { get; set; }
         public double Y { get; set; }
         public double Main_Y { get; set; }
+        private Point scrollStartPoint;
+        private Point scrollStartOffset;
         public Point PointSelected { get; set; }
+        private bool isPanEnable;
+        public bool IsPanEnable { get { return isPanEnable; } set { isPanEnable = value; RaisePropertyChanged("IsPanEnable"); } }
+
         private double zoomValue;
         public double ZoomValue { get { return zoomValue; } set { zoomValue = value; RaisePropertyChanged("ZoomValue"); } }
         private decimal idDamageSelected;
         private DataView dvDamage;
+        private readonly Cursor GrabHand = CursorHelper.FromByteArray(Properties.Resources.HandGrabbing);
+
+
         public DataView DvDamage { get => dvDamage; set { dvDamage = value; RaisePropertyChanged("DvDamage"); } }
         public decimal IdDamageSelected { get => idDamageSelected; set { idDamageSelected = value; RaisePropertyChanged("IdDamageSelected"); } }
         #region Booleans
@@ -129,11 +137,12 @@ namespace EnsureRisk.Classess
             exportToExcelWorker.DoWork += ExportToExcelWorker_DoWork;
             exportToExcelWorker.ProgressChanged += ExportToExcelWorker_ProgressChanged;
             exportToExcelWorker.RunWorkerCompleted += ExportToExcelWorker_RunWorkerCompleted;
-            
             CbFilterTopR.DataContext = this;
             MiniMapGHT.DataContext = this;
             MiniMapGHT.MapSource = this.ScrollGridPaint;
+            GridPaintLines.DataContext = this;
         }        
+
 
         public void MostrarYesNo(string text)
         {
@@ -180,16 +189,15 @@ namespace EnsureRisk.Classess
         public void MostrarPopWindow(Point pointToShow, string lineName, string probability, string value, string acumDamage, string acumValue, string EL, string totalAcumDamage)
         {
             MyPopWindow.Visibility = Visibility.Visible;
-            MyPopWindow.Margin = new Thickness(pointToShow.X, pointToShow.Y, 0, 0);
+            MyPopWindow.Margin = new Thickness(pointToShow.X + 10, pointToShow.Y, 0, 0);
             MyPopWindow.TextRiskName.Text = lineName;
             MyPopWindow.TextProb.Text = probability;
             MyPopWindow.TextValue.Text = value;
             MyPopWindow.TextAcumDamage.Text = acumDamage;
             MyPopWindow.TextAcumValue.Text = acumValue;
             MyPopWindow.TextEL.Text = EL;
-
+            //temporal
             MyPopWindow.TextTotalAcumDamage.Text = totalAcumDamage;
-
         }
 
         public void OcultarPopWindow()
@@ -200,10 +208,11 @@ namespace EnsureRisk.Classess
         public void MostrarPopCMWindow(Point pointToShow, string lineName, string probability, string value, string acd2)
         {
             MyPopCMWindow.Visibility = Visibility.Visible;
-            MyPopCMWindow.Margin = new Thickness(pointToShow.X, pointToShow.Y, 0, 0);
+            MyPopCMWindow.Margin = new Thickness(pointToShow.X + 10, pointToShow.Y, 0, 0);
             MyPopCMWindow.TextRiskName.Text = lineName;
             MyPopCMWindow.TextProb.Text = probability;
             MyPopCMWindow.TextValue.Text = value;
+            //temporal
             MyPopCMWindow.TextTotalAcumDamage.Text = acd2;
         }
 
@@ -791,7 +800,7 @@ namespace EnsureRisk.Classess
         /// </summary>
         private void CreateCounterMeasureShapes()
         {
-            foreach (DataRow item in Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + ID_Diagram))
+            foreach (DataRow item in Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + ID_Diagram))
             {
                 DataRow[] dr = Ds.Tables[DT_Role_CM.TABLENAME].Select(DT_Role_CM.ID_CM + " = " + item[DT_CounterM.ID].ToString());
                 bool haspermission = false;
@@ -1560,7 +1569,7 @@ namespace EnsureRisk.Classess
 
         public void CMLeave(RiskPolyLine CMLeave)
         {
-            if (CMLeave != null)
+            if (CMLeave != null && CMLeave.IsCM)
             {
                 CMLeave.StrokeThickness = 3;
                 CMLeave.StrokeDashArray = new DoubleCollection { 5, 2 };
@@ -1587,14 +1596,12 @@ namespace EnsureRisk.Classess
                         MoviendoCM = false;
                         TreeOperation.LinePositionByClick(Line_Selected, e.GetPosition(GridPaintLines), Ds);
                         DrawFishBone();
-                        ((MainWindow)MyWindow).NormalArrowCursor();
                     }
                     if (MoviendoCM)
                     {
                         MoviendoRisk = false;
                         MoviendoCM = false;
                         DrawFishBone();
-                        ((MainWindow)MyWindow).NormalArrowCursor();
                     }
                 }
                 else
@@ -1985,7 +1992,6 @@ namespace EnsureRisk.Classess
                         ReorderRisk(TheLine, e.GetPosition(GridPaintLines));
                     }
                     DrawFishBone();
-                    ((MainWindow)MyWindow).NormalArrowCursor();
                 }
                 else
                 {
@@ -1996,14 +2002,12 @@ namespace EnsureRisk.Classess
                             MoviendoCM = false;
                             MoveCounterMeasure(TheLine, e.GetPosition(GridPaintLines));
                             DrawFishBone();
-                            ((MainWindow)MyWindow).NormalArrowCursor();
                         }
                         else
                         {
                             MoviendoCM = false;
                             ReorderCounterMeasure(TheLine, e.GetPosition(GridPaintLines));
                             DrawFishBone();
-                            ((MainWindow)MyWindow).NormalArrowCursor();
                         }
                     }
                     else
@@ -3188,7 +3192,7 @@ namespace EnsureRisk.Classess
                 {
                     decimal RiskTreeID = (decimal)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.IdRiskFather)[DT_Risk.ID_DIAGRAM];
 
-                    if (Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK_TREE + " = " + RiskTreeID + " and "
+                    if (Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + RiskTreeID + " and "
                         + DT_CounterM.NAMESHORT + " = '" + proposedPolyLineName + "' and " + DT_CounterM.ID + " <> " + Line_Selected.ID).Any())
                     {
                         yesNo = new WindowMessageYesNo("The name [" + proposedPolyLineName + "] Already exists in this diagram. Do you want to use it again?");
@@ -3217,17 +3221,6 @@ namespace EnsureRisk.Classess
         {
             try
             {
-
-                //if (((MainWindow)MyWindow).TheCurrentLayout.ID_Diagram != ID_Diagram)
-                //{
-                //    ((MainWindow)MyWindow).TheCurrentLayout = this;
-                //}
-                //((MainWindow)MyWindow).UpdateMiniMapSource();
-                //foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
-                //{
-                //    item.ExitWorking();
-                //}
-                //this.EnterWorking();
                 if (!(NameEditing))
                 {
                     if (e.LeftButton == MouseButtonState.Pressed)
@@ -3280,7 +3273,6 @@ namespace EnsureRisk.Classess
                                         LineInMoving.NewDrawAtPoint(new Point(X, Y), "");
                                     }
                                 }
-
                             }
                         }
                     }
@@ -3341,12 +3333,8 @@ namespace EnsureRisk.Classess
                         item.ExitWorking();
                     }
                     this.EnterWorking();
-                    //CleanFishBone();
-                    //LoadFishBone();
-                    //DrawNumbersAndLineThickness();
-                    //((MainWindow)MyWindow).TextProbabilityChange(MainLine);
                 }
-                UpdateGridRiskAndGridCM();
+                //UpdateGridRiskAndGridCM();
                 if (Creando)
                 {
                     GridPaintLines.Children.Remove(Line_Created);
@@ -3565,6 +3553,7 @@ namespace EnsureRisk.Classess
                         this.EnterWorking(); 
                         ((MainWindow)MyWindow).ShowRiskData = false;
                         ((MainWindow)MyWindow).ShowCMData = false;
+                        UpdateGridRiskAndGridCM();
                     }
                 }
             }
@@ -3758,6 +3747,58 @@ namespace EnsureRisk.Classess
             }
         }
 
-        
+        private void GridPaintLines_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (IsPanEnable && ScrollGridPaint.IsMouseOver && e.LeftButton == MouseButtonState.Pressed)
+            {
+                // Save starting point, used later when determining how much to scroll.
+                scrollStartPoint = e.GetPosition(ScrollGridPaint);
+                scrollStartOffset.X = ScrollGridPaint.HorizontalOffset;
+                scrollStartOffset.Y = ScrollGridPaint.VerticalOffset;
+                //Mouse.SetCursor(CursorHelper.FromByteArray(Properties.Resources.HandGrabbing));
+                GridPaintLines.Cursor = CursorHelper.FromByteArray(Properties.Resources.HandGrabbing);
+                GridPaintLines.CaptureMouse();
+                //Mouse.Capture(TheCurrentLayout.ScrollGridPaint);
+            }
+        }
+
+        private void GridPaintLines_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (IsPanEnable)
+            {
+                if (GridPaintLines.IsMouseCaptured)
+                {
+                    GridPaintLines.Cursor = CursorHelper.FromByteArray(Properties.Resources.HandOpen);
+                    GridPaintLines.ReleaseMouseCapture();
+                }
+            }
+            else
+            {
+                GridPaintLines.Cursor = Cursors.Arrow;
+            }
+        }
+
+        private void GridPaintLines_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (GridPaintLines.IsMouseCaptured && IsPanEnable)
+            {
+                // Get the new scroll position.
+                Point point = e.GetPosition(ScrollGridPaint);
+
+                // Determine the new amount to scroll.
+                Point delta = new Point(
+                    (point.X > this.scrollStartPoint.X) ?
+                        -(point.X - this.scrollStartPoint.X) :
+                        (this.scrollStartPoint.X - point.X),
+
+                    (point.Y > this.scrollStartPoint.Y) ?
+                        -(point.Y - this.scrollStartPoint.Y) :
+                        (this.scrollStartPoint.Y - point.Y));
+
+                // Scroll to the new position.
+                ScrollGridPaint.ScrollToHorizontalOffset(this.scrollStartOffset.X + delta.X);
+                ScrollGridPaint.ScrollToVerticalOffset(this.scrollStartOffset.Y + delta.Y);
+            }
+        }
     }
 }

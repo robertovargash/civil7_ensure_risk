@@ -499,7 +499,7 @@ namespace EnsureRisk.Windows
         {
             CMRow[DT_CounterM.NAMESHORT] = TextName.Text;
             CMRow[DT_CounterM.DETAIL] = TextDetail.Text;
-            CMRow[DT_CounterM.ID_RISK_TREE] = RiskTreeID;
+            CMRow[DT_CounterM.ID_DIAGRAM] = RiskTreeID;
             CMRow[DT_CounterM.ID_RISK] = RiskPadre.ID;
             CMRow[DT_CounterM.POSITION] = Posicion;
             CMRow[DT_CounterM.ENABLED] = true;
@@ -560,7 +560,7 @@ namespace EnsureRisk.Windows
             {
                 if (TextName.Text != "")
                 {
-                    if (MyCM.Select(DT_CounterM.ID_RISK_TREE + " = " + RiskTreeID + " and "
+                    if (MyCM.Select(DT_CounterM.ID_DIAGRAM + " = " + RiskTreeID + " and "
                         + DT_CounterM.NAMESHORT + " = '" + TextName.Text + "' and " + DT_CounterM.ID + " <> " + CMRow[DT_CounterM.ID]).Any())
                     {
                         IS_USING_NAME = true;

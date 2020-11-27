@@ -392,7 +392,7 @@ namespace EnsureBusinesss
             drNewCM[DT_CounterM.GROUPE_NAME] = drRiskFather[DT_Risk.GROUPE_NAME];
             drNewCM[DT_CounterM.ID_GROUPE] = drRiskFather[DT_Risk.ID_GROUPE];
             drNewCM[DT_CounterM.ID_RISK] = drRiskFather[DT_Risk.ID];
-            drNewCM[DT_CounterM.ID_RISK_TREE] = ID_Diagram;
+            drNewCM[DT_CounterM.ID_DIAGRAM] = ID_Diagram;
             drNewCM[DT_CounterM.ID_WBS] = drRiskFather[DT_Risk.ID_WBS]; ;
             drNewCM[DT_CounterM.NAMESHORT] = sourceCM.ShortName;
             drNewCM[DT_CounterM.POSITION] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.POSITION];
@@ -800,7 +800,7 @@ namespace EnsureBusinesss
             drNewCM[DT_CounterM.GROUPE_NAME] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.GROUPE_NAME];
             drNewCM[DT_CounterM.ID_GROUPE] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.ID_GROUPE];
             drNewCM[DT_CounterM.ID_RISK] = drRiskFather[DT_Risk.ID];
-            drNewCM[DT_CounterM.ID_RISK_TREE] = ID_Diagram;
+            drNewCM[DT_CounterM.ID_DIAGRAM] = ID_Diagram;
             drNewCM[DT_CounterM.ID_WBS] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.ID_WBS];
             drNewCM[DT_CounterM.NAMESHORT] = sourceCM.ShortName;
             drNewCM[DT_CounterM.POSITION] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.POSITION];
@@ -1238,7 +1238,7 @@ namespace EnsureBusinesss
                         drCM[DT_CounterM.DETAIL] = dsSource.Tables[DT_CounterM.TABLE_NAME].Rows.Find(childLine.ID)[DT_CounterM.DETAIL];
                         drCM[DT_CounterM.ENABLED] = true;
                         drCM[DT_CounterM.FROM_TOP] = childLine.FromTop;
-                        drCM[DT_CounterM.ID_RISK_TREE] = idDiagram;
+                        drCM[DT_CounterM.ID_DIAGRAM] = idDiagram;
                         drCM[DT_CounterM.ID_RISK] = riskFather.ID;
                         drCM[DT_CounterM.NAMESHORT] = childLine.ShortName;
                         drCM[DT_CounterM.POSITION] = childLine.Position;

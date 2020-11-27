@@ -28,6 +28,8 @@
                 <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/Styless.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+            <classess:OpositeBoolToVisibilityConverter x:Key="OpositeBoolToVisConverter" />
+            <classess:BoolToCheckConverter x:Key="CheckConverter" />
             <ContextMenu x:Key="MenuRisk" Visibility="Hidden" Background="Transparent">
                 <MenuItem Height="35" x:Name="MenuAddRisk">
                     <MenuItem.Header>
@@ -69,29 +71,6 @@
                 <MenuItem Height="35" x:Name="MenuEnableRisk">
                     <MenuItem.Header>
                         <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EnableRiskButton" Click="EnableRiskButton_Click" Content="{md:PackIcon Kind=ToggleSwitch}" Width="32" Height="32"/>
-                    </MenuItem.Header>
-                </MenuItem>
-            </ContextMenu>
-            <ContextMenu x:Key="MenuRiskLimited" Visibility="Visible" Background="Transparent">
-                <MenuItem Height="35" x:Name="MenuEditRiskLimited">
-                    <MenuItem.Header>
-                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EditButtonLimited" Click="MenuEditRisk_Click" Content="{md:PackIcon Kind=Pencil}" Width="32" Height="32"/>
-                    </MenuItem.Header>
-                </MenuItem>
-                <MenuItem Height="35" x:Name="MenuZoomLimited">
-                    <MenuItem.Header>
-                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtomZoomLimited" Click="Scope_Click" Content="{md:PackIcon Kind=Loupe}" Width="32" Height="32"/>
-                    </MenuItem.Header>
-                </MenuItem>
-
-                <MenuItem Height="35" x:Name="MenuCopyLimited">
-                    <MenuItem.Header>
-                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="ButtonCopyLimited" Click="ButtonCopy_Click" Content="{md:PackIcon Kind=ContentCopy}" Width="32" Height="32"/>
-                    </MenuItem.Header>
-                </MenuItem>
-                <MenuItem Height="35" x:Name="MenuEnableRiskLimited">
-                    <MenuItem.Header>
-                        <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="EnableRiskButtonLimited" Click="EnableRiskButton_Click" Content="{md:PackIcon Kind=ToggleSwitch}" Width="32" Height="32"/>
                     </MenuItem.Header>
                 </MenuItem>
             </ContextMenu>
@@ -267,11 +246,6 @@
                                 </Grid>
                             </Grid>
                         </xcad:LayoutAnchorable>
-                        <!--<xcad:LayoutAnchorable x:Name="AnchorMiniMap" Title="Mini Map" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Mini Map" AutoHideWidth="300" FloatingWidth="300" IsVisible="False">
-                            --><!--<Grid Name="gridMiniMap" Background="#FF918080">
-                                --><!--<classess:MiniMapControl x:Name="MiniMap" />--><!--
-                            </Grid>--><!--
-                        </xcad:LayoutAnchorable>-->
                         <xcad:LayoutAnchorable ContentId="properties" x:Name="LayoutProperties"  Title="Properties" CanHide="true" CanClose="False" AutoHideWidth="240">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" >
                                 <StackPanel Orientation="Vertical">
@@ -559,7 +533,6 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </xcad:LayoutAnchorable>
-
                     </xcad:LayoutAnchorablePane>
                     <xcad:LayoutDocumentPaneGroup x:Name="LayoutDocPaneGroup">
                         <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel">                            
@@ -627,7 +600,7 @@
                                             <md:PackIcon Kind="Close" Opacity=".56" />
                                         </Button>
                                     </Grid>
-                                    <ComboBox x:Name="CbFilterWBSRisk" ItemsSource="{Binding DvCBWBS}" Margin="5" DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" SelectedValue="{Binding Path=IdWBSFilter}"  md:ComboBoxAssist.ClassicMode="True" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed"  VerticalAlignment="Top" HorizontalAlignment="Left" SelectionChanged="CbFilterWBSRisk_SelectionChanged" >
+                                    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" ItemsSource="{Binding DvCBWBS}" DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" SelectedValue="{Binding Path=IdWBSFilter, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed"  VerticalAlignment="Top" HorizontalAlignment="Left">
                                         <md:HintAssist.Hint>
                                             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
                                                 <md:PackIcon Kind="FileTree" />
@@ -639,19 +612,15 @@
                                               AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False" Grid.ColumnSpan="2" MouseLeave="DgRisksCross_MouseLeave" 
                                               SelectedCellsChanged="DgRisksCross_SelectedCellsChanged" LostFocus="DgRisksCross_LostFocus" CanUserDeleteRows="False" SelectionChanged="DgRisksCross_SelectionChanged" 
                                               CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True" CanUserAddRows="False" ItemsSource="{Binding DV_CrossRisk}" VerticalContentAlignment="Center" >
-                                       
-                                        <DataGrid.Columns>
+
+                                    <DataGrid.Columns>
                                             <DataGridTemplateColumn x:Name="RiskEnabled" Header="Active?">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <ToggleButton Unchecked="RiskToggleButtonUnChecked" Width="20" Height="20" IsEnabled="{Binding Path=HasAccess}" Checked="RiskToggleButtonChecked" Style="{StaticResource MaterialDesignActionToggleButton}" IsChecked="{Binding Path= Enabled}">
-                                                            <ToggleButton.Content>
-                                                                <md:PackIcon Kind="Close" Width="20" Height="20"/>
-                                                            </ToggleButton.Content>
-                                                            <md:ToggleButtonAssist.OnContent>
-                                                                <md:PackIcon Kind="Check" Width="20" Height="20"/>
-                                                            </md:ToggleButtonAssist.OnContent>
-                                                        </ToggleButton>
+                                                        <StackPanel Orientation="Vertical">
+                                                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Click="ActiveRisk_Click" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{md:PackIcon Kind=CheckboxMarkedOutline}" Visibility="{Binding Enabled, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Click="ActiveRisk_Click" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=CloseBoxOutline}" Visibility="{Binding Enabled, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
@@ -669,7 +638,6 @@
                                     <md:DialogHost Grid.RowSpan="3" x:Name="DialogCrossRisk" IsOpen="{Binding IsCalculatingRisk,UpdateSourceTrigger=PropertyChanged}">
                                         <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculatingRisk, Converter={StaticResource BoolToVisConverter} }">
                                             <Grid>
-                                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=Value,ElementName=progressCrossRisk,UpdateSourceTrigger=PropertyChanged}" FontSize="10"/>
                                                 <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" x:Name="progressCrossRisk" IsIndeterminate="false" Minimum="0" Maximum="100" Value="0" Visibility="{Binding Path = IsCalculatingRisk, Converter={StaticResource BoolToVisConverter} }"/>
                                             </Grid>
                                         </md:Card>
@@ -697,7 +665,7 @@
                                             <md:PackIcon Kind="Close" Opacity=".56"  />
                                         </Button>
                                     </Grid>
-                                    <ComboBox x:Name="CbFilterWBSCM" Margin="5" ItemsSource="{Binding DvCBWBS}" DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" SelectedIndex="{Binding Path=SelectedIndex, Source=CbFilterWBSRisk, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <ComboBox x:Name="CbFilterWBSCM" Margin="5" ItemsSource="{Binding DvCBWBS}" DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" SelectedValue="{Binding Path=IdWBSFilter, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed" VerticalAlignment="Top" HorizontalAlignment="Left">
                                         <md:HintAssist.Hint>
                                             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
                                                 <md:PackIcon Kind="FileTree" />
@@ -714,14 +682,10 @@
                                             <DataGridTemplateColumn x:Name="CMEnabled" Header="Active?">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <ToggleButton Unchecked="CMToggleButtonUnChecked" Width="20" Height="20" IsEnabled="{Binding Path=HasAccess}" Checked="CMToggleButtonChecked" Style="{StaticResource MaterialDesignActionToggleButton}" IsChecked="{Binding Path= Enabled}">
-                                                            <ToggleButton.Content>
-                                                                <md:PackIcon Kind="Close" Width="20" Height="20"/>
-                                                            </ToggleButton.Content>
-                                                            <md:ToggleButtonAssist.OnContent>
-                                                                <md:PackIcon Kind="Check" Width="20" Height="20"/>
-                                                            </md:ToggleButtonAssist.OnContent>
-                                                        </ToggleButton>
+                                                        <StackPanel Orientation="Vertical">
+                                                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Click="ActiveCM_Click" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{md:PackIcon Kind=CheckboxMarkedOutline}" Visibility="{Binding Enabled, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Click="ActiveCM_Click" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=CloseBoxOutline}" Visibility="{Binding Enabled, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
@@ -740,10 +704,7 @@
                                     <md:DialogHost Grid.RowSpan="3" x:Name="DialogCrossCM" IsOpen="{Binding IsCalculatingCM,UpdateSourceTrigger=PropertyChanged}">
                                         <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculatingCM, Converter={StaticResource BoolToVisConverter}}">
                                             <Grid>
-                                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=Value,ElementName=progressCrossCM,UpdateSourceTrigger=PropertyChanged}" FontSize="10"/>
-
                                                 <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" x:Name="progressCrossCM" IsIndeterminate="false" Minimum="0" Maximum="100" Value="0" Visibility="{Binding Path = IsCalculatingCM, Converter={StaticResource BoolToVisConverter} }"/>
-
                                             </Grid>
                                         </md:Card>
                                     </md:DialogHost>
@@ -768,7 +729,10 @@
             <StackPanel Orientation="Horizontal"  VerticalAlignment="Top" HorizontalAlignment="Right"  Grid.Column="0">
                 <ToolBarTray>
                     <ToolBar Style="{DynamicResource MaterialDesignToolBar}" ClipToBounds="False">
-                        <Button x:Name="ButtonHand" Click="ButtonHand_Click"  Content="{md:PackIcon Kind=Hand}"/>
+                        <ToolBar.Resources>
+                            <classess:BoolToIconConverter x:Key="IconConverter" />
+                        </ToolBar.Resources>
+                        <Button x:Name="ButtonHand" Click="ButtonHand_Click"  Content="{Binding IsPanEnabled, Converter={StaticResource IconConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                         <Separator/>
                         <Button x:Name="MenuItemOptionNewRisk" ToolTip="New Risk (Ctrl + R)" Command="local:CustomCommands.Risk" Content="{md:PackIcon Kind=ArrowBottomRight}" />
                         <Button x:Name="MenuItemOptionNewCM" ToolTip="New CM (Ctrl + M)" Command="local:CustomCommands.CounterMeasure" Content="{md:PackIcon Kind=BlurOff}" />
@@ -916,12 +880,7 @@
                             CLOSE
                         </Button>
                     </StackPanel>
-                    <!--<StackPanel Orientation="Horizontal">
-                            <Button Name="BtnLogin" Content="Login"  VerticalAlignment="Bottom" Click="Button_Click_1" HorizontalAlignment="Right"  IsDefault="True" TabIndex="3" md:ShadowAssist.ShadowDepth="Depth5"/>
-                            <Button Name="BtnClose" Content="Close" VerticalAlignment="Bottom" Click="Button_Click" HorizontalAlignment="Right"  IsCancel="True" TabIndex="4" md:ShadowAssist.ShadowDepth="Depth5"/>
-                        </StackPanel>-->
                 </StackPanel>
-
             </md:DialogHost.DialogContent>
         </md:DialogHost>
     </Grid>

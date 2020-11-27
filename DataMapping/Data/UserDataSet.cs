@@ -108,7 +108,7 @@ namespace DataMapping.Data
             //dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;//lo quito porque si elimino un grupo no tengo por que eliminar un riesgo
 
             _ = this.Relations.Add(RISK_TREE_COUNTERM_RELATION, this.Tables[DT_Diagram.TABLE_NAME].Columns[DT_Diagram.ID_DIAGRAM],
-                                       this.Tables[DT_CounterM.TABLE_NAME].Columns[DT_CounterM.ID_RISK_TREE]);
+                                       this.Tables[DT_CounterM.TABLE_NAME].Columns[DT_CounterM.ID_DIAGRAM]);
 
             dr1 = this.Relations[RISK_TREE_COUNTERM_RELATION];
             dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;

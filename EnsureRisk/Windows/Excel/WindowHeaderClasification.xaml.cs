@@ -38,7 +38,6 @@ namespace EnsureRisk.Windows
         public WindowHeaderClasification()
         {
             InitializeComponent();
-
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -57,34 +56,8 @@ namespace EnsureRisk.Windows
                     DataRow dr = MyTable.NewRow();
                     dr[HEADER] = item.MyContent;
                     dr[ID_CLASIFICATION] = 0;
-                    dr[TYPE] = "-";
+                    dr[TYPE] = "Select...";
                     MyTable.Rows.Add(dr);
-                    //MyExcelButton btnExcel = new MyExcelButton
-                    //{
-                    //    Content = "...",
-                    //    Style = BtnOK.Style
-                    //};
-                    //btnExcel.Click += Mck_Click;
-                    //BtnList.Add(btnExcel);
-                    //var margin = new Thickness(10, 10, 10, 10);
-                    //StackPanel stk = new StackPanel
-                    //{
-                    //    Orientation = Orientation.Horizontal,
-                    //    Margin = margin,
-                    //    HorizontalAlignment = HorizontalAlignment.Left
-                    //};
-                    //TextBlock texting = new TextBlock
-                    //{
-                    //    Text = item.MyContent,
-                    //    Margin = margin,
-                    //    Width = 150,
-                    //    HorizontalAlignment = HorizontalAlignment.Right,
-                    //    TextWrapping = TextWrapping.Wrap
-                    //};
-
-                    //stk.Children.Add(texting);
-                    //stk.Children.Add(btnExcel);
-                    //TheStackPanel.Children.Add(stk);
                 }
                 DataVieww= new DataView(MyTable);
                 dgHeaders.ItemsSource = DataVieww;
@@ -107,18 +80,6 @@ namespace EnsureRisk.Windows
                         DataVieww[dgHeaders.SelectedIndex].Row[ID_CLASIFICATION] = wmr.ValueSelected;
                         DataVieww[dgHeaders.SelectedIndex].Row[TYPE] = wmr.ContentSelected;
                     }
-
-                    //((MyExcelButton)sender).MyValue = wmr.ValueSelected;
-                    //Chip chip = new Chip()
-                    //{
-                    //    Content = wmr.ContentSelected,
-                    //    Icon = wmr.ContentSelected.ToString().ToCharArray()[0].ToString().ToUpper(),
-                    //    IsDeletable = true
-                    //};
-                    //chip.DeleteClick += Chip_DeleteClick;
-                    //((StackPanel)((MyExcelButton)sender).Parent).Children.Add(chip);
-                    //((MyExcelButton)sender).Visibility = Visibility.Collapsed;
-
                 }
             }
             catch (Exception ex)
@@ -177,7 +138,7 @@ namespace EnsureRisk.Windows
             if (dgHeaders.SelectedIndex >= 0)
             {
                 DataVieww[dgHeaders.SelectedIndex].Row["idClasification"] = 0;
-                DataVieww[dgHeaders.SelectedIndex].Row["Type"] = "-";
+                DataVieww[dgHeaders.SelectedIndex].Row["Type"] = "Select...";
             }
         }
 

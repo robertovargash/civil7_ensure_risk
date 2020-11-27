@@ -8,7 +8,7 @@ namespace DataMapping.Data
 
         public const string ID = "idCounterM";
         public const string ID_RISK = "idRisk";
-        public const string ID_RISK_TREE = "idRiskTree";
+        private const string iD_RISK_TREE = "idRiskTree";
         public const string NAMESHORT = "nameShort";
         public const string RISK_NAMESHORT = "Risk";
         public const string DETAIL = "detail";        
@@ -23,6 +23,8 @@ namespace DataMapping.Data
         public const string WBS_NAME = "WBSName";
         public const string USER_NAME = "userName";
 
+        public static string ID_DIAGRAM => iD_RISK_TREE;
+
         public DT_CounterM():base()
         {
             CreateTable();
@@ -35,7 +37,7 @@ namespace DataMapping.Data
             PK_COLUMN[0] = Columns.Add(ID, typeof(decimal));
             //PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = 200; PK_COLUMN[0].AutoIncrementStep = 1;
             PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
-            Columns.Add(ID_RISK_TREE, typeof(decimal));
+            Columns.Add(ID_DIAGRAM, typeof(decimal));
             Columns.Add(ID_RISK, typeof(decimal));
             Columns.Add(NAMESHORT, typeof(string));
             Columns.Add(RISK_NAMESHORT, typeof(string));

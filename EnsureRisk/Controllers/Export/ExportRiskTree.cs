@@ -560,12 +560,20 @@ namespace EnsureRisk.Export
                 foreach (var damage in _riskTreeDataSetTrader.DamagesRow)
                 {
                     string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
+                    decimal idDamage = (decimal)riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre)[DT_Risk_Damages.ID_DAMAGE];
+
                     decimal idRisk = (decimal)riskDataRow[DT_Risk.ID];
-                    DtToExport.Select(RiskID + " = " + idRisk).First()[columnaNombre] = riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre)[DT_Risk_Damages.VALUE];
-                    int a = _columnIndex + 1;
-                    if (colorsDamages.FindIndex(c => c.Index == a) >= 0)
+                    if (DtToExport.Select(RiskID + " = " + idRisk).Any())
                     {
-                        colorsDamages[colorsDamages.FindIndex(c => c.Index == a)].Color = riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre)[DT_Risk_Damages.COLOR].ToString();
+                        //DtToExport.Select(RiskID + " = " + idRisk).First()[columnaNombre] = riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre)[DT_Risk_Damages.VALUE];
+                        DtToExport.Select(RiskID + " = " + idRisk).First()[columnaNombre] = General.MyRound(CalculateTotalDamage(idRisk, idDamage), 1);
+                        //riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre)[DT_Risk_Damages.VALUE];
+                        int a = _columnIndex + 1;
+                        if (colorsDamages.FindIndex(c => c.Index == a) >= 0)
+                        {
+                            colorsDamages[colorsDamages.FindIndex(c => c.Index == a)].Color = riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre)[DT_Risk_Damages.COLOR].ToString();
+                        }
+                        
                     }
                     _columnIndex++;
                 }
@@ -575,9 +583,11 @@ namespace EnsureRisk.Export
                     string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
                     decimal id = (decimal)riskDataRow[DT_Risk.ID];
                     decimal idDamage = (decimal)riskProperties.FirstOrDefault(riskProperty => riskProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre.Split('/')[1].ToString())[DT_Risk_Damages.ID_DAMAGE];
-
-                    DtToExport.Select(RiskID + " = " + id).First()[columnaNombre] = General.MyRound(CalculateAD(id, idDamage), 1);
-                    _columnIndex++;
+                    if (DtToExport.Select(RiskID + " = " + id).Any())
+                    {
+                        DtToExport.Select(RiskID + " = " + id).First()[columnaNombre] = General.MyRound(CalculateAD(id, idDamage), 1);
+                        _columnIndex++;
+                    }
                 }
             }
         }
@@ -727,6 +737,33 @@ namespace EnsureRisk.Export
                 }
             }
             return AcumDamage;
+        }
+
+        private decimal CalculateTotalDamage(decimal lineID, decimal IdDamageSelected)
+        {
+            decimal totalDamage = 0;
+            RiskPolyLine line = _riskTreeDataSetTrader.LinesDiagram.Find(l => l.ID == lineID);
+            foreach (var itemI in TreeOperation.GetMeAndMyChildrenWithCM(line))
+            {
+                decimal value = 0;
+                if (itemI.IsCM)
+                {
+                    if (_riskTreeDataSetTrader.SourceDataSet.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
+                    {
+                        value = (decimal)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_CounterM_Damage.VALUE];
+                    }
+                    totalDamage += value;
+                }
+                else
+                {
+                    if (_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
+                    {
+                        value = (decimal)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
+                    }
+                    totalDamage += value;
+                }
+            }
+            return totalDamage;
         }
 
         private decimal AcumulatedLikelihood(DataRow drRFather)
