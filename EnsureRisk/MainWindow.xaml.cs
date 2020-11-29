@@ -106,8 +106,6 @@ namespace EnsureRisk
         #region Attributes&Properties 
         public const string CLEAR = "pack://application:,,,/Images/DelMine.png";
         #region Pan
-        private Point scrollStartPoint;
-        private Point scrollStartOffset;
         public List<MyLayoutDocumentt> OpenedDocuments { get; set; }
         #endregion
         

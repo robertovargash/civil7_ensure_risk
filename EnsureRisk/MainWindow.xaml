@@ -618,8 +618,8 @@
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Vertical">
-                                                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Click="ActiveRisk_Click" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{md:PackIcon Kind=CheckboxMarkedOutline}" Visibility="{Binding Enabled, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
-                                                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Click="ActiveRisk_Click" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=CloseBoxOutline}" Visibility="{Binding Enabled, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Click="ActiveRisk_Click" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{md:PackIcon Kind=Check}" Visibility="{Binding Enabled, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Click="ActiveRisk_Click" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=Close}" Visibility="{Binding Enabled, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
@@ -683,8 +683,8 @@
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Vertical">
-                                                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Click="ActiveCM_Click" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{md:PackIcon Kind=CheckboxMarkedOutline}" Visibility="{Binding Enabled, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
-                                                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Click="ActiveCM_Click" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=CloseBoxOutline}" Visibility="{Binding Enabled, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Click="ActiveCM_Click" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{md:PackIcon Kind=Check}" Visibility="{Binding Enabled, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Click="ActiveCM_Click" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=Close}" Visibility="{Binding Enabled, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>

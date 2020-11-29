@@ -2659,8 +2659,11 @@ namespace EnsureRisk.Classess
 
         private void UpdateGridRiskAndGridCM()
         {
-            ((MainWindow)MyWindow).CrossRiskRightTab(Ds);
-            ((MainWindow)MyWindow).CroosCMRightTab(Ds);
+            if (this.IsActive)
+            {
+                ((MainWindow)MyWindow).CrossRiskRightTab(((MainWindow)MyWindow).TheCurrentLayout.Ds);
+                ((MainWindow)MyWindow).CroosCMRightTab(((MainWindow)MyWindow).TheCurrentLayout.Ds);
+            }
         }
 
         public void SetPolyLinePosition(List<RiskPolyLine> Children)
