@@ -121,7 +121,6 @@
     <Compile Include="Classess\MiniMapControl.xaml.cs">
       <DependentUpon>MiniMapControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classess\MRLimited.cs" />
     <Compile Include="Classess\MyLayoutDocumentt.xaml.cs">
       <DependentUpon>MyLayoutDocumentt.xaml</DependentUpon>
     </Compile>
