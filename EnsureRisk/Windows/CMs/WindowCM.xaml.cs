@@ -840,7 +840,7 @@ namespace EnsureRisk.Windows
             try
             {
                 //Probability = decimal.Parse(TextProbability.Text);
-                General.RecalculateProbability(CMRow, Ds, Probability, true);
+                General.RecalculateProbability(CMRow, Ds, Probability, true, dsWBS);
             }
             catch (Exception ex)
             {

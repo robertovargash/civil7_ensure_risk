@@ -278,19 +278,22 @@ namespace EnsureBusinesss
             riskPolyLine.UpdateSegmentsStrokeThickness(min, max);
         }
 
-        public static void RecalculateProbability(DataRow drLine, DataSet ds, decimal newProbability, bool isCM)
+        public static void RecalculateProbability(DataRow drLine, DataSet ds, decimal newProbability, bool isCM, DataSet DsWBS)
         {
             decimal oldProbability;
             if (isCM)
             {
                 oldProbability = (decimal)drLine[DT_CounterM.PROBABILITY];
                 foreach (DataRow rowCMDamage in ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + drLine[DT_CounterM.ID]))
-                {
+                {                    
                     rowCMDamage[DT_CounterM_Damage.RISK_REDUCTION] = newProbability;
                 }
-                foreach (DataRow rowRiskWBS in ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + drLine[DT_CounterM.ID]))
+                foreach (DataRow rowCMWBS in ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + drLine[DT_CounterM.ID]))
                 {
-                    rowRiskWBS[DT_CM_WBS.PROBABILITY] = (decimal)rowRiskWBS[DT_CM_WBS.PROBABILITY] + newProbability - oldProbability;
+                    if (WBSOperations.IsCMWBSLow(rowCMWBS,DsWBS, ds.Tables[DT_CM_WBS.TABLE_NAME]))
+                    {
+                        rowCMWBS[DT_CM_WBS.PROBABILITY] = (decimal)rowCMWBS[DT_CM_WBS.PROBABILITY] + newProbability - oldProbability;
+                    }
                 }
                 drLine[DT_CounterM.PROBABILITY] = newProbability;
             }
@@ -303,7 +306,10 @@ namespace EnsureBusinesss
                 }
                 foreach (DataRow rowRiskWBS in ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drLine[DT_Risk.ID]))
                 {
-                    rowRiskWBS[DT_RISK_WBS.PROBABILITY] = (decimal)rowRiskWBS[DT_RISK_WBS.PROBABILITY] + newProbability - oldProbability;
+                    if (WBSOperations.IsRiskWBSLow(rowRiskWBS, DsWBS, ds.Tables[DT_RISK_WBS.TABLE_NAME]))
+                    {
+                        rowRiskWBS[DT_RISK_WBS.PROBABILITY] = (decimal)rowRiskWBS[DT_RISK_WBS.PROBABILITY] + newProbability - oldProbability;
+                    }
                 }
                 drLine[DT_Risk.PROBABILITY] = newProbability;
             }

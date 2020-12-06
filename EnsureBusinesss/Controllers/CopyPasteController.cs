@@ -88,7 +88,8 @@ namespace EnsureBusinesss
         /// <param name="DsWBS">The WBS Dataset</param>
         /// <param name="LinesList">The Lines of the Diagram</param>
         /// <returns>Return the data of the line created as copy</returns>
-        public static DataRow CopyValuesFromLineSource(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain, decimal ID_Diagram, DataSet DsWBS, List<RiskPolyLine> LinesList)
+        public static DataRow CopyAllValuesFromLineSource(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drTargetRisk, bool isMain, 
+            decimal ID_Diagram, DataSet DsWBS, List<RiskPolyLine> LinesList, bool onlyWBSData)
         {
             decimal sourceID_Diagram;
             string DiagramName = "";
@@ -107,24 +108,28 @@ namespace EnsureBusinesss
             drNewRisk[DT_Risk.NAMESHORT] = sourceRisk.IsRoot ? DiagramName : sourceRisk.ShortName;
             drNewRisk[DT_Risk.POSITION] = isMain ? LinesList.Find(r => r.ID == (decimal)drTargetRisk[DT_Risk.ID]).Children.Count : targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.POSITION];
 
-            drNewRisk[DT_Risk.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.GROUPE_NAME]; ;
-            drNewRisk[DT_Risk.ID_GROUPE] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_GROUPE]; ;
+            drNewRisk[DT_Risk.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.GROUPE_NAME];
+            drNewRisk[DT_Risk.ID_GROUPE] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_GROUPE];
             drNewRisk[DT_Risk.ID_WBS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_WBS];
             drNewRisk[DT_Risk.WBS_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.WBS_NAME];
             drNewRisk[DT_Risk.USER_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.USER_NAME];
-
-            drNewRisk[DT_Risk.PROBABILITY] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.PROBABILITY]; ;
+            drNewRisk[DT_Risk.PROBABILITY] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.PROBABILITY];
             drNewRisk[DT_Risk.IDRISK_FATHER] = drTargetRisk[DT_Risk.ID];
             targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Add(drNewRisk);
             DataRow rowstructure = targetDataset.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
             rowstructure[DT_RiskStructure.IDRISK] = drNewRisk[DT_Risk.ID];
             rowstructure[DT_RiskStructure.IDRISK_FATHER] = drTargetRisk[DT_Risk.ID];
             targetDataset.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(rowstructure);
-
-            SetOriginalAndNewDamagesCopiedRisk(sourceRisk, targetDataset, drNewRisk, ID_Diagram);
+            if (onlyWBSData)
+            {
+                SetDamageNewCopiedRisk(targetDataset, drNewRisk, ID_Diagram);
+            }
+            else
+            {
+                SetOriginalAndNewDamagesCopiedRisk(sourceRisk, targetDataset, drNewRisk, ID_Diagram);
+            }
             SetWBS_RiskOriginalAndNewCopiedRisk(sourceRisk, targetDataset, drNewRisk, drTargetRisk, DsWBS);
             SetWBS_RISK_DamageNewCopiedRisk(targetDataset, drNewRisk, DsWBS);
-            //SetWBS_RISK_DamageOriginalAndNuevoRiskCopiado(sourceRisk, targetDataset, drNewRisk, drTargetRisk, ID_Diagram, DsWBS);
             SetNewAndOriginalRoleRisk(sourceRisk, targetDataset, drNewRisk, drTargetRisk);
 
             if (!(sourceRisk.IsLeaf()))
@@ -133,11 +138,11 @@ namespace EnsureBusinesss
                 {
                     if (!risk.IsCM)
                     {
-                        CopyValuesFromLineSource(risk, targetDataset, drNewRisk, false, ID_Diagram, DsWBS, LinesList);
+                        CopyAllValuesFromLineSource(risk, targetDataset, drNewRisk, false, ID_Diagram, DsWBS, LinesList, onlyWBSData);
                     }
                     else
                     {
-                        SetValuesOriginalAndNewCopiedCM(risk, targetDataset, drNewRisk, ID_Diagram, DsWBS);
+                        SetValuesOriginalAndNewCopiedCM(risk, targetDataset, drNewRisk, ID_Diagram, DsWBS, onlyWBSData);
                     }
                 }
             }
@@ -145,7 +150,7 @@ namespace EnsureBusinesss
         }
 
         /// <summary>
-        /// Copy the WBS, Role and WBS_Damage from the Child to the Father
+        /// Copy the WBS, Role and WBS_Damage from the Child to the Father and the Ancestors
         /// </summary>
         /// <param name="drRiskCopied">The Risk copied</param>
         /// <param name="targetDataset">The Dataset</param>
@@ -180,6 +185,17 @@ namespace EnsureBusinesss
                 else
                 {
                     DeleteWBS_Risk_Damage(targetDataset, drTargetRisk, rowRiskWbs);
+                }
+            }
+            if (!(bool)drTargetRisk[DT_Risk.IS_ROOT])
+            {
+                if (targetDataset.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + drTargetRisk[DT_Risk.ID]).Any())
+                {
+                    decimal idFather = (decimal)targetDataset.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + drTargetRisk[DT_Risk.ID]).First()[DT_RiskStructure.IDRISK_FATHER];
+                    if (targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Contains(idFather))
+                    {
+                        SetValuesFromChildToFather(drTargetRisk, targetDataset, targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(idFather), DsWBS);
+                    }
                 }
             }
         }
@@ -792,7 +808,8 @@ namespace EnsureBusinesss
         /// <param name="ID_Diagram">The Current Diagram ID</param>
         /// <param name="DsWBS">WBS Dataset</param>
         /// <returns></returns>
-        public static DataRow SetValuesOriginalAndNewCopiedCM(RiskPolyLine sourceCM, DataSet targetDataset, DataRow drRiskFather, decimal ID_Diagram, DataSet DsWBS)
+        public static DataRow SetValuesOriginalAndNewCopiedCM(RiskPolyLine sourceCM, DataSet targetDataset,
+            DataRow drRiskFather, decimal ID_Diagram, DataSet DsWBS, bool onlyWBSData)
         {
             DataRow drNewCM = targetDataset.Tables[DT_CounterM.TABLE_NAME].NewRow();
             drNewCM[DT_CounterM.DETAIL] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.DETAIL];
@@ -809,8 +826,129 @@ namespace EnsureBusinesss
             drNewCM[DT_CounterM.USER_NAME] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.PROBABILITY];
             drNewCM[DT_CounterM.WBS_NAME] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.WBS_NAME];
             targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Add(drNewCM);
+            if (onlyWBSData)
+            {
+                ImportDamagesFromTargetDiagram(targetDataset, drRiskFather, ID_Diagram, drNewCM);
+            }
+            else
+            {
+                ImportDamageFromCMSource(sourceCM, targetDataset, drRiskFather, ID_Diagram, drNewCM);
+            }
+            //Los DAMAGES del TARGET DIAGRAM
+            ImportWBSFromSourceCM(sourceCM, targetDataset, drNewCM);
+            ImportWBSFromRiskNewFather(targetDataset, drRiskFather, drNewCM);
+            foreach (DataRow myWBS in targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + drNewCM[DT_CounterM.ID]))
+            {
+                if (WBSOperations.IsCMWBSLow(myWBS, DsWBS, targetDataset.Tables[DT_CM_WBS.TABLE_NAME]))
+                {
+                    AddWBS_CM_Damage(targetDataset, ID_Diagram, drNewCM, myWBS);
+                }
+                else
+                {
+                    foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
+                    {
+                        if (targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { myWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] }))
+                        {
+                            targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Find(new object[] { myWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] }).Delete();
+                        }
+                    }
+                }
+            }
+            ImportRoleFromNewRiskFather(targetDataset, drRiskFather, drNewCM);
+            return drNewCM;
+        }
 
-            //TODOS LOS DAMAGES DEL DIAGRAM SOURCE
+        private static void ImportRoleFromNewRiskFather(DataSet targetDataset, DataRow drRiskFather, DataRow drNewCM)
+        {
+            foreach (DataRow riskRole in targetDataset.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + drRiskFather[DT_Risk.ID]))
+            {
+                if (!(targetDataset.Tables[DT_Role_CM.TABLENAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], riskRole[DT_Role_Risk.IDROL_COLUMN] })))
+                {
+                    DataRow drCmRole = targetDataset.Tables[DT_Role_CM.TABLENAME].NewRow();
+                    drCmRole[DT_Role_CM.IDROL_COLUMN] = riskRole[DT_Role_Risk.IDROL_COLUMN];
+                    drCmRole[DT_Role_CM.ID_CM] = drNewCM[DT_CounterM.ID];
+                    drCmRole[DT_Role_CM.NAME_SHORT] = drNewCM[DT_CounterM.NAMESHORT];
+                    drCmRole[DT_Role_CM.Role] = riskRole[DT_Role_Risk.Role];
+                    targetDataset.Tables[DT_Role_CM.TABLENAME].Rows.Add(drCmRole);
+                }
+            }
+        }
+
+        private static void ImportWBSFromRiskNewFather(DataSet targetDataset, DataRow drRiskFather, DataRow drNewCM)
+        {
+            foreach (DataRow targetWBS in targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drRiskFather[DT_Risk.ID]))
+            {
+                if (!(targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], targetWBS[DT_RISK_WBS.ID_WBS] })))
+                {
+                    DataRow newCMWBS = targetDataset.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
+                    newCMWBS[DT_CM_WBS.ID_CM] = drNewCM[DT_CounterM.ID];
+                    newCMWBS[DT_CM_WBS.ID_WBS] = targetWBS[DT_RISK_WBS.ID_WBS];
+                    newCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
+                    newCMWBS[DT_CM_WBS.NIVEL] = targetWBS[DT_RISK_WBS.NIVEL];
+                    newCMWBS[DT_CM_WBS.PRIMARY] = "";
+                    newCMWBS[DT_CM_WBS.PROBABILITY] = drNewCM[DT_CounterM.PROBABILITY];
+                    newCMWBS[DT_CM_WBS.CM] = drNewCM[DT_CounterM.NAMESHORT];
+                    newCMWBS[DT_CM_WBS.USERNAME] = targetWBS[DT_RISK_WBS.USERNAME];
+                    newCMWBS[DT_CM_WBS.WBS_USER] = targetWBS[DT_RISK_WBS.WBS] + "[" + targetWBS[DT_RISK_WBS.USERNAME] + "]";
+                    newCMWBS[DT_CM_WBS.WBS] = targetWBS[DT_RISK_WBS.WBS];
+                    targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
+                }
+            }
+        }
+
+        private static void ImportWBSFromSourceCM(RiskPolyLine sourceCM, DataSet targetDataset, DataRow drNewCM)
+        {
+            foreach (DataRow sourceWBS in targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + sourceCM.ID))
+            {
+                if (!(targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], sourceWBS[DT_CM_WBS.ID_WBS] })))
+                {
+                    DataRow newCMWBS = targetDataset.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
+                    newCMWBS[DT_CM_WBS.ID_CM] = drNewCM[DT_CounterM.ID];
+                    newCMWBS[DT_CM_WBS.ID_WBS] = sourceWBS[DT_CM_WBS.ID_WBS];
+                    newCMWBS[DT_CM_WBS.IS_PRIMARY] = sourceWBS[DT_CM_WBS.IS_PRIMARY];
+                    newCMWBS[DT_CM_WBS.NIVEL] = sourceWBS[DT_CM_WBS.NIVEL];
+                    newCMWBS[DT_CM_WBS.PRIMARY] = sourceWBS[DT_CM_WBS.PRIMARY];
+                    newCMWBS[DT_CM_WBS.PROBABILITY] = sourceWBS[DT_CM_WBS.PROBABILITY];
+                    newCMWBS[DT_CM_WBS.CM] = drNewCM[DT_CounterM.NAMESHORT];
+                    newCMWBS[DT_CM_WBS.USERNAME] = sourceWBS[DT_CM_WBS.USERNAME];
+                    newCMWBS[DT_CM_WBS.WBS] = sourceWBS[DT_CM_WBS.WBS];
+                    newCMWBS[DT_CM_WBS.WBS_USER] = sourceWBS[DT_CM_WBS.WBS] + "[" + sourceWBS[DT_CM_WBS.USERNAME] + "]";
+                    targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
+                }
+            }
+        }
+
+        private static void ImportDamagesFromTargetDiagram(DataSet targetDataset, DataRow drRiskFather, decimal ID_Diagram, DataRow drNewCM)
+        {
+            foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
+            {
+                if (!(targetDataset.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], diagramDamages[DT_Diagram_Damages.ID_DAMAGE] })))
+                {
+                    DataRow drCMDamage = targetDataset.Tables[DT_CounterM_Damage.TABLE_NAME].NewRow();
+                    drCMDamage[DT_CounterM_Damage.COLOR] = diagramDamages[DT_Diagram_Damages.COLOR];
+                    drCMDamage[DT_CounterM_Damage.COUNTERM_NAMESHORT] = drNewCM[DT_CounterM.NAMESHORT];
+                    drCMDamage[DT_CounterM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
+                    drCMDamage[DT_CounterM_Damage.GROUPENAME] = drNewCM[DT_CounterM.GROUPE_NAME];
+                    drCMDamage[DT_CounterM_Damage.IDRISK] = drRiskFather[DT_Risk.ID];
+                    drCMDamage[DT_CounterM_Damage.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
+                    drCMDamage[DT_CounterM_Damage.ID_GROUPE] = drNewCM[DT_CounterM.ID_GROUPE];
+                    drCMDamage[DT_CounterM_Damage.ID_RISK_TREE] = ID_Diagram;
+                    drCMDamage[DT_CounterM_Damage.ID_WBS] = drNewCM[DT_CounterM.ID_WBS];
+                    drCMDamage[DT_CounterM_Damage.ID_COUNTERM] = drNewCM[DT_CounterM.ID];
+                    drCMDamage[DT_CounterM_Damage.RISK] = drRiskFather[DT_Risk.NAMESHORT];
+                    drCMDamage[DT_CounterM_Damage.RISK_REDUCTION] = drNewCM[DT_CounterM.PROBABILITY];
+                    drCMDamage[DT_CounterM_Damage.STATUS] = true;
+                    drCMDamage[DT_CounterM_Damage.TOP_RISK] = diagramDamages[DT_Diagram_Damages.TOP_RISK];
+                    drCMDamage[DT_CounterM_Damage.USERNAME] = drNewCM[DT_CounterM.USER_NAME];
+                    drCMDamage[DT_CounterM_Damage.VALUE] = 0;
+                    drCMDamage[DT_CounterM_Damage.WBS_NAME] = drNewCM[DT_CounterM.WBS_NAME];
+                    targetDataset.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Add(drCMDamage);
+                }
+            }
+        }
+
+        private static void ImportDamageFromCMSource(RiskPolyLine sourceCM, DataSet targetDataset, DataRow drRiskFather, decimal ID_Diagram, DataRow drNewCM)
+        {
             foreach (DataRow oldCMDamage in targetDataset.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + sourceCM.ID))
             {
                 if (!(targetDataset.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], oldCMDamage[DT_CounterM_Damage.ID_DAMAGE] })))
@@ -843,100 +981,6 @@ namespace EnsureBusinesss
                     targetDataset.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Add(drCMDamage);
                 }
             }
-            //Los DAMAGES del TARGET DIAGRAM
-            foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
-            {
-                if (!(targetDataset.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], diagramDamages[DT_Diagram_Damages.ID_DAMAGE] })))
-                {
-                    DataRow drCMDamage = targetDataset.Tables[DT_CounterM_Damage.TABLE_NAME].NewRow();
-                    drCMDamage[DT_CounterM_Damage.COLOR] = diagramDamages[DT_Diagram_Damages.COLOR];
-                    drCMDamage[DT_CounterM_Damage.COUNTERM_NAMESHORT] = drNewCM[DT_CounterM.NAMESHORT];
-                    drCMDamage[DT_CounterM_Damage.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
-                    drCMDamage[DT_CounterM_Damage.GROUPENAME] = drNewCM[DT_CounterM.GROUPE_NAME];
-                    drCMDamage[DT_CounterM_Damage.IDRISK] = drRiskFather[DT_Risk.ID];
-                    drCMDamage[DT_CounterM_Damage.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
-                    drCMDamage[DT_CounterM_Damage.ID_GROUPE] = drNewCM[DT_CounterM.ID_GROUPE];
-                    drCMDamage[DT_CounterM_Damage.ID_RISK_TREE] = ID_Diagram;
-                    drCMDamage[DT_CounterM_Damage.ID_WBS] = drNewCM[DT_CounterM.ID_WBS];
-                    drCMDamage[DT_CounterM_Damage.ID_COUNTERM] = drNewCM[DT_CounterM.ID];
-                    drCMDamage[DT_CounterM_Damage.RISK] = drRiskFather[DT_Risk.NAMESHORT];
-                    drCMDamage[DT_CounterM_Damage.RISK_REDUCTION] = drNewCM[DT_CounterM.PROBABILITY];
-                    drCMDamage[DT_CounterM_Damage.STATUS] = true;
-                    drCMDamage[DT_CounterM_Damage.TOP_RISK] = diagramDamages[DT_Diagram_Damages.TOP_RISK];
-                    drCMDamage[DT_CounterM_Damage.USERNAME] = drNewCM[DT_CounterM.USER_NAME];
-                    drCMDamage[DT_CounterM_Damage.VALUE] = 0;
-                    drCMDamage[DT_CounterM_Damage.WBS_NAME] = drNewCM[DT_CounterM.WBS_NAME];
-                    targetDataset.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Add(drCMDamage);
-                }
-            }
-
-            foreach (DataRow sourceWBS in targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + sourceCM.ID))
-            {
-                if (!(targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], sourceWBS[DT_CM_WBS.ID_WBS] })))
-                {
-                    DataRow newCMWBS = targetDataset.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
-                    newCMWBS[DT_CM_WBS.ID_CM] = drNewCM[DT_CounterM.ID];
-                    newCMWBS[DT_CM_WBS.ID_WBS] = sourceWBS[DT_CM_WBS.ID_WBS];
-                    newCMWBS[DT_CM_WBS.IS_PRIMARY] = sourceWBS[DT_CM_WBS.IS_PRIMARY];
-                    newCMWBS[DT_CM_WBS.NIVEL] = sourceWBS[DT_CM_WBS.NIVEL];
-                    newCMWBS[DT_CM_WBS.PRIMARY] = sourceWBS[DT_CM_WBS.PRIMARY];
-                    newCMWBS[DT_CM_WBS.PROBABILITY] = sourceWBS[DT_CM_WBS.PROBABILITY];
-                    newCMWBS[DT_CM_WBS.CM] = drNewCM[DT_CounterM.NAMESHORT];
-                    newCMWBS[DT_CM_WBS.USERNAME] = sourceWBS[DT_CM_WBS.USERNAME];
-                    newCMWBS[DT_CM_WBS.WBS] = sourceWBS[DT_CM_WBS.WBS];
-                    newCMWBS[DT_CM_WBS.WBS_USER] = sourceWBS[DT_CM_WBS.WBS] + "[" + sourceWBS[DT_CM_WBS.USERNAME] + "]";
-                    targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
-                }
-            }
-
-            foreach (DataRow targetWBS in targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drRiskFather[DT_Risk.ID]))
-            {
-                if (!(targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], targetWBS[DT_RISK_WBS.ID_WBS] })))
-                {
-                    DataRow newCMWBS = targetDataset.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
-                    newCMWBS[DT_CM_WBS.ID_CM] = drNewCM[DT_CounterM.ID];
-                    newCMWBS[DT_CM_WBS.ID_WBS] = targetWBS[DT_RISK_WBS.ID_WBS];
-                    newCMWBS[DT_CM_WBS.IS_PRIMARY] = false;
-                    newCMWBS[DT_CM_WBS.NIVEL] = targetWBS[DT_RISK_WBS.NIVEL];
-                    newCMWBS[DT_CM_WBS.PRIMARY] = "";
-                    newCMWBS[DT_CM_WBS.PROBABILITY] = drNewCM[DT_CounterM.PROBABILITY];
-                    newCMWBS[DT_CM_WBS.CM] = drNewCM[DT_CounterM.NAMESHORT];
-                    newCMWBS[DT_CM_WBS.USERNAME] = targetWBS[DT_RISK_WBS.USERNAME];
-                    newCMWBS[DT_CM_WBS.WBS_USER] = targetWBS[DT_RISK_WBS.WBS] + "[" + targetWBS[DT_RISK_WBS.USERNAME] + "]";
-                    newCMWBS[DT_CM_WBS.WBS] = targetWBS[DT_RISK_WBS.WBS];
-                    targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
-                }
-            }
-            foreach (DataRow myWBS in targetDataset.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + drNewCM[DT_CounterM.ID]))
-            {
-                if (WBSOperations.IsCMWBSLow(myWBS, DsWBS, targetDataset.Tables[DT_CM_WBS.TABLE_NAME]))
-                {
-                    AddWBS_CM_Damage(targetDataset, ID_Diagram, drNewCM, myWBS);
-                }
-                else
-                {
-                    foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
-                    {
-                        if (targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { myWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] }))
-                        {
-                            targetDataset.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Find(new object[] { myWBS[DT_CM_WBS.ID_WBS], diagramDamages[DT_Diagram_Damages.ID_DAMAGE], drNewCM[DT_CounterM.ID] }).Delete();
-                        }
-                    }
-                }
-            }
-            foreach (DataRow riskRole in targetDataset.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + drRiskFather[DT_Risk.ID]))
-            {
-                if (!(targetDataset.Tables[DT_Role_CM.TABLENAME].Rows.Contains(new object[] { drNewCM[DT_CounterM.ID], riskRole[DT_Role_Risk.IDROL_COLUMN] })))
-                {
-                    DataRow drCmRole = targetDataset.Tables[DT_Role_CM.TABLENAME].NewRow();
-                    drCmRole[DT_Role_CM.IDROL_COLUMN] = riskRole[DT_Role_Risk.IDROL_COLUMN];
-                    drCmRole[DT_Role_CM.ID_CM] = drNewCM[DT_CounterM.ID];
-                    drCmRole[DT_Role_CM.NAME_SHORT] = drNewCM[DT_CounterM.NAMESHORT];
-                    drCmRole[DT_Role_CM.Role] = riskRole[DT_Role_Risk.Role];
-                    targetDataset.Tables[DT_Role_CM.TABLENAME].Rows.Add(drCmRole);
-                }
-            }
-            return drNewCM;
         }
 
         #endregion

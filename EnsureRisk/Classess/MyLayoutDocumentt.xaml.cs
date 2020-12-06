@@ -47,7 +47,7 @@ namespace EnsureRisk.Classess
         public double ZoomValue { get { return zoomValue; } set { zoomValue = value; RaisePropertyChanged("ZoomValue"); } }
         private decimal idDamageSelected;
         private DataView dvDamage;
-        private readonly Cursor GrabHand = CursorHelper.FromByteArray(Properties.Resources.HandGrabbing);
+        //private readonly Cursor GrabHand = CursorHelper.FromByteArray(Properties.Resources.HandGrabbing);
 
 
         public DataView DvDamage { get => dvDamage; set { dvDamage = value; RaisePropertyChanged("DvDamage"); } }
@@ -1760,17 +1760,8 @@ namespace EnsureRisk.Classess
         private void CM_LabelName_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             try
-            {
-                if (TengoPermiso(Line_Selected) && Line_Selected.IsActivated)
-                {
-                    NameEditing = true;
-                    Loose = true;
-                    Line_Selected.ExtrasVisibility(Visibility.Hidden);
-                    TextChangeName.Background = new SolidColorBrush(Colors.Black);
-                    TextChangeName.Foreground = new SolidColorBrush(Colors.White);
-                    TextChangeName.Margin = Line_Selected.TextPanel.Margin;
-                    ManageTextChangeProperties(Line_Selected.ShortName, Visibility.Visible);
-                }
+            {               
+                EditSelectedPolyLineShorName();
             }
             catch (Exception ex)
             {
@@ -1782,16 +1773,14 @@ namespace EnsureRisk.Classess
         {
             try
             {
-                if (TengoPermiso(Line_Selected) && Line_Selected.IsActivated)
+                if (TengoPermiso(Line_Selected) && Line_Selected.IsActivated && FullAccess(Line_Selected))
                 {
                     NameEditing = true;
                     Loose = true;
-                    Line_Selected.MyName.Visibility = Visibility.Hidden;
-                    TextChangeName.Margin = Line_Selected.TextPanel.Margin;
-                    TextChangeName.AcceptsReturn = false;
-                    //TextChangeName.Style = ((TextBox)((MainWindow)MyWindow).FindResource("TextName")).Style;
+                    Line_Selected.ExtrasVisibility(Visibility.Hidden);
                     TextChangeName.Background = new SolidColorBrush(Colors.Black);
                     TextChangeName.Foreground = new SolidColorBrush(Colors.White);
+                    TextChangeName.Margin = Line_Selected.TextPanel.Margin;
                     ManageTextChangeProperties(Line_Selected.ShortName, Visibility.Visible);
                 }
             }
@@ -1917,7 +1906,6 @@ namespace EnsureRisk.Classess
                 decimal ID_Sender;
                 bool IsRoot_Sender;
                 RiskPolyLine TheLine;
-
                 ID_Sender = ((SegmentPolyLine)sender).Father.ID;
                 IsRoot_Sender = ((SegmentPolyLine)sender).Father.IsRoot;
                 TheLine = ((SegmentPolyLine)sender).Father;
@@ -2325,16 +2313,7 @@ namespace EnsureRisk.Classess
         {
             try
             {
-                if (TengoPermiso(Line_Selected) && Line_Selected.IsActivated && FullAccess(Line_Selected))
-                {
-                    NameEditing = true;
-                    Loose = true;
-                    Line_Selected.ExtrasVisibility(Visibility.Hidden);
-                    TextChangeName.Background = new SolidColorBrush(Colors.Black);
-                    TextChangeName.Foreground = new SolidColorBrush(Colors.White);
-                    TextChangeName.Margin = Line_Selected.TextPanel.Margin;
-                    ManageTextChangeProperties(Line_Selected.ShortName, Visibility.Visible);
-                }
+                EditSelectedPolyLineShorName();
             }
             catch (Exception ex)
             {
@@ -2448,50 +2427,38 @@ namespace EnsureRisk.Classess
 
                 //Reestablecer la posición de los PolyLine en su padre
                 SetPolyLinePosition(Line_Selected.Father.Children);
-                if (new WindowMessageYesNo("Do you want to Move the selected items with all their properties(WBS, damages, probabilities etc.)?").ShowDialog() == true)
+                WindowCopyPasteMoveConfirm wcpc = new WindowCopyPasteMoveConfirm("Do you want to Move the selected items with all their properties(WBS, damages, probabilities etc.)?");
+                if (wcpc.ShowDialog() == true)
                 {
-                    Line_Selected.Father = destinationPolyLine;
-                    //Line_Selected.Position = destinationPolyLine.Children.Count - 1;
                     DataSet ImportDSs = Ds.Copy();
-                    DataRow drNewRisk = CopyPasteController.CopyValuesFromLineSource(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
-                                                                                        ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList);
-                    //CopyPasteOps.EstablecerValorDelHijoAlPadre(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
-                    CopyPasteController.SetValuesFromChildToFather(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS);
-                    Ds = ImportDSs;
-                    ImportDSs.Dispose();
-                    MoviendoRisk = false;
-                    RiskPolyLine Line_Created = new RiskPolyLine
-                    {
-                        ID = (decimal)drNewRisk[DT_Risk.ID],
-                        IsCM = false,
-                        ShortName = "LineCreated",
-                        Father = destinationPolyLine,
-                        IdRiskFather = destinationPolyLine.ID
-                    };
-                    InsertRisk(Line_Created, destinationPolyLine, point);
-
-                    RiskPolyLine linetoDel = new RiskPolyLine
-                    {
-                        ID = Line_Selected.ID,
-                        IsCM = Line_Selected.IsCM
-                    };
-                    TreeOperation.DeleteLine(linetoDel, Ds);
-                    GridPaintLines.Children.Remove(LineInMoving);
-                    GridPaintLines.Children.Remove(LineInMoving.TextPanel);
-                    LineInMoving = null;
-                }
-                else
-                {
-
+                    DataRow drNewRisk;
+                    RiskPolyLine Line_Created;
+                    RiskPolyLine linetoDel;
                     Line_Selected.Father = destinationPolyLine;
-                    DataSet ImportDSs = Ds.Copy();
-                    DataRow drNewRisk = CopyPasteController.CopyRiskWithoutSourceData(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
-                                            ID_Diagram, ((MainWindow)MyWindow).DsWBS);
+
+                    switch (wcpc.OptionSelected)
+                    {
+                        case 0:
+                            drNewRisk = CopyPasteController.CopyAllValuesFromLineSource(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                                                                                                ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList, false);
+                            CopyPasteController.SetValuesFromChildToFather(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS);
+                                                      
+                            break;
+                        case 1:
+                            drNewRisk = CopyPasteController.CopyAllValuesFromLineSource(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                                                                                                ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList, true);
+                            CopyPasteController.SetValuesFromChildToFather(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS);
+                            break;
+                        default:
+                            drNewRisk = CopyPasteController.CopyRiskWithoutSourceData(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                                                    ID_Diagram, ((MainWindow)MyWindow).DsWBS);                           
+                            break;
+                    }
                     Ds = ImportDSs;
                     ImportDSs.Dispose();
                     //GlobalListCopy = new List<RiskPolyLine>();
                     MoviendoRisk = false;
-                    RiskPolyLine Line_Created = new RiskPolyLine
+                    Line_Created = new RiskPolyLine
                     {
                         ID = (decimal)drNewRisk[DT_Risk.ID],
                         IsCM = false,
@@ -2500,7 +2467,7 @@ namespace EnsureRisk.Classess
                         IdRiskFather = destinationPolyLine.ID
                     };
                     InsertRisk(Line_Created, destinationPolyLine, point);
-                    RiskPolyLine linetoDel = new RiskPolyLine
+                    linetoDel = new RiskPolyLine
                     {
                         ID = Line_Selected.ID,
                         IsCM = Line_Selected.IsCM
@@ -2523,45 +2490,33 @@ namespace EnsureRisk.Classess
 
                 //Reestablecer la posición de los PolyLine en su padre
                 SetPolyLinePosition(Line_Selected.Father.Children);
-                if (new WindowMessageYesNo("Do you want to Move the selected item with all their properties(WBS, damages, probabilities etc.)?").ShowDialog() == true)
+                WindowCopyPasteMoveConfirm wcpc = new WindowCopyPasteMoveConfirm("Do you want to Move the selected item with all their properties(WBS, damages, probabilities etc.)?");
+                if (wcpc.ShowDialog() == true)
                 {
-                    Line_Selected.Father = destinationPolyLine;
-                    //Line_Selected.Position = destinationPolyLine.Children.Count - 1;
                     DataSet ImportDSs = Ds.Copy();
-                    DataRow drNewCM = CopyPasteController.SetValuesOriginalAndNewCopiedCM(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
-
-                    Ds.Merge(ImportDSs);
-                    ImportDSs.Dispose();
-                    MoviendoRisk = false;
-                    RiskPolyLine Line_Created = new RiskPolyLine
-                    {
-                        ID = (decimal)drNewCM[DT_CounterM.ID],
-                        IsCM = true,
-                        ShortName = "LineCreated",
-                        Father = destinationPolyLine,
-                        IdRiskFather = destinationPolyLine.ID
-                    };
-                    InsertCM(Line_Created, destinationPolyLine, point);
-
-                    RiskPolyLine linetoDel = new RiskPolyLine
-                    {
-                        ID = Line_Selected.ID,
-                        IsCM = Line_Selected.IsCM
-                    };
-                    TreeOperation.DeleteLine(linetoDel, Ds);
-
-                }
-                else
-                {
-
+                    DataRow drNewCM;
+                    RiskPolyLine Line_Created;
+                    RiskPolyLine linetoDel;
                     Line_Selected.Father = destinationPolyLine;
-                    DataSet ImportDSs = Ds.Copy();
-                    DataRow drNewCM = CopyPasteController.SetNewCMValues(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);
+
+                    switch (wcpc.OptionSelected)
+                    {
+                        case 0:
+                            drNewCM = CopyPasteController.SetValuesOriginalAndNewCopiedCM(Line_Selected, ImportDSs, 
+                                Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS, false);
+                            break;
+                        case 1:
+                            drNewCM = CopyPasteController.SetValuesOriginalAndNewCopiedCM(Line_Selected, ImportDSs,
+                                Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS, true);
+                            break;
+                        default:
+                            drNewCM = CopyPasteController.SetNewCMValues(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);                           
+                            break;
+                    }
                     Ds = ImportDSs;
                     ImportDSs.Dispose();
-                    //GlobalListCopy = new List<RiskPolyLine>();
                     MoviendoRisk = false;
-                    RiskPolyLine Line_Created = new RiskPolyLine
+                    Line_Created = new RiskPolyLine
                     {
                         ID = (decimal)drNewCM[DT_CounterM.ID],
                         IsCM = true,
@@ -2570,13 +2525,12 @@ namespace EnsureRisk.Classess
                         IdRiskFather = destinationPolyLine.ID
                     };
                     InsertCM(Line_Created, destinationPolyLine, point);
-                    RiskPolyLine linetoDel = new RiskPolyLine
+                    linetoDel = new RiskPolyLine
                     {
                         ID = Line_Selected.ID,
                         IsCM = Line_Selected.IsCM
                     };
                     TreeOperation.DeleteLine(linetoDel, Ds);
-
                 }
                 GridPaintLines.Children.Remove(LineInMoving);
                 if (LineInMoving != null && LineInMoving.TextPanel != null)
@@ -2662,7 +2616,7 @@ namespace EnsureRisk.Classess
             if (this.IsActive)
             {
                 ((MainWindow)MyWindow).CrossRiskRightTab(((MainWindow)MyWindow).TheCurrentLayout.Ds);
-                ((MainWindow)MyWindow).CroosCMRightTab(((MainWindow)MyWindow).TheCurrentLayout.Ds);
+                ((MainWindow)MyWindow).CrossCMRightTab(((MainWindow)MyWindow).TheCurrentLayout.Ds);
             }
         }
 
@@ -2996,7 +2950,6 @@ namespace EnsureRisk.Classess
             }
         }
 
-
         #endregion
         private void CbFilterTopR_DropDownClosed(object sender, EventArgs e)
         {
@@ -3156,7 +3109,6 @@ namespace EnsureRisk.Classess
                     {
                         item[DT_Risk_Damages.RISK_NAMESHORT] = polyLineName;
                     }
-
                 }
                 Line_Selected.ShortName = polyLineName;
                 ClearFilters();
@@ -3676,7 +3628,33 @@ namespace EnsureRisk.Classess
 
         private void ScrollGridPaint_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            UpdateMiniMapSize();
+            UpdateMiniMapSize();          
+        }
+
+        public void LineasIn()
+        {
+            int cont = 0;
+            foreach (var frameworkElement in LinesList)
+            {
+                if (frameworkElement != null)
+                {
+                    if (this.IsUserVisible(frameworkElement, this.ScrollGridPaint))
+                    {
+                        cont++;
+                    }
+                }
+            }
+            MessageBox.Show(cont + " lineas");
+        }
+        private bool IsUserVisible(FrameworkElement element, FrameworkElement container)
+        {
+            if (!element.IsVisible)
+            {
+                return false;
+            }
+            Rect bounds = element.TransformToAncestor(container).TransformBounds(new Rect(0.0, 0.0, element.ActualWidth, element.ActualHeight));
+            Rect rect = new Rect(0.0, 0.0, container.ActualWidth, container.ActualHeight);
+            return rect.Contains(bounds.TopLeft) || rect.Contains(bounds.BottomRight);
         }
 
         private void ScrollGridPaint_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -3803,5 +3781,26 @@ namespace EnsureRisk.Classess
                 ScrollGridPaint.ScrollToVerticalOffset(this.scrollStartOffset.Y + delta.Y);
             }
         }
+
+        private void GridPaintLines_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F2)
+            {
+                //BrigIntoViewSelectedRiskPolyline(Line_Selected);
+                //UpdateSelectedPolyLineVisualInfo();
+                EditSelectedPolyLineShorName();
+                //if (TengoPermiso(Line_Selected) && Line_Selected.IsActivated && FullAccess(Line_Selected))
+                //{
+                //    NameEditing = true;
+                //    Loose = true;
+                //    Line_Selected.ExtrasVisibility(Visibility.Hidden);
+                //    TextChangeName.Background = new SolidColorBrush(Colors.Black);
+                //    TextChangeName.Foreground = new SolidColorBrush(Colors.White);
+                //    TextChangeName.Margin = Line_Selected.TextPanel.Margin;
+                //    ManageTextChangeProperties(Line_Selected.ShortName, Visibility.Visible);
+                //}
+            }
+        }
+
     }
 }

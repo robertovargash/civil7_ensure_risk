@@ -308,16 +308,16 @@ namespace EnsureBusinesss
                             newRiskWBS[DT_RISK_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
                             newRiskWBS[DT_RISK_WBS.WBS_USER] = rowWBS[DT_WBS.WBS_NAME] + "[" + rowWBS[DT_WBS.USERNAME] + "]";
                             ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
-                        }
-                        riskRow[DT_Risk.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
-                        riskRow[DT_Risk.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                        riskRow[DT_Risk.USER_NAME] = rowWBS[DT_WBS.USERNAME];
-                        foreach (DataRow rowRiskDamage in ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + riskRow[DT_Risk.ID]))
-                        {
-                            rowRiskDamage[DT_Risk_Damages.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
-                            rowRiskDamage[DT_Risk_Damages.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                            rowRiskDamage[DT_Risk_Damages.USERNAME] = rowWBS[DT_WBS.USERNAME];
-                        }
+                            riskRow[DT_Risk.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
+                            riskRow[DT_Risk.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                            riskRow[DT_Risk.USER_NAME] = rowWBS[DT_WBS.USERNAME];
+                            foreach (DataRow rowRiskDamage in ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + riskRow[DT_Risk.ID]))
+                            {
+                                rowRiskDamage[DT_Risk_Damages.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
+                                rowRiskDamage[DT_Risk_Damages.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                                rowRiskDamage[DT_Risk_Damages.USERNAME] = rowWBS[DT_WBS.USERNAME];
+                            }
+                        }                        
                     }
                     foreach (DataRow rowCM in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + Id_Diagram))
                     {
@@ -335,20 +335,74 @@ namespace EnsureBusinesss
                             newCMWBS[DT_CM_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
                             newCMWBS[DT_CM_WBS.WBS_USER] = rowWBS[DT_WBS.WBS_NAME] + "[" + rowWBS[DT_WBS.USERNAME] + "]";
                             ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
-                        }
-                        rowCM[DT_CounterM.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
-                        rowCM[DT_CounterM.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                        rowCM[DT_CounterM.USER_NAME] = rowWBS[DT_WBS.USERNAME];
-                        foreach (DataRow rowCMDamage in ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + rowCM[DT_CounterM.ID]))
-                        {
-                            rowCMDamage[DT_CounterM_Damage.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
-                            rowCMDamage[DT_CounterM_Damage.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                            rowCMDamage[DT_CounterM_Damage.USERNAME] = rowWBS[DT_WBS.USERNAME];
+
+                            rowCM[DT_CounterM.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
+                            rowCM[DT_CounterM.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                            rowCM[DT_CounterM.USER_NAME] = rowWBS[DT_WBS.USERNAME];
+                            foreach (DataRow rowCMDamage in ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + rowCM[DT_CounterM.ID]))
+                            {
+                                rowCMDamage[DT_CounterM_Damage.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
+                                rowCMDamage[DT_CounterM_Damage.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                                rowCMDamage[DT_CounterM_Damage.USERNAME] = rowWBS[DT_WBS.USERNAME];
+                            }
                         }
                     }
                 }
             }
         }
 
+
+        /// <summary>
+        /// Find the Ancestor of the WBS id
+        /// </summary>
+        /// <param name="DsWBS">Dataset</param>
+        /// <param name="idWBS">the ID of the WBS to find the Ancestor</param>
+        /// <returns>ID of the WBS Ancestor, below of the Top WBS, called Family in the requirements</returns>
+        public static decimal FindIDTopAncestor(DataSet DsWBS, decimal idWBS)
+        {
+            try
+            {
+                decimal idToFind = 0;
+                List<DataRow> firstBranch = new List<DataRow>();
+                foreach (var topWBS in GetTopWBS(DsWBS))
+                {
+                    firstBranch.AddRange(MyWBSChildren(topWBS, DsWBS.Tables[DT_WBS.TABLE_NAME], DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME]));
+                }
+
+                foreach (DataRow wbsAncestors in GetAncestors(idWBS,DsWBS.Tables[DT_WBS.TABLE_NAME].Clone(),DsWBS).Rows)
+                {
+                    foreach (var branchito in firstBranch)
+                    {
+                        if (branchito[DT_WBS.ID_WBS] == wbsAncestors[DT_WBS.ID_WBS])
+                        {
+                            idToFind = (decimal)branchito[DT_WBS.ID_WBS];
+                        }
+                    }
+                }
+                return idToFind;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static bool IsTopWBSChild(DataSet DsWBS, decimal idWBS)
+        {
+            List<DataRow> firstBranch = new List<DataRow>();
+
+            foreach (var topWBS in GetTopWBS(DsWBS))
+            {
+                firstBranch.AddRange(MyWBSChildren(topWBS, DsWBS.Tables[DT_WBS.TABLE_NAME], DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME]));
+            }
+            foreach (var item in firstBranch)
+            {
+                if ((decimal)item[DT_WBS.ID_WBS] == idWBS)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

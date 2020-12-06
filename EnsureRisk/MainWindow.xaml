@@ -811,7 +811,7 @@
                         <TextBlock x:Name="TextYesNoMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="mY TEXT" TextWrapping="Wrap" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
                             <Button.CommandParameter>
                                 <system:Boolean>True</system:Boolean>
                             </Button.CommandParameter>

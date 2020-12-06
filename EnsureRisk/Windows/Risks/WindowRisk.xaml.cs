@@ -828,7 +828,7 @@ namespace EnsureRisk.Windows
                         else
                         {
                             //Probability = decimal.Parse(TextProbability.Text);
-                            General.RecalculateProbability(RiskRow, Ds, Probability, false);
+                            General.RecalculateProbability(RiskRow, Ds, Probability, false, dsWBS);
                         }
                     }
                 }

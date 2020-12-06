@@ -368,7 +368,7 @@ namespace EnsureRisk.Export.Trader
             DataTable dataTable = SourceDataSet.Tables[RISK_TABLENAME].Clone();
             IEnumerable<DataRow> riskDataRowQuery =
                 from riskDataRow in SourceDataSet.Tables[RISK_TABLENAME].AsEnumerable()
-                where riskDataRow.Field<decimal>(IDRISKTREE_COLUMNNAME) == riskTreeID
+                where riskDataRow.RowState != DataRowState.Deleted && riskDataRow.Field<decimal>(IDRISKTREE_COLUMNNAME) == riskTreeID
                 orderby riskDataRow.Field<int?>(POSITION_COLUMNNAME)
                 select riskDataRow;
             riskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
