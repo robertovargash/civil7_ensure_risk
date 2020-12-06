@@ -17,10 +17,9 @@ namespace DataMapping.Data
         public const string ISCOLLAPSED = "isCollapsedInGUI";
         public const string IS_ROOT = "isRoot";
         public const string DIAGONAL = "diagonal";
-        public const string FROM_TOP = "fromTop";
         public const string PROBABILITY = "probability";
         public const string POSITION = "position";
-        public const string ENABLED = "enabled";
+        public const string IS_ACTIVE = "enabled";
         public const string ID_GROUPE = "idGroupe";
         public const string GROUPE_NAME = "GroupeName";
         public const string ID_WBS = "idWBS";
@@ -47,10 +46,9 @@ namespace DataMapping.Data
             Columns.Add(ISCOLLAPSED, typeof(bool));
             Columns.Add(IS_ROOT, typeof(bool));
             Columns.Add(DIAGONAL, typeof(bool));
-            Columns.Add(FROM_TOP, typeof(bool));
             Columns.Add(PROBABILITY, typeof(decimal));
             Columns.Add(POSITION, typeof(int));
-            Columns.Add(ENABLED, typeof(bool));
+            Columns.Add(IS_ACTIVE, typeof(bool));
             Columns.Add(ID_GROUPE, typeof(decimal));
             Columns.Add(GROUPE_NAME, typeof(string));
             Columns.Add(ID_WBS, typeof(decimal));

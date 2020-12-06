@@ -815,7 +815,7 @@ namespace EnsureRisk.Classess
                 RiskPolyLine cmline = haspermission ? CreateCounterMeasureShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, MenuCM, true, item) : CreateCounterMeasureShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, null, true, item);
                 SetPolyLineGroup(cmline, item);
 
-                if (((bool)item[DT_CounterM.ENABLED]))
+                if (((bool)item[DT_CounterM.IS_ACTIVE]))
                 {
                     ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.DisableValue;
                     cmline.ShortName = item[DT_CounterM.NAMESHORT].ToString();
@@ -874,7 +874,7 @@ namespace EnsureRisk.Classess
                     SetPolyLineGroup(riskLine, item);
 
                     riskLine.Collapsed = (bool)item[DT_Risk.ISCOLLAPSED];
-                    if (((bool)item[DT_Risk.ENABLED]))
+                    if (((bool)item[DT_Risk.IS_ACTIVE]))
                     {
                         ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
 
@@ -1289,7 +1289,7 @@ namespace EnsureRisk.Classess
                 IdRiskFather = (decimal)itemDataRow[DT_CounterM.ID_RISK],
                 ID = (decimal)itemDataRow[DT_CounterM.ID],
                 Probability = (decimal)itemDataRow[DT_CounterM.PROBABILITY] / 100,
-                IsActivated = (bool)itemDataRow[DT_CounterM.ENABLED]
+                IsActivated = (bool)itemDataRow[DT_CounterM.IS_ACTIVE]
             };
         }
 
@@ -1302,7 +1302,7 @@ namespace EnsureRisk.Classess
                 Position = (int)itemDataRow[DT_Risk.POSITION],
                 Collapsed = (bool)itemDataRow[DT_Risk.ISCOLLAPSED],
                 Probability = (decimal)itemDataRow[DT_Risk.PROBABILITY] / 100,
-                IsActivated = (bool)itemDataRow[DT_Risk.ENABLED],
+                IsActivated = (bool)itemDataRow[DT_Risk.IS_ACTIVE],
                 StrokeThickness = 2,
                 IsCM = isCMI,
                 IdRiskFather = (decimal)itemDataRow[DT_Risk.IDRISK_FATHER],
@@ -1529,7 +1529,7 @@ namespace EnsureRisk.Classess
                 {
                     MostrarPopCMWindow(pointToShowPopup, CMLine.ShortName, probability, Value, TotalAcumaletedDamage);
                 }
-                if ((bool)Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(CMLine.ID)[DT_CounterM.ENABLED])
+                if ((bool)Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(CMLine.ID)[DT_CounterM.IS_ACTIVE])
                 {
                     ((MenuItem)MenuCM.Items[(int)MenuCMm.Enable]).ToolTip = StringResources.DisableValue;
                 }
@@ -2282,7 +2282,7 @@ namespace EnsureRisk.Classess
                         {
                             MostrarPopWindow(pointToShowPopup, TheLine.ShortName, probability, Valuee, ED, AcumValue, EL, TotalAcumaletedDamage);
                         }
-                        if ((bool)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheLine.ID)[DT_Risk.ENABLED])
+                        if ((bool)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheLine.ID)[DT_Risk.IS_ACTIVE])
                         {
                             ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
                         }

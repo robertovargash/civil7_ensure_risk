@@ -92,7 +92,7 @@ namespace EnsureRisk
                     IdRiskFather = (decimal)item[DT_CounterM.ID_RISK],
                     ID = (decimal)item[DT_CounterM.ID],
                     Probability = (decimal)item[DT_CounterM.PROBABILITY],
-                    IsActivated = (bool)item[DT_CounterM.ENABLED]
+                    IsActivated = (bool)item[DT_CounterM.IS_ACTIVE]
                 };
                 cmPolyLines.Add(cmline);
             }
@@ -278,10 +278,9 @@ namespace EnsureRisk
                     drRisk[DT_Risk.COMMENTS] = riskRow[DT_Risk.COMMENTS];
                     drRisk[DT_Risk.ISCOLLAPSED] = riskRow[DT_Risk.ISCOLLAPSED];
                     drRisk[DT_Risk.IS_ROOT] = riskRow[DT_Risk.IS_ROOT];
-                    drRisk[DT_Risk.FROM_TOP] = riskRow[DT_Risk.FROM_TOP];
                     drRisk[DT_Risk.PROBABILITY] = riskRow[DT_Risk.PROBABILITY];
                     drRisk[DT_Risk.POSITION] = riskRow[DT_Risk.POSITION];
-                    drRisk[DT_Risk.ENABLED] = riskRow[DT_Risk.ENABLED];
+                    drRisk[DT_Risk.IS_ACTIVE] = riskRow[DT_Risk.IS_ACTIVE];
                     drRisk[DT_Risk.ID_GROUPE] = riskRow[DT_Risk.ID_GROUPE];
                     drRisk[DT_Risk.ID_WBS] = riskRow[DT_Risk.ID_WBS];
                     targetDS.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
@@ -371,10 +370,9 @@ namespace EnsureRisk
                     }
                     drCM[DT_CounterM.NAMESHORT] = cmRow[DT_CounterM.NAMESHORT];
                     drCM[DT_CounterM.DETAIL] = cmRow[DT_CounterM.DETAIL];
-                    drCM[DT_CounterM.FROM_TOP] = cmRow[DT_CounterM.FROM_TOP];
                     drCM[DT_CounterM.PROBABILITY] = cmRow[DT_CounterM.PROBABILITY];
                     drCM[DT_CounterM.POSITION] = cmRow[DT_CounterM.POSITION];
-                    drCM[DT_CounterM.ENABLED] = cmRow[DT_CounterM.ENABLED];
+                    drCM[DT_CounterM.IS_ACTIVE] = cmRow[DT_CounterM.IS_ACTIVE];
                     drCM[DT_CounterM.ID_GROUPE] = cmRow[DT_CounterM.ID_GROUPE];
                     drCM[DT_CounterM.ID_WBS] = cmRow[DT_CounterM.ID_WBS];
                     targetDS.Tables[DT_CounterM.TABLE_NAME].Rows.Add(drCM);

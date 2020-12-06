@@ -246,8 +246,7 @@ namespace EnsureRisk.Controllers.Import
             drRisk[DT_Risk.IS_ROOT] = true;
 
             drRisk[DT_Risk.ISCOLLAPSED] = false;
-            drRisk[DT_Risk.ENABLED] = true;
-            drRisk[DT_Risk.FROM_TOP] = false;
+            drRisk[DT_Risk.IS_ACTIVE] = true;
             drRisk[DT_Risk.PROBABILITY] = 100;
             drRisk[DT_Risk.POSITION] = 0;
             drRisk[DT_Risk.ID_DIAGRAM] = theDiagram[DT_Diagram.ID_DIAGRAM];
@@ -327,11 +326,10 @@ namespace EnsureRisk.Controllers.Import
                         }
                         drRiskN[DT_Risk.ID_DIAGRAM] = theDiagram[DT_Diagram.ID_DIAGRAM];
                     }
-                    drRiskN[DT_Risk.ENABLED] = true;
+                    drRiskN[DT_Risk.IS_ACTIVE] = true;
                     drRiskN[DT_Risk.IS_ROOT] = false;
                     drRiskN[DT_Risk.ISCOLLAPSED] = false;
                     drRiskN[DT_Risk.POSITION] = 0;
-                    drRiskN[DT_Risk.FROM_TOP] = false;
                     drRiskN[DT_Risk.ID_DIAGRAM] = theDiagram[DT_Diagram.ID_DIAGRAM];
 
                     if (xRiskProb != null && dtExcel.Rows[rowPosition][xRiskProb.MyContent.ToString()].ToString() != "")
@@ -516,9 +514,8 @@ namespace EnsureRisk.Controllers.Import
                         drCM[DT_CounterM.DETAIL] = dtExcel.Rows[rowPosition][xCmDetail.MyContent.ToString()].ToString();
                     }
 
-                    drCM[DT_CounterM.ENABLED] = true;
+                    drCM[DT_CounterM.IS_ACTIVE] = true;
                     drCM[DT_CounterM.DIAGONAL] = false;
-                    drCM[DT_CounterM.FROM_TOP] = true;
                     drCM[DT_CounterM.POSITION] = 0;
                     if (xCmReduction != null && dtExcel.Rows[rowPosition][xCmReduction.MyContent.ToString()].ToString() != "")
                     {
@@ -539,7 +536,7 @@ namespace EnsureRisk.Controllers.Import
 
                     if (isMarkedAllAsActive)
                     {
-                        drCM[DT_CounterM.ENABLED] = true;
+                        drCM[DT_CounterM.IS_ACTIVE] = true;
                     }
                     else
                     {
@@ -548,16 +545,16 @@ namespace EnsureRisk.Controllers.Import
                         {
                             if (statusKeyphrase == dtExcel.Rows[rowPosition][xCmActive.MyContent.ToString()].ToString())
                             {
-                                drCM[DT_CounterM.ENABLED] = false;
+                                drCM[DT_CounterM.IS_ACTIVE] = false;
                             }
                             else
                             {
-                                drCM[DT_CounterM.ENABLED] = true;
+                                drCM[DT_CounterM.IS_ACTIVE] = true;
                             }
                         }
                         else
                         {
-                            drCM[DT_CounterM.ENABLED] = true;
+                            drCM[DT_CounterM.IS_ACTIVE] = true;
                         }
                     }
                     foreach (var itemDamages in countDamages.OrderBy(x => x.Column))

@@ -932,8 +932,7 @@ namespace EnsureRisk
                     drRisk[DT_Risk.IS_ROOT] = true;
 
                     drRisk[DT_Risk.ISCOLLAPSED] = false;
-                    drRisk[DT_Risk.ENABLED] = true;
-                    drRisk[DT_Risk.FROM_TOP] = false;
+                    drRisk[DT_Risk.IS_ACTIVE] = true;
                     drRisk[DT_Risk.PROBABILITY] = 100;
                     drRisk[DT_Risk.ID_DIAGRAM] = riskTree.DRow[DT_Diagram.ID_DIAGRAM];
                     myly.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
@@ -1154,7 +1153,7 @@ namespace EnsureRisk
 
                 DataRow drRisk = destinyLayout.Ds.Tables[DT_Risk.TABLE_NAME].NewRow();
                 drRisk[DT_Risk.COMMENTS] = "Detail Total Risk";
-                drRisk[DT_Risk.ENABLED] = true;
+                drRisk[DT_Risk.IS_ACTIVE] = true;
                 drRisk[DT_Risk.ID_DIAGRAM] = drDiagram[DT_Diagram.ID_DIAGRAM];
                 drRisk[DT_Risk.ISCOLLAPSED] = false;
                 drRisk[DT_Risk.IS_ROOT] = true;
@@ -2953,7 +2952,7 @@ namespace EnsureRisk
                     IdRiskFather = (decimal)item[DT_CounterM.ID_RISK],
                     ID = (decimal)item[DT_CounterM.ID],
                     Probability = (decimal)item[DT_CounterM.PROBABILITY],
-                    IsActivated = (bool)item[DT_CounterM.ENABLED]
+                    IsActivated = (bool)item[DT_CounterM.IS_ACTIVE]
                 };
                 TheCurrentLayout.ListCopy.Add(cmline);
             }
@@ -3107,10 +3106,10 @@ namespace EnsureRisk
             try
             {
                 bool result = false;
-                bool enabledColumn = (isGroup) ? estadoActual : (bool)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.ENABLED];
+                bool enabledColumn = (isGroup) ? estadoActual : (bool)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.IS_ACTIVE];
                 if (enabledColumn)
                 {
-                    TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.ENABLED] = false;
+                    TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.IS_ACTIVE] = false;
                     foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + Risk.ID))
                     {
                         damageRow[DT_Risk_Damages.STATUS] = false;
@@ -3125,7 +3124,7 @@ namespace EnsureRisk
                             itemi.SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
                             (TheCurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
                             (TheCurrentLayout.LinesList.Find(item => (item.ID == itemi.ID))).IsActivated = false;
-                            TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(itemi.ID)[DT_CounterM.ENABLED] = false;
+                            TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(itemi.ID)[DT_CounterM.IS_ACTIVE] = false;
                             foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + itemi.ID))
                             {
                                 damageRow[DT_CounterM_Damage.STATUS] = false;
@@ -3135,7 +3134,7 @@ namespace EnsureRisk
                 }
                 else
                 {
-                    TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.ENABLED] = true;
+                    TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.IS_ACTIVE] = true;
                     foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + Risk.ID))
                     {
                         damageRow[DT_Risk_Damages.STATUS] = true;
@@ -3884,10 +3883,10 @@ namespace EnsureRisk
             try
             {
                 bool result = false;
-                bool enabledColumn = (isGroup) ? estadoActual : (bool)TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_CounterM.ENABLED];
+                bool enabledColumn = (isGroup) ? estadoActual : (bool)TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_CounterM.IS_ACTIVE];
                 if (enabledColumn)
                 {
-                    TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_CounterM.ENABLED] = false;
+                    TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_CounterM.IS_ACTIVE] = false;
                     foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cm_Selected.ID))
                     {
                         damageRow[DT_CounterM_Damage.STATUS] = false;
@@ -3901,7 +3900,7 @@ namespace EnsureRisk
                 {
                     if (cm_Selected.Father.IsActivated) // si el padre esta disabled no habilito cm
                     {
-                        TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_CounterM.ENABLED] = true;
+                        TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_CounterM.IS_ACTIVE] = true;
                         foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cm_Selected.ID))
                         {
                             damageRow[DT_CounterM_Damage.STATUS] = true;
@@ -4018,9 +4017,8 @@ namespace EnsureRisk
                         CMRow[DT_CounterM.DETAIL] = windowCMGroup.Detail;
                         CMRow[DT_CounterM.ID_DIAGRAM] = RiskTreeID;
                         CMRow[DT_CounterM.ID_RISK] = itemRisk.ID;
-                        CMRow[DT_CounterM.FROM_TOP] = RowFather[DT_Risk.FROM_TOP];
                         CMRow[DT_CounterM.POSITION] = Posicion + 1;
-                        CMRow[DT_CounterM.ENABLED] = true;
+                        CMRow[DT_CounterM.IS_ACTIVE] = true;
                         CMRow[DT_CounterM.PROBABILITY] = windowCMGroup.Probability;
 
                         foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + RiskTreeID))
@@ -6429,7 +6427,7 @@ namespace EnsureRisk
                             decimal cmID = (decimal)((DataRowView)cmDataGrid.SelectedItem).Row[DT_CounterM.ID];
                             if (checkeddd.HasValue && checkeddd.Value)
                             {
-                                TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cmID)[DT_CounterM.ENABLED] = false;
+                                TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cmID)[DT_CounterM.IS_ACTIVE] = false;
                                 foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cmID))
                                 {
                                     damageRow[DT_CounterM_Damage.STATUS] = false;
@@ -6442,7 +6440,7 @@ namespace EnsureRisk
                             {
                                 if (TheCurrentLayout.LinesList.Find(item => (item.ID == cmID && item.IsCM)).Father.IsActivated) // si el padre esta disabled no habilito cm
                                 {
-                                    TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cmID)[DT_CounterM.ENABLED] = true;
+                                    TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(cmID)[DT_CounterM.IS_ACTIVE] = true;
                                     foreach (DataRow damageRow in TheCurrentLayout.Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cmID))
                                     {
                                         damageRow[DT_CounterM_Damage.STATUS] = true;

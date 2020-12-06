@@ -13,10 +13,9 @@ namespace DataMapping.Data
         public const string RISK_NAMESHORT = "Risk";
         public const string DETAIL = "detail";        
         public const string DIAGONAL = "diagonal";
-        public const string FROM_TOP = "fromTop";
         public const string PROBABILITY = "probability";
         public const string POSITION = "position";
-        public const string ENABLED = "EnableIt";
+        public const string IS_ACTIVE = "EnableIt";
         public const string ID_GROUPE = "idGroupe";
         public const string GROUPE_NAME = "GroupeName";
         public const string ID_WBS = "idWBS";
@@ -43,10 +42,9 @@ namespace DataMapping.Data
             Columns.Add(RISK_NAMESHORT, typeof(string));
             Columns.Add(DETAIL, typeof(string));
             Columns.Add(DIAGONAL, typeof(bool));
-            Columns.Add(FROM_TOP, typeof(bool));
             Columns.Add(PROBABILITY, typeof(decimal));
             Columns.Add(POSITION, typeof(int));
-            Columns.Add(ENABLED, typeof(bool));
+            Columns.Add(IS_ACTIVE, typeof(bool));
             Columns.Add(ID_GROUPE, typeof(decimal));
             Columns.Add(GROUPE_NAME, typeof(string));
             Columns.Add(ID_WBS, typeof(decimal));

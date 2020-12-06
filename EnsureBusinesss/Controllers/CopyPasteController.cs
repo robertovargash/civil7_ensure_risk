@@ -32,8 +32,7 @@ namespace EnsureBusinesss
             }
             DataRow drNewRisk = targetDataset.Tables[DT_Risk.TABLE_NAME].NewRow();
             drNewRisk[DT_Risk.COMMENTS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.COMMENTS];
-            drNewRisk[DT_Risk.ENABLED] = true;
-            drNewRisk[DT_Risk.FROM_TOP] = sourceRisk.FromTop;
+            drNewRisk[DT_Risk.IS_ACTIVE] = true;
             drNewRisk[DT_Risk.ID_DIAGRAM] = ID_Diagram;
             drNewRisk[DT_Risk.ISCOLLAPSED] = false;
             drNewRisk[DT_Risk.IS_ROOT] = false;
@@ -100,8 +99,7 @@ namespace EnsureBusinesss
             }
             DataRow drNewRisk = targetDataset.Tables[DT_Risk.TABLE_NAME].NewRow();
             drNewRisk[DT_Risk.COMMENTS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.COMMENTS];
-            drNewRisk[DT_Risk.ENABLED] = true;
-            drNewRisk[DT_Risk.FROM_TOP] = sourceRisk.FromTop;
+            drNewRisk[DT_Risk.IS_ACTIVE] = true;
             drNewRisk[DT_Risk.ID_DIAGRAM] = ID_Diagram;
             drNewRisk[DT_Risk.ISCOLLAPSED] = false;
             drNewRisk[DT_Risk.IS_ROOT] = false;
@@ -404,7 +402,7 @@ namespace EnsureBusinesss
         {
             DataRow drNewCM = targetDataset.Tables[DT_CounterM.TABLE_NAME].NewRow();
             drNewCM[DT_CounterM.DETAIL] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.DETAIL];
-            drNewCM[DT_CounterM.ENABLED] = true;
+            drNewCM[DT_CounterM.IS_ACTIVE] = true;
             drNewCM[DT_CounterM.GROUPE_NAME] = drRiskFather[DT_Risk.GROUPE_NAME];
             drNewCM[DT_CounterM.ID_GROUPE] = drRiskFather[DT_Risk.ID_GROUPE];
             drNewCM[DT_CounterM.ID_RISK] = drRiskFather[DT_Risk.ID];
@@ -587,7 +585,7 @@ namespace EnsureBusinesss
                         drRiskDamage[DT_Risk_Damages.PROBABILITY] = risk[DT_Risk.PROBABILITY];
                         drRiskDamage[DT_Risk_Damages.RISK_NAMESHORT] = risk[DT_Risk.NAMESHORT];
                         drRiskDamage[DT_Risk_Damages.RISK_TREE] = targetDataset.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.DIAGRAM_NAME];
-                        drRiskDamage[DT_Risk_Damages.STATUS] = risk[DT_Risk.ENABLED];
+                        drRiskDamage[DT_Risk_Damages.STATUS] = risk[DT_Risk.IS_ACTIVE];
                         drRiskDamage[DT_Risk_Damages.TOP_RISK] = drDamage[DT_Diagram_Damages.TOP_RISK];
                         drRiskDamage[DT_Risk_Damages.USERNAME] = risk[DT_Risk.USER_NAME];
                         drRiskDamage[DT_Risk_Damages.VALUE] = 0;
@@ -813,7 +811,7 @@ namespace EnsureBusinesss
         {
             DataRow drNewCM = targetDataset.Tables[DT_CounterM.TABLE_NAME].NewRow();
             drNewCM[DT_CounterM.DETAIL] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.DETAIL];
-            drNewCM[DT_CounterM.ENABLED] = true;
+            drNewCM[DT_CounterM.IS_ACTIVE] = true;
             drNewCM[DT_CounterM.GROUPE_NAME] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.GROUPE_NAME];
             drNewCM[DT_CounterM.ID_GROUPE] = targetDataset.Tables[DT_CounterM.TABLE_NAME].Rows.Find(sourceCM.ID)[DT_CounterM.ID_GROUPE];
             drNewCM[DT_CounterM.ID_RISK] = drRiskFather[DT_Risk.ID];
@@ -1003,7 +1001,7 @@ namespace EnsureBusinesss
                 top[DT_Risk_Damages.PROBABILITY] = drRisk[DT_Risk.PROBABILITY];
                 top[DT_Risk_Damages.RISK_NAMESHORT] = drRisk[DT_Risk.NAMESHORT];
                 top[DT_Risk_Damages.RISK_TREE] = dsTarget.Tables[DT_Diagram.TABLE_NAME].Rows.Find(idDiagram)[DT_Diagram.DIAGRAM_NAME];
-                top[DT_Risk_Damages.STATUS] = drRisk[DT_Risk.ENABLED];
+                top[DT_Risk_Damages.STATUS] = drRisk[DT_Risk.IS_ACTIVE];
                 top[DT_Risk_Damages.ID_DAMAGE] = itemi[DT_Risk_Damages.ID_DAMAGE];
                 top[DT_Risk_Damages.VALUE] = itemi[DT_Risk_Damages.VALUE];
                 top[DT_Risk_Damages.TOP_RISK] = itemi[DT_Risk_Damages.TOP_RISK];
@@ -1246,8 +1244,7 @@ namespace EnsureBusinesss
                     {
                         DataRow drRisk = dsResult.Tables[DT_Risk.TABLE_NAME].NewRow();
                         drRisk[DT_Risk.COMMENTS] = dsSource.Tables[DT_Risk.TABLE_NAME].Rows.Find(childLine.ID)[DT_Risk.COMMENTS];
-                        drRisk[DT_Risk.ENABLED] = true;
-                        drRisk[DT_Risk.FROM_TOP] = childLine.FromTop;
+                        drRisk[DT_Risk.IS_ACTIVE] = true;
                         drRisk[DT_Risk.ID_DIAGRAM] = idDiagram;
                         drRisk[DT_Risk.ISCOLLAPSED] = childLine.Collapsed;
                         drRisk[DT_Risk.IS_ROOT] = false;
@@ -1280,8 +1277,7 @@ namespace EnsureBusinesss
                     {
                         DataRow drCM = dsResult.Tables[DT_CounterM.TABLE_NAME].NewRow();
                         drCM[DT_CounterM.DETAIL] = dsSource.Tables[DT_CounterM.TABLE_NAME].Rows.Find(childLine.ID)[DT_CounterM.DETAIL];
-                        drCM[DT_CounterM.ENABLED] = true;
-                        drCM[DT_CounterM.FROM_TOP] = childLine.FromTop;
+                        drCM[DT_CounterM.IS_ACTIVE] = true;
                         drCM[DT_CounterM.ID_DIAGRAM] = idDiagram;
                         drCM[DT_CounterM.ID_RISK] = riskFather.ID;
                         drCM[DT_CounterM.NAMESHORT] = childLine.ShortName;

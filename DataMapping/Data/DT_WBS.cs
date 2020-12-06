@@ -12,7 +12,6 @@ namespace DataMapping.Data
         public const string NIVEL = "Nivel";
         public const string FNIVEL = "FNivel";
         public const string IDPROJECT = "idProject";
-        //public const string IS_MANAGER = "isManager";
         public const string USERNAME = "userName";
         public const string USER_WBS = "User-WBS";
 
@@ -32,7 +31,6 @@ namespace DataMapping.Data
             this.Columns.Add(NIVEL, typeof(string));
             this.Columns.Add(FNIVEL, typeof(string));
             this.Columns.Add(IDPROJECT, typeof(decimal));
-            //this.Columns.Add(IS_MANAGER, typeof(bool));
             this.Columns.Add(USERNAME, typeof(string));
             this.PrimaryKey = PK_COLUMN;
         }

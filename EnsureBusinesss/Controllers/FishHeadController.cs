@@ -34,7 +34,7 @@ namespace EnsureBusinesss
         {
             try
             {
-                if ((bool)risk[DT_Risk.ENABLED])
+                if ((bool)risk[DT_Risk.IS_ACTIVE])
                 {
                     if (!(Risk_Damage.Select(DT_Risk_Damages.ID_RISK + " = " + risk[DT_Risk.ID] + " AND " +
                                 DT_Risk_Damages.ID_DAMAGE + " = " + idDamage).Any()))
@@ -79,7 +79,7 @@ namespace EnsureBusinesss
         /// </summary>
         private static DataRow[] GetRiskCMs(DataRow risk, DataTable CM)
         {
-            return CM.Select(DT_CounterM.ID_RISK + " = " + risk[DT_Risk.ID] + " and " + DT_CounterM.ENABLED + " = " + true);
+            return CM.Select(DT_CounterM.ID_RISK + " = " + risk[DT_Risk.ID] + " and " + DT_CounterM.IS_ACTIVE + " = " + true);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace EnsureBusinesss
                 else
                 {
                     //ELSE FOR EACH CHILDS EXECUTE THE FUNCTION 
-                    if ((bool)item[DT_Risk.ENABLED])
+                    if ((bool)item[DT_Risk.IS_ACTIVE])
                     {
                         riskValue += CalcDiagramDamageValue(item, dtRisk, idDamage, dtRisk_Damage, dtCM, dtCM_Damage);
                     }

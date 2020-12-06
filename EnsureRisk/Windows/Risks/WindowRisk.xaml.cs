@@ -130,7 +130,7 @@ namespace EnsureRisk.Windows
                         TextFather.Text = RowFather[DT_Risk.NAMESHORT].ToString();
                         RiskRow[DT_Risk.IDRISK_FATHER] = RowFather[DT_Risk.ID];
                     }
-                    RiskRow[DT_Risk.ENABLED] = true;
+                    RiskRow[DT_Risk.IS_ACTIVE] = true;
 
                     SetTableRisk_Damages(false, true);
 
@@ -149,7 +149,7 @@ namespace EnsureRisk.Windows
                     {
                         WBS_NAME = RiskRow[DT_Risk.WBS_NAME].ToString();
                     }
-                    Enabled = (bool)RiskRow[DT_Risk.ENABLED];
+                    Enabled = (bool)RiskRow[DT_Risk.IS_ACTIVE];
                     RiskName.Text = RiskRow[DT_Risk.NAMESHORT].ToString();
                     TextDetail.Text = RiskRow[DT_Risk.COMMENTS].ToString();
                     Probability = (decimal)RiskRow[DT_Risk.PROBABILITY];
@@ -915,7 +915,7 @@ namespace EnsureRisk.Windows
         {
             RiskRow[DT_Risk.NAMESHORT] = RiskName.Text;
             RiskRow[DT_Risk.ISCOLLAPSED] = false;
-            RiskRow[DT_Risk.ENABLED] = Enabled;
+            RiskRow[DT_Risk.IS_ACTIVE] = Enabled;
             RiskRow[DT_Risk.COMMENTS] = TextDetail.Text;
             RiskRow[DT_Risk.ID_DIAGRAM] = RiskTreeID;
             RiskRow[DT_Risk.IS_ROOT] = false;

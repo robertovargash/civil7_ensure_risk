@@ -159,7 +159,7 @@ namespace EnsureRisk.Windows
                             rowTop[DT_CounterM_Damage.RISK_REDUCTION] = 0;
                             rowTop[DT_CounterM_Damage.GROUPENAME] = "None";
                             rowTop[DT_CounterM_Damage.RISK] = CMRow[DT_CounterM.RISK_NAMESHORT];
-                            rowTop[DT_CounterM_Damage.STATUS] = CMRow[DT_CounterM.ENABLED];
+                            rowTop[DT_CounterM_Damage.STATUS] = CMRow[DT_CounterM.IS_ACTIVE];
                             rowTop[DT_CounterM_Damage.IDRISK] = CMRow[DT_CounterM.ID_RISK];
                             Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Add(rowTop);
                         }
@@ -502,7 +502,7 @@ namespace EnsureRisk.Windows
             CMRow[DT_CounterM.ID_DIAGRAM] = RiskTreeID;
             CMRow[DT_CounterM.ID_RISK] = RiskPadre.ID;
             CMRow[DT_CounterM.POSITION] = Posicion;
-            CMRow[DT_CounterM.ENABLED] = true;
+            CMRow[DT_CounterM.IS_ACTIVE] = true;
             CMRow[DT_CounterM.ID_WBS] = ID_WBS;
             CMRow[DT_CounterM.WBS_NAME] = WBS_NAME;
             CMRow[DT_CounterM.USER_NAME] = USER_NAME;
