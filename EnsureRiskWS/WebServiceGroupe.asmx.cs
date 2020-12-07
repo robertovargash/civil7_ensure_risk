@@ -25,11 +25,13 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Project.TABLE_NAME);
-                SQL.GetDataset(ref ds, "pa_SelectGroupe");
-                ds.Tables[0].TableName = DT_Groupe.TABLE_NAME;
-                userds.Merge(ds);
-                return userds;
+                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Project.TABLE_NAME))
+                {
+                    SQL.GetDataset(ref ds, "pa_SelectGroupe");
+                    ds.Tables[0].TableName = DT_Groupe.TABLE_NAME;
+                    userds.Merge(ds);
+                    return userds;
+                }
             }
             catch (Exception ex)
             {
@@ -40,7 +42,7 @@ namespace EnsureRiskWS
         [WebMethod]
         public DataSet SaveGroupe(DataSet ds)
         {
-            SqlConnection sql = new SqlConnection();
+            //SqlConnection sql = new SqlConnection();
 
             SqlTransaction trans;
             SSQLConnection conection = SQLAccessBuilder.GetClassSSQLConnection();
@@ -48,8 +50,6 @@ namespace EnsureRiskWS
             trans = (SqlTransaction)conection.BeginTransaction();
             try
             {
-
-
                 SQLAccessBuilder trDA = new SQLAccessBuilder(trans, ds.Tables[DT_Groupe.TABLE_NAME].TableName, ds.Tables[DT_Groupe.TABLE_NAME].PrimaryKey);
 
                 trDA.Delete(ds);
@@ -57,6 +57,8 @@ namespace EnsureRiskWS
                 trDA.Update(ds);
 
                 trDA.Insert(ds);
+
+                trDA.Dispose();
 
                 if (ds.HasErrors)
                 {

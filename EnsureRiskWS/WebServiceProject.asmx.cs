@@ -25,11 +25,13 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Project.TABLE_NAME);
-                SQL.GetDataset(ref ds, "pa_SelectProjectFiltered", new object[] { -9999 });
-                ds.Tables[0].TableName = DT_Project.TABLE_NAME;
-                userds.Merge(ds);
-                return userds;
+                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Project.TABLE_NAME))
+                {
+                    SQL.GetDataset(ref ds, "pa_SelectProjectFiltered", new object[] { -9999 });
+                    ds.Tables[0].TableName = DT_Project.TABLE_NAME;
+                    userds.Merge(ds);
+                    return userds;
+                }
             }
             catch (Exception ex)
             {
@@ -40,23 +42,20 @@ namespace EnsureRiskWS
         [WebMethod]
         public DataSet SaveProject(DataSet ds)
         {
-            SqlConnection sql = new SqlConnection();
-
             SqlTransaction trans;
             SSQLConnection conection = SQLAccessBuilder.GetClassSSQLConnection();
             //conection = (SqlConnection)
             trans = (SqlTransaction)conection.BeginTransaction();
             try
             {
+                using (SQLAccessBuilder trDA = new SQLAccessBuilder(trans, ds.Tables[DT_Project.TABLE_NAME].TableName, ds.Tables[DT_Project.TABLE_NAME].PrimaryKey))
+                {
+                    trDA.Delete(ds);
 
+                    trDA.Update(ds);
 
-                SQLAccessBuilder trDA = new SQLAccessBuilder(trans, ds.Tables[DT_Project.TABLE_NAME].TableName, ds.Tables[DT_Project.TABLE_NAME].PrimaryKey);
-
-                trDA.Delete(ds);
-
-                trDA.Update(ds);
-
-                trDA.Insert(ds);
+                    trDA.Insert(ds);
+                }
 
                 if (ds.HasErrors)
                 {

@@ -24,14 +24,15 @@ namespace EnsureRiskWS
             try
             {
                 UserDataSet userds = new UserDataSet();
-                DataSet ds = new DataSet();                
-                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_WBS.TABLE_NAME);
-                SQL.GetDataset(ref ds, "pa_SelectWBSFiltered", param);
-                ds.Tables[0].TableName = DT_WBS.TABLE_NAME;
-                ds.Tables[1].TableName = DT_WBS_STRUCTURE.TABLE_NAME;
-                userds.Merge(ds);
-                SQL.Dispose();
-                return userds;
+                DataSet ds = new DataSet();
+                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_WBS.TABLE_NAME))
+                {
+                    SQL.GetDataset(ref ds, "pa_SelectWBSFiltered", param);
+                    ds.Tables[0].TableName = DT_WBS.TABLE_NAME;
+                    ds.Tables[1].TableName = DT_WBS_STRUCTURE.TABLE_NAME;
+                    userds.Merge(ds);
+                    return userds;
+                }
             }
             catch (Exception ex)
             {
@@ -46,13 +47,15 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_WBS.TABLE_NAME);
-                SQL.GetDataset(ref ds, "pa_SelectWBS");
-                ds.Tables[0].TableName = DT_WBS.TABLE_NAME;
-                ds.Tables[1].TableName = DT_WBS_STRUCTURE.TABLE_NAME;
-                userds.Merge(ds);
-                SQL.Dispose();
-                return userds;
+                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_WBS.TABLE_NAME))
+                {
+                    SQL.GetDataset(ref ds, "pa_SelectWBS");
+                    ds.Tables[0].TableName = DT_WBS.TABLE_NAME;
+                    ds.Tables[1].TableName = DT_WBS_STRUCTURE.TABLE_NAME;
+                    userds.Merge(ds);
+                    SQL.Dispose();
+                    return userds;
+                }
             }
             catch (Exception ex)
             {

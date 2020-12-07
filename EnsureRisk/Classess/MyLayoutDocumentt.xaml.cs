@@ -2441,13 +2441,13 @@ namespace EnsureRisk.Classess
                         case 0:
                             drNewRisk = CopyPasteController.CopyAllValuesFromLineSource(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
                                                                                                 ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList, false);
-                            CopyPasteController.SetValuesFromChildToFather(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS);
+                            CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS, false);
                                                       
                             break;
                         case 1:
                             drNewRisk = CopyPasteController.CopyAllValuesFromLineSource(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
                                                                                                 ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList, true);
-                            CopyPasteController.SetValuesFromChildToFather(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS);
+                            CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS, false);
                             break;
                         default:
                             drNewRisk = CopyPasteController.CopyRiskWithoutSourceData(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
@@ -2504,10 +2504,14 @@ namespace EnsureRisk.Classess
                         case 0:
                             drNewCM = CopyPasteController.SetValuesOriginalAndNewCopiedCM(Line_Selected, ImportDSs, 
                                 Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS, false);
+                            CopyPasteController.SetValuesFromChildToAncestors(drNewCM, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS, true);
+
                             break;
                         case 1:
                             drNewCM = CopyPasteController.SetValuesOriginalAndNewCopiedCM(Line_Selected, ImportDSs,
                                 Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS, true);
+                            CopyPasteController.SetValuesFromChildToAncestors(drNewCM, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS, true);
+
                             break;
                         default:
                             drNewCM = CopyPasteController.SetNewCMValues(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);                           
@@ -3282,7 +3286,6 @@ namespace EnsureRisk.Classess
                 if (((MainWindow)MyWindow).TheCurrentLayout.ID_Diagram != ID_Diagram)
                 {
                     ((MainWindow)MyWindow).TheCurrentLayout = this;
-                    ((MainWindow)MyWindow).UpdateMiniMapSource();
                     foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
                     {
                         item.ExitWorking();
@@ -3500,7 +3503,6 @@ namespace EnsureRisk.Classess
                     if (((MainWindow)MyWindow).TheCurrentLayout.ID_Diagram != ID_Diagram)
                     {
                         ((MainWindow)MyWindow).TheCurrentLayout = this;
-                        ((MainWindow)MyWindow).UpdateMiniMapSource();
                         foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
                         {
                             item.ExitWorking();

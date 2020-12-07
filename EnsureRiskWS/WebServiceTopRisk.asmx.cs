@@ -25,11 +25,13 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Damage.TABLE_NAME);
-                SQL.GetDataset(ref ds, "pa_SelectTopRisk");
-                ds.Tables[0].TableName = DT_Damage.TABLE_NAME;
-                userds.Merge(ds);
-                return userds;
+                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Damage.TABLE_NAME))
+                {
+                    SQL.GetDataset(ref ds, "pa_SelectTopRisk");
+                    ds.Tables[0].TableName = DT_Damage.TABLE_NAME;
+                    userds.Merge(ds);
+                    return userds;
+                }
             }
             catch (Exception ex)
             {
@@ -48,13 +50,14 @@ namespace EnsureRiskWS
             trans = (SqlTransaction)conection.BeginTransaction();
             try
             {
-                SQLAccessBuilder trDA = new SQLAccessBuilder(trans, ds.Tables[DT_Damage.TABLE_NAME].TableName, ds.Tables[DT_Damage.TABLE_NAME].PrimaryKey);
+                using (SQLAccessBuilder trDA = new SQLAccessBuilder(trans, ds.Tables[DT_Damage.TABLE_NAME].TableName, ds.Tables[DT_Damage.TABLE_NAME].PrimaryKey))
+                {
+                    trDA.Delete(ds);
 
-                trDA.Delete(ds);
+                    trDA.Update(ds);
 
-                trDA.Update(ds);
-
-                trDA.Insert(ds);
+                    trDA.Insert(ds);
+                }
 
                 if (ds.HasErrors)
                 {

@@ -25,11 +25,13 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_User.User_TABLA);
-                SQL.GetDataset(ref ds, "pa_SelectUsername");
-                ds.Tables[0].TableName = DT_User.User_TABLA;
-                userds.Merge(ds);
-                return userds;
+                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_User.User_TABLA))
+                {
+                    SQL.GetDataset(ref ds, "pa_SelectUsername");
+                    ds.Tables[0].TableName = DT_User.User_TABLA;
+                    userds.Merge(ds);
+                    return userds;
+                }
             }
             catch (Exception ex)
             {
@@ -44,12 +46,14 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_User.User_TABLA);
-                SQL.GetDataset(ref ds, "pa_SelectUserWithRole", param);
-                ds.Tables[1].TableName = DT_User_Role.TABLE_NAME;
-                //ds.Tables[2].TableName = DT_User_WBS.TABLE_NAME;
-                userds.Merge(ds);
-                return userds;
+                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_User.User_TABLA))
+                {
+                    SQL.GetDataset(ref ds, "pa_SelectUserWithRole", param);
+                    ds.Tables[1].TableName = DT_User_Role.TABLE_NAME;
+                    //ds.Tables[2].TableName = DT_User_WBS.TABLE_NAME;
+                    userds.Merge(ds);
+                    return userds;
+                }
             }
             catch (Exception ex)
             {

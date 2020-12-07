@@ -24,27 +24,29 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Diagram.TABLE_NAME);
-                SQL.GetDataset(ref ds, "pa_SelectRiskTreeFilterSTRING", param);
-                ds.Tables[1].TableName = DT_Diagram_Damages.TABLE_NAME;
-                ds.Tables[2].TableName = DT_Risk.TABLE_NAME;
-                ds.Tables[3].TableName = DT_RiskStructure.TABLE_NAME;
-                ds.Tables[4].TableName = DT_Risk_Damages.TABLE_NAME;
-                ds.Tables[5].TableName = DT_RISK_WBS.TABLE_NAME;
-                ds.Tables[6].TableName = DT_WBS_RISK_DAMAGE.TABLE_NAME;
-                ds.Tables[7].TableName = DT_Role_Risk.TABLENAME;
-                ds.Tables[8].TableName = DT_CounterM.TABLE_NAME;
-                ds.Tables[9].TableName = DT_CounterM_Damage.TABLE_NAME;
-                ds.Tables[10].TableName = DT_CM_WBS.TABLE_NAME;
-                ds.Tables[11].TableName = DT_WBS_CM_Damage.TABLE_NAME;
-                ds.Tables[12].TableName = DT_Role_CM.TABLENAME;
-                ds.Tables[13].TableName = DT_User_Role.TABLE_NAME;
-                ds.Tables[14].TableName = DT_Role.ROLE_TABLE;
-                ds.Tables[15].TableName = DT_DefaulRisk.Risk_TABLA;
-                ds.Tables[16].TableName = DT_Groupe.TABLE_NAME;
-                //ds.Tables[14].TableName = DT_User_WBS.TABLE_NAME;
-                userds.Merge(ds);
-                return userds;
+                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Diagram.TABLE_NAME))
+                {
+                    SQL.GetDataset(ref ds, "pa_SelectRiskTreeFilterSTRING", param);
+                    ds.Tables[1].TableName = DT_Diagram_Damages.TABLE_NAME;
+                    ds.Tables[2].TableName = DT_Risk.TABLE_NAME;
+                    ds.Tables[3].TableName = DT_RiskStructure.TABLE_NAME;
+                    ds.Tables[4].TableName = DT_Risk_Damages.TABLE_NAME;
+                    ds.Tables[5].TableName = DT_RISK_WBS.TABLE_NAME;
+                    ds.Tables[6].TableName = DT_WBS_RISK_DAMAGE.TABLE_NAME;
+                    ds.Tables[7].TableName = DT_Role_Risk.TABLENAME;
+                    ds.Tables[8].TableName = DT_CounterM.TABLE_NAME;
+                    ds.Tables[9].TableName = DT_CounterM_Damage.TABLE_NAME;
+                    ds.Tables[10].TableName = DT_CM_WBS.TABLE_NAME;
+                    ds.Tables[11].TableName = DT_WBS_CM_Damage.TABLE_NAME;
+                    ds.Tables[12].TableName = DT_Role_CM.TABLENAME;
+                    ds.Tables[13].TableName = DT_User_Role.TABLE_NAME;
+                    ds.Tables[14].TableName = DT_Role.ROLE_TABLE;
+                    ds.Tables[15].TableName = DT_DefaulRisk.Risk_TABLA;
+                    ds.Tables[16].TableName = DT_Groupe.TABLE_NAME;
+                    //ds.Tables[14].TableName = DT_User_WBS.TABLE_NAME;
+                    userds.Merge(ds);
+                    return userds;
+                }
             }
             catch (Exception ex)
             {
@@ -175,27 +177,29 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Diagram.TABLE_NAME);
-                SQL.GetDataset(ref ds, "pa_SelectRiskTreeFilterByID", param);
-                ds.Tables[1].TableName = DT_Diagram_Damages.TABLE_NAME;
-                ds.Tables[2].TableName = DT_Risk.TABLE_NAME;
-                ds.Tables[3].TableName = DT_RiskStructure.TABLE_NAME;
-                ds.Tables[4].TableName = DT_Risk_Damages.TABLE_NAME;                
-                ds.Tables[5].TableName = DT_RISK_WBS.TABLE_NAME;
-                ds.Tables[6].TableName = DT_WBS_RISK_DAMAGE.TABLE_NAME;
-                ds.Tables[7].TableName = DT_Role_Risk.TABLENAME;
-                ds.Tables[8].TableName = DT_CounterM.TABLE_NAME;
-                ds.Tables[9].TableName = DT_CounterM_Damage.TABLE_NAME;
-                ds.Tables[10].TableName = DT_CM_WBS.TABLE_NAME;
-                ds.Tables[11].TableName = DT_WBS_CM_Damage.TABLE_NAME;
-                ds.Tables[12].TableName = DT_Role_CM.TABLENAME;
-                ds.Tables[13].TableName = DT_User_Role.TABLE_NAME;
-                ds.Tables[14].TableName = DT_Role.ROLE_TABLE;
-                ds.Tables[15].TableName = DT_DefaulRisk.Risk_TABLA;
-                ds.Tables[16].TableName = DT_Groupe.TABLE_NAME;
-                //ds.Tables[14].TableName = DT_User_WBS.TABLE_NAME;
-                userds.Merge(ds);
-                return userds;
+                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Diagram.TABLE_NAME))
+                {
+                    SQL.GetDataset(ref ds, "pa_SelectRiskTreeFilterByID", param);
+                    ds.Tables[1].TableName = DT_Diagram_Damages.TABLE_NAME;
+                    ds.Tables[2].TableName = DT_Risk.TABLE_NAME;
+                    ds.Tables[3].TableName = DT_RiskStructure.TABLE_NAME;
+                    ds.Tables[4].TableName = DT_Risk_Damages.TABLE_NAME;
+                    ds.Tables[5].TableName = DT_RISK_WBS.TABLE_NAME;
+                    ds.Tables[6].TableName = DT_WBS_RISK_DAMAGE.TABLE_NAME;
+                    ds.Tables[7].TableName = DT_Role_Risk.TABLENAME;
+                    ds.Tables[8].TableName = DT_CounterM.TABLE_NAME;
+                    ds.Tables[9].TableName = DT_CounterM_Damage.TABLE_NAME;
+                    ds.Tables[10].TableName = DT_CM_WBS.TABLE_NAME;
+                    ds.Tables[11].TableName = DT_WBS_CM_Damage.TABLE_NAME;
+                    ds.Tables[12].TableName = DT_Role_CM.TABLENAME;
+                    ds.Tables[13].TableName = DT_User_Role.TABLE_NAME;
+                    ds.Tables[14].TableName = DT_Role.ROLE_TABLE;
+                    ds.Tables[15].TableName = DT_DefaulRisk.Risk_TABLA;
+                    ds.Tables[16].TableName = DT_Groupe.TABLE_NAME;
+                    //ds.Tables[14].TableName = DT_User_WBS.TABLE_NAME;
+                    userds.Merge(ds);
+                    return userds;
+                }
             }
             catch (Exception ex)
             {
@@ -210,11 +214,13 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                SQLAccessBuilder SQL = new SQLAccessBuilder(tablename);
-                SQL.GetDataset(ref ds, sp);
-                ds.Tables[0].TableName = tablename;
-                userds.Merge(ds);
-                return userds;
+                using (SQLAccessBuilder SQL = new SQLAccessBuilder(tablename))
+                {
+                    SQL.GetDataset(ref ds, sp);
+                    ds.Tables[0].TableName = tablename;
+                    userds.Merge(ds);
+                    return userds;
+                }
             }
             catch (Exception ex)
             {
