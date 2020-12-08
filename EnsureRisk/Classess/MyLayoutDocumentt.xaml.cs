@@ -3630,33 +3630,88 @@ namespace EnsureRisk.Classess
 
         private void ScrollGridPaint_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            UpdateMiniMapSize();          
+            try
+            {
+                UpdateMiniMapSize();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public void LineasIn()
         {
             int cont = 0;
-            foreach (var frameworkElement in LinesList)
+            string message = "";
+            foreach (RiskPolyLine linea in LinesList)
             {
-                if (frameworkElement != null)
+                if (linea != null)
                 {
-                    if (this.IsUserVisible(frameworkElement, this.ScrollGridPaint))
+                    if (IsUserVisible(linea, this.ScrollGridPaint))
                     {
                         cont++;
+                        message = message + " " + linea.ShortName;
                     }
                 }
             }
-            MessageBox.Show(cont + " lineas");
+            MessageBox.Show(cont + " lineas son: "+ message);
         }
-        private bool IsUserVisible(FrameworkElement element, FrameworkElement container)
+        private bool IsUserVisible(RiskPolyLine element, FrameworkElement container)
         {
             if (!element.IsVisible)
             {
                 return false;
             }
-            Rect bounds = element.TransformToAncestor(container).TransformBounds(new Rect(0.0, 0.0, element.ActualWidth, element.ActualHeight));
+            //GUSTAVO, ESTO COMENTADO ERA LO QUE HABIA, EL PROBLEMA ES QUE ESTABA TOMANDO COMO PUNTO INICIAL EL 0.0, LA ESQUINA DEL VIEWPORT, CUANDO DEBE
+            //TOMAR EL PUNTO MAS ARRIBA DE LOS RsikPolyline, QUE EN EL CASO DE LOS VERTICALES, VARIA SEGUN LAS PROPIEDADES FROMTOP Y DIAGONAL
+            //Rect bounds = element.TransformToAncestor(container).TransformBounds(new Rect(0.0, 0.0, element.ActualWidth, element.ActualHeight)); 
             Rect rect = new Rect(0.0, 0.0, container.ActualWidth, container.ActualHeight);
-            return rect.Contains(bounds.TopLeft) || rect.Contains(bounds.BottomRight);
+
+            //GUSTAVO, COMO PUEDES VER DECLARE LAS VARIABLES ANCHO Y ALTO, ESTAS VARIABLES SEGUN "DIAGONAL" Y "FROMTOP" CALCULA EL WIDTH Y HEIGHT DE LAS LINEAS
+            //LO QUE TE TOCA ES AJUSTAR ESO SEGUN LA CANTIDAD DE SEGMENTOS QUE TENGA ESA LINEA
+            //ADEMAS DE SI ES UNA CONTRAMEDIDA (CM) SEGUN RECUERDO TENIA UN PUNTO MAS, ASI QUE VALIDA ESO TAMBIEN
+            double ancho;double alto;            
+            Rect bounds;
+            Point elPuntoMasArriba;
+            if (element.IsDiagonal)
+            {
+                if (element.FromTop)
+                {
+                    //TIENES QUE AJUSTAR ANCHO Y ALTO SEGUN LOS SEGMENTOS, Y TAMBIEN SI ES CONTRAMEDIDA
+                    ancho = element.Points[1].X - element.Points[0].X;
+                    alto = element.Points[1].Y - element.Points[0].Y;
+
+                    elPuntoMasArriba = new Point(element.Points[0].X, element.Points[0].Y);
+
+                    bounds = element.TransformToAncestor(container).TransformBounds(new Rect(elPuntoMasArriba.X, elPuntoMasArriba.Y, ancho, alto));
+                }
+                else
+                {
+                    //TIENES QUE AJUSTAR ANCHO Y ALTO SEGUN LOS SEGMENTOS, Y TAMBIEN SI ES CONTRAMEDIDA
+                    ancho = element.Points[1].X - element.Points[0].X;
+                    alto = element.Points[0].Y - element.Points[1].Y;
+
+                    elPuntoMasArriba = new Point(element.Points[1].X, element.Points[1].Y);
+
+                    bounds = element.TransformToAncestor(container).TransformBounds(new Rect(elPuntoMasArriba.X, elPuntoMasArriba.Y, ancho, alto));
+                }
+            }
+            else
+            {
+                //TIENES QUE AJUSTAR ANCHO SEGUN LOS SEGMENTOS, Y TAMBIEN SI ES CONTRAMEDIDA
+
+                ancho = element.Points[1].X - element.Points[0].X;
+                //AQUI DEJA ESE ALTO, PARA LAS CM DEBE SER 3 O 5 PUES SIEMPRE TIENEN EL MISMO ANCHO (3)
+                alto = 20;
+                //AQUI NO IMPORTA QUE TAN ARRIBA, SINO EL MAS A LA IZQUIERDA 
+                elPuntoMasArriba = new Point(element.Points[0].X, element.Points[0].Y);
+
+                bounds = element.TransformToAncestor(container).TransformBounds(new Rect(elPuntoMasArriba.X, elPuntoMasArriba.Y, ancho, alto));
+            }
+            //return rect.Contains(bounds.TopLeft) || rect.Contains(bounds.BottomRight);
+            return bounds.IntersectsWith(rect);
         }
 
         private void ScrollGridPaint_SizeChanged(object sender, SizeChangedEventArgs e)

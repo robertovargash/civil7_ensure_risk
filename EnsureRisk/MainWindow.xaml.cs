@@ -1431,7 +1431,7 @@ namespace EnsureRisk
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ExportToExcel_Click(object sender, RoutedEventArgs e)
-        {
+        {            
             try
             {
                 if (OpenedDocuments.Count != 0 && TheCurrentLayout != null && TheCurrentLayout.ID_Diagram >= 0 && !TheCurrentLayout.IsExportingToExcel)
@@ -1458,8 +1458,7 @@ namespace EnsureRisk
             {
                 MostrarErrorDialog(ex.Message);
             }
-        }
-        
+        }        
         #endregion
 
 
@@ -6946,7 +6945,6 @@ namespace EnsureRisk
         {
             if (TheCurrentLayout != null)
             {
-                //TheCurrentLayout.LineasIn();
                 if (!TheCurrentLayout.IsPanEnable)
                 {
                     foreach (var item in OpenedDocuments)
