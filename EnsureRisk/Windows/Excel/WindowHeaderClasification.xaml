@@ -8,13 +8,16 @@
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:classess="clr-namespace:EnsureRisk.Classess"
         mc:Ignorable="d"
-        Title="Specify input data" Height="575.237" Width="602.782" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" >
+        Title="Specify input data" Height="575.237" Width="603" MinHeight="250" MinWidth="600" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/Styless.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+            <classess:OpositeBoolToVisibilityConverter x:Key="OpositeBoolToVisConverter" />
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -33,28 +36,25 @@
                 </StackPanel>
             </StackPanel>
         </md:ColorZone>
-        <DataGrid Grid.Row="1" x:Name="dgHeaders" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" GridLinesVisibility="All" SelectionChanged="dgHeaders_SelectionChanged" MouseDoubleClick="dgHeaders_MouseDoubleClick">
+        <DataGrid Grid.Row="1" x:Name="dgHeaders" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" GridLinesVisibility="All">
             <DataGrid.Columns>
-                <DataGridTemplateColumn x:Name="headBTN" Header="Action" Width="80">
+                <DataGridTextColumn x:Name="Heaader" Header="Excel Column Header" Binding="{Binding Header}" Width="*" IsReadOnly="True"/>
+                <!--<DataGridTextColumn x:Name="Type" Header="Type Selected" Binding="{Binding Type}" Width="*" IsReadOnly="True" FontStyle="{Binding IsMarked, Converter={StaticResource FontConverter}}"/>-->
+                <DataGridTemplateColumn x:Name="Type" Header="Type Selected" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <local:MyExcelButton x:Name="BtnDelWBSRisk" HorizontalAlignment="Left" Height="20" Width="20" ToolTip="Select Action" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Click="Mck_Click" md:ShadowAssist.ShadowDepth="Depth5">
-                                    <md:PackIcon Kind="DotsHorizontal"/>
-                                </local:MyExcelButton>
-                                <Button  HorizontalAlignment="Left" Content="{md:PackIcon Kind=Trash}" Margin="10 0 0 0" Height="20" Width="20" ToolTip="Delete Action" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Click="Button_Click" md:ShadowAssist.ShadowDepth="Depth5"/>
+                            <StackPanel Orientation="Vertical">
+                                <Button Click="Select_Click" Foreground="#FF91B626" Style="{StaticResource MaterialDesignFlatButton}" Visibility="{Binding IsMarked, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                    <TextBlock Text="SELECT..." FontStyle="Italic" FontWeight="Bold"/>
+                                </Button>
+                                <md:Chip HorizontalAlignment="Center" Content="{Binding Type}" Icon="{md:PackIcon Kind=AlertCircleOutline}"  IsDeletable="True" DeleteClick="Delete_Click" Visibility="{Binding IsMarked, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn x:Name="Heaader" Header="Excel Column Header" Binding="{Binding Header}"  Width="*" IsReadOnly="True"/>
-                <DataGridTextColumn x:Name="Type" Header="Type Selected" Binding="{Binding Type}"  Width="*" IsReadOnly="True" FontStyle="Italic" Foreground="#FF6B6B6B"/>
             </DataGrid.Columns>
         </DataGrid>
-        <!--<ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" Grid.Row="1">
-            <StackPanel Orientation="Vertical" Name="TheStackPanel"/>
-        </ScrollViewer>-->
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" Background="{StaticResource MaterialDesignPaper}">
             <Button Name="BtnOK" Content="OK" Margin="0,0,100,13" Click="BtnOK_Click" IsDefault="True" TabIndex="1" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom"/>
             <Button x:Name="BtnCancel" Content="Cancel" Margin="0,0,8,13" Click="BtnCancel_Click" IsCancel="True" TabIndex="2" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom"/>
 

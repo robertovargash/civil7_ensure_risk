@@ -24,8 +24,6 @@ namespace EnsureRisk.Windows
     public partial class WindowHeaderClasification : Window
     {
         public List<HeaderExcelContent> MyList { get; set; }
-        public List<MyExcelButton> BtnList { get; set; }
-        public List<int> ChipList { get; set; }
         public DataSet MyDataset { get; set; }
         public bool IsCustom { get; set; }
         public DataView DataVieww { get; set; }
@@ -34,6 +32,8 @@ namespace EnsureRisk.Windows
         private const string ID_CLASIFICATION = "idClasification";
         private const string HEADER = "Header";
         private const string TYPE = "Type";
+        private const string MARKED = "IsMarked";
+        private const string INITIAL = "Initial";
 
         public WindowHeaderClasification()
         {
@@ -46,17 +46,20 @@ namespace EnsureRisk.Windows
             {
                 chkIsCustom.IsChecked = true;
                 IsCustom = true;
-                BtnList = new List<MyExcelButton>();
                 MyTable = new DataTable();
                 MyTable.Columns.Add(HEADER, typeof(string));
                 MyTable.Columns.Add(ID_CLASIFICATION, typeof(int));
                 MyTable.Columns.Add(TYPE, typeof(string));
+                MyTable.Columns.Add(INITIAL, typeof(string));
+                MyTable.Columns.Add(MARKED, typeof(bool));
                 foreach (var item in MyList)
                 {
                     DataRow dr = MyTable.NewRow();
                     dr[HEADER] = item.MyContent;
                     dr[ID_CLASIFICATION] = 0;
                     dr[TYPE] = "Select...";
+                    dr[MARKED] = false;
+                    dr[INITIAL] = "";
                     MyTable.Rows.Add(dr);
                 }
                 DataVieww= new DataView(MyTable);
@@ -68,7 +71,7 @@ namespace EnsureRisk.Windows
             }            
         }
 
-        private void Mck_Click(object sender, RoutedEventArgs e)
+        private void Select_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -79,6 +82,8 @@ namespace EnsureRisk.Windows
                     {                        
                         DataVieww[dgHeaders.SelectedIndex].Row[ID_CLASIFICATION] = wmr.ValueSelected;
                         DataVieww[dgHeaders.SelectedIndex].Row[TYPE] = wmr.ContentSelected;
+                        DataVieww[dgHeaders.SelectedIndex].Row[INITIAL] = wmr.ContentSelected.ToString().ToCharArray()[0].ToString().ToUpper();
+                        DataVieww[dgHeaders.SelectedIndex].Row[MARKED] = true;
                     }
                 }
             }
@@ -87,21 +92,7 @@ namespace EnsureRisk.Windows
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }            
         }
-
-        private void Chip_DeleteClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                ((MyExcelButton)((StackPanel)((Chip)sender).Parent).Children[0]).Visibility = Visibility.Visible;
-                ((MyExcelButton)((StackPanel)((Chip)sender).Parent).Children[0]).MyValue = 0;
-                ((StackPanel)((Chip)sender).Parent).Children.RemoveAt(1);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
+        
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -133,46 +124,22 @@ namespace EnsureRisk.Windows
             IsCustom = true;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgHeaders.SelectedIndex >= 0)
-            {
-                DataVieww[dgHeaders.SelectedIndex].Row["idClasification"] = 0;
-                DataVieww[dgHeaders.SelectedIndex].Row["Type"] = "Select...";
-            }
-        }
-
-        private void dgHeaders_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Delete_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                //if (dgHeaders.SelectedIndex >= 0)
-                //{
-                //    WindowMultiRadio wmr = new WindowMultiRadio();
-                //    if (wmr.ShowDialog() == true)
-                //    {
-                //        DataVieww[dgHeaders.SelectedIndex].Row[ID_CLASIFICATION] = wmr.ValueSelected;
-                //        DataVieww[dgHeaders.SelectedIndex].Row[TYPE] = wmr.ContentSelected;
-                //    }
-                //}                
+                if (dgHeaders.SelectedIndex >= 0)
+                {
+                    DataVieww[dgHeaders.SelectedIndex].Row["idClasification"] = 0;
+                    DataVieww[dgHeaders.SelectedIndex].Row["Type"] = "Select...";
+                    DataVieww[dgHeaders.SelectedIndex].Row[INITIAL] = "";
+                    DataVieww[dgHeaders.SelectedIndex].Row[MARKED] = false;
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-        private void dgHeaders_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (dgHeaders.SelectedIndex >= 0)
-            {
-                WindowMultiRadio wmr = new WindowMultiRadio();
-                if (wmr.ShowDialog() == true)
-                {
-                    DataVieww[dgHeaders.SelectedIndex].Row[ID_CLASIFICATION] = wmr.ValueSelected;
-                    DataVieww[dgHeaders.SelectedIndex].Row[TYPE] = wmr.ContentSelected;
-                }
-            }
-        }
+        }        
     }
 }
