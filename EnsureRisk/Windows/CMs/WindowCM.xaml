@@ -14,7 +14,7 @@
         xmlns:local="clr-namespace:EnsureRisk.Windows"
          xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Countermeasure"  Height="481" Width="680" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+        Title="Countermeasure" Height="561" Width="677" MinWidth="677" MinHeight="561" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -34,20 +34,30 @@
         </EventTrigger>
     </Window.Triggers>
     <Grid>
-        <Button Name="BtnOK" Content="OK" HorizontalAlignment="Left" Height="25" Margin="449,405,0,0" VerticalAlignment="Top" Width="90" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5"/>
-        <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Left" Height="25" Margin="551,405,0,0" VerticalAlignment="Top" Width="90" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5"/>
-        <TextBox IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Short Name" md:HintAssist.IsFloating="True" Name="TextName" MaxLength="250" HorizontalAlignment="Left" Margin="34,7,0,0" TextChanged="TextName_TextChanged" TextWrapping="Wrap"  VerticalAlignment="Top"  Width="288" MaxLines="1">
-            <TextBox.Text>
-                <Binding Path="ShortName" UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
-                    </Binding.ValidationRules>
-                </Binding>
-            </TextBox.Text>
-        </TextBox>
-        <TextBox md:HintAssist.Hint="Father" md:HintAssist.IsFloating="True" x:Name="TextFather" HorizontalAlignment="Left" Margin="408,7,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="246" IsReadOnly="True" IsEnabled="False"/>
-        <TextBox IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" Name="TextDetail" HorizontalAlignment="Left" Height="71" Margin="34,59,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="622" TextAlignment="Justify"/>
-        <TabControl HorizontalAlignment="Left" Height="192" Margin="34,186,0,0" VerticalAlignment="Top" Width="620">
+        <Button Name="BtnOK" Content="OK" HorizontalAlignment="Right" Height="25" Margin="0,0,143,19" VerticalAlignment="Bottom" Width="90" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5"/>
+        <Button Name="BtnCancel" Content="Cancel" HorizontalAlignment="Right" Height="25" Margin="0,0,39,19" VerticalAlignment="Bottom" Width="90" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5"/>
+        <StackPanel Orientation="Vertical" Margin="34,7,347,0">
+            <TextBox IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Short Name" md:HintAssist.IsFloating="True" Name="TextName" MaxLength="250" TextWrapping="Wrap"  VerticalAlignment="Top"  MaxLines="1" TextOptions.TextHintingMode="Animated" 
+                     TextChanged="TextName_TextChanged" KeyUp="TextName_KeyUp" LostFocus="TextName_LostFocus">
+                <TextBox.Text>
+                    <Binding Path="ShortName" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <Border Height="60" BorderBrush="Black" BorderThickness="0" Margin="5">
+                <ScrollViewer x:Name="pp" Visibility="Collapsed" VerticalScrollBarVisibility="Visible">
+                    <StackPanel Name="resultStack" ></StackPanel>
+                </ScrollViewer>
+            </Border>
+        </StackPanel>
+
+        <TextBox md:HintAssist.Hint="Father" md:HintAssist.IsFloating="True" x:Name="TextFather" HorizontalAlignment="Right" Margin="0,7,15,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" Width="246" IsReadOnly="True" IsEnabled="False"/>
+        <TextBox IsEnabled="{Binding Path = HasAccess}" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" TabIndex="2" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" Name="TextDetail" Height="71" Margin="34,119,13,0" 
+                 TextWrapping="Wrap"  VerticalAlignment="Top" TextAlignment="Justify" MaxLength="250" VerticalScrollBarVisibility="Auto"/>
+        <TabControl Margin="37,269,28,71">
             <TabItem Header="Values" Name="tabValues" >
                 <Grid>
                     <DataGrid Name="dgTopRisk" HorizontalAlignment="Left" Margin="1,1,0,0" VerticalAlignment="Top" AutoGenerateColumns="False">
@@ -136,7 +146,8 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <TextBox IsEnabled="{Binding Path = HasAccess}" x:Name="TextProbability" md:HintAssist.Hint="Risk Reduction (%)" md:HintAssist.IsFloating="True" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Height="41" LostFocus="TextProbability_LostFocus" Margin="34,135,0,0" TextWrapping="Wrap" Text="{Binding Path = Probability, UpdateSourceTrigger = PropertyChanged}"  VerticalAlignment="Top" Width="174"  MaxLines="2" TextAlignment="Right"/>
+        <TextBox IsEnabled="{Binding Path = HasAccess}" x:Name="TextProbability" md:HintAssist.Hint="Risk Reduction (%)" md:HintAssist.IsFloating="True" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Height="41" LostFocus="TextProbability_LostFocus" TextWrapping="Wrap" Text="{Binding Path = Probability, UpdateSourceTrigger = PropertyChanged}"  VerticalAlignment="Top" TabIndex="3" 
+                 Margin="37,209,0,0" MaxLines="1" TextAlignment="Right"/>
         <!--<Label x:Name="LabelProbability" Content="Risk Reduction (%):" HorizontalAlignment="Left" Margin="430,145,0,0" VerticalAlignment="Top"/>-->
         <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">
             <md:DialogHost.DialogContent >

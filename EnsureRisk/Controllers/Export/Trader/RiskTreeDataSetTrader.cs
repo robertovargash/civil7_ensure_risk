@@ -27,42 +27,18 @@ namespace EnsureRisk.Export.Trader
         /// <summary>
         /// Risk data container
         /// </summary>
-        public DataTable RiskDataTable
-        {
-            get
-            {
-                return _riskTreeDataSet.Tables[RISK_TABLENAME];
-            }
-        }
+        public DataTable RiskDataTable { get { return _riskTreeDataSet.Tables[RISK_TABLENAME]; } }
 
         /// <summary>
         /// Counter measure data container
         /// </summary>
-        public DataTable CMDataTable
-        {
-            get
-            {
-                return _riskTreeDataSet.Tables[COUNTERM_TABLENAME];
-            }
-        }
+        public DataTable CMDataTable { get { return _riskTreeDataSet.Tables[COUNTERM_TABLENAME]; } }
 
         /// <summary>
         /// Risk top risk data container
         /// </summary>
-        public DataTable RiskTopRiskDataTable
-        {
-            get
-            {
-                return _riskTreeDataSet.Tables[RISK_TOPRISK_TABLENAME];
-            }
-        }
-        public IEnumerable<String> RiskTypeList
-        {
-            get
-            {
-                return GetRiskTypeList();
-            }
-        }
+        public DataTable RiskTopRiskDataTable { get { return _riskTreeDataSet.Tables[RISK_TOPRISK_TABLENAME]; } }
+        public IEnumerable<String> RiskTypeList { get { return GetRiskTypeList(); } }
 
         public DataRow[] DamagesRow { get; set; }
         private DataSet _riskTreeDataSet;
@@ -240,7 +216,7 @@ namespace EnsureRisk.Export.Trader
 
             IEnumerable<DataRow> mainRiskChildDataRowQuery =
                 from mainRiskChildDataRow in RiskDataTable.AsEnumerable()
-                where mainRiskChildDataRow.Field<decimal?>(IDRISKFATHER_COLUMNNAME) == (decimal)mainRisk[IDRISK_COLUMNNAME]
+                where mainRiskChildDataRow.RowState != DataRowState.Deleted && mainRiskChildDataRow.Field<decimal?>(IDRISKFATHER_COLUMNNAME) == (decimal)mainRisk[IDRISK_COLUMNNAME]
                 select mainRiskChildDataRow;
             return mainRiskChildDataRowQuery;
         }
@@ -248,7 +224,7 @@ namespace EnsureRisk.Export.Trader
         {
             IEnumerable<DataRow> riskTopRiskDataRowQuery =
                 from riskTopRiskDataRow in RiskTopRiskDataTable.AsEnumerable()
-                where riskTopRiskDataRow.Field<decimal>(IDRISK_COLUMNNAME) == riskId
+                where riskTopRiskDataRow.RowState != DataRowState.Deleted && riskTopRiskDataRow.Field<decimal>(IDRISK_COLUMNNAME) == riskId
                 select riskTopRiskDataRow;
             return riskTopRiskDataRowQuery;
         }
@@ -257,7 +233,7 @@ namespace EnsureRisk.Export.Trader
         {
             IEnumerable<DataRow> riskTopRiskDataRowQuery =
                 from riskTopRiskDataRow in RiskTopRiskDataTable.AsEnumerable()
-                where riskTopRiskDataRow.Field<decimal>(IDRISK_COLUMNNAME) == riskId
+                where riskTopRiskDataRow.RowState != DataRowState.Deleted && riskTopRiskDataRow.Field<decimal>(IDRISK_COLUMNNAME) == riskId
                 select riskTopRiskDataRow;
             return riskTopRiskDataRowQuery;
         }
@@ -267,7 +243,7 @@ namespace EnsureRisk.Export.Trader
         {
             IEnumerable<DataRow> counterMTopRiskDataRowQuery =
                 from counterMTopRiskDataRow in _riskTreeDataSet.Tables[COUNTERM_TOPRISK_TABLENAME].AsEnumerable()
-                where counterMTopRiskDataRow.Field<decimal>(IDCOUNTERM_COLUMNNAME) == counterMId
+                where counterMTopRiskDataRow.RowState != DataRowState.Deleted && counterMTopRiskDataRow.Field<decimal>(IDCOUNTERM_COLUMNNAME) == counterMId
                 select counterMTopRiskDataRow;
             return counterMTopRiskDataRowQuery;
         }
@@ -275,7 +251,7 @@ namespace EnsureRisk.Export.Trader
         {
             IEnumerable<DataRow> riskChildDataRowQuery =
                    from riskChildDataRow in RiskDataTable.AsEnumerable()
-                   where riskChildDataRow.Field<decimal?>(IDRISKFATHER_COLUMNNAME) == riskId
+                   where riskChildDataRow.RowState != DataRowState.Deleted && riskChildDataRow.Field<decimal?>(IDRISKFATHER_COLUMNNAME) == riskId
                    select riskChildDataRow;
             return riskChildDataRowQuery;
         }
@@ -283,7 +259,7 @@ namespace EnsureRisk.Export.Trader
         {
             IEnumerable<DataRow> counterMChildDataRowQuery =
                    from counterMChildDataRow in _riskTreeDataSet.Tables[COUNTERM_TABLENAME].AsEnumerable()
-                   where counterMChildDataRow.Field<decimal?>(IDRISK_COLUMNNAME) == riskId
+                   where counterMChildDataRow.RowState != DataRowState.Deleted && counterMChildDataRow.Field<decimal?>(IDRISK_COLUMNNAME) == riskId
                    orderby counterMChildDataRow.Field<int?>(POSITION_COLUMNNAME)
                    select counterMChildDataRow;
             return counterMChildDataRowQuery;
@@ -333,7 +309,7 @@ namespace EnsureRisk.Export.Trader
             DataTable dataTable = SourceDataSet.Tables[RISKTREE_TOPRISK_TABLENAME].Clone();
             IEnumerable<DataRow> riskTreeDamageDataRowQuery =
                 from riskTreeDamageDataRow in SourceDataSet.Tables[RISKTREE_TOPRISK_TABLENAME].AsEnumerable()
-                where riskTreeDamageDataRow.Field<decimal>(IDRISKTREE_COLUMNNAME) == riskTreeID
+                where riskTreeDamageDataRow.RowState != DataRowState.Deleted && riskTreeDamageDataRow.Field<decimal>(IDRISKTREE_COLUMNNAME) == riskTreeID
                 select riskTreeDamageDataRow;
             riskTreeDamageDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
@@ -352,6 +328,7 @@ namespace EnsureRisk.Export.Trader
                 from topRiskDataRow in SourceDataSet.Tables[TOPRISK_TABLENAME].AsEnumerable()
                 join riskTreeDamageDataRow in riskTreeTopRiskDataTable.AsEnumerable()
                 on topRiskDataRow.Field<decimal>(IDTOPRISK_COLUMNNAME) equals riskTreeDamageDataRow.Field<decimal>(IDTOPRISK_COLUMNNAME)
+                where topRiskDataRow.RowState != DataRowState.Deleted && riskTreeDamageDataRow.RowState != DataRowState.Deleted
                 select topRiskDataRow;
             topRiskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
             return dataTable;
@@ -397,6 +374,7 @@ namespace EnsureRisk.Export.Trader
             IEnumerable<DataRow> riskTopRiskDataRowQuery =
                 from riskTopRiskDataRow in riskTopRiskDataRowSelectedQuery
                 join riskDataRow in riskDataRowQuery on riskTopRiskDataRow.Field<decimal>(IDRISK_COLUMNNAME) equals riskDataRow.Field<decimal>(IDRISK_COLUMNNAME)
+                where riskDataRow.RowState != DataRowState.Deleted && riskTopRiskDataRow.RowState != DataRowState.Deleted
                 orderby riskDataRow.Field<int?>(POSITION_COLUMNNAME), riskTopRiskDataRow.Field<decimal>(IDRISK_COLUMNNAME)
                 select riskTopRiskDataRow;
 
@@ -470,18 +448,18 @@ namespace EnsureRisk.Export.Trader
 
             return riskCount + counterMCount;
         }
-        public decimal RiskAcumulatedValue(decimal riskId)
-        {
-            RiskAndCm riskFound = AcumulatedValueList.Where(value => !value.isCM && value.id == riskId).FirstOrDefault();
+        //public decimal RiskAcumulatedValue(decimal riskId)
+        //{
+        //    RiskAndCm riskFound = AcumulatedValueList.Where(value => !value.isCM && value.id == riskId).FirstOrDefault();
 
-            return (riskFound != null) ? riskFound.value : 0;
-        }
-        public decimal CounterMeasureAcumulatedDamage(decimal counterMeasureId)
-        {
-            RiskAndCm riskFound = AcumulatedValueList.Where(value => value.isCM && value.id == counterMeasureId).FirstOrDefault();
+        //    return (riskFound != null) ? riskFound.value : 0;
+        //}
+        //public decimal CounterMeasureAcumulatedDamage(decimal counterMeasureId)
+        //{
+        //    RiskAndCm riskFound = AcumulatedValueList.Where(value => value.isCM && value.id == counterMeasureId).FirstOrDefault();
 
-            return (riskFound != null) ? riskFound.value : 0;
-        }
+        //    return (riskFound != null) ? riskFound.value : 0;
+        //}
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 

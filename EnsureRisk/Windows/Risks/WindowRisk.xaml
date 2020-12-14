@@ -39,7 +39,10 @@
         <Button Name="BtnOK" Content="OK" Height="25" Margin="0,0,143,19" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
         <Button Name="BtnCancel" Content="CLOSE" Height="25" Margin="0,0,39,19" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
         <StackPanel Orientation="Vertical" Margin="34,7,347,0">
-            <TextBox TabIndex="1" md:ShadowAssist.ShadowDepth="Depth5" IsEnabled="{Binding Path = HasAccess}" KeyUp="RiskName_KeyUp" md:HintAssist.Hint="Short Name" md:HintAssist.IsFloating="True" x:Name="RiskName" MaxLength="250"  TextWrapping="Wrap"  VerticalAlignment="Top" LostFocus="RiskName_LostFocus" MaxLines="1" TextOptions.TextHintingMode="Animated" TextChanged="RiskName_TextChanged">
+            <TextBox TabIndex="1" md:ShadowAssist.ShadowDepth="Depth5" IsEnabled="{Binding Path = HasAccess}" KeyUp="RiskName_KeyUp" md:HintAssist.Hint="Short Name" 
+                     md:HintAssist.IsFloating="True" x:Name="RiskName" 
+                     MaxLength="250"  TextWrapping="Wrap"  VerticalAlignment="Top"  MaxLines="1" TextOptions.TextHintingMode="Animated" 
+                     TextChanged="RiskName_TextChanged" LostFocus="RiskName_LostFocus">
                 <TextBox.Text>
                     <Binding Path="ShortName" UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
@@ -48,15 +51,17 @@
                     </Binding>
                 </TextBox.Text>
             </TextBox>
-            <Border Width="291" Height="60" BorderBrush="Black"  BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel Name="resultStack"></StackPanel>
+            <Border Height="60" BorderBrush="Black" BorderThickness="0" Margin="5">
+                <ScrollViewer x:Name="pp" Visibility="Collapsed" VerticalScrollBarVisibility="Visible">
+                    <StackPanel Name="resultStack" ></StackPanel>
                 </ScrollViewer>
             </Border>
         </StackPanel>
 
         <TextBox md:HintAssist.Hint="Father" md:HintAssist.IsFloating="True" x:Name="TextFather" Margin="0,7,15,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" IsReadOnly="True" IsEnabled="False" HorizontalAlignment="Right" Width="246"/>
-        <TextBox Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" TabIndex="2" IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" Name="TextDetail" Height="71" Margin="34,119,13,0" TextWrapping="Wrap"  VerticalAlignment="Top" TextAlignment="Justify" MaxLength="250" VerticalScrollBarVisibility="Auto"/>
+        <TextBox Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" TabIndex="2" 
+                 IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" Name="TextDetail" Height="71" Margin="34,119,13,0" 
+                 TextWrapping="Wrap"  VerticalAlignment="Top" TextAlignment="Justify" MaxLength="250" VerticalScrollBarVisibility="Auto"/>
         <TabControl Margin="37,269,28,71">
             <TabItem Header="Values" Name="tabValues" >
                 <Grid>
@@ -149,7 +154,10 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <TextBox TabIndex="3" x:Name="TextProbability" IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Probability (%)" md:HintAssist.IsFloating="True" PreviewTextInput="NumberValidationTextBox" Text="{Binding Path = Probability, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="41" Margin="37,209,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132" LostFocus="TextProbability_LostFocus" MaxLines="2" TextAlignment="Right">
+        <TextBox TabIndex="3" x:Name="TextProbability" IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Probability (%)" 
+                 md:HintAssist.IsFloating="True" PreviewTextInput="NumberValidationTextBox" Text="{Binding Path = Probability, UpdateSourceTrigger=PropertyChanged}" 
+                 HorizontalAlignment="Left" Height="41" Margin="37,209,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132" LostFocus="TextProbability_LostFocus" 
+                 MaxLines="1" TextAlignment="Right">
 
         </TextBox>
         <!--<Label x:Name="LabelProbability" Content="Probability (%):" HorizontalAlignment="Left" Margin="37,223,0,0" VerticalAlignment="Top"/>-->

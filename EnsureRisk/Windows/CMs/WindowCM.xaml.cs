@@ -85,6 +85,8 @@ namespace EnsureRisk.Windows
         public int Posicion { get; set; }
         private DataSet dsWBS;
 
+        private bool Editando;
+        private bool Seleccionando;
         public WindowCM()
         {
             InitializeComponent();
@@ -839,12 +841,98 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                //Probability = decimal.Parse(TextProbability.Text);
                 General.RecalculateProbability(CMRow, Ds, Probability, true, dsWBS);
             }
             catch (Exception ex)
             {
                 MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void TextName_KeyUp(object sender, KeyEventArgs e)
+        {
+            Editando = true;
+            pp.Visibility = Visibility.Visible;
+            bool found = false;
+            var border = (resultStack.Parent as ScrollViewer).Parent as Border;
+
+            string query = (sender as TextBox).Text;
+
+            if (query.Length == 0)
+            {
+                // Clear   
+                resultStack.Children.Clear();
+                border.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                border.Visibility = Visibility.Visible;
+            }
+
+            // Clear the list   
+            resultStack.Children.Clear();
+
+            // Add the result   
+            foreach (DataRow obj in Ds.Tables[DT_CounterM.TABLE_NAME].Rows)
+            {
+                if (obj[DT_CounterM.NAMESHORT].ToString().ToLower().StartsWith(query.ToLower()))
+                {
+                    // The word starts with this... Autocomplete must work   
+                    AddItem(obj[DT_CounterM.NAMESHORT].ToString());
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                resultStack.Children.Add(new TextBlock() { Text = "No results found." });
+            }
+        }
+        private void AddItem(string text)
+        {
+            TextBlock block = new TextBlock
+            {
+                Text = text,
+                Margin = new Thickness(2, 3, 2, 3),
+                Cursor = Cursors.Hand
+            };
+
+            block.MouseLeftButtonUp += (sender, e) =>
+            {
+                TextName.Text = (sender as TextBlock).Text;
+                pp.Visibility = Visibility.Collapsed;
+            };
+
+            block.MouseEnter += (sender, e) =>
+            {
+                TextBlock b = sender as TextBlock;
+                b.Background = Brushes.PeachPuff;
+                Seleccionando = true;
+            };
+
+            block.MouseLeave += (sender, e) =>
+            {
+                TextBlock b = sender as TextBlock;
+                b.Background = Brushes.Transparent;
+                Seleccionando = false;
+            };
+
+            resultStack.Children.Add(block);
+        }
+
+        private void TextName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (TextName.Text == "")
+            {
+                TextName.ToolTip = "Empty";
+            }
+            if (Editando)
+            {
+                if (!Seleccionando)
+                {
+                    pp.Visibility = Visibility.Collapsed;
+                    Editando = false;
+                }
             }
         }
     }

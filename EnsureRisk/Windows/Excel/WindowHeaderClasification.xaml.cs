@@ -146,15 +146,15 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                if (dgHeaders.SelectedIndex >= 0)
-                {
-                    WindowMultiRadio wmr = new WindowMultiRadio();
-                    if (wmr.ShowDialog() == true)
-                    {
-                        DataVieww[dgHeaders.SelectedIndex].Row[ID_CLASIFICATION] = wmr.ValueSelected;
-                        DataVieww[dgHeaders.SelectedIndex].Row[TYPE] = wmr.ContentSelected;
-                    }
-                }                
+                //if (dgHeaders.SelectedIndex >= 0)
+                //{
+                //    WindowMultiRadio wmr = new WindowMultiRadio();
+                //    if (wmr.ShowDialog() == true)
+                //    {
+                //        DataVieww[dgHeaders.SelectedIndex].Row[ID_CLASIFICATION] = wmr.ValueSelected;
+                //        DataVieww[dgHeaders.SelectedIndex].Row[TYPE] = wmr.ContentSelected;
+                //    }
+                //}                
             }
             catch (Exception ex)
             {

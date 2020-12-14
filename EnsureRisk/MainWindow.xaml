@@ -267,7 +267,7 @@
                                                 </TextBox.Text>
                                             </TextBox>
                                             <Border Width="{Binding ElementName=TextRisk,Path=Width}" MaxHeight="160" HorizontalAlignment="Stretch" BorderBrush="Black"  BorderThickness="0" Margin="10,0,10,10">
-                                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                <ScrollViewer x:Name="scrollRiskAutocomplete" Visibility="Collapsed" VerticalScrollBarVisibility="Visible">
                                                     <StackPanel Name="RiskresultStack"></StackPanel>
                                                 </ScrollViewer>
                                             </Border>
@@ -397,18 +397,27 @@
                                         </md:Card>
                                     </StackPanel>
                                     <StackPanel Orientation="Vertical" x:Name="WrapCM" Visibility="{Binding Path = ShowCMData, Converter={StaticResource BoolToVisConverter}}" >
-                                        <TextBox md:HintAssist.Hint="CounterMeasure" x:Name="TextCM" Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" 
+                                        <StackPanel Orientation="Vertical">
+                                            <TextBox md:HintAssist.Hint="CounterMeasure" x:Name="TextCM" Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" 
                                                  HorizontalAlignment="Stretch" MinWidth="150" TextAlignment="Justify" VerticalScrollBarVisibility="Auto"
                                                  md:HintAssist.IsFloating="True" TextWrapping="Wrap" TextOptions.TextHintingMode="Animated"
-                                                 LostFocus="TextCM_LostFocus" TextChanged="TextCM_TextChanged" IsEnabled="{Binding Path = HasAccess}">
-                                            <TextBox.Text>
-                                                <Binding Path="CMLineName" UpdateSourceTrigger="PropertyChanged">
-                                                    <Binding.ValidationRules>
-                                                        <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
-                                                    </Binding.ValidationRules>
-                                                </Binding>
-                                            </TextBox.Text>
-                                        </TextBox>
+                                                 LostFocus="TextCM_LostFocus" TextChanged="TextCM_TextChanged" KeyUp="TextCM_KeyUp" IsEnabled="{Binding Path = HasAccess}">
+                                                <TextBox.Text>
+                                                    <Binding Path="CMLineName" UpdateSourceTrigger="PropertyChanged">
+                                                        <Binding.ValidationRules>
+                                                            <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                            <Border Width="{Binding ElementName=TextCM,Path=Width}" MaxHeight="160" HorizontalAlignment="Stretch" BorderBrush="Black"  BorderThickness="0" Margin="10,0,10,10">
+                                                <ScrollViewer x:Name="scrollCMAutocomplete" Visibility="Collapsed" VerticalScrollBarVisibility="Visible">
+                                                    <StackPanel Name="CMresultStack"></StackPanel>
+                                                </ScrollViewer>
+                                            </Border>
+
+                                        </StackPanel>
+
                                         <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" MinWidth="150" HorizontalAlignment="Stretch"
                                                  IsEnabled="{Binding Path = HasAccess}"  md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" 
                                                  x:Name="TextCMDetail" TextWrapping="Wrap" TextAlignment="Justify" VerticalScrollBarVisibility="Auto" LostFocus="TextCMDetail_LostFocus"/>
@@ -785,7 +794,11 @@
                         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="ERROR!!!" TextAlignment="Justify"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical">                       
-                        <Expander HorizontalAlignment="Stretch" Header="Expand for details" IsExpanded="True">
+                        <Expander HorizontalAlignment="Stretch" IsExpanded="True">
+                            <Expander.Header >
+                                <TextBlock Text="Expand for details" Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}}, 
+                                    Path=IsExpanded, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Expander.Header>
                             <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
                                 <TextBox x:Name="TextMessage" MaxWidth="500" MaxHeight="500" Opacity=".68" SpellCheck.IsEnabled="True" VerticalScrollBarVisibility="Auto" TextAlignment="Justify" Text="" VerticalAlignment="Stretch" TextWrapping="Wrap" />
                             </StackPanel>

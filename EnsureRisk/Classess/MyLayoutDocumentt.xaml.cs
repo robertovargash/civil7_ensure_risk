@@ -676,6 +676,11 @@ namespace EnsureRisk.Classess
         {
             try
             {
+                if (Creando)
+                {
+                    Line_Created.IsDiagonal = false;
+                    Line_Created.NewDrawAtPoint(Line_Created.StartDrawPoint);
+                }
                 SetLinesThickness();
             }
             catch (Exception ex)
@@ -696,6 +701,19 @@ namespace EnsureRisk.Classess
                 else
                 {
                     TheLine = (RiskPolyLine)sender;
+                }
+                if (Creando)
+                {
+                    Line_Created.IsDiagonal = true;
+                    if (e.GetPosition(GridPaintLines).Y <= MainLine.Points[1].Y)
+                    {
+                        Line_Created.FromTop = true;
+                    }
+                    else
+                    {
+                        Line_Created.FromTop = false;
+                    }
+                    Line_Created.DrawSingleLine();
                 }
                 SetLineThickness(TheLine);
             }
@@ -2729,6 +2747,10 @@ namespace EnsureRisk.Classess
                                 ((MainWindow)MyWindow).CrossRiskRightTab(Ds);
                             }
                         }
+                        else
+                        {
+                            MostrarDialog("No countermeasures can be creaded on the main line");
+                        }
                         GridPaintLines.Children.Remove(Line_Created);
                         Line_Created = null;
                         Creando = false;
@@ -3445,26 +3467,45 @@ namespace EnsureRisk.Classess
             this.TheProgressBar.Maximum = 100;
             //this.TheProgressBar.Visibility = Visibility.Visible;
             //RiskAndCm[] acumulatedValueList = LinesList.Select((risk, RiskAndCm) => new RiskAndCm { isCM = risk.IsCM, id = risk.ID, value = risk.AcValue }).ToArray();
-            WindowSelection frmSelection = new WindowSelection
+            if (Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram).Any())
             {
-                Dt = Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram).CopyToDataTable(),
-                DcolumToShow = new string[] { DT_Diagram_Damages.DAMAGE },
-                DcolumToShowAlias = new string[] { DT_Diagram_Damages.DAMAGE },
-                Title = "List of Damages",
-                ColumnToFilter = DT_Diagram_Damages.DAMAGE,
-                FilterString = "Damage"
-            };
-            if (frmSelection.ShowDialog() == true)
-            {
-                using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(this.Ds, this.ID_Diagram, LinesList, frmSelection.RowsSelected.ToArray()))
+                if (Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram).Count() > 1)
                 {
-                    using (ExportRiskTree exportRiskTree = new ExportRiskTree(riskTreeDataSetTrader, fileName))
+                    WindowSelection frmSelection = new WindowSelection
                     {
-                        exportToExcelWorker.RunWorkerAsync(exportRiskTree);
-                        this.IsExportingToExcel = true;
+                        Dt = Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram).CopyToDataTable(),
+                        DcolumToShow = new string[] { DT_Diagram_Damages.DAMAGE },
+                        DcolumToShowAlias = new string[] { DT_Diagram_Damages.DAMAGE },
+                        Title = "List of Damages",
+                        ColumnToFilter = DT_Diagram_Damages.DAMAGE,
+                        FilterString = "Damage"
+                    };
+                    if (frmSelection.ShowDialog() == true)
+                    {
+                        using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(this.Ds, this.ID_Diagram, LinesList, frmSelection.RowsSelected.ToArray()))
+                        {
+                            using (ExportRiskTree exportRiskTree = new ExportRiskTree(riskTreeDataSetTrader, fileName))
+                            {
+                                exportToExcelWorker.RunWorkerAsync(exportRiskTree);
+                                this.IsExportingToExcel = true;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    using (RiskTreeDataSetTrader riskTreeDataSetTrader = new RiskTreeDataSetTrader(this.Ds, this.ID_Diagram, LinesList, new DataRow[] { Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[0] }))
+                    {
+                        using (ExportRiskTree exportRiskTree = new ExportRiskTree(riskTreeDataSetTrader, fileName))
+                        {
+                            exportToExcelWorker.RunWorkerAsync(exportRiskTree);
+                            this.IsExportingToExcel = true;
+                        }
                     }
                 }
             }
+            
+           
         }
         void ExportToExcelWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -3841,21 +3882,39 @@ namespace EnsureRisk.Classess
 
         private void GridPaintLines_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F2)
+            try
             {
-                //BrigIntoViewSelectedRiskPolyline(Line_Selected);
-                //UpdateSelectedPolyLineVisualInfo();
-                EditSelectedPolyLineShorName();
-                //if (TengoPermiso(Line_Selected) && Line_Selected.IsActivated && FullAccess(Line_Selected))
-                //{
-                //    NameEditing = true;
-                //    Loose = true;
-                //    Line_Selected.ExtrasVisibility(Visibility.Hidden);
-                //    TextChangeName.Background = new SolidColorBrush(Colors.Black);
-                //    TextChangeName.Foreground = new SolidColorBrush(Colors.White);
-                //    TextChangeName.Margin = Line_Selected.TextPanel.Margin;
-                //    ManageTextChangeProperties(Line_Selected.ShortName, Visibility.Visible);
-                //}
+
+                if (e.Key == Key.F2)
+                {
+                    //BrigIntoViewSelectedRiskPolyline(Line_Selected);
+                    //UpdateSelectedPolyLineVisualInfo();
+                    EditSelectedPolyLineShorName();
+                    //if (TengoPermiso(Line_Selected) && Line_Selected.IsActivated && FullAccess(Line_Selected))
+                    //{
+                    //    NameEditing = true;
+                    //    Loose = true;
+                    //    Line_Selected.ExtrasVisibility(Visibility.Hidden);
+                    //    TextChangeName.Background = new SolidColorBrush(Colors.Black);
+                    //    TextChangeName.Foreground = new SolidColorBrush(Colors.White);
+                    //    TextChangeName.Margin = Line_Selected.TextPanel.Margin;
+                    //    ManageTextChangeProperties(Line_Selected.ShortName, Visibility.Visible);
+                    //}
+                }
+                if (Creando)
+                {
+                    if (e.Key == Key.Escape)
+                    {
+                        GridPaintLines.Children.Remove(Line_Created);
+                        Line_Created.TextPanel.Child = null;
+                        GridPaintLines.Children.Remove(Line_Created.TextPanel);
+                        Creando = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
             }
         }
 

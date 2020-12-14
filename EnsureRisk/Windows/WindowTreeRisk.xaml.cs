@@ -117,13 +117,13 @@ namespace EnsureRisk.Windows
                 if (Operation == General.UPDATE)
                 {
                     foreach (DataRow item in Risk_TopRisk.
-                    Select(DT_Risk_Damages.ID_DAMAGE + " = " + TopRiskTable.Rows[dgTopRisk.SelectedIndex][DT_Diagram_Damages.ID_DAMAGE] +
+                    Select(DT_Risk_Damages.ID_DAMAGE + " = " + Dv[dgTopRisk.SelectedIndex][DT_Diagram_Damages.ID_DAMAGE] +
                     " and " + DT_Risk_Damages.ID_RISK_TREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]))
                     {
                         item.Delete();
                     }
                     foreach (DataRow itemi in CM_TopRisk.
-                        Select(DT_CounterM_Damage.ID_DAMAGE + " = " + TopRiskTable.Rows[dgTopRisk.SelectedIndex][DT_Diagram_Damages.ID_DAMAGE] +
+                        Select(DT_CounterM_Damage.ID_DAMAGE + " = " + Dv[dgTopRisk.SelectedIndex][DT_Diagram_Damages.ID_DAMAGE] +
                         " and " + DT_CounterM_Damage.ID_RISK_TREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]))
                     {
                         itemi.Delete();

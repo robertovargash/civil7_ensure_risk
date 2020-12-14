@@ -48,7 +48,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn x:Name="Heaader" Header="Excel Column Header" Binding="{Binding Header}"  Width="*" IsReadOnly="True"/>
-                <DataGridTextColumn x:Name="Type" Header="Type Selected" Binding="{Binding Type}"  Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="Type" Header="Type Selected" Binding="{Binding Type}"  Width="*" IsReadOnly="True" FontStyle="Italic" Foreground="#FF6B6B6B"/>
             </DataGrid.Columns>
         </DataGrid>
         <!--<ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" Grid.Row="1">

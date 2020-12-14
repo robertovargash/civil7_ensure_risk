@@ -96,6 +96,7 @@ namespace EnsureRisk.Windows
             InitializeComponent();
             ChangeLanguage();
             RiskName.DataContext = this;
+            resultStack.DataContext = this;
             TextDetail.DataContext = this;
             TextProbability.DataContext = this;
             gridTabRoles.DataContext = this;
@@ -972,7 +973,7 @@ namespace EnsureRisk.Windows
         private void RiskName_KeyUp(object sender, KeyEventArgs e)
         {
             Editando = true;
-            resultStack.Visibility = Visibility.Visible;
+            pp.Visibility = Visibility.Visible;
             bool found = false;
             var border = (resultStack.Parent as ScrollViewer).Parent as Border;
 
@@ -1021,7 +1022,7 @@ namespace EnsureRisk.Windows
             block.MouseLeftButtonUp += (sender, e) =>
             {
                 RiskName.Text = (sender as TextBlock).Text;
-                resultStack.Visibility = Visibility.Collapsed;
+                pp.Visibility = Visibility.Collapsed;
             };
 
             block.MouseEnter += (sender, e) =>
@@ -1051,7 +1052,7 @@ namespace EnsureRisk.Windows
             {
                 if (!Seleccionando)
                 {
-                    resultStack.Visibility = Visibility.Collapsed;
+                    pp.Visibility = Visibility.Collapsed;
                     Editando = false;
                 }
             }

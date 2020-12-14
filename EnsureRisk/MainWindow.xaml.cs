@@ -67,8 +67,8 @@ namespace EnsureRisk
 
         public DataView DvCBWBS { get { return dvCBWBS; } set { dvCBWBS = value; OnPropertyChanged("DvCBWBS"); } }
 
-        private bool EditandoRisk;
-        private bool SeleccionandoRisk;       
+        private bool EditandoRisk, EditandoCM;
+        private bool SeleccionandoRisk, SeleccionandoCM;       
         private bool hasAccess;
         private bool copiando;
         private decimal probability;
@@ -1721,7 +1721,7 @@ namespace EnsureRisk
                     {
                         if (!SeleccionandoRisk)
                         {
-                            RiskresultStack.Visibility = Visibility.Collapsed;
+                            scrollRiskAutocomplete.Visibility = Visibility.Collapsed;
                             EditandoRisk = false;
                         }
                     }
@@ -1736,6 +1736,8 @@ namespace EnsureRisk
                                 {
                                     item[DT_Risk_Damages.RISK_NAMESHORT] = TextRisk.Text;
                                 }
+                                TheCurrentLayout.Line_Selected.ShortName = TextRisk.Text;
+
                                 TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
                                 TheCurrentLayout.DrawNumbers();
                                 TheCurrentLayout.UpdateLinesValues();
@@ -1754,6 +1756,7 @@ namespace EnsureRisk
                             {
                                 item[DT_Risk_Damages.RISK_NAMESHORT] = TextRisk.Text;
                             }
+                            TheCurrentLayout.Line_Selected.ShortName = TextRisk.Text;
                             TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
                             TheCurrentLayout.DrawNumbers();
                             TheCurrentLayout.UpdateLinesValues();
@@ -1802,7 +1805,8 @@ namespace EnsureRisk
             block.MouseLeftButtonUp += (sender, e) =>
             {
                 TextRisk.Text = (sender as TextBlock).Text;
-                RiskresultStack.Visibility = Visibility.Collapsed;
+                scrollRiskAutocomplete.Visibility = Visibility.Collapsed;
+                TextRisk.Focus();
             };
 
             block.MouseEnter += (sender, e) =>
@@ -1822,10 +1826,84 @@ namespace EnsureRisk
             RiskresultStack.Children.Add(block);
         }
 
+        private void AddCMItem(string text)
+        {
+            TextBlock block = new TextBlock
+            {
+                Text = text,
+                Margin = new Thickness(2, 3, 2, 3),
+                Cursor = Cursors.Hand
+            };
+
+            block.MouseLeftButtonUp += (sender, e) =>
+            {
+                TextCM.Text = (sender as TextBlock).Text;
+                scrollCMAutocomplete.Visibility = Visibility.Collapsed;
+                TextCM.Focus();
+            };
+
+            block.MouseEnter += (sender, e) =>
+            {
+                TextBlock b = sender as TextBlock;
+                b.Background = Brushes.PeachPuff;
+                SeleccionandoCM = true;
+            };
+
+            block.MouseLeave += (sender, e) =>
+            {
+                TextBlock b = sender as TextBlock;
+                b.Background = Brushes.Transparent;
+                SeleccionandoCM = false;
+            };
+
+            CMresultStack.Children.Add(block);
+        }
+
         private void TextCM_TextChanged(object sender, TextChangedEventArgs e)
         {
             CMLineName = TextCM.Text;
         }
+
+        private void TextCM_KeyUp(object sender, KeyEventArgs e)
+        {
+            EditandoCM = true;
+            scrollCMAutocomplete.Visibility = Visibility.Visible;
+            bool found = false;
+            var border = (CMresultStack.Parent as ScrollViewer).Parent as System.Windows.Controls.Border;
+
+            string query = (sender as TextBox).Text;
+
+            if (query.Length == 0)
+            {
+                // Clear   
+                CMresultStack.Children.Clear();
+                border.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                border.Visibility = Visibility.Visible;
+            }
+
+            // Clear the list   
+            CMresultStack.Children.Clear();
+
+            // Add the result   
+            foreach (DataRow obj in TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Rows)
+            {
+                if (obj[DT_CounterM.NAMESHORT].ToString().ToLower().StartsWith(query.ToLower()))
+                {
+                    // The word starts with this... Autocomplete must work   
+                    AddCMItem(obj[DT_CounterM.NAMESHORT].ToString());
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                CMresultStack.Children.Add(new TextBlock() { Text = "No results found." });
+            }
+        }
+
 
         private void CMKeyToggleButtonChecked(object sender, RoutedEventArgs e)
         {
@@ -1903,7 +1981,7 @@ namespace EnsureRisk
         private void RiskName_KeyUp(object sender, KeyEventArgs e)
         {
             EditandoRisk = true;
-            RiskresultStack.Visibility = Visibility.Visible;
+            scrollRiskAutocomplete.Visibility = Visibility.Visible;
             bool found = false;
             var border = (RiskresultStack.Parent as ScrollViewer).Parent as System.Windows.Controls.Border;
 
@@ -3275,6 +3353,14 @@ namespace EnsureRisk
             {
                 if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
                 {
+                    if (EditandoCM)
+                    {
+                        if (!SeleccionandoCM)
+                        {
+                            scrollCMAutocomplete.Visibility = Visibility.Collapsed;
+                            EditandoCM = false;
+                        }
+                    }
                     if (TextCM.Text != string.Empty)
                     {
                         if (TheCurrentLayout.Ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + DiagramID + " and " + DT_CounterM.NAMESHORT + " = '" + TextCM.Text + "' and " + DT_CounterM.ID + " <> " + TheCurrentLayout.Line_Selected.ID).Any())
@@ -3287,6 +3373,8 @@ namespace EnsureRisk
                                 {
                                     item[DT_CounterM_Damage.COUNTERM_NAMESHORT] = TextCM.Text;
                                 }
+                                TheCurrentLayout.Line_Selected.ShortName = TextCM.Text;
+
                                 TheCurrentLayout.DrawNumbers();
                                 TheCurrentLayout.UpdateLinesValues();
                                 TheCurrentLayout.SetLinesThickness();
@@ -3306,6 +3394,7 @@ namespace EnsureRisk
                             {
                                 item[DT_CounterM_Damage.COUNTERM_NAMESHORT] = TextCM.Text;
                             }
+                            TheCurrentLayout.Line_Selected.ShortName = TextCM.Text;
                             TheCurrentLayout.DrawNumbers();
                             TheCurrentLayout.UpdateLinesValues();
                             TheCurrentLayout.SetLinesThickness();
@@ -7276,11 +7365,9 @@ namespace EnsureRisk
             }
             IS_LOGIN = false;
         }
-
-
         #endregion
 
-        
+      
     }
     class Lang: DependencyObject
     {
