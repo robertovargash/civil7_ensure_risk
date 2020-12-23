@@ -67,19 +67,11 @@ namespace EnsureBusinesss
         {
             try
             {
-                if (!(LineToDelete.IsCM))
+                List<DataRow> lista = new List<DataRow>
                 {
-                    List<DataRow> lista = new List<DataRow>
-                    {
-                        DsMain.Tables[DT_Risk.TABLE_NAME].Rows.Find(LineToDelete.ID)
-                    };
-
-                    DeleteRiskAndCMFirst(lista, DsMain);
-                }
-                else
-                {
-                    DsMain.Tables[DT_CounterM.TABLE_NAME].Rows.Find(LineToDelete.ID).Delete();
-                }
+                    DsMain.Tables[DT_Risk.TABLE_NAME].Rows.Find(LineToDelete.ID)
+                };
+                DeleteRiskAndCMFirst(lista, DsMain);
             }
             catch (Exception ex)
             {
@@ -99,10 +91,10 @@ namespace EnsureBusinesss
                     DataRow[] drs = ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID + " = " + itemi[DT_Risk.ID]);
                     foreach (DataRow item in drs)
                     {
-                        int cantidad = ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + item[DT_Risk.ID]).Count();
+                        int cantidad = ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + item[DT_Risk.ID]).Count();
                         for (int i = 0; i < cantidad; i++)
                         {
-                            ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + item[DT_Risk.ID]).First().Delete();
+                            ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + item[DT_Risk.ID]).First().Delete();
                         }
                         ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item[DT_Risk.ID]).Delete();
                     }
@@ -110,10 +102,10 @@ namespace EnsureBusinesss
                 else
                 {
                     DeleteRiskAndCMFirst(FishHeadController.GetChildss(itemi, ds.Tables[DT_Risk.TABLE_NAME]), ds);
-                    int cantidad = ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + itemi[DT_Risk.ID]).Count();
+                    int cantidad = ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + itemi[DT_Risk.ID]).Count();
                     for (int i = 0; i < cantidad; i++)
                     {
-                        ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + itemi[DT_Risk.ID]).First().Delete();
+                        ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + itemi[DT_Risk.ID]).First().Delete();
                     }
                     ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(itemi[DT_Risk.ID]).Delete();
                 }
@@ -130,14 +122,8 @@ namespace EnsureBusinesss
             int count = 0;
             foreach (var item in line.Children.OrderByDescending(x => x.IsCM))
             {
-                if (item.IsCM)
-                {
-                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(item.ID)[DT_CounterM.POSITION] = count;
-                }
-                else
-                {
-                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.POSITION] = count;
-                }
+                Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.POSITION] = count;
+
                 count++;
                 if (item.Children.Count > 0)
                 {
@@ -274,14 +260,7 @@ namespace EnsureBusinesss
             ShiftElement(linea.Father.Children, oldindex, newIdex);
             for (int i = 0; i < linea.Father.Children.Count; i++)
             {
-                if (linea.Father.Children[i].IsCM)
-                {
-                    Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_CounterM.POSITION] = i;
-                }
-                else
-                {
-                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_Risk.POSITION] = i;
-                }
+                Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_Risk.POSITION] = i;
             }
         }
 
@@ -372,14 +351,7 @@ namespace EnsureBusinesss
                 ShiftElementMain(linea.Father.Children, oldindex, newIdex);
                 for (int i = 0; i < linea.Father.Children.Count; i++)
                 {
-                    if (linea.Father.Children[i].IsCM)
-                    {
-                        Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_CounterM.POSITION] = i;
-                    }
-                    else
-                    {
-                        Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_Risk.POSITION] = i;
-                    }
+                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(linea.Father.Children[i].ID)[DT_Risk.POSITION] = i;
                 }
             }
         }
@@ -638,9 +610,9 @@ namespace EnsureBusinesss
         {
             try
             {
-                rl.ShortName = CMRow[DT_CounterM.NAMESHORT].ToString();
-                rl.Position = (int)CMRow[DT_CounterM.POSITION];
-                rl.Probability = (decimal)CMRow[DT_CounterM.PROBABILITY] / 100;
+                rl.ShortName = CMRow[DT_Risk.NAMESHORT].ToString();
+                rl.Position = (int)CMRow[DT_Risk.POSITION];
+                rl.Probability = (decimal)CMRow[DT_Risk.PROBABILITY] / 100;
 
                 if (rl.IsCM)
                 {
@@ -1150,7 +1122,7 @@ namespace EnsureBusinesss
 
         public static void SetDiagramImportedPositions(DataSet ds, decimal idDiagram)
         {
-            foreach (DataRow rowRisk in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + idDiagram))
+            foreach (DataRow rowRisk in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + idDiagram + " and " + DT_Risk.IS_CM + " = 0"))
             {
                 if ((bool)rowRisk[DT_Risk.IS_ROOT])
                 {
@@ -1162,6 +1134,11 @@ namespace EnsureBusinesss
 
         public static void SetPositionRiskChildren(DataRow drRiskFather, DataSet ds, int positionOfCM)
         {
+            //for (int i = 0; i < ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID]).Count(); i++)
+            //{
+            //    decimal idRIsk = (decimal)ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID])[i][DT_RiskStructure.IDRISK];
+            //    ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRIsk)[DT_Risk.POSITION] = i + positionOfCM;
+            //}
             for (int i = 0; i < ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID]).Count(); i++)
             {
                 decimal idRIsk = (decimal)ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID])[i][DT_RiskStructure.IDRISK];
@@ -1172,9 +1149,9 @@ namespace EnsureBusinesss
         public static int SetPositionCMChildren(DataRow drRiskFather, DataSet ds)
         {
             int cmposition = 0;
-            while (cmposition < ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + drRiskFather[DT_Risk.ID]).Count())
+            while (cmposition < ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID] + " and " + DT_Risk.IS_CM + " = 1").Count())
             {
-                ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + drRiskFather[DT_Risk.ID])[cmposition][DT_CounterM.POSITION] = 0;
+                ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID])[cmposition][DT_Risk.POSITION] = 0;
                 cmposition++;
             }
             return cmposition;

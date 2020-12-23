@@ -8,12 +8,19 @@ namespace DataMapping.Data
 
         public const string ID_WBS = "idWBS";
         public const string WBS_NAME = "WBSName";
-        public const string WBS_FNAME = "WBSFName";
+        private const string wBS_FNAME = "WBSFName";
         public const string NIVEL = "Nivel";
-        public const string FNIVEL = "FNivel";
+        private const string fNIVEL = "FNivel";
         public const string IDPROJECT = "idProject";
-        public const string USERNAME = "userName";
+        private const string uSERNAME = "userName";
+        public const string ID_FATHER = "idFather"; 
         public const string USER_WBS = "User-WBS";
+
+        public static string WBS_FNAME => wBS_FNAME;
+
+        public static string FNIVEL => fNIVEL;
+
+        public static string USERNAME => uSERNAME;
 
         public DT_WBS() : base()
         {
@@ -31,6 +38,7 @@ namespace DataMapping.Data
             this.Columns.Add(NIVEL, typeof(string));
             this.Columns.Add(FNIVEL, typeof(string));
             this.Columns.Add(IDPROJECT, typeof(decimal));
+            this.Columns.Add(ID_FATHER, typeof(decimal));
             this.Columns.Add(USERNAME, typeof(string));
             this.PrimaryKey = PK_COLUMN;
         }

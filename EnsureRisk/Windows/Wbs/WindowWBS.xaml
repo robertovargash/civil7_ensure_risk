@@ -57,9 +57,9 @@
             </Button>
             <DataGrid Name="dgWBS" Margin="71,5,0,0"  AutoGenerateColumns="False" IsReadOnly="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding {x:Static data:DT_WBS_STRUCTURE.CNIVEL}}" Width="100"/>
-                    <DataGridTextColumn x:Name="WBS" Header="WBS" Binding="{Binding {x:Static data:DT_WBS_STRUCTURE.CHILD}}" Width="*"/>
-                    <DataGridTextColumn x:Name="UserName" Header="User Owner" Binding="{Binding {x:Static data:DT_WBS_STRUCTURE.CHILD_USER}}" Width="*"/>
+                    <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding {x:Static data:DT_WBS.NIVEL}}" Width="100"/>
+                    <DataGridTextColumn x:Name="WBS" Header="WBS" Binding="{Binding {x:Static data:DT_WBS.WBS_NAME}}" Width="*"/>
+                    <DataGridTextColumn x:Name="UserName" Header="User Owner" Binding="{Binding {x:Static data:DT_WBS.USERNAME}}" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

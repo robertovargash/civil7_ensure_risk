@@ -15,15 +15,26 @@ namespace EnsureBusinesss
         /// </summary>
         /// <param name="WBSFatherRow">Data of the WBS</param>
         /// <param name="dtWBS">Table of WBS</param>
-        /// <param name="dtStrucutre">Table of the hierarquical structure of the WBS</param>
         /// <returns>  Return the WBS children of the WBSFatherRow</returns>
-        public static List<DataRow> MyWBSChildren(DataRow WBSFatherRow, DataTable dtWBS, DataTable dtStructure)
+        public static List<DataRow> MyWBSChildren(DataRow WBSFatherRow, DataTable dtWBS)
         {
             List<DataRow> returnList = new List<DataRow>();
 
-            foreach (DataRow item in dtStructure.Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + WBSFatherRow[DT_WBS.ID_WBS].ToString()))
+            foreach (DataRow item in dtWBS.Select(DT_WBS.ID_FATHER + " = " + WBSFatherRow[DT_WBS.ID_WBS].ToString()))
             {
-                returnList.Add(dtWBS.Rows.Find(item[DT_WBS_STRUCTURE.ID_CHILD]));
+                returnList.Add(item);
+            }
+            return returnList;
+        }
+
+        public static List<DataRow> MyWBSDescendants(DataRow WBSFatherRow, DataTable dtWBS)
+        {
+            List<DataRow> returnList = new List<DataRow>();
+
+            foreach (DataRow item in dtWBS.Select(DT_WBS.ID_FATHER + " = " + WBSFatherRow[DT_WBS.ID_WBS].ToString()))
+            {
+                returnList.Add(item);
+                returnList.AddRange(MyWBSDescendants(item, dtWBS));
             }
             return returnList;
         }
@@ -34,13 +45,13 @@ namespace EnsureBusinesss
         /// <param name="wbsList">List to delete children</param>
         /// <param name="dtWBS">Table of WBS</param>
         /// <param name="dtStrucutre">Table of the hierarquical structure of the WBS</param>
-        public static void DeleteMyWBSChildren(List<DataRow> wbsList, DataTable dtWBS, DataTable dtStrucutre)
+        public static void DeleteMyWBSChildren(List<DataRow> wbsList, DataTable dtWBS)
         {
             foreach (DataRow item in wbsList)
             {
-                if (dtStrucutre.Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + item[DT_WBS.ID_WBS]).Any())
+                if (dtWBS.Select(DT_WBS.ID_FATHER + " = " + item[DT_WBS.ID_WBS]).Any())
                 {
-                    DeleteMyWBSChildren(MyWBSChildren(item, dtWBS, dtStrucutre), dtWBS, dtStrucutre);
+                    DeleteMyWBSChildren(MyWBSChildren(item, dtWBS), dtWBS);
                 }
                 dtWBS.Rows.Find(item[DT_WBS.ID_WBS]).Delete();
             }
@@ -57,28 +68,12 @@ namespace EnsureBusinesss
         {
             foreach (DataRow riskWBS in dtRisk_WBS.Select(DT_RISK_WBS.ID_RISK + " = " + rowRiskWBS[DT_RISK_WBS.ID_RISK]))
             {
-                if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + rowRiskWBS[DT_RISK_WBS.ID_WBS] + " and " + DT_WBS_STRUCTURE.ID_CHILD + " = " + riskWBS[DT_RISK_WBS.ID_WBS]).Any())
+                if (rowRiskWBS[DT_RISK_WBS.ID_WBS] != riskWBS[DT_RISK_WBS.ID_WBS] )
                 {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Return if the current WBS is the lowest in the CM Selected
-        /// </summary>
-        /// <param name="rowCMWBS">WBS of the CM row</param>
-        /// <param name="dsWBS">Dataset</param>
-        /// <param name="dtCM_WBS">Table of the WBS CM row</param>
-        /// <returns>Return if the current WBS is the lowest in the CM Selected</returns>
-        public static bool IsCMWBSLow(DataRow rowCMWBS, DataSet dsWBS, DataTable dtCM_WBS)
-        {
-            foreach (DataRow cmWBS in dtCM_WBS.Select(DT_CM_WBS.ID_CM + " = " + rowCMWBS[DT_CM_WBS.ID_CM]))
-            {
-                if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + rowCMWBS[DT_CM_WBS.ID_WBS] + " and " + DT_WBS_STRUCTURE.ID_CHILD + " = " + cmWBS[DT_CM_WBS.ID_WBS]).Any())
-                {
-                    return false;
+                    if (dsWBS.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.ID_FATHER + " = " + rowRiskWBS[DT_RISK_WBS.ID_WBS] + " and " + DT_WBS.ID_WBS + " = " + riskWBS[DT_RISK_WBS.ID_WBS]).Any())
+                    {
+                        return false;
+                    }
                 }
             }
             return true;
@@ -92,7 +87,7 @@ namespace EnsureBusinesss
         /// <returns> Return IF the WBS is in the lowest Level of thw WBS Tree</returns>
         public static bool WBS_isSheet(decimal ID_WBS, DataSet dsWBS)
         {
-            if (dsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + ID_WBS).Any())
+            if (dsWBS.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.ID_FATHER + " = " + ID_WBS).Any())
             {
                 return false;
             }
@@ -128,7 +123,21 @@ namespace EnsureBusinesss
         /// <returns>Return If the Selected WBS has a Parent</returns>
         public static bool HasParent(decimal idWBS, DataSet DsWBS)
         {
-            return DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + idWBS).Any();
+            if (DsWBS.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.ID_WBS + " = " + idWBS).First()[DT_WBS.ID_FATHER] != DBNull.Value)
+            {
+                if ((decimal)DsWBS.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.ID_WBS + " = " + idWBS).First()[DT_WBS.ID_FATHER] != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -139,7 +148,7 @@ namespace EnsureBusinesss
         /// <returns>Return the Parent of the Selected WBS</returns>
         private static DataRow GetParent(decimal idWBS, DataSet DsWBS)
         {
-            decimal idPadre = (decimal)DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + idWBS).First()[DT_WBS_STRUCTURE.ID_FATHER];
+            decimal idPadre = (decimal)DsWBS.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.ID_WBS + " = " + idWBS).First()[DT_WBS.ID_FATHER];
             return DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idPadre);
         }
 
@@ -152,40 +161,19 @@ namespace EnsureBusinesss
         /// <param name="Ds">Dataset</param>
         public static void TabAddWBS_LINE_Damage(DataRow itemWBS, decimal idLine, bool isCM, DataSet Ds)
         {
-            if (isCM)
+            foreach (DataRow itemDamage in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + idLine))
             {
-                foreach (DataRow itemDamage in Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + idLine))
+                if (!(Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { itemWBS[DT_RISK_WBS.ID_WBS], itemDamage[DT_Risk_Damages.ID_DAMAGE], idLine })))
                 {
-                    DataRow drWBS_CM_Damage = Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
-                    drWBS_CM_Damage[DT_WBS_CM_Damage.ID_CM] = idLine;
-                    drWBS_CM_Damage[DT_WBS_CM_Damage.ID_WBS] = itemWBS[DT_CM_WBS.ID_WBS];
-                    drWBS_CM_Damage[DT_WBS_CM_Damage.ID_DAMAGE] = itemDamage[DT_Risk_Damages.ID_DAMAGE];
-                    drWBS_CM_Damage[DT_WBS_CM_Damage.DAMAGE] = itemDamage[DT_Risk_Damages.DAMAGE];
-                    drWBS_CM_Damage[DT_WBS_CM_Damage.VALUE] = 0;
-                    drWBS_CM_Damage[DT_WBS_CM_Damage.WBS] = itemWBS[DT_CM_WBS.WBS];
-                    drWBS_CM_Damage[DT_WBS_CM_Damage.WBS_USER] = itemWBS[DT_CM_WBS.WBS_USER];
-                    if (!(Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemWBS[DT_CM_WBS.ID_WBS], itemDamage[DT_CounterM_Damage.ID_DAMAGE], idLine })))
-                    {
-                        Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(drWBS_CM_Damage);
-                    }
-                }
-            }
-            else
-            {
-                foreach (DataRow itemDamage in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + idLine))
-                {
-                    if (!(Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { itemWBS[DT_RISK_WBS.ID_WBS], itemDamage[DT_Risk_Damages.ID_DAMAGE], idLine })))
-                    {
-                        DataRow drWBS_RISK_Damage = Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
-                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_RISK] = idLine;
-                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_WBS] = itemWBS[DT_RISK_WBS.ID_WBS];
-                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = itemDamage[DT_Risk_Damages.ID_DAMAGE];
-                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.DAMAGE] = itemDamage[DT_Risk_Damages.DAMAGE];
-                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
-                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.WBS] = itemWBS[DT_RISK_WBS.WBS];
-                        drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.WBS_USER] = itemWBS[DT_RISK_WBS.WBS] + "[" + itemWBS[DT_RISK_WBS.USERNAME] + "]";
-                        Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(drWBS_RISK_Damage);
-                    }
+                    DataRow drWBS_RISK_Damage = Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_RISK] = idLine;
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_WBS] = itemWBS[DT_RISK_WBS.ID_WBS];
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = itemDamage[DT_Risk_Damages.ID_DAMAGE];
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.DAMAGE] = itemDamage[DT_Risk_Damages.DAMAGE];
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.VALUE] = 0;
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.WBS] = itemWBS[DT_RISK_WBS.WBS];
+                    drWBS_RISK_Damage[DT_WBS_RISK_DAMAGE.WBS_USER] = itemWBS[DT_RISK_WBS.WBS] + "[" + itemWBS[DT_RISK_WBS.USERNAME] + "]";
+                    Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(drWBS_RISK_Damage);
                 }
             }
         }
@@ -199,22 +187,58 @@ namespace EnsureBusinesss
         /// <param name="Ds">Dataset</param>
         public static void TabDeleteWBS_LINE_Damage(DataRow itemWBS, decimal idLine, bool isCM, DataSet Ds)
         {
-            if (isCM)
-            {
-                foreach (DataRow itemDamage in Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + idLine))
-                {
-                    if (Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemWBS[DT_CM_WBS.ID_WBS], itemDamage[DT_CounterM_Damage.ID_DAMAGE], idLine }))
-                    {
-                        Ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Find(new object[] { itemWBS[DT_CM_WBS.ID_WBS], itemDamage[DT_CounterM_Damage.ID_DAMAGE], idLine }).Delete();
-                    }
-                }
-            }
-
             foreach (DataRow itemDamage in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + idLine))
             {
                 if (Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Contains(new object[] { itemWBS[DT_RISK_WBS.ID_WBS], itemDamage[DT_Risk_Damages.ID_DAMAGE], idLine }))
                 {
                     Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Find(new object[] { itemWBS[DT_RISK_WBS.ID_WBS], itemDamage[DT_Risk_Damages.ID_DAMAGE], idLine }).Delete();
+                }
+            }
+        }
+
+        public static void SetAsPrimaryWhoDelete(DataRow rowWBStoDelete, DataSet Ds, string logguedUser, decimal iDriskSelected, DataSet DsWBS)
+        {
+            bool isPrimary = false;
+            if ((bool)rowWBStoDelete[DT_RISK_WBS.IS_PRIMARY])
+            {
+                isPrimary = true;
+            }
+            else
+            {
+                foreach (DataRow descendant in MyWBSDescendants(DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(rowWBStoDelete[DT_RISK_WBS.ID_WBS]), DsWBS.Tables[DT_WBS.TABLE_NAME]))
+                {
+                    if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] {iDriskSelected, descendant[DT_WBS.ID_WBS] }))
+                    {
+                        if ((bool)Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { iDriskSelected, descendant[DT_WBS.ID_WBS] })[DT_RISK_WBS.IS_PRIMARY])
+                        {
+                            isPrimary = true; break;
+                        }
+                    }
+                }
+            }
+            
+            if (isPrimary && Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + iDriskSelected).Any())
+            {
+                foreach (DataRow ancestor in GetAncestors((decimal)rowWBStoDelete[DT_RISK_WBS.ID_WBS], DsWBS.Tables[DT_WBS.TABLE_NAME].Clone(), DsWBS).Rows)
+                {
+                    if (ancestor[DT_WBS.USERNAME].ToString() == logguedUser)
+                    {
+                        if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] {iDriskSelected, ancestor[DT_WBS.ID_WBS]}))
+                        {
+                            DataRow RiskRow = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(iDriskSelected);
+                            Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { iDriskSelected, ancestor[DT_WBS.ID_WBS] })[DT_RISK_WBS.IS_PRIMARY] = true;
+                            RiskRow[DT_Risk.ID_WBS] = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { iDriskSelected, ancestor[DT_WBS.ID_WBS] })[DT_RISK_WBS.ID_WBS];
+                            RiskRow[DT_Risk.USER_NAME] = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { iDriskSelected, ancestor[DT_WBS.ID_WBS] })[DT_RISK_WBS.USERNAME];
+                            RiskRow[DT_Risk.WBS_NAME] = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { iDriskSelected, ancestor[DT_WBS.ID_WBS] })[DT_RISK_WBS.WBS];
+                            foreach (var riskrow in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+                            {
+                                riskrow[DT_Risk_Damages.ID_WBS] = RiskRow[DT_Risk.ID_WBS];
+                                riskrow[DT_Risk_Damages.WBS_NAME] = RiskRow[DT_Risk.WBS_NAME];
+                                riskrow[DT_Risk_Damages.USERNAME] = RiskRow[DT_Risk.USER_NAME];
+                            }
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -226,40 +250,20 @@ namespace EnsureBusinesss
         /// <param name="isCM">if the selected line is Risk or CM</param>
         /// <param name="Ds">Dataset</param>
         /// <param name="IDSelected">ID of the selected line (Risk or CM)</param>
-        public static void SetDefaultWBSPrimary(DataRow cmWBSrow, bool isCM, DataSet Ds, decimal IDSelected)
+        public static void SetDefaultWBSPrimary(DataRow cmWBSrow, DataSet Ds, decimal IDSelected)
         {
-            if (isCM)
+            if ((bool)cmWBSrow[DT_RISK_WBS.IS_PRIMARY] && Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + IDSelected).Any())
             {
-                if ((bool)cmWBSrow[DT_CM_WBS.IS_PRIMARY] && Ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + IDSelected).Any())
+                DataRow RiskRow = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(IDSelected);
+                Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]).First()[DT_RISK_WBS.IS_PRIMARY] = true;
+                RiskRow[DT_Risk.ID_WBS] = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]).First()[DT_RISK_WBS.ID_WBS];
+                RiskRow[DT_Risk.USER_NAME] = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]).First()[DT_RISK_WBS.USERNAME];
+                RiskRow[DT_Risk.WBS_NAME] = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]).First()[DT_RISK_WBS.WBS];
+                foreach (var riskrow in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
                 {
-                    DataRow cmRow = Ds.Tables[DT_CounterM.TABLE_NAME].Rows.Find(IDSelected);
-                    Ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + cmRow[DT_CounterM.ID]).First()[DT_CM_WBS.IS_PRIMARY] = true;
-                    cmRow[DT_CounterM.ID_WBS] = Ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + cmRow[DT_CounterM.ID]).First()[DT_CM_WBS.ID_WBS];
-                    cmRow[DT_CounterM.USER_NAME] = Ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + cmRow[DT_CounterM.ID]).First()[DT_CM_WBS.USERNAME];
-                    cmRow[DT_CounterM.WBS_NAME] = Ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + cmRow[DT_CounterM.ID]).First()[DT_CM_WBS.WBS];
-                    foreach (var riskrow in Ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + cmRow[DT_CounterM.ID]))
-                    {
-                        riskrow[DT_CounterM_Damage.ID_WBS] = cmRow[DT_CounterM.ID_WBS];
-                        riskrow[DT_CounterM_Damage.WBS_NAME] = cmRow[DT_CounterM.WBS_NAME];
-                        riskrow[DT_CounterM_Damage.USERNAME] = cmRow[DT_CounterM.USER_NAME];
-                    }
-                }
-            }
-            else
-            {
-                if ((bool)cmWBSrow[DT_RISK_WBS.IS_PRIMARY] && Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + IDSelected).Any())
-                {
-                    DataRow RiskRow = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(IDSelected);
-                    Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]).First()[DT_RISK_WBS.IS_PRIMARY] = true;
-                    RiskRow[DT_Risk.ID_WBS] = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]).First()[DT_RISK_WBS.ID_WBS];
-                    RiskRow[DT_Risk.USER_NAME] = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]).First()[DT_RISK_WBS.USERNAME];
-                    RiskRow[DT_Risk.WBS_NAME] = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]).First()[DT_RISK_WBS.WBS];
-                    foreach (var riskrow in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
-                    {
-                        riskrow[DT_Risk_Damages.ID_WBS] = RiskRow[DT_Risk.ID_WBS];
-                        riskrow[DT_Risk_Damages.WBS_NAME] = RiskRow[DT_Risk.WBS_NAME];
-                        riskrow[DT_Risk_Damages.USERNAME] = RiskRow[DT_Risk.USER_NAME];
-                    }
+                    riskrow[DT_Risk_Damages.ID_WBS] = RiskRow[DT_Risk.ID_WBS];
+                    riskrow[DT_Risk_Damages.WBS_NAME] = RiskRow[DT_Risk.WBS_NAME];
+                    riskrow[DT_Risk_Damages.USERNAME] = RiskRow[DT_Risk.USER_NAME];
                 }
             }
         }
@@ -274,10 +278,14 @@ namespace EnsureBusinesss
             List<DataRow> ListaRow = new List<DataRow>();
             foreach (DataRow item in ds.Tables[DT_WBS.TABLE_NAME].Rows)
             {
-                if (!(ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + item[DT_WBS.ID_WBS]).Any()))
+                if (item[DT_WBS.ID_FATHER] == DBNull.Value || (decimal)item[DT_WBS.ID_FATHER] == 0)
                 {
                     ListaRow.Add(item);
                 }
+                //if (ds.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.ID_WBS + " = 0").Any())
+                //{
+                    
+                //}
             }
             return ListaRow;
         }
@@ -288,121 +296,148 @@ namespace EnsureBusinesss
         /// <param name="ds">Expect the dataset of the Current Diagram</param>
         public static void AddWBSTopToDiagram(DataSet ds, decimal Id_Diagram, DataSet DsWBS)
         {
-            foreach (DataRow rowWBS in DsWBS.Tables[DT_WBS.TABLE_NAME].Rows)
+            bool primaryy = true;
+            foreach (var rowWBS in GetTopWBS(DsWBS))
             {
-                if (!(HasParent((decimal)rowWBS[DT_WBS.ID_WBS], DsWBS)))
+                foreach (DataRow riskRow in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + Id_Diagram))
                 {
-                    foreach (DataRow riskRow in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + Id_Diagram))
+                    if (!(ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { riskRow[DT_Risk.ID], rowWBS[DT_WBS.ID_WBS] })))
                     {
-                        if (!(ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { riskRow[DT_Risk.ID], rowWBS[DT_WBS.ID_WBS] })))
+                        DataRow newRiskWBS = ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
+                        newRiskWBS[DT_RISK_WBS.ID_RISK] = riskRow[DT_Risk.ID];
+                        newRiskWBS[DT_RISK_WBS.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                        newRiskWBS[DT_RISK_WBS.IS_PRIMARY] = primaryy;
+                        newRiskWBS[DT_RISK_WBS.NIVEL] = rowWBS[DT_WBS.NIVEL];
+                        newRiskWBS[DT_RISK_WBS.PROBABILITY] = 100;
+                        newRiskWBS[DT_RISK_WBS.RISK] = riskRow[DT_Risk.NAMESHORT];
+                        newRiskWBS[DT_RISK_WBS.USERNAME] = rowWBS[DT_WBS.USERNAME];
+                        newRiskWBS[DT_RISK_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
+                        newRiskWBS[DT_RISK_WBS.WBS_USER] = rowWBS[DT_WBS.WBS_NAME] + "[" + rowWBS[DT_WBS.USERNAME] + "]";
+                        ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
+                        riskRow[DT_Risk.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
+                        riskRow[DT_Risk.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                        riskRow[DT_Risk.USER_NAME] = rowWBS[DT_WBS.USERNAME];
+                        foreach (DataRow rowRiskDamage in ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + riskRow[DT_Risk.ID]))
                         {
-                            DataRow newRiskWBS = ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
-                            newRiskWBS[DT_RISK_WBS.ID_RISK] = riskRow[DT_Risk.ID];
-                            newRiskWBS[DT_RISK_WBS.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                            newRiskWBS[DT_RISK_WBS.IS_PRIMARY] = true;
-                            newRiskWBS[DT_RISK_WBS.NIVEL] = rowWBS[DT_WBS.NIVEL];
-                            newRiskWBS[DT_RISK_WBS.PRIMARY] = "Primary";
-                            newRiskWBS[DT_RISK_WBS.PROBABILITY] = 100;
-                            newRiskWBS[DT_RISK_WBS.RISK] = riskRow[DT_Risk.NAMESHORT];
-                            newRiskWBS[DT_RISK_WBS.USERNAME] = rowWBS[DT_WBS.USERNAME];
-                            newRiskWBS[DT_RISK_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
-                            newRiskWBS[DT_RISK_WBS.WBS_USER] = rowWBS[DT_WBS.WBS_NAME] + "[" + rowWBS[DT_WBS.USERNAME] + "]";
-                            ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
-                            riskRow[DT_Risk.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
-                            riskRow[DT_Risk.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                            riskRow[DT_Risk.USER_NAME] = rowWBS[DT_WBS.USERNAME];
-                            foreach (DataRow rowRiskDamage in ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + riskRow[DT_Risk.ID]))
-                            {
-                                rowRiskDamage[DT_Risk_Damages.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
-                                rowRiskDamage[DT_Risk_Damages.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                                rowRiskDamage[DT_Risk_Damages.USERNAME] = rowWBS[DT_WBS.USERNAME];
-                            }
-                        }                        
+                            rowRiskDamage[DT_Risk_Damages.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
+                            rowRiskDamage[DT_Risk_Damages.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                            rowRiskDamage[DT_Risk_Damages.USERNAME] = rowWBS[DT_WBS.USERNAME];
+                        }
                     }
-                    foreach (DataRow rowCM in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + Id_Diagram))
-                    {
-                        if (!(ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { rowCM[DT_CounterM.ID], rowWBS[DT_WBS.ID_WBS] })))
-                        {
-                            DataRow newCMWBS = ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
-                            newCMWBS[DT_CM_WBS.ID_CM] = rowCM[DT_CounterM.ID];
-                            newCMWBS[DT_CM_WBS.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                            newCMWBS[DT_CM_WBS.IS_PRIMARY] = true;
-                            newCMWBS[DT_CM_WBS.NIVEL] = rowWBS[DT_WBS.NIVEL];
-                            newCMWBS[DT_CM_WBS.PRIMARY] = "Primary";
-                            newCMWBS[DT_CM_WBS.PROBABILITY] = 0;
-                            newCMWBS[DT_CM_WBS.CM] = rowCM[DT_CounterM.NAMESHORT];
-                            newCMWBS[DT_CM_WBS.USERNAME] = rowWBS[DT_WBS.USERNAME];
-                            newCMWBS[DT_CM_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
-                            newCMWBS[DT_CM_WBS.WBS_USER] = rowWBS[DT_WBS.WBS_NAME] + "[" + rowWBS[DT_WBS.USERNAME] + "]";
-                            ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
+                }
+                //foreach (DataRow rowCM in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + Id_Diagram))
+                //{
+                //    if (!(ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { rowCM[DT_CounterM.ID], rowWBS[DT_WBS.ID_WBS] })))
+                //    {
+                //        DataRow newCMWBS = ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
+                //        newCMWBS[DT_CM_WBS.ID_CM] = rowCM[DT_CounterM.ID];
+                //        newCMWBS[DT_CM_WBS.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                //        newCMWBS[DT_CM_WBS.IS_PRIMARY] = primaryy;
+                //        newCMWBS[DT_CM_WBS.NIVEL] = rowWBS[DT_WBS.NIVEL];
+                //        newCMWBS[DT_CM_WBS.PRIMARY] = "Primary";
+                //        newCMWBS[DT_CM_WBS.PROBABILITY] = 0;
+                //        newCMWBS[DT_CM_WBS.CM] = rowCM[DT_CounterM.NAMESHORT];
+                //        newCMWBS[DT_CM_WBS.USERNAME] = rowWBS[DT_WBS.USERNAME];
+                //        newCMWBS[DT_CM_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
+                //        newCMWBS[DT_CM_WBS.WBS_USER] = rowWBS[DT_WBS.WBS_NAME] + "[" + rowWBS[DT_WBS.USERNAME] + "]";
+                //        ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
 
-                            rowCM[DT_CounterM.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
-                            rowCM[DT_CounterM.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                            rowCM[DT_CounterM.USER_NAME] = rowWBS[DT_WBS.USERNAME];
-                            foreach (DataRow rowCMDamage in ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + rowCM[DT_CounterM.ID]))
-                            {
-                                rowCMDamage[DT_CounterM_Damage.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
-                                rowCMDamage[DT_CounterM_Damage.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                                rowCMDamage[DT_CounterM_Damage.USERNAME] = rowWBS[DT_WBS.USERNAME];
-                            }
+                //        rowCM[DT_CounterM.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
+                //        rowCM[DT_CounterM.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                //        rowCM[DT_CounterM.USER_NAME] = rowWBS[DT_WBS.USERNAME];
+                //        foreach (DataRow rowCMDamage in ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + rowCM[DT_CounterM.ID]))
+                //        {
+                //            rowCMDamage[DT_CounterM_Damage.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
+                //            rowCMDamage[DT_CounterM_Damage.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                //            rowCMDamage[DT_CounterM_Damage.USERNAME] = rowWBS[DT_WBS.USERNAME];
+                //        }
+                //    }
+                //}
+                //primaryy = false;
+            }
+        }
+
+        public static DataTable GetMyDescendantsAndDeleteExistents(DataTable dtWBS_Codif, DataTable dtRiskWBS, DataTable dtWBSExistents, string LoginUser)
+        {
+            DataTable dtReturn = dtWBS_Codif.Clone();
+            if (dtRiskWBS.Select(DT_RISK_WBS.USERNAME + " = '" + LoginUser + "'").Any())
+            {
+                decimal IDWBS = (decimal)dtRiskWBS.Select(DT_RISK_WBS.USERNAME + " = '" + LoginUser + "'").First()[DT_RISK_WBS.ID_WBS];
+                foreach (DataRow descendant in WBSOperations.MyWBSDescendants(dtWBS_Codif.Rows.Find(IDWBS), dtWBS_Codif))
+                {
+                    if (dtWBSExistents.Select(DT_WBS.ID_WBS + " = " + descendant[DT_WBS.ID_WBS]).Any())
+                    {
+                        dtReturn.ImportRow(descendant);
+                    }
+                }
+            }
+            return dtReturn;
+        }
+
+        public static decimal RiskWBSValidations(DataRow RiskRow, DataSet Ds, string LoginUser, DataSet DsWBS, bool hasAccess, decimal probability, bool isCM)
+        {
+            List<decimal> Probabilities = new List<decimal>();
+            foreach (DataRow rowRiskWbs in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+            {
+                rowRiskWbs[DT_RISK_WBS.CanDelete] = false;
+                rowRiskWbs[DT_RISK_WBS.CanEditPrimary] = false;
+                rowRiskWbs[DT_RISK_WBS.IsProbabReadOnly] = false;
+                if (IsRiskWBSLow(rowRiskWbs, DsWBS, Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
+                {
+                    if (rowRiskWbs[DT_RISK_WBS.PROBABILITY] == DBNull.Value)
+                    {
+                        if (isCM)
+                        {
+                            Probabilities.Add(0);
+                        }
+                        else
+                        {
+                            Probabilities.Add(100);
+                        }
+                    }
+                    else
+                    {
+                        Probabilities.Add((decimal)rowRiskWbs[DT_RISK_WBS.PROBABILITY]);
+                    }
+                }
+                else
+                {
+                    rowRiskWbs[DT_RISK_WBS.PROBABILITY] = 0;
+                }
+            }
+            if (Probabilities.Count > 0)
+            {
+                probability = Probabilities.Sum() / Probabilities.Count;
+            }
+            else
+            {
+                probability = isCM ? 100 : 0;
+            }
+
+            foreach (DataRow riskWBS in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " and "
+                + DT_RISK_WBS.USERNAME + " = '" + LoginUser + "'"))
+            {
+                riskWBS[DT_RISK_WBS.CanEditPrimary] = hasAccess;
+                if (IsRiskWBSLow(riskWBS, DsWBS, Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
+                {
+                    riskWBS[DT_RISK_WBS.IsProbabReadOnly] = true;
+                }
+                foreach (DataRow descendant in MyWBSDescendants(riskWBS, DsWBS.Tables[DT_WBS.TABLE_NAME]))
+                {
+                    if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { RiskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] }))
+                    {
+                        DataRow drRiskWBStoSet = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { RiskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] });
+
+                        if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { RiskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] }))
+                        {
+                            drRiskWBStoSet[DT_RISK_WBS.CanDelete] = true;
+                            drRiskWBStoSet[DT_RISK_WBS.CanEditPrimary] = hasAccess;
                         }
                     }
                 }
             }
+            return probability;
         }
 
-
-        /// <summary>
-        /// Find the Ancestor of the WBS id
-        /// </summary>
-        /// <param name="DsWBS">Dataset</param>
-        /// <param name="idWBS">the ID of the WBS to find the Ancestor</param>
-        /// <returns>ID of the WBS Ancestor, below of the Top WBS, called Family in the requirements</returns>
-        public static decimal FindIDTopAncestor(DataSet DsWBS, decimal idWBS)
-        {
-            try
-            {
-                decimal idToFind = 0;
-                List<DataRow> firstBranch = new List<DataRow>();
-                foreach (var topWBS in GetTopWBS(DsWBS))
-                {
-                    firstBranch.AddRange(MyWBSChildren(topWBS, DsWBS.Tables[DT_WBS.TABLE_NAME], DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME]));
-                }
-
-                foreach (DataRow wbsAncestors in GetAncestors(idWBS,DsWBS.Tables[DT_WBS.TABLE_NAME].Clone(),DsWBS).Rows)
-                {
-                    foreach (var branchito in firstBranch)
-                    {
-                        if (branchito[DT_WBS.ID_WBS] == wbsAncestors[DT_WBS.ID_WBS])
-                        {
-                            idToFind = (decimal)branchito[DT_WBS.ID_WBS];
-                        }
-                    }
-                }
-                return idToFind;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public static bool IsTopWBSChild(DataSet DsWBS, decimal idWBS)
-        {
-            List<DataRow> firstBranch = new List<DataRow>();
-
-            foreach (var topWBS in GetTopWBS(DsWBS))
-            {
-                firstBranch.AddRange(MyWBSChildren(topWBS, DsWBS.Tables[DT_WBS.TABLE_NAME], DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME]));
-            }
-            foreach (var item in firstBranch)
-            {
-                if ((decimal)item[DT_WBS.ID_WBS] == idWBS)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 }

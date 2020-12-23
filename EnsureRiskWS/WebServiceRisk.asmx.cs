@@ -34,16 +34,10 @@ namespace EnsureRiskWS
                     ds.Tables[5].TableName = DT_RISK_WBS.TABLE_NAME;
                     ds.Tables[6].TableName = DT_WBS_RISK_DAMAGE.TABLE_NAME;
                     ds.Tables[7].TableName = DT_Role_Risk.TABLENAME;
-                    ds.Tables[8].TableName = DT_CounterM.TABLE_NAME;
-                    ds.Tables[9].TableName = DT_CounterM_Damage.TABLE_NAME;
-                    ds.Tables[10].TableName = DT_CM_WBS.TABLE_NAME;
-                    ds.Tables[11].TableName = DT_WBS_CM_Damage.TABLE_NAME;
-                    ds.Tables[12].TableName = DT_Role_CM.TABLENAME;
-                    ds.Tables[13].TableName = DT_User_Role.TABLE_NAME;
-                    ds.Tables[14].TableName = DT_Role.ROLE_TABLE;
-                    ds.Tables[15].TableName = DT_DefaulRisk.Risk_TABLA;
-                    ds.Tables[16].TableName = DT_Groupe.TABLE_NAME;
-                    //ds.Tables[14].TableName = DT_User_WBS.TABLE_NAME;
+                    ds.Tables[8].TableName = DT_User_Role.TABLE_NAME;
+                    ds.Tables[9].TableName = DT_Role.ROLE_TABLE;
+                    ds.Tables[10].TableName = DT_DefaulRisk.Risk_TABLA;
+                    ds.Tables[11].TableName = DT_Groupe.TABLE_NAME;
                     userds.Merge(ds);
                     return userds;
                 }
@@ -87,17 +81,12 @@ namespace EnsureRiskWS
                 SQLAccessBuilder riskTreeTopRiskDA = new SQLAccessBuilder(trans, ds.Tables[DT_Diagram_Damages.TABLE_NAME].TableName, ds.Tables[DT_Diagram_Damages.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder risk_TopDA = new SQLAccessBuilder(trans, ds.Tables[DT_Risk_Damages.TABLE_NAME].TableName, ds.Tables[DT_Risk_Damages.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder risk_WBSDA = new SQLAccessBuilder(trans, ds.Tables[DT_RISK_WBS.TABLE_NAME].TableName, ds.Tables[DT_RISK_WBS.TABLE_NAME].PrimaryKey);
-                SQLAccessBuilder counterMDA = new SQLAccessBuilder(trans, ds.Tables[DT_CounterM.TABLE_NAME].TableName, ds.Tables[DT_CounterM.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder riskDA = new SQLAccessBuilder(trans, ds.Tables[DT_Risk.TABLE_NAME].TableName, ds.Tables[DT_Risk.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder riskStructDA = new SQLAccessBuilder(trans, ds.Tables[DT_RiskStructure.TABLE_NAME].TableName, ds.Tables[DT_RiskStructure.TABLE_NAME].PrimaryKey);
-                SQLAccessBuilder counterm_toprDA = new SQLAccessBuilder(trans, ds.Tables[DT_CounterM_Damage.TABLE_NAME].TableName, ds.Tables[DT_CounterM_Damage.TABLE_NAME].PrimaryKey);
-                SQLAccessBuilder counterm_WBSDA = new SQLAccessBuilder(trans, ds.Tables[DT_CM_WBS.TABLE_NAME].TableName, ds.Tables[DT_CM_WBS.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder roleriskDA = new SQLAccessBuilder(trans, ds.Tables[DT_Role_Risk.TABLENAME].TableName, ds.Tables[DT_Role_Risk.TABLENAME].PrimaryKey);
-                SQLAccessBuilder counterm_roleDA = new SQLAccessBuilder(trans, ds.Tables[DT_Role_CM.TABLENAME].TableName, ds.Tables[DT_Role_CM.TABLENAME].PrimaryKey);
                 SQLAccessBuilder defaultRiskDA = new SQLAccessBuilder(trans, ds.Tables[DT_DefaulRisk.Risk_TABLA].TableName, ds.Tables[DT_DefaulRisk.Risk_TABLA].PrimaryKey);
                 SQLAccessBuilder groupeDA = new SQLAccessBuilder(trans, ds.Tables[DT_Groupe.TABLE_NAME].TableName, ds.Tables[DT_Groupe.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder wbsriskdamageDA = new SQLAccessBuilder(trans, ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].TableName, ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].PrimaryKey);
-                SQLAccessBuilder wbscmdamageDA = new SQLAccessBuilder(trans, ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].TableName, ds.Tables[DT_WBS_CM_Damage.TABLE_NAME].PrimaryKey);
 
                 groupeDA.Delete(ds);
                 groupeDA.Update(ds);
@@ -110,11 +99,6 @@ namespace EnsureRiskWS
                 risk_WBSDA.Delete(ds);
                 risk_TopDA.Delete(ds);
                 riskDA.Delete(ds);
-                counterm_roleDA.Delete(ds);
-                wbscmdamageDA.Delete(ds);
-                counterm_WBSDA.Delete(ds);
-                counterm_toprDA.Delete(ds);
-                counterMDA.Delete(ds);
                 riskTreeTopRiskDA.Delete(ds);
                 riskTreeDA.Delete(ds);
                 defaultRiskDA.Delete(ds);
@@ -126,11 +110,6 @@ namespace EnsureRiskWS
                 risk_WBSDA.Update(ds);
                 risk_TopDA.Update(ds);
                 riskDA.Update(ds);
-                wbscmdamageDA.Update(ds);
-                counterm_WBSDA.Update(ds);
-                counterm_toprDA.Update(ds);
-                counterMDA.Update(ds);
-                counterm_roleDA.Update(ds);
                 riskTreeTopRiskDA.Update(ds);
                 riskTreeDA.Update(ds);
                 defaultRiskDA.Update(ds);
@@ -144,11 +123,6 @@ namespace EnsureRiskWS
                 risk_WBSDA.Insert(ds);
                 wbsriskdamageDA.Insert(ds);
                 roleriskDA.Insert(ds);
-                counterMDA.Insert(ds);
-                counterm_toprDA.Insert(ds);
-                counterm_WBSDA.Insert(ds);
-                wbscmdamageDA.Insert(ds);
-                counterm_roleDA.Insert(ds);
                 defaultRiskDA.Insert(ds);
 
                 //riskDA.Update(ds);
@@ -169,7 +143,7 @@ namespace EnsureRiskWS
                 throw ex;
             }
         }
-
+        
         [WebMethod]
         public DataSet GetRiskTreeID(object[] param)
         {
@@ -187,16 +161,10 @@ namespace EnsureRiskWS
                     ds.Tables[5].TableName = DT_RISK_WBS.TABLE_NAME;
                     ds.Tables[6].TableName = DT_WBS_RISK_DAMAGE.TABLE_NAME;
                     ds.Tables[7].TableName = DT_Role_Risk.TABLENAME;
-                    ds.Tables[8].TableName = DT_CounterM.TABLE_NAME;
-                    ds.Tables[9].TableName = DT_CounterM_Damage.TABLE_NAME;
-                    ds.Tables[10].TableName = DT_CM_WBS.TABLE_NAME;
-                    ds.Tables[11].TableName = DT_WBS_CM_Damage.TABLE_NAME;
-                    ds.Tables[12].TableName = DT_Role_CM.TABLENAME;
-                    ds.Tables[13].TableName = DT_User_Role.TABLE_NAME;
-                    ds.Tables[14].TableName = DT_Role.ROLE_TABLE;
-                    ds.Tables[15].TableName = DT_DefaulRisk.Risk_TABLA;
-                    ds.Tables[16].TableName = DT_Groupe.TABLE_NAME;
-                    //ds.Tables[14].TableName = DT_User_WBS.TABLE_NAME;
+                    ds.Tables[8].TableName = DT_User_Role.TABLE_NAME;
+                    ds.Tables[9].TableName = DT_Role.ROLE_TABLE;
+                    ds.Tables[10].TableName = DT_DefaulRisk.Risk_TABLA;
+                    ds.Tables[11].TableName = DT_Groupe.TABLE_NAME;
                     userds.Merge(ds);
                     return userds;
                 }

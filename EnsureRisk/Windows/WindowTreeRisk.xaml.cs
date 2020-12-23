@@ -25,7 +25,6 @@ namespace EnsureRisk.Windows
         public string Operation { get; set; }
         public decimal IDProject { get; set; }
         public DataTable TopRiskTable { get; set; }
-        public DataTable CM_TopRisk { get; set; }
         public DataTable Risk_TopRisk { get; set; }
         public DataRow DRow { get; set; }
         public DataView Dv { get; set; }
@@ -121,12 +120,6 @@ namespace EnsureRisk.Windows
                     " and " + DT_Risk_Damages.ID_RISK_TREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]))
                     {
                         item.Delete();
-                    }
-                    foreach (DataRow itemi in CM_TopRisk.
-                        Select(DT_CounterM_Damage.ID_DAMAGE + " = " + Dv[dgTopRisk.SelectedIndex][DT_Diagram_Damages.ID_DAMAGE] +
-                        " and " + DT_CounterM_Damage.ID_RISK_TREE + " = " + DRow[DT_Diagram.ID_DIAGRAM]))
-                    {
-                        itemi.Delete();
                     }
                 }
                 Dv.Delete(dgTopRisk.SelectedIndex);

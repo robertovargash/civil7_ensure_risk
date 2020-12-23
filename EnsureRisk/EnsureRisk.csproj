@@ -190,6 +190,7 @@
     <Compile Include="Controllers\TreeHelpers.cs" />
     <Compile Include="Controllers\TreeNodeModel.cs" />
     <Compile Include="Controllers\SavingAsController.cs" />
+    <Compile Include="Validations.cs" />
     <Compile Include="Web References\GroupService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -262,9 +263,6 @@
     </Compile>
     <Compile Include="Windows\CMs\WindowCMGroup.xaml.cs">
       <DependentUpon>WindowCMGroup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\CMs\WindowCM.xaml.cs">
-      <DependentUpon>WindowCM.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Risks\WindowDefaultRiskList.xaml.cs">
       <DependentUpon>WindowDefaultRiskList.xaml</DependentUpon>
@@ -426,10 +424,6 @@
     <Page Include="Windows\CMs\WindowCMGroup.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\CMs\WindowCM.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Risks\WindowDefaultRiskList.xaml">
       <SubType>Designer</SubType>

@@ -29,7 +29,6 @@ namespace EnsureRiskWS
                 {
                     SQL.GetDataset(ref ds, "pa_SelectWBSFiltered", param);
                     ds.Tables[0].TableName = DT_WBS.TABLE_NAME;
-                    ds.Tables[1].TableName = DT_WBS_STRUCTURE.TABLE_NAME;
                     userds.Merge(ds);
                     return userds;
                 }
@@ -51,7 +50,6 @@ namespace EnsureRiskWS
                 {
                     SQL.GetDataset(ref ds, "pa_SelectWBS");
                     ds.Tables[0].TableName = DT_WBS.TABLE_NAME;
-                    ds.Tables[1].TableName = DT_WBS_STRUCTURE.TABLE_NAME;
                     userds.Merge(ds);
                     SQL.Dispose();
                     return userds;
@@ -73,16 +71,12 @@ namespace EnsureRiskWS
             try
             {
                 SQLAccessBuilder trDA = new SQLAccessBuilder(trans, ds.Tables[DT_WBS.TABLE_NAME].TableName, ds.Tables[DT_WBS.TABLE_NAME].PrimaryKey);
-                SQLAccessBuilder StrDA = new SQLAccessBuilder(trans, ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].TableName, ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].PrimaryKey);
 
-                StrDA.Delete(ds);
                 trDA.Delete(ds);
 
-                StrDA.Update(ds);
                 trDA.Update(ds);
 
                 trDA.Insert(ds);
-                StrDA.Insert(ds);
 
                 if (ds.HasErrors)
                 {
@@ -93,7 +87,6 @@ namespace EnsureRiskWS
                     conection.EndTransaction(trans);
                 }
                 trDA.Dispose();
-                StrDA.Dispose();
                 return ds;
             }
             catch (Exception ex)

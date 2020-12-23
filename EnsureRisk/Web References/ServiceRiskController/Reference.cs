@@ -37,6 +37,8 @@ namespace EnsureRisk.ServiceRiskController {
         
         private System.Threading.SendOrPostCallback SaveRiskOperationCompleted;
         
+        private System.Threading.SendOrPostCallback SaveTablitaOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetRiskTreeIDOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetElementDataOperationCompleted;
@@ -87,6 +89,9 @@ namespace EnsureRisk.ServiceRiskController {
         
         /// <remarks/>
         public event SaveRiskCompletedEventHandler SaveRiskCompleted;
+        
+        /// <remarks/>
+        public event SaveTablitaCompletedEventHandler SaveTablitaCompleted;
         
         /// <remarks/>
         public event GetRiskTreeIDCompletedEventHandler GetRiskTreeIDCompleted;
@@ -176,6 +181,35 @@ namespace EnsureRisk.ServiceRiskController {
             if ((this.SaveRiskCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SaveRiskCompleted(this, new SaveRiskCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/SaveTablita", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public System.Data.DataSet SaveTablita(System.Data.DataSet ds) {
+            object[] results = this.Invoke("SaveTablita", new object[] {
+                        ds});
+            return ((System.Data.DataSet)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void SaveTablitaAsync(System.Data.DataSet ds) {
+            this.SaveTablitaAsync(ds, null);
+        }
+        
+        /// <remarks/>
+        public void SaveTablitaAsync(System.Data.DataSet ds, object userState) {
+            if ((this.SaveTablitaOperationCompleted == null)) {
+                this.SaveTablitaOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSaveTablitaOperationCompleted);
+            }
+            this.InvokeAsync("SaveTablita", new object[] {
+                        ds}, this.SaveTablitaOperationCompleted, userState);
+        }
+        
+        private void OnSaveTablitaOperationCompleted(object arg) {
+            if ((this.SaveTablitaCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SaveTablitaCompleted(this, new SaveTablitaCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -323,6 +357,32 @@ namespace EnsureRisk.ServiceRiskController {
         private object[] results;
         
         internal SaveRiskCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public System.Data.DataSet Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((System.Data.DataSet)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void SaveTablitaCompletedEventHandler(object sender, SaveTablitaCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SaveTablitaCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SaveTablitaCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

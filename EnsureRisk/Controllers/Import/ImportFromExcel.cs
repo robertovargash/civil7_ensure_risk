@@ -82,7 +82,7 @@ namespace EnsureRisk.Controllers.Import
                 dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
 
                 //Asignarle al riesgo Root el rol admin
-                AsignRoleAdminToRisk(dsImporting, drRisk);
+                AsignRoleAdminToLine(dsImporting, drRisk);
 
                 //por cada daño del diagrama
                 DamagesToMainRisk(dsImporting, drRisk, theDiagram);
@@ -90,7 +90,7 @@ namespace EnsureRisk.Controllers.Import
                 //Recorrer el Excel solo para llenar los riesgos
                 HeaderExcelContent xIdRisk = FillDataRisk(dsImporting, IsCustom, dtExcel, MyList, countDamages, theDiagram, drRisk, DsWBS);
                 SetRisk_RiskFatherRelation(dsImporting, IsCustom, dtExcel, MyList, xIdRisk);
-                FillCM_Data(dsImporting, IsCustom, keyPhrase, dtExcel, MyList, countDamages, theDiagram, xIdRisk, DsWBS, isMarkedAll);
+                FillCM_Data(dsImporting, keyPhrase, dtExcel, MyList, countDamages, theDiagram, xIdRisk, DsWBS, isMarkedAll);
                 WBSOperations.AddWBSTopToDiagram(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM], DsWBS);
                 TreeOperation.SetDiagramImportedPositions(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM]);
                 if (dsImporting.HasChanges())
@@ -244,7 +244,7 @@ namespace EnsureRisk.Controllers.Import
             drRisk[DT_Risk.NAMESHORT] = "Root " + theDiagram[DT_Diagram.DIAGRAM_NAME];
             drRisk[DT_Risk.COMMENTS] = "Total Risk " + theDiagram[DT_Diagram.DIAGRAM_NAME];
             drRisk[DT_Risk.IS_ROOT] = true;
-
+            drRisk[DT_Risk.IS_CM] = false;
             drRisk[DT_Risk.ISCOLLAPSED] = false;
             drRisk[DT_Risk.IS_ACTIVE] = true;
             drRisk[DT_Risk.PROBABILITY] = 100;
@@ -298,6 +298,7 @@ namespace EnsureRisk.Controllers.Import
                 if (xIdRisk != null && dtExcel.Rows[rowPosition][xIdRisk.MyContent].ToString() != "")
                 {
                     drRiskN[DT_Risk.ID] = General.ConvertToDec(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
+                    drRiskN[DT_Risk.IS_CM] = false;
                     if (isCustom)
                     {
                         
@@ -359,71 +360,14 @@ namespace EnsureRisk.Controllers.Import
                         {
                             value = 0;
                         }
-                        DamagesToRisk(dsImporting, DamageWithUM, drRiskN, value, theDiagram);
+                        DamagesToLine(dsImporting, DamageWithUM, drRiskN, value, theDiagram);
                     }
-                    AsignRoleAdminToRisk(dsImporting, drRiskN);
+                    AsignRoleAdminToLine(dsImporting, drRiskN);
                     dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRiskN);
-                    SetTopWBSToRisk(drRiskN, dsImporting, DsWBS);
+                    SetTopWBSToLine(drRiskN, dsImporting, DsWBS);
                 }
             }
-
             return xIdRisk;
-        }
-
-        /// <summary>
-        /// Add to Risk the Damages form the Diagram
-        /// </summary>
-        public void DamagesToRisk(DataSet dsImporting, string Damage, DataRow drRiskN, decimal value, DataRow drDiagram)
-        {
-            DataRow drRiskDamageN = dsImporting.Tables[DT_Risk_Damages.TABLE_NAME].NewRow();
-            drRiskDamageN[DT_Risk_Damages.ID_DAMAGE] = dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.DAMAGE + " = '" + Damage + "'").First()[DT_Diagram_Damages.ID_DAMAGE];
-            drRiskDamageN[DT_Risk_Damages.ID_RISK] = drRiskN[DT_Risk.ID];
-            drRiskDamageN[DT_Risk_Damages.ID_RISK_TREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
-            drRiskDamageN[DT_Risk_Damages.VALUE] = value;
-            dsImporting.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Add(drRiskDamageN);
-        }
-
-        /// <summary>
-        /// Set to risk The Admin Role
-        /// </summary>
-        public void AsignRoleAdminToRisk(DataSet dsImporting, DataRow drRisk)
-        {
-            if (!(dsImporting.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], 101 })))
-            {
-                DataRow drRiskRole = dsImporting.Tables[DT_Role_Risk.TABLENAME].NewRow();
-                drRiskRole[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
-                drRiskRole[DT_Role_Risk.IDROL_COLUMN] = 101;
-                dsImporting.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRiskRole);
-            }
-        }
-
-        /// <summary>
-        /// Set to Risk the Top WBS in the Project
-        /// </summary>
-        public void SetTopWBSToRisk(DataRow drRisk, DataSet dsImporting, DataSet DsWBS)
-        {
-            bool primary = true;
-            foreach (DataRow item in DsWBS.Tables[DT_WBS.TABLE_NAME].Select())
-            {
-                if (!(DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + item[DT_WBS.ID_WBS]).Any()))
-                {
-                    if (!(dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], item[DT_WBS.ID_WBS] })))
-                    {
-                        DataRow drRiskWBS = dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
-                        drRiskWBS[DT_RISK_WBS.ID_RISK] = drRisk[DT_Risk.ID];
-                        drRiskWBS[DT_RISK_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
-                        drRiskWBS[DT_RISK_WBS.WBS] = item[DT_WBS.WBS_NAME];
-                        drRiskWBS[DT_RISK_WBS.NIVEL] = item[DT_WBS.NIVEL];
-                        drRiskWBS[DT_RISK_WBS.USERNAME] = item[DT_WBS.USERNAME];
-                        drRiskWBS[DT_RISK_WBS.WBS_USER] = item[DT_WBS.WBS_NAME] + "[" + item[DT_WBS.USERNAME] + "]";
-                        drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = primary;
-                        drRiskWBS[DT_RISK_WBS.PROBABILITY] = drRisk[DT_Risk.PROBABILITY];
-                        primary = false;
-                        dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(drRiskWBS);
-                    }
-                }
-            }
-            SetRisk_WBS_DamageValue(drRisk, dsImporting);
         }
 
         public void SetRisk_WBS_DamageValue(DataRow drRisk, DataSet dsImporting)
@@ -451,7 +395,6 @@ namespace EnsureRisk.Controllers.Import
         /// <param name="dsImporting">The Dataset with all data</param>
         /// <param name="isCustom">If the file is custom file</param>
         /// <param name="dtExcel">The table created by the file data</param>
-        /// <param name="whc">The excel headers</param>
         /// <param name="xIdRisk">The risk Father</param>
         public void SetRisk_RiskFatherRelation(DataSet dsImporting, bool isCustom, DataTable dtExcel, 
             List<HeaderExcelContent> MyList, HeaderExcelContent xIdRisk)
@@ -486,15 +429,13 @@ namespace EnsureRisk.Controllers.Import
         /// Load the data of the Datatable created from excel (dtExcel) and creates new CMs with these data
         /// </summary>
         /// <param name="dsImporting">The Dataset with all data</param>
-        /// <param name="isCustom">If the excel file loaded is custom or not</param>
         /// <param name="statusKeyphrase">The text inserted by user as No Active </param>
         /// <param name="dtExcel">The data loaded from excel as Datatable</param>
-        /// <param name="whc">The header parameters</param>
         /// <param name="countDamages">The list of Damages</param>
         /// <param name="theDiagram">The data of the diagram created</param>
         /// <param name="xIdRisk">Data of the risk father</param>
         /// <param name="DsWBS">Dataset of the WBS</param>
-        public void FillCM_Data(DataSet dsImporting, bool isCustom, string statusKeyphrase, DataTable dtExcel, 
+        public void FillCM_Data(DataSet dsImporting, string statusKeyphrase, DataTable dtExcel, 
             List<HeaderExcelContent> MyList, IEnumerable<HeaderExcelContent> countDamages, DataRow theDiagram, 
             HeaderExcelContent xIdRisk, DataSet DsWBS, bool isMarkedAllAsActive)
         {
@@ -506,37 +447,43 @@ namespace EnsureRisk.Controllers.Import
             {
                 if (xCmShort != null && dtExcel.Rows[rowPosition][xCmShort.MyContent.ToString()].ToString() != "")
                 {
-                    DataRow drCM = dsImporting.Tables[DT_CounterM.TABLE_NAME].NewRow();
-                    drCM[DT_CounterM.NAMESHORT] = dtExcel.Rows[rowPosition][xCmShort.MyContent.ToString()].ToString();
-                    drCM[DT_CounterM.ID_DIAGRAM] = theDiagram[DT_Diagram.ID_DIAGRAM];
+                    DataRow drCM = dsImporting.Tables[DT_Risk.TABLE_NAME].NewRow();
+                    drCM[DT_Risk.NAMESHORT] = dtExcel.Rows[rowPosition][xCmShort.MyContent.ToString()].ToString();
+                    drCM[DT_Risk.IS_CM] = true;
+                    drCM[DT_Risk.ID_DIAGRAM] = theDiagram[DT_Diagram.ID_DIAGRAM];
                     if (xCmDetail != null && dtExcel.Rows[rowPosition][xCmDetail.MyContent.ToString()].ToString() != "")
                     {
-                        drCM[DT_CounterM.DETAIL] = dtExcel.Rows[rowPosition][xCmDetail.MyContent.ToString()].ToString();
+                        drCM[DT_Risk.COMMENTS] = dtExcel.Rows[rowPosition][xCmDetail.MyContent.ToString()].ToString();
                     }
 
-                    drCM[DT_CounterM.IS_ACTIVE] = true;
-                    drCM[DT_CounterM.DIAGONAL] = false;
-                    drCM[DT_CounterM.POSITION] = 0;
+                    drCM[DT_Risk.IS_ACTIVE] = true;
+                    drCM[DT_Risk.DIAGONAL] = false;
+                    drCM[DT_Risk.POSITION] = 0;
                     if (xCmReduction != null && dtExcel.Rows[rowPosition][xCmReduction.MyContent.ToString()].ToString() != "")
                     {
-                        drCM[DT_CounterM.PROBABILITY] = dtExcel.Rows[rowPosition][xCmReduction.MyContent.ToString()].ToString();
+                        drCM[DT_Risk.PROBABILITY] = dtExcel.Rows[rowPosition][xCmReduction.MyContent.ToString()].ToString();
                     }
                     else
                     {
-                        drCM[DT_CounterM.PROBABILITY] = 0;
+                        drCM[DT_Risk.PROBABILITY] = 0;
                     }
                     if (xIdRisk != null && !string.IsNullOrWhiteSpace(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString()))
                     {
-                        drCM[DT_CounterM.ID_RISK] = General.ConvertToDec(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
+                        drCM[DT_Risk.IDRISK_FATHER] = General.ConvertToDec(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
                     }
                     else
                     {
-                        drCM[DT_CounterM.ID_RISK] = dsImporting.Tables[DT_CounterM.TABLE_NAME].Rows[dsImporting.Tables[DT_CounterM.TABLE_NAME].Rows.Count - 1][DT_CounterM.ID_RISK];
+                        drCM[DT_Risk.IDRISK_FATHER] = dsImporting.Tables[DT_Risk.TABLE_NAME].Rows[dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Count - 1][DT_Risk.IDRISK_FATHER];
                     }
+                    
+                    DataRow drStructure = dsImporting.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
+                    drStructure[DT_RiskStructure.IDRISK] = drCM[DT_Risk.ID];
+                    drStructure[DT_RiskStructure.IDRISK_FATHER] = drCM[DT_Risk.IDRISK_FATHER];
+                    dsImporting.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(drStructure);
 
                     if (isMarkedAllAsActive)
                     {
-                        drCM[DT_CounterM.IS_ACTIVE] = true;
+                        drCM[DT_Risk.IS_ACTIVE] = true;
                     }
                     else
                     {
@@ -545,102 +492,81 @@ namespace EnsureRisk.Controllers.Import
                         {
                             if (statusKeyphrase == dtExcel.Rows[rowPosition][xCmActive.MyContent.ToString()].ToString())
                             {
-                                drCM[DT_CounterM.IS_ACTIVE] = false;
+                                drCM[DT_Risk.IS_ACTIVE] = false;
                             }
                             else
                             {
-                                drCM[DT_CounterM.IS_ACTIVE] = true;
+                                drCM[DT_Risk.IS_ACTIVE] = true;
                             }
                         }
                         else
                         {
-                            drCM[DT_CounterM.IS_ACTIVE] = true;
+                            drCM[DT_Risk.IS_ACTIVE] = true;
                         }
                     }
                     foreach (var itemDamages in countDamages.OrderBy(x => x.Column))
                     {
                         string TopRisk = itemDamages.MyContent;
-                        DamagesToCM(dsImporting, TopRisk, drCM, theDiagram);
+                        DamagesToLine(dsImporting, TopRisk, drCM, 0, theDiagram);
                     }
-                    AsignRoleToCM(dsImporting, drCM);
-                    dsImporting.Tables[DT_CounterM.TABLE_NAME].Rows.Add(drCM);
-                    SetTopWBSToCM(drCM, dsImporting, DsWBS);
+                    AsignRoleAdminToLine(dsImporting, drCM);
+                    dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Add(drCM);
+                    SetTopWBSToLine(drCM, dsImporting, DsWBS);
                 }
             }
         }
 
         /// <summary>
-        /// Add to CM the Damages from the Diagram
+        /// Add to Risk the Damages form the Diagram
         /// </summary>
-        public static void DamagesToCM(DataSet dsImporting, string Damage, DataRow drCM, DataRow drDiagram)
+        public void DamagesToLine(DataSet dsImporting, string Damage, DataRow drRiskN, decimal value, DataRow drDiagram)
         {
-            DataRow drCM_Damage = dsImporting.Tables[DT_CounterM_Damage.TABLE_NAME].NewRow();
-            drCM_Damage[DT_CounterM_Damage.ID_DAMAGE] = dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.DAMAGE + " = '" + Damage + "'").First()[DT_Diagram_Damages.ID_DAMAGE];
-            drCM_Damage[DT_CounterM_Damage.ID_COUNTERM] = drCM[DT_CounterM.ID];
-            drCM_Damage[DT_CounterM_Damage.ID_RISK_TREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
-            drCM_Damage[DT_CounterM_Damage.VALUE] = 0;
-            dsImporting.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Add(drCM_Damage);
+            DataRow drRiskDamageN = dsImporting.Tables[DT_Risk_Damages.TABLE_NAME].NewRow();
+            drRiskDamageN[DT_Risk_Damages.ID_DAMAGE] = dsImporting.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.DAMAGE + " = '" + Damage + "'").First()[DT_Diagram_Damages.ID_DAMAGE];
+            drRiskDamageN[DT_Risk_Damages.ID_RISK] = drRiskN[DT_Risk.ID];
+            drRiskDamageN[DT_Risk_Damages.ID_RISK_TREE] = drDiagram[DT_Diagram.ID_DIAGRAM];
+            drRiskDamageN[DT_Risk_Damages.VALUE] = value;
+            dsImporting.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Add(drRiskDamageN);
         }
-
+        
         /// <summary>
-        /// Set to CM the Admin Role
+        /// Set to line The Admin Role
         /// </summary>
-        public static void AsignRoleToCM(DataSet dsImporting, DataRow drCM)
+        public void AsignRoleAdminToLine(DataSet dsImporting, DataRow drRisk)
         {
-            if (!(dsImporting.Tables[DT_Role_CM.TABLENAME].Rows.Contains(new object[] { drCM[DT_CounterM.ID], 101 })))
+            if (!(dsImporting.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], 101 })))
             {
-                DataRow drRoleCM = dsImporting.Tables[DT_Role_CM.TABLENAME].NewRow();
-                drRoleCM[DT_Role_CM.ID_CM] = drCM[DT_CounterM.ID];
-                drRoleCM[DT_Role_CM.IDROL_COLUMN] = 101;
-                dsImporting.Tables[DT_Role_CM.TABLENAME].Rows.Add(drRoleCM);
+                DataRow drRiskRole = dsImporting.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                drRiskRole[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
+                drRiskRole[DT_Role_Risk.IDROL_COLUMN] = 101;
+                dsImporting.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRiskRole);
             }
         }
 
         /// <summary>
-        /// Set to Cm the Top WBS in the Project
+        /// Set to Risk the Top WBS in the Project
         /// </summary>
-        public static void SetTopWBSToCM(DataRow drCM, DataSet dsImporting, DataSet DsWBS)
+        public void SetTopWBSToLine(DataRow drRisk, DataSet dsImporting, DataSet DsWBS)
         {
             bool primary = true;
-            foreach (DataRow item in DsWBS.Tables[DT_WBS.TABLE_NAME].Rows)
+            foreach (var item in WBSOperations.GetTopWBS(DsWBS))
             {
-                if (!(DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_CHILD + " = " + item[DT_WBS.ID_WBS]).Any()))
+                if (!(dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], item[DT_WBS.ID_WBS] })))
                 {
-                    if (!(dsImporting.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { drCM[DT_CounterM.ID], item[DT_WBS.ID_WBS] })))
-                    {
-                        DataRow drRCMWBS = dsImporting.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
-                        drRCMWBS[DT_CM_WBS.ID_CM] = drCM[DT_CounterM.ID];
-                        drRCMWBS[DT_CM_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
-                        drRCMWBS[DT_CM_WBS.USERNAME] = item[DT_WBS.USERNAME];
-                        drRCMWBS[DT_CM_WBS.WBS] = item[DT_WBS.WBS_NAME];
-                        drRCMWBS[DT_CM_WBS.IS_PRIMARY] = primary;
-                        drRCMWBS[DT_CM_WBS.WBS_USER] = drRCMWBS[DT_CM_WBS.WBS] + "[" + drRCMWBS[DT_CM_WBS.USERNAME] + "]";
-                        drRCMWBS[DT_CM_WBS.PROBABILITY] = drCM[DT_CounterM.PROBABILITY];
-                        primary = false;
-                        dsImporting.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(drRCMWBS);
-                    }
+                    DataRow drRiskWBS = dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
+                    drRiskWBS[DT_RISK_WBS.ID_RISK] = drRisk[DT_Risk.ID];
+                    drRiskWBS[DT_RISK_WBS.ID_WBS] = item[DT_WBS.ID_WBS];
+                    drRiskWBS[DT_RISK_WBS.WBS] = item[DT_WBS.WBS_NAME];
+                    drRiskWBS[DT_RISK_WBS.NIVEL] = item[DT_WBS.NIVEL];
+                    drRiskWBS[DT_RISK_WBS.USERNAME] = item[DT_WBS.USERNAME];
+                    drRiskWBS[DT_RISK_WBS.WBS_USER] = item[DT_WBS.WBS_NAME] + "[" + item[DT_WBS.USERNAME] + "]";
+                    drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = primary;
+                    drRiskWBS[DT_RISK_WBS.PROBABILITY] = drRisk[DT_Risk.PROBABILITY];
+                    primary = false;
+                    dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(drRiskWBS);
                 }
             }
-            SetCM_WBS_DamageValue(drCM, dsImporting);
+            SetRisk_WBS_DamageValue(drRisk, dsImporting);
         }
-        public static void SetCM_WBS_DamageValue(DataRow drCM, DataSet dsImporting)
-        {
-            foreach (var drCMDamage in dsImporting.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + drCM[DT_CounterM.ID]))
-            {
-                foreach (var drCMWBS in dsImporting.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + drCM[DT_CounterM.ID]))
-                {
-                    var drRiskWBSDamage = dsImporting.Tables[DT_WBS_CM_Damage.TABLE_NAME].NewRow();
-                    drRiskWBSDamage[DT_WBS_CM_Damage.DAMAGE] = drCMDamage[DT_CounterM_Damage.DAMAGE];
-                    drRiskWBSDamage[DT_WBS_CM_Damage.ID_DAMAGE] = drCMDamage[DT_CounterM_Damage.ID_DAMAGE];
-                    drRiskWBSDamage[DT_WBS_CM_Damage.ID_CM] = drCM[DT_CounterM.ID];
-                    drRiskWBSDamage[DT_WBS_CM_Damage.ID_WBS] = drCMWBS[DT_CM_WBS.ID_WBS];
-                    drRiskWBSDamage[DT_WBS_CM_Damage.VALUE] = drCMDamage[DT_CounterM_Damage.VALUE];
-                    drRiskWBSDamage[DT_WBS_CM_Damage.WBS] = drCMWBS[DT_CM_WBS.WBS];
-                    drRiskWBSDamage[DT_WBS_CM_Damage.WBS_USER] = drCMWBS[DT_CM_WBS.WBS_USER];
-                    dsImporting.Tables[DT_WBS_CM_Damage.TABLE_NAME].Rows.Add(drRiskWBSDamage);
-                }
-            }
-        }
-
     }
 }

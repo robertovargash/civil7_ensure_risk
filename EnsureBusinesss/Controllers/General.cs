@@ -193,11 +193,7 @@ namespace EnsureBusinesss
             Settings.Default.Reload();
         }
 
-        #endregion
-
-        #region BorrarElementoRecursivoDatatable
-
-        
+        #endregion        
 
         public static decimal ConvertToDec(string word)
         {
@@ -211,9 +207,6 @@ namespace EnsureBusinesss
             }
             return Convert.ToDecimal(valuestr);
         }
-
-
-        #endregion
 
         //TODO: GUSTAVO
         public static void UpdateLinesThickness(List<RiskPolyLine> linesList)
@@ -248,21 +241,7 @@ namespace EnsureBusinesss
             //UpdateSegmentsStrokeThickness(rootPolyLine);
             UpdateSegmentsStrokeThickness(rootPolyLine, min, max);
         }
-
-        //private static void UpdateSegmentsStrokeThickness(RiskPolyLine riskPolyLine)
-        //{
-        //    if (riskPolyLine.Children.Any())
-        //    {
-        //        IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderBy(pl => pl.Points[1].X);
-        //        foreach (RiskPolyLine polyLine in orderedChild)
-        //        {
-        //            UpdateSegmentsStrokeThickness(polyLine);
-        //            polyLine.UpdateSegmentsStrokeThickness();
-        //        }
-        //    }
-        //    riskPolyLine.UpdateSegmentsStrokeThickness();
-        //}
-
+        
         private static void UpdateSegmentsStrokeThickness(RiskPolyLine riskPolyLine, decimal min, decimal max)
         {
             if (riskPolyLine.Children.Any())
@@ -281,38 +260,19 @@ namespace EnsureBusinesss
         public static void RecalculateProbability(DataRow drLine, DataSet ds, decimal newProbability, bool isCM, DataSet DsWBS)
         {
             decimal oldProbability;
-            if (isCM)
+            oldProbability = (decimal)drLine[DT_Risk.PROBABILITY];
+            foreach (DataRow rowRiskDamage in ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + drLine[DT_Risk.ID]))
             {
-                oldProbability = (decimal)drLine[DT_CounterM.PROBABILITY];
-                foreach (DataRow rowCMDamage in ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + drLine[DT_CounterM.ID]))
-                {                    
-                    rowCMDamage[DT_CounterM_Damage.RISK_REDUCTION] = newProbability;
-                }
-                foreach (DataRow rowCMWBS in ds.Tables[DT_CM_WBS.TABLE_NAME].Select(DT_CM_WBS.ID_CM + " = " + drLine[DT_CounterM.ID]))
-                {
-                    if (WBSOperations.IsCMWBSLow(rowCMWBS,DsWBS, ds.Tables[DT_CM_WBS.TABLE_NAME]))
-                    {
-                        rowCMWBS[DT_CM_WBS.PROBABILITY] = (decimal)rowCMWBS[DT_CM_WBS.PROBABILITY] + newProbability - oldProbability;
-                    }
-                }
-                drLine[DT_CounterM.PROBABILITY] = newProbability;
+                rowRiskDamage[DT_Risk_Damages.PROBABILITY] = newProbability;
             }
-            else
+            foreach (DataRow rowRiskWBS in ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drLine[DT_Risk.ID]))
             {
-                oldProbability = (decimal)drLine[DT_Risk.PROBABILITY];
-                foreach (DataRow rowRiskDamage in ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + drLine[DT_Risk.ID]))
+                if (WBSOperations.IsRiskWBSLow(rowRiskWBS, DsWBS, ds.Tables[DT_RISK_WBS.TABLE_NAME]))
                 {
-                    rowRiskDamage[DT_Risk_Damages.PROBABILITY] = newProbability;
+                    rowRiskWBS[DT_RISK_WBS.PROBABILITY] = (decimal)rowRiskWBS[DT_RISK_WBS.PROBABILITY] + newProbability - oldProbability;
                 }
-                foreach (DataRow rowRiskWBS in ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drLine[DT_Risk.ID]))
-                {
-                    if (WBSOperations.IsRiskWBSLow(rowRiskWBS, DsWBS, ds.Tables[DT_RISK_WBS.TABLE_NAME]))
-                    {
-                        rowRiskWBS[DT_RISK_WBS.PROBABILITY] = (decimal)rowRiskWBS[DT_RISK_WBS.PROBABILITY] + newProbability - oldProbability;
-                    }
-                }
-                drLine[DT_Risk.PROBABILITY] = newProbability;
             }
+            drLine[DT_Risk.PROBABILITY] = newProbability;
         }
 
 

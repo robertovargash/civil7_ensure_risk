@@ -26,7 +26,7 @@ namespace EnsureRisk.Windows
         public string Operation { get; set; }
         public DataRow DrWBS { get; set; }
         public decimal IdProject { get; set; }
-        public DataTable WBS_Structure { get; set; }
+        //public DataTable WBS_Structure { get; set; }
         public DataTable WBS_Encoder { get; set; }
         public DataView DvWBS { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -70,8 +70,8 @@ namespace EnsureRisk.Windows
                     {
                         BtnAdd.IsEnabled = false;
                     }
-                    DvWBS = WBS_Structure.DefaultView;
-                    DvWBS.RowFilter = DT_WBS_STRUCTURE.ID_FATHER + " = " + DrWBS[DT_WBS.ID_WBS];
+                    DvWBS = WBS_Encoder.DefaultView;
+                    DvWBS.RowFilter = DT_WBS.ID_FATHER + " = " + DrWBS[DT_WBS.ID_WBS];
                     dgWBS.ItemsSource = DvWBS;
                 }
                 
@@ -122,15 +122,15 @@ namespace EnsureRisk.Windows
             int count = DvWBS.Count + 1;
             WindowWBSChild wBSChild = new WindowWBSChild
             {
-                DrWBS_Structure = WBS_Structure.NewRow(),
+                DrWBS_Structure = WBS_Encoder.NewRow(),
+                Dt_WBS = WBS_Encoder,
                 Cantidad = count,
-                MyFather = this,
-                DrWBS = WBS_Encoder.NewRow(),
+                DrFather = DrWBS,
                 IdProject = IdProject
             };
             wBSChild.TextLevel.Text = TextLevel.Text + "." + count;
-            wBSChild.DrWBS_Structure[DT_WBS_STRUCTURE.ID_FATHER] = DrWBS[DT_WBS.ID_WBS];
-            wBSChild.DrWBS_Structure[DT_WBS_STRUCTURE.FATHER] = DrWBS[DT_WBS.WBS_NAME];
+            wBSChild.DrWBS_Structure[DT_WBS.ID_FATHER] = DrWBS[DT_WBS.ID_WBS];
+            wBSChild.DrWBS_Structure[DT_WBS.WBS_FNAME] = DrWBS[DT_WBS.WBS_NAME];
             wBSChild.ShowDialog();
             //if (wBSChild.ShowDialog() == true)
             //{                
@@ -144,7 +144,7 @@ namespace EnsureRisk.Windows
             try
             {
                 if (dgWBS.SelectedIndex > 0)
-                    WBS_Structure.Rows[dgWBS.SelectedIndex].Delete();
+                    DvWBS[dgWBS.SelectedIndex].Delete();
                 IS_DELETING = false;
             }
             catch (Exception ex)
@@ -167,7 +167,7 @@ namespace EnsureRisk.Windows
                 if (dgWBS.SelectedIndex > 0)
                 {
                     IS_DELETING = true;
-                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + WBS_Structure.Rows[dgWBS.SelectedIndex][DT_WBS_STRUCTURE.CHILD] + "]?");
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + DvWBS[dgWBS.SelectedIndex][DT_WBS.WBS_NAME] + "]?");
                 }
             }
             catch (Exception ex)

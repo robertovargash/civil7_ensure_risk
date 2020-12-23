@@ -47,8 +47,8 @@ namespace EnsureBusinesss.Business
         //public static readonly DependencyProperty OcultoProperty =
         //   DependencyProperty.Register("Oculto", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender));
 
-        //public static readonly DependencyProperty IsCMProperty =
-        //   DependencyProperty.Register("IsCM", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+        public static readonly DependencyProperty IsCMProperty =
+           DependencyProperty.Register("IsCM", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         //public static readonly DependencyProperty CollapsedProperty =
         //   DependencyProperty.Register("Collapsed", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender));
@@ -85,8 +85,8 @@ namespace EnsureBusinesss.Business
         }
         public bool IsCM
         {
-            set; /*{ SetValue(IsCMProperty, value); }*/
-            get; /*{ return (bool)GetValue(IsCMProperty); }*/
+            set { SetValue(IsCMProperty, value); }
+            get { return (bool)GetValue(IsCMProperty); }
         }
         public bool Collapsed
         {

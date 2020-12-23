@@ -20,9 +20,10 @@ namespace EnsureRisk.Windows
         public string Nivel { get { return _level; } set { _level = value; OnPropertyChanged("Nivel"); } }
         public string WBSName { get { return _wbs; } set { _wbs = value; OnPropertyChanged("WBSName"); } }
         public DataTable DtUsuarios { get { return dt; } set { dt = value; OnPropertyChanged("DtUsuarios"); } }
-        public DataRow DrWBS { get; set; }
         public int Cantidad { get; set; }
-        public WindowWBS MyFather { get; set; }
+        //public WindowWBS MyFather { get; set; }
+        public DataRow DrFather { get; set; }
+        public DataTable Dt_WBS { get; set; }
         public DataRow DrWBS_Structure { get; set; }
         public decimal IdProject { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -50,33 +51,24 @@ namespace EnsureRisk.Windows
             using (ServiceUserController.WebServiceUser wsu = new ServiceUserController.WebServiceUser())
             {
                 DtUsuarios = wsu.GetUserData().Tables[DT_User.User_TABLA].Copy();
-            }
-            
+            }            
         }
 
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                DrWBS_Structure[DT_WBS_STRUCTURE.ID_CHILD] = DrWBS[DT_WBS.ID_WBS];
-                DrWBS_Structure[DT_WBS_STRUCTURE.CHILD] = TextName.Text;
-                DrWBS_Structure[DT_WBS_STRUCTURE.CNIVEL] = TextLevel.Text;
-                DrWBS_Structure[DT_WBS_STRUCTURE.CHILD_USER] = cbUser.Text;
-                DrWBS[DT_WBS.WBS_NAME] = TextName.Text;
-                DrWBS[DT_WBS.NIVEL] = TextLevel.Text;
-                DrWBS[DT_WBS.IDPROJECT] = IdProject;
-                DrWBS[DT_WBS.USERNAME] = cbUser.Text;
+                DrWBS_Structure[DT_WBS.WBS_NAME] = TextName.Text;
+                DrWBS_Structure[DT_WBS.NIVEL] = TextLevel.Text;
+                DrWBS_Structure[DT_WBS.IDPROJECT] = IdProject;
+                DrWBS_Structure[DT_WBS.USERNAME] = cbUser.Text;                
+                DrWBS_Structure[DT_WBS.ID_FATHER] = DrFather[DT_WBS.ID_WBS];
+                DrWBS_Structure[DT_WBS.WBS_FNAME] = DrFather[DT_WBS.WBS_NAME];
 
-
-                MyFather.WBS_Encoder.Rows.Add(DrWBS);
-                MyFather.WBS_Structure.Rows.Add(DrWBS_Structure);
-
-                DrWBS = MyFather.WBS_Encoder.NewRow();
-                DrWBS_Structure = MyFather.WBS_Structure.NewRow();
-                DrWBS_Structure[DT_WBS_STRUCTURE.ID_FATHER] = MyFather.DrWBS[DT_WBS.ID_WBS];
-                DrWBS_Structure[DT_WBS_STRUCTURE.FATHER] = MyFather.DrWBS[DT_WBS.WBS_NAME];
+                Dt_WBS.Rows.Add(DrWBS_Structure);
+                DrWBS_Structure = Dt_WBS.NewRow();
                 Cantidad++;
-                TextLevel.Text = MyFather.TextLevel.Text + "." + Cantidad;
+                TextLevel.Text = DrFather[DT_WBS.NIVEL].ToString() + "." + Cantidad;
                 TextName.Clear();
                 cbUser.SelectedIndex = -1;
                 TextName.Focus();

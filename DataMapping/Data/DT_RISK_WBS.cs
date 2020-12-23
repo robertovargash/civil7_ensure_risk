@@ -12,10 +12,13 @@ namespace DataMapping.Data
         private const string wBS = "WBS_Name";
         private const string nIVEL = "Nivel";
         private const string iS_PRIMARY = "isPrimary";
-        private const string pRIMARY = "Primaryy";
         private const string uSERNAME = "userName";
         private const string pROBABILITY = "probability";
         private const string wBS_USER = "WBS_User";
+        public const string CanDelete = "CanDelete";
+        public const string CanEditPrimary = "CanEditPrimary";
+        public const string IsProbabReadOnly= "IsProbabReadOnly";
+
 
         public static string WBS_USER => wBS_USER;
 
@@ -31,7 +34,6 @@ namespace DataMapping.Data
 
         public static string IS_PRIMARY => iS_PRIMARY;
 
-        public static string PRIMARY => pRIMARY;
 
         public static string USERNAME => uSERNAME;       
 
@@ -52,11 +54,14 @@ namespace DataMapping.Data
             Columns.Add(WBS, typeof(string));
             Columns.Add(NIVEL, typeof(string));
             Columns.Add(IS_PRIMARY, typeof(bool));
-            Columns.Add(PRIMARY, typeof(string));
             Columns.Add(USERNAME, typeof(string));
             Columns.Add(PROBABILITY, typeof(decimal));
             Columns.Add(WBS_USER, typeof(string));
+            Columns.Add(CanDelete, typeof(bool));            
+            Columns.Add(CanEditPrimary, typeof(bool));            
+            Columns.Add(IsProbabReadOnly, typeof(bool));
             PrimaryKey = PK_COLUMN;
+
         }
     }
 }

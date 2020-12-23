@@ -25,12 +25,15 @@ namespace DataMapping.Data
         public const string ID_WBS = "idWBS";
         public const string WBS_NAME = "WBSName";
         public const string USER_NAME = "userName";
+        private const string iS_CM = "isCM";
+        public static string IS_CM => iS_CM;
 
 
         public DT_Risk() : base()
         {
             CreateTable();
         }
+
 
         private void CreateTable()
         {
@@ -54,6 +57,7 @@ namespace DataMapping.Data
             Columns.Add(ID_WBS, typeof(decimal));
             Columns.Add(WBS_NAME, typeof(string));
             Columns.Add(USER_NAME, typeof(string));
+            Columns.Add(IS_CM, typeof(bool));
 
             PrimaryKey = PK_COLUMN;
         }

@@ -655,26 +655,26 @@ namespace EnsureRisk.Export
                 foreach (DataRow counterMDataRow in counterMeasureChildList)
                 {
                     _columnIndex = _counterMcolumnIndexBeginAt;
-                    drToExport[CMID] = counterMDataRow[DT_CounterM.ID];
+                    drToExport[CMID] = counterMDataRow[DT_Risk.ID];
                     _columnIndex++;
-                    drToExport[CMName] = counterMDataRow[DT_CounterM.NAMESHORT];
+                    drToExport[CMName] = counterMDataRow[DT_Risk.NAMESHORT];
 
                     AddColumnsADData(riskProperties, ref flag);
 
                     _columnIndex++;
-                    drToExport[CMComments] = counterMDataRow[DT_CounterM.DETAIL];
+                    drToExport[CMComments] = counterMDataRow[DT_Risk.COMMENTS];
                     _columnIndex++;
-                    drToExport[CMRiskRed] = counterMDataRow[DT_CounterM.PROBABILITY];
+                    drToExport[CMRiskRed] = counterMDataRow[DT_Risk.PROBABILITY];
                     _columnIndex++;
-                    drToExport[CMStatus] = (bool)counterMDataRow[DT_CounterM.IS_ACTIVE] ? "Activated" : "No Activated";
+                    drToExport[CMStatus] = (bool)counterMDataRow[DT_Risk.IS_ACTIVE] ? "Activated" : "No Activated";
                     _columnIndex++;
 
-                    IEnumerable<DataRow> counterMProperties = _riskTreeDataSetTrader.GetCounterMPropertyList((decimal)counterMDataRow[DT_CounterM.ID]);
+                    IEnumerable<DataRow> counterMProperties = _riskTreeDataSetTrader.GetCounterMPropertyList((decimal)counterMDataRow[DT_Risk.ID]);
 
                     foreach (var riskType in _riskTreeDataSetTrader.RiskTypeList)
                     {
                         string columnaNombre = DtToExport.Columns[_columnIndex].ColumnName;
-                        drToExport[columnaNombre] = counterMProperties.FirstOrDefault(counterMProperty => counterMProperty[DT_CounterM_Damage.DAMAGE].ToString() == columnaNombre.Split('-')[1].ToString())[DT_CounterM_Damage.VALUE];
+                        drToExport[columnaNombre] = counterMProperties.FirstOrDefault(counterMProperty => counterMProperty[DT_Risk_Damages.DAMAGE].ToString() == columnaNombre.Split('-')[1].ToString())[DT_Risk_Damages.VALUE];
                         _columnIndex++;
                     }
 
@@ -721,9 +721,9 @@ namespace EnsureRisk.Export
                 decimal value = 0;
                 if (itemI.IsCM)
                 {
-                    if (_riskTreeDataSetTrader.SourceDataSet.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
+                    if (_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
                     {
-                        value = (decimal)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_CounterM_Damage.VALUE];
+                        value = (decimal)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
                     }
                     AcumDamage += value;
                 }
@@ -748,9 +748,9 @@ namespace EnsureRisk.Export
                 decimal value = 0;
                 if (itemI.IsCM)
                 {
-                    if (_riskTreeDataSetTrader.SourceDataSet.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
+                    if (_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { itemI.ID, IdDamageSelected }))
                     {
-                        value = (decimal)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_CounterM_Damage.TABLE_NAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_CounterM_Damage.VALUE];
+                        value = (decimal)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Find(new object[] { itemI.ID, IdDamageSelected })[DT_Risk_Damages.VALUE];
                     }
                     totalDamage += value;
                 }
@@ -772,34 +772,34 @@ namespace EnsureRisk.Export
             bool hasChildren = false;//the flag ill be activated if the risk has children,
             List<decimal> Probability_List = new List<decimal>();
             List<decimal> CM_Probabilities = new List<decimal>();
-            foreach (DataRow drChildCM in _riskTreeDataSetTrader.SourceDataSet.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_RISK + " = " + drRFather[DT_Risk.ID]))
+            foreach (DataRow drChildCM in _riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + drRFather[DT_Risk.ID]))
             {
-                if ((bool)drChildCM[DT_CounterM.IS_ACTIVE])
+                if ((bool)drChildCM[DT_Risk.IS_ACTIVE])
                 {
-                    CM_Probabilities.Add((decimal)drChildCM[DT_CounterM.PROBABILITY]/100);
+                    CM_Probabilities.Add((decimal)drChildCM[DT_Risk.PROBABILITY]/100);
                 }
             }
-            foreach (DataRow drChildRisk in _riskTreeDataSetTrader.SourceDataSet.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRFather[DT_Risk.ID]))
+            foreach (DataRow drChildRisk in _riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + drRFather[DT_Risk.ID]))
             {
                 hasChildren = true;
-                if (_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Contains(drChildRisk[DT_RiskStructure.IDRISK]))
+                if (_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Contains(drChildRisk[DT_Risk.ID]))
                 {
-                    if (IsLeaf(_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_RiskStructure.IDRISK]),_riskTreeDataSetTrader.SourceDataSet.Tables[DT_RiskStructure.TABLE_NAME]))
+                    if (IsLeaf(_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_Risk.ID]),_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME]))
                     {
-                        if (!((bool)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_RiskStructure.IDRISK])[DT_Risk.IS_ACTIVE]))
+                        if (!((bool)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_Risk.ID])[DT_Risk.IS_ACTIVE]))
                         {
                             Probability_List.Add(1);
                         }
                         else
                         {
-                            Probability_List.Add((decimal)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_RiskStructure.IDRISK])[DT_Risk.PROBABILITY]/100);
+                            Probability_List.Add((decimal)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_Risk.ID])[DT_Risk.PROBABILITY]/100);
                         }
                     }
                     else
                     {
-                        if (((bool)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_RiskStructure.IDRISK])[DT_Risk.IS_ACTIVE]))
+                        if (((bool)_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_Risk.ID])[DT_Risk.IS_ACTIVE]))
                         {
-                            Probability_List.Add(AcumulatedLikelihood(_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_RiskStructure.IDRISK])));
+                            Probability_List.Add(AcumulatedLikelihood(_riskTreeDataSetTrader.SourceDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Find(drChildRisk[DT_Risk.ID])));
                         }
                         else
                         {

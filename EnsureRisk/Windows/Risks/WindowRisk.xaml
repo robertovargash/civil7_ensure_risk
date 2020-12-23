@@ -7,16 +7,16 @@
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         x:Class="EnsureRisk.Windows.WindowRisk"
         xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
+        xmlns:decimalconv="clr-namespace:EnsureRisk.DataBinding"
         xmlns:classess="clr-namespace:EnsureRisk.Classess"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:c ="clr-namespace:EnsureRisk"
-    xmlns:system="clr-namespace:System;assembly=mscorlib"
-    xmlns:local1="clr-namespace:EnsureRisk.Classess"
-    mc:Ignorable="d"
-        Title="Risk" Height="561" Width="677" MinWidth="677" MinHeight="561" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" Closing="Window_Closing" WindowStartupLocation="CenterScreen" >
+        xmlns:local="clr-namespace:EnsureRisk"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Line" Height="561" Width="677" MinWidth="677" MinHeight="561" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" Closing="Window_Closing" WindowStartupLocation="CenterScreen" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -24,6 +24,9 @@
                 <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/Styless.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+            <classess:OpositeBoolToVisibilityConverter x:Key="NonToVisConverter" />
+            <classess:BoolToCMProbabilityConverter x:Key="BoolToCMConverter" />
+            <classess:BoolToCMProbabilityShortConverter x:Key="BoolToCMShortConverter" />
         </ResourceDictionary>
     </Window.Resources>
     <Window.Triggers>
@@ -41,7 +44,7 @@
         <StackPanel Orientation="Vertical" Margin="34,7,347,0">
             <TextBox TabIndex="1" md:ShadowAssist.ShadowDepth="Depth5" IsEnabled="{Binding Path = HasAccess}" KeyUp="RiskName_KeyUp" md:HintAssist.Hint="Short Name" 
                      md:HintAssist.IsFloating="True" x:Name="RiskName" 
-                     MaxLength="250"  TextWrapping="Wrap"  VerticalAlignment="Top"  MaxLines="1" TextOptions.TextHintingMode="Animated" 
+                     MaxLength="250" TextWrapping="Wrap" VerticalAlignment="Top"  MaxLines="1" TextOptions.TextHintingMode="Animated" 
                      TextChanged="RiskName_TextChanged" LostFocus="RiskName_LostFocus">
                 <TextBox.Text>
                     <Binding Path="ShortName" UpdateSourceTrigger="PropertyChanged">
@@ -58,12 +61,12 @@
             </Border>
         </StackPanel>
 
-        <TextBox md:HintAssist.Hint="Father" md:HintAssist.IsFloating="True" x:Name="TextFather" Margin="0,7,15,0" TextWrapping="Wrap"  VerticalAlignment="Top"  Height="38" IsReadOnly="True" IsEnabled="False" HorizontalAlignment="Right" Width="246"/>
+        <TextBox md:HintAssist.Hint="Father" md:HintAssist.IsFloating="True" x:Name="TextFather" Margin="0,7,15,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="38" IsReadOnly="True" IsEnabled="False" HorizontalAlignment="Right" Width="246"/>
         <TextBox Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" TabIndex="2" 
                  IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" Name="TextDetail" Height="71" Margin="34,119,13,0" 
                  TextWrapping="Wrap"  VerticalAlignment="Top" TextAlignment="Justify" MaxLength="250" VerticalScrollBarVisibility="Auto"/>
         <TabControl Margin="37,269,28,71">
-            <TabItem Header="Values" Name="tabValues" >
+            <TabItem Header="Damage Values" Name="tabValues" >
                 <Grid>
                     <DataGrid TabIndex="4" Name="dgTopRisk" AutoGenerateColumns="False">
                         <DataGrid.Columns>
@@ -94,7 +97,7 @@
                                 </DataGridTemplateColumn.Header>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button x:Name="BtnDelWBS" Height="20" Width="20" ToolTip="Delete row" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" IsEnabled="{Binding Path = HasAccess}" Click="BtnDelWBS_Click" md:ShadowAssist.ShadowDepth="Depth5">
+                                        <Button x:Name="BtnDelWBS" Height="20" Width="20" ToolTip="Delete row" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" IsEnabled="{Binding {x:Static data:DT_RISK_WBS.CanDelete}}" Click="BtnDelWBS_Click" md:ShadowAssist.ShadowDepth="Depth5">
                                             <md:PackIcon Kind="Trash"/>
                                         </Button>
                                     </DataTemplate>
@@ -102,23 +105,33 @@
                             </DataGridTemplateColumn>
                             <DataGridTextColumn x:Name="Level" Header="Level" Binding="{Binding {x:Static data:DT_RISK_WBS.NIVEL}}" Width="100" IsReadOnly="True"/>
                             <DataGridTextColumn x:Name="WBS" Header="WBS/User" Binding="{Binding {x:Static data:DT_RISK_WBS.WBS_USER}}" Width="*" IsReadOnly="True"/>
-                            <DataGridTextColumn x:Name="WBProbability" Header="Prob (%)" Width="100"  EditingElementStyle="{StaticResource errorStyle}" IsReadOnly="false">
-                                <DataGridTextColumn.Binding>
-                                    <Binding Path="probability" UpdateSourceTrigger="LostFocus">
-                                        <Binding.ValidationRules>
-                                            <classes:NegativePlusValidation ValidationStep="UpdatedValue" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </DataGridTextColumn.Binding>
-                            </DataGridTextColumn>
+                            <DataGridTemplateColumn x:Name="WBRReduction"  Width="100"  >
+                                <DataGridTemplateColumn.Header>
+                                    <TextBlock Text="{Binding IsCM, Converter={StaticResource BoolToCMShortConverter}, UpdateSourceTrigger=PropertyChanged}" x:Name="headerProb"/>
+                                </DataGridTemplateColumn.Header>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox IsEnabled="{Binding {x:Static data:DT_RISK_WBS.IsProbabReadOnly}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
+
+                                            <TextBox.Text>
+                                                <Binding Path="probability" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}" ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
+                                                    <Binding.ValidationRules>
+                                                        <local:NegativePlusValidation ValidationStep="UpdatedValue" />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
                             <DataGridTemplateColumn x:Name="PRIMARY" Header="Primary">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <ToggleButton IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Checked="KeyToggleButtonChecked" Style="{StaticResource MaterialDesignActionToggleButton}" IsChecked="{Binding {x:Static data:DT_RISK_WBS.IS_PRIMARY}}">
-                                            <md:ToggleButtonAssist.OnContent>
-                                                <md:PackIcon Kind="Key" Width="20" Height="20"/>
-                                            </md:ToggleButtonAssist.OnContent>
-                                        </ToggleButton>
+                                        <StackPanel Orientation="Vertical">
+                                            <Button IsEnabled="{Binding {x:Static data:DT_RISK_WBS.CanEditPrimary}}" Width="20" Height="20" Click="KeyToggleButtonChecked"  Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content=" " Visibility="{Binding {x:Static data:DT_RISK_WBS.IS_PRIMARY}, Converter={StaticResource NonToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                            <Button Width="20" Height="20" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=Key}" Visibility="{Binding {x:Static data:DT_RISK_WBS.IS_PRIMARY}, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -154,13 +167,10 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <TextBox TabIndex="3" x:Name="TextProbability" IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Probability (%)" 
+        <TextBox TabIndex="3" x:Name="TextProbability" IsReadOnly="True" md:HintAssist.Hint="{Binding IsCM, Converter={StaticResource BoolToCMConverter}, UpdateSourceTrigger=PropertyChanged}" 
                  md:HintAssist.IsFloating="True" PreviewTextInput="NumberValidationTextBox" Text="{Binding Path = Probability, UpdateSourceTrigger=PropertyChanged}" 
                  HorizontalAlignment="Left" Height="41" Margin="37,209,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132" LostFocus="TextProbability_LostFocus" 
-                 MaxLines="1" TextAlignment="Right">
-
-        </TextBox>
-        <!--<Label x:Name="LabelProbability" Content="Probability (%):" HorizontalAlignment="Left" Margin="37,223,0,0" VerticalAlignment="Top"/>-->
+                 MaxLines="1" TextAlignment="Right"/>
         <md:DialogHost IsOpen="False" x:Name="ErrorMessageDialog">
             <md:DialogHost.DialogContent >
                 <StackPanel Margin="15">

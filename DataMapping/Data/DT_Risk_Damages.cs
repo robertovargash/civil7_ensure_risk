@@ -26,6 +26,9 @@ namespace DataMapping.Data
         public const string ID_WBS = "idWBS";
         public const string WBS_NAME = "WBSName";
         public const string USERNAME = "userName";
+        public const string iS_CM = "isCM";
+        public static string IS_CM => iS_CM;
+
 
         public DT_Risk_Damages():base()
         {
@@ -48,6 +51,7 @@ namespace DataMapping.Data
             Columns.Add(GROUPE_NAME, typeof(string));
             Columns.Add(RISK_TREE, typeof(string));
             Columns.Add(IS_ROOT, typeof(bool));
+            Columns.Add(IS_CM, typeof(bool));
             Columns.Add(VALUE, typeof(decimal));
             Columns.Add(ID_RISK_TREE, typeof(decimal));
             Columns.Add(ID_GROUPE, typeof(decimal));

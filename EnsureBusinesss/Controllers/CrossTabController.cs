@@ -31,21 +31,6 @@ namespace EnsureBusinesss
             }
         }
 
-        public static void AjustarProbabilidadCM(DataRow drCMDamage, DataTable dtCM_WBS, decimal IdWBSFilter)
-        {
-            try
-            {
-                if (dtCM_WBS.Rows.Contains(new object[] {drCMDamage[DT_CounterM_Damage.ID_COUNTERM], IdWBSFilter }))
-                {
-                    drCMDamage[DT_CounterM_Damage.RISK_REDUCTION] = dtCM_WBS.Rows.Find(new object[] { drCMDamage[DT_CounterM_Damage.ID_COUNTERM], IdWBSFilter })[DT_CM_WBS.PROBABILITY];
-                }
-            }
-            catch
-            {
-                throw new Exception("Error ajustando ProbCM");
-            }
-        }
-
         public static void AjustarDamagesRisk(DataRow drRiskDamage, DataTable dtRisk_WBS_Damage, decimal IdWBSFilter)
         {
             try
@@ -64,22 +49,7 @@ namespace EnsureBusinesss
                 throw new Exception("Error ajustandoDamagesRisk");
             }
         }
-
-        public static void AjustarDamagesCM(DataRow drCMDamage, DataTable dtCM_WBS_Damage, decimal IdWBSFilter)
-        {
-            try
-            {
-                if (dtCM_WBS_Damage.Rows.Contains(new object[] {IdWBSFilter, drCMDamage[DT_CounterM_Damage.ID_DAMAGE], drCMDamage[DT_CounterM_Damage.ID_COUNTERM] }))
-                {
-                    drCMDamage[DT_CounterM_Damage.VALUE] = dtCM_WBS_Damage.Rows.Find(new object[] { IdWBSFilter, drCMDamage[DT_CounterM_Damage.ID_DAMAGE], drCMDamage[DT_CounterM_Damage.ID_COUNTERM] })[DT_WBS_CM_Damage.VALUE];
-                }
-            }
-            catch
-            {
-                throw new Exception("Error ajustando DmaagesCM");
-            }
-        }
-
+        
         public static void ColumnasTextoRiskReadOnly(bool flag, DataGrid dg)
         {
             try

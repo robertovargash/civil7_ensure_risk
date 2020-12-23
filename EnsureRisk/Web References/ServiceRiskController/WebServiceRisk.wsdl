@@ -73,6 +73,34 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="SaveTablita">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ds">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveTablitaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SaveTablitaResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
       <s:element name="GetRiskTreeID">
         <s:complexType>
           <s:sequence>
@@ -136,6 +164,12 @@
   <wsdl:message name="SaveRiskSoapOut">
     <wsdl:part name="parameters" element="tns:SaveRiskResponse" />
   </wsdl:message>
+  <wsdl:message name="SaveTablitaSoapIn">
+    <wsdl:part name="parameters" element="tns:SaveTablita" />
+  </wsdl:message>
+  <wsdl:message name="SaveTablitaSoapOut">
+    <wsdl:part name="parameters" element="tns:SaveTablitaResponse" />
+  </wsdl:message>
   <wsdl:message name="GetRiskTreeIDSoapIn">
     <wsdl:part name="parameters" element="tns:GetRiskTreeID" />
   </wsdl:message>
@@ -160,6 +194,10 @@
     <wsdl:operation name="SaveRisk">
       <wsdl:input message="tns:SaveRiskSoapIn" />
       <wsdl:output message="tns:SaveRiskSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveTablita">
+      <wsdl:input message="tns:SaveTablitaSoapIn" />
+      <wsdl:output message="tns:SaveTablitaSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetRiskTreeID">
       <wsdl:input message="tns:GetRiskTreeIDSoapIn" />
@@ -192,6 +230,15 @@
     </wsdl:operation>
     <wsdl:operation name="SaveRisk">
       <soap:operation soapAction="http://tempuri.org/SaveRisk" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveTablita">
+      <soap:operation soapAction="http://tempuri.org/SaveTablita" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -240,6 +287,15 @@
     </wsdl:operation>
     <wsdl:operation name="SaveRisk">
       <soap12:operation soapAction="http://tempuri.org/SaveRisk" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveTablita">
+      <soap12:operation soapAction="http://tempuri.org/SaveTablita" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

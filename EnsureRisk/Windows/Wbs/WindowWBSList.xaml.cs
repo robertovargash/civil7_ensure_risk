@@ -73,7 +73,7 @@ namespace EnsureRisk.Windows
                 WindowWBS wbs = new WindowWBS
                 {
                     DrWBS = Ds.Tables[DT_WBS.TABLE_NAME].NewRow(),
-                    WBS_Structure = Ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Copy(),
+                    //WBS_Structure = Ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Copy(),
                     WBS_Encoder = Ds.Tables[DT_WBS.TABLE_NAME].Copy(),
                     Operation = General.INSERT,
                     Icon = Icon
@@ -81,7 +81,7 @@ namespace EnsureRisk.Windows
                 if (wbs.ShowDialog() == true)
                 {
                     Ds.Tables[DT_WBS.TABLE_NAME].Rows.Add(wbs.DrWBS);
-                    Ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Merge(wbs.WBS_Structure);
+                    //Ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Merge(wbs.WBS_Structure);
                     Ds.Tables[DT_WBS.TABLE_NAME].Merge(wbs.WBS_Encoder);
                     if (Ds.HasChanges())
                     {
@@ -111,7 +111,7 @@ namespace EnsureRisk.Windows
                     WindowWBS wbs = new WindowWBS
                     {
                         DrWBS = dr,
-                        WBS_Structure = Ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Copy(),
+                        //WBS_Structure = Ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Copy(),
                         WBS_Encoder = Ds.Tables[DT_WBS.TABLE_NAME].Copy(),
                         Operation = General.UPDATE,
                         Icon = Icon
@@ -119,7 +119,7 @@ namespace EnsureRisk.Windows
                     if (wbs.ShowDialog() == true)
                     {
                         Ds.Tables[DT_WBS.TABLE_NAME].Merge(wbs.WBS_Encoder);
-                        Ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Merge(wbs.WBS_Structure);
+                        //Ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Merge(wbs.WBS_Structure);
                         if (Ds.HasChanges())
                         {
                             DataSet temp = new DataSet();
@@ -148,9 +148,9 @@ namespace EnsureRisk.Windows
 
         private void DELETE(DataRow fila)
         {
-            foreach (var item in Ds.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Select(DT_WBS_STRUCTURE.ID_FATHER + " = " + fila[DT_WBS.ID_WBS]))
+            foreach (var item in Ds.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.ID_FATHER + " = " + fila[DT_WBS.ID_WBS]))
             {
-                Ds.Tables[DT_WBS.TABLE_NAME].Rows.Find(item[DT_WBS_STRUCTURE.ID_CHILD]).Delete();
+                Ds.Tables[DT_WBS.TABLE_NAME].Rows.Find(item[DT_WBS.ID_WBS]).Delete();
             }
             fila.Delete();
             if (Ds.HasChanges())

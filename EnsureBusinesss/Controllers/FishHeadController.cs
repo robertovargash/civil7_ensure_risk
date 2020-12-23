@@ -62,15 +62,15 @@ namespace EnsureBusinesss
         /// </summary>
         private static decimal CalcCM_DamageValue(DataRow CM, DataTable CM_Damage, decimal idDamage)
         {
-            if (!(CM_Damage.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CM[DT_CounterM.ID] + " AND " +
-                DT_CounterM_Damage.ID_DAMAGE + " = " + idDamage).Any()))
+            if (!(CM_Damage.Select(DT_Risk_Damages.ID_RISK + " = " + CM[DT_Risk.ID] + " AND " +
+                DT_Risk_Damages.ID_DAMAGE + " = " + idDamage).Any()))
             {
                 return 0;
             }
             else
             {
-                return (decimal)CM_Damage.Select(DT_CounterM_Damage.ID_COUNTERM + " = " + CM[DT_CounterM.ID] + " AND " +
-                    DT_CounterM_Damage.ID_DAMAGE + " = " + idDamage).First()[DT_CounterM_Damage.VALUE];
+                return (decimal)CM_Damage.Select(DT_Risk_Damages.ID_RISK + " = " + CM[DT_Risk.ID] + " AND " +
+                    DT_Risk_Damages.ID_DAMAGE + " = " + idDamage).First()[DT_Risk_Damages.VALUE];
             }
         }
 
@@ -79,14 +79,13 @@ namespace EnsureBusinesss
         /// </summary>
         private static DataRow[] GetRiskCMs(DataRow risk, DataTable CM)
         {
-            return CM.Select(DT_CounterM.ID_RISK + " = " + risk[DT_Risk.ID] + " and " + DT_CounterM.IS_ACTIVE + " = " + true);
+            return CM.Select(DT_Risk.IDRISK_FATHER + " = " + risk[DT_Risk.ID] + " and " + DT_Risk.IS_ACTIVE + " = " + true);
         }
 
         /// <summary>
         /// Calculate and returns the value of the Damage (TopRisk) of the Risk
         /// </summary>
-        public static decimal CalcDiagramDamageValue(DataRow drRoot, DataTable dtRisk, decimal idDamage, DataTable dtRisk_Damage,
-            DataTable dtCM, DataTable dtCM_Damage)
+        public static decimal CalcDiagramDamageValue(DataRow drRoot, DataTable dtRisk, decimal idDamage, DataTable dtRisk_Damage)
         {
             //THIS FUNCTION CALCULATES THE VALUE OF A TOPRISK, 
             //THE CODING AND STRUCTURE TABLES, HANDLE THE RISK AND ITS POSITION WITHIN THE TREE TO CALCULATE THE VALUE OF ITS CHILDREN.
@@ -94,9 +93,9 @@ namespace EnsureBusinesss
             decimal cmValue = 0;
 
             //HERE WE SELECT ALL THE COUNTERMEASURE OF THE RISK AND SUM ALL HIS VALUES AND RESTAMOS
-            foreach (DataRow item in GetRiskCMs(drRoot, dtCM))
+            foreach (DataRow item in GetRiskCMs(drRoot, dtRisk))
             {
-                cmValue += CalcCM_DamageValue(item, dtCM_Damage, idDamage);
+                cmValue += CalcCM_DamageValue(item, dtRisk_Damage, idDamage);
             }
             riskValue += cmValue;//ORIGINALMENTE ERA MENOS, PERO POR LO QUE DIJO LUCAS CAMBIE A +
             //NOW, FOR EACH CHILDS OF 'drRoot' WE EVALUATE IF HAS CHILDREN
@@ -106,9 +105,9 @@ namespace EnsureBusinesss
                 {
                     //IF NOT HAVE CHILDREN AS THE VALUE IS ADDED TO THE VALUE OF THE FATHER
                     riskValue += CalcSelectedRiskDamageValue(item, dtRisk_Damage, idDamage);
-                    foreach (DataRow item2 in GetRiskCMs(item, dtCM))
+                    foreach (DataRow item2 in GetRiskCMs(item, dtRisk))
                     {
-                        cmValue = CalcCM_DamageValue(item2, dtCM_Damage, idDamage);
+                        cmValue = CalcCM_DamageValue(item2, dtRisk_Damage, idDamage);
                         riskValue += cmValue;//ORIGINALMENTE ERA MENOS, PERO POR LO QUE DIJO LUCAS CAMBIE A +
                     }
                 }
@@ -117,7 +116,7 @@ namespace EnsureBusinesss
                     //ELSE FOR EACH CHILDS EXECUTE THE FUNCTION 
                     if ((bool)item[DT_Risk.IS_ACTIVE])
                     {
-                        riskValue += CalcDiagramDamageValue(item, dtRisk, idDamage, dtRisk_Damage, dtCM, dtCM_Damage);
+                        riskValue += CalcDiagramDamageValue(item, dtRisk, idDamage, dtRisk_Damage);
                     }
                 }
             }

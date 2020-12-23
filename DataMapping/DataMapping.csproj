@@ -49,19 +49,13 @@
     <Compile Include="Data\DT_Clasificator.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Data\DT_CM_WBS.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Data\DT_MyLog.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Data\DT_WBS_CM_Damage.cs">
+    <Compile Include="Data\DT_RiskStructure.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Data\DT_CounterM.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Data\DT_CounterM_Damage.cs">
+    <Compile Include="Data\DT_Tablita.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\DT_DefaulRisk.cs">
@@ -85,9 +79,6 @@
     <Compile Include="Data\DT_Risk.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Data\DT_RiskStructure.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Data\DT_Diagram.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -103,9 +94,6 @@
     <Compile Include="Data\DT_Role.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Data\DT_Role_CM.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Data\DT_Role_Risk.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -116,9 +104,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\DT_WBS.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Data\DT_WBS_STRUCTURE.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\MyLogDataset.cs">

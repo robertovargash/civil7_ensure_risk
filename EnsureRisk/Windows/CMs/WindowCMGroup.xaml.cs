@@ -96,7 +96,7 @@ namespace EnsureRisk.Windows
             {
                 if (TextName.Text != "")
                 {
-                    if (MyCM.Select(DT_CounterM.ID_DIAGRAM + " = " + RiskTreeID + " and " + DT_CounterM.NAMESHORT + " = '" + TextName.Text + "'").Any())
+                    if (MyCM.Select(DT_Risk.ID_DIAGRAM + " = " + RiskTreeID + " and " + DT_Risk.NAMESHORT + " = '" + TextName.Text + "'").Any())
                     {
                         IS_USING_NAME = true;
                         MostrarDialogYesNo("The name [" + TextName.Text + "] Already exists in this diagram. Do you want to use it again?");                        
@@ -135,7 +135,7 @@ namespace EnsureRisk.Windows
                 //añadido por Roberto
                 DvTopRisk = TopRiskTable.DefaultView;
                 dgTopRisk.ItemsSource = DvTopRisk;
-                DvTopRisk.RowFilter = DT_CounterM_Damage.ID_COUNTERM + " = " + -100;
+                DvTopRisk.RowFilter = DT_Risk_Damages.ID_RISK + " = " + -100;
             }
             catch (Exception ex)
             {

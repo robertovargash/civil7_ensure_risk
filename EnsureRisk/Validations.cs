@@ -6,13 +6,17 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 
-namespace EnsureRisk.Classess
+namespace EnsureRisk
 {
+    class Validations
+    {
+    }
+
     public class NotEmptyValidationRule : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            return string.IsNullOrWhiteSpace((value ?? "").ToString()) ? new ValidationResult(false, "Field is required."): ValidationResult.ValidResult;
+            return string.IsNullOrWhiteSpace((value ?? "").ToString()) ? new ValidationResult(false, "Field is required.") : ValidationResult.ValidResult;
         }
     }
 
@@ -44,7 +48,7 @@ namespace EnsureRisk.Classess
                 else
                 {
                     return ValidationResult.ValidResult;
-                }                
+                }
             }
             return new ValidationResult(false, "Insert a number");
         }
@@ -140,8 +144,8 @@ namespace EnsureRisk.Classess
     public class BoolToIconConverter : IValueConverter
     {
 
-        public ContentControl TrueValue { get; set; } = new ContentControl{Content = new MaterialDesignThemes.Wpf.PackIcon() {Kind = MaterialDesignThemes.Wpf.PackIconKind.CursorDefaultOutline }};
-        public ContentControl FalseValue { get; set; } = new ContentControl{Content = new MaterialDesignThemes.Wpf.PackIcon() {Kind = MaterialDesignThemes.Wpf.PackIconKind.Hand   } };
+        public ContentControl TrueValue { get; set; } = new ContentControl { Content = new MaterialDesignThemes.Wpf.PackIcon() { Kind = MaterialDesignThemes.Wpf.PackIconKind.CursorDefaultOutline } };
+        public ContentControl FalseValue { get; set; } = new ContentControl { Content = new MaterialDesignThemes.Wpf.PackIcon() { Kind = MaterialDesignThemes.Wpf.PackIconKind.Hand } };
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

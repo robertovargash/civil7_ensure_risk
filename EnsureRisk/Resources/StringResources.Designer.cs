@@ -628,7 +628,7 @@ namespace EnsureRisk.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Risk.
+        ///   Looks up a localized string similar to Line Selected Values.
         /// </summary>
         internal static string RiskTitle {
             get {
