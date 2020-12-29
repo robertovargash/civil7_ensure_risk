@@ -116,6 +116,7 @@
     </ApplicationDefinition>
     <Compile Include="AllValidations.cs" />
     <Compile Include="Classess\ButtonWBS.cs" />
+    <Compile Include="Classess\DamageText.cs" />
     <Compile Include="Classess\HeaderExcelContent.cs" />
     <Compile Include="Classess\MenuRiskItems.cs" />
     <Compile Include="Classess\MiniMapControl.xaml.cs">

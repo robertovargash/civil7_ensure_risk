@@ -313,10 +313,7 @@ namespace EnsureBusinesss
                         newRiskWBS[DT_RISK_WBS.USERNAME] = rowWBS[DT_WBS.USERNAME];
                         newRiskWBS[DT_RISK_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
                         newRiskWBS[DT_RISK_WBS.WBS_USER] = rowWBS[DT_WBS.WBS_NAME] + "[" + rowWBS[DT_WBS.USERNAME] + "]";
-                        ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
-                        riskRow[DT_Risk.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
-                        riskRow[DT_Risk.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                        riskRow[DT_Risk.USER_NAME] = rowWBS[DT_WBS.USERNAME];
+                        ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);                       
                         foreach (DataRow rowRiskDamage in ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + riskRow[DT_Risk.ID]))
                         {
                             rowRiskDamage[DT_Risk_Damages.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
@@ -324,36 +321,10 @@ namespace EnsureBusinesss
                             rowRiskDamage[DT_Risk_Damages.USERNAME] = rowWBS[DT_WBS.USERNAME];
                         }
                     }
+                    riskRow[DT_Risk.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
+                    riskRow[DT_Risk.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
+                    riskRow[DT_Risk.USER_NAME] = rowWBS[DT_WBS.USERNAME];
                 }
-                //foreach (DataRow rowCM in ds.Tables[DT_CounterM.TABLE_NAME].Select(DT_CounterM.ID_DIAGRAM + " = " + Id_Diagram))
-                //{
-                //    if (!(ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Contains(new object[] { rowCM[DT_CounterM.ID], rowWBS[DT_WBS.ID_WBS] })))
-                //    {
-                //        DataRow newCMWBS = ds.Tables[DT_CM_WBS.TABLE_NAME].NewRow();
-                //        newCMWBS[DT_CM_WBS.ID_CM] = rowCM[DT_CounterM.ID];
-                //        newCMWBS[DT_CM_WBS.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                //        newCMWBS[DT_CM_WBS.IS_PRIMARY] = primaryy;
-                //        newCMWBS[DT_CM_WBS.NIVEL] = rowWBS[DT_WBS.NIVEL];
-                //        newCMWBS[DT_CM_WBS.PRIMARY] = "Primary";
-                //        newCMWBS[DT_CM_WBS.PROBABILITY] = 0;
-                //        newCMWBS[DT_CM_WBS.CM] = rowCM[DT_CounterM.NAMESHORT];
-                //        newCMWBS[DT_CM_WBS.USERNAME] = rowWBS[DT_WBS.USERNAME];
-                //        newCMWBS[DT_CM_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
-                //        newCMWBS[DT_CM_WBS.WBS_USER] = rowWBS[DT_WBS.WBS_NAME] + "[" + rowWBS[DT_WBS.USERNAME] + "]";
-                //        ds.Tables[DT_CM_WBS.TABLE_NAME].Rows.Add(newCMWBS);
-
-                //        rowCM[DT_CounterM.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
-                //        rowCM[DT_CounterM.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                //        rowCM[DT_CounterM.USER_NAME] = rowWBS[DT_WBS.USERNAME];
-                //        foreach (DataRow rowCMDamage in ds.Tables[DT_CounterM_Damage.TABLE_NAME].Select(DT_CounterM_Damage.ID_COUNTERM + " = " + rowCM[DT_CounterM.ID]))
-                //        {
-                //            rowCMDamage[DT_CounterM_Damage.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();
-                //            rowCMDamage[DT_CounterM_Damage.ID_WBS] = rowWBS[DT_WBS.ID_WBS];
-                //            rowCMDamage[DT_CounterM_Damage.USERNAME] = rowWBS[DT_WBS.USERNAME];
-                //        }
-                //    }
-                //}
-                //primaryy = false;
             }
         }
 
@@ -374,8 +345,9 @@ namespace EnsureBusinesss
             return dtReturn;
         }
 
-        public static decimal RiskWBSValidations(DataRow RiskRow, DataSet Ds, string LoginUser, DataSet DsWBS, bool hasAccess, decimal probability, bool isCM)
+        public static decimal RiskWBSValidations(DataRow RiskRow, DataSet Ds, string LoginUser, DataSet DsWBS, bool hasAccess, bool isCM)
         {
+            decimal probability = 0;
             List<decimal> Probabilities = new List<decimal>();
             foreach (DataRow rowRiskWbs in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
             {

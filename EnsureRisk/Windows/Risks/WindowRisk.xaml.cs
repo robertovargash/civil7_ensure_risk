@@ -377,7 +377,7 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                Probability = WBSOperations.RiskWBSValidations(RiskRow, Ds, LOGIN_USER, dsWBS, hasAccess, Probability, IsCM);                
+                Probability = WBSOperations.RiskWBSValidations(RiskRow, Ds, LOGIN_USER, dsWBS, hasAccess, IsCM);                
             }
             catch (Exception ex)
             {

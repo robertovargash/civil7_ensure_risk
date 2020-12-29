@@ -18,11 +18,6 @@ namespace EnsureBusinesss
                 if (dtRisk_WBS.Rows.Contains(new object[] {drRiskDamage[DT_Risk_Damages.ID_RISK], IdWBSFilter }))
                 {
                     drRiskDamage[DT_Risk_Damages.PROBABILITY] = dtRisk_WBS.Rows.Find(new object[] { drRiskDamage[DT_Risk_Damages.ID_RISK], IdWBSFilter })[DT_RISK_WBS.PROBABILITY];
-
-                }
-                if ((decimal)drRiskDamage[DT_Risk_Damages.PROBABILITY] == 0)
-                {
-                    drRiskDamage[DT_Risk_Damages.PROBABILITY] = DBNull.Value;
                 }
             }
             catch (Exception ex)
@@ -50,86 +45,12 @@ namespace EnsureBusinesss
             }
         }
         
-        public static void ColumnasTextoRiskReadOnly(bool flag, DataGrid dg)
-        {
-            try
-            {
-                foreach (var item in dg.Columns)
-                {
-                    if (item.Header.ToString() == "Risk")
-                    {
-                        item.IsReadOnly = !flag;
-                        break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public static void ColumnasNumerosRiskReadOnly(bool flag, DataGrid dg)
-        {
-            try
-            {
-                foreach (var item in dg.Columns)
-                {
-                    if (item.Header.ToString() != "Risk" && item.Header.ToString() != "WBS Name" && item.Header.ToString() != "User" && item.Header.ToString() != "Father" && item.Header.ToString() != "Active?")
-                    {
-                        item.IsReadOnly = !flag;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public static void ColumnasTextoCMReadOnly(bool flag, DataGrid dg)
-        {
-            try
-            {
-                foreach (var item in dg.Columns)
-                {
-                    if (item.Header.ToString() == "Counter M.")
-                    {
-                        item.IsReadOnly = !flag;
-                        break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public static void ColumnasNumerosCMReadOnly(bool flag, DataGrid dg)
-        {
-            try
-            {
-                foreach (var item in dg.Columns)
-                {
-                    if (item.Header.ToString() != "Counter M." && item.Header.ToString() != "WBS Name" && item.Header.ToString() != "User" && item.Header.ToString() != "Risk" && item.Header.ToString() != "Status")
-                    {
-                        item.IsReadOnly = !flag;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public static void CleanDynamicCMColumns(DataGrid dataGrid)
         {
             int i = 0;
             while (i < dataGrid.Columns.Count)
             {
-                if (dataGrid.Columns[i].Header.ToString() != "Risk Reduction(%)" && dataGrid.Columns[i].Header.ToString() != "Counter M." && dataGrid.Columns[i].Header.ToString() != "WBS Name"
+                if (dataGrid.Columns[i].Header.ToString() != "R. Reduct. (%)" && dataGrid.Columns[i].Header.ToString() != "Counter M." && dataGrid.Columns[i].Header.ToString() != "WBS Name"
                     && dataGrid.Columns[i].Header.ToString() != "User" && dataGrid.Columns[i].Header.ToString() != "Risk" && dataGrid.Columns[i].Header.ToString() != "Active?")
                 {
                     dataGrid.Columns.RemoveAt(i);

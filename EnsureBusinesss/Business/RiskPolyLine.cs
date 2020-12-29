@@ -115,7 +115,7 @@ namespace EnsureBusinesss.Business
         public double XTreme { get; set; }
 
         public double YxTreme { get; set; }
-       
+
         public decimal IdRiskFather { get; set; }
 
         public int MyLevel { get; set; }
@@ -164,7 +164,7 @@ namespace EnsureBusinesss.Business
         {
             set { SetValue(OwnValueProperty, value); }
             get { return (decimal)GetValue(OwnValueProperty); }
-        }       
+        }
 
         public static readonly DependencyProperty AcLikeProperty =
            DependencyProperty.Register("AcLike", typeof(decimal), typeof(RiskPolyLine), new FrameworkPropertyMetadata(Convert.ToDecimal(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
@@ -204,6 +204,7 @@ namespace EnsureBusinesss.Business
         #endregion
         public Point StartDrawPoint { get; set; }
         public RiskPolyLine Father { get; set; }
+        public RiskPolyLine BaseFather { get; set; }
         public LineGroup Group { get; set; }
         public LabelPolyLine MyName { get; set; }
         public LBorder TextPanel { get; set; }
@@ -267,15 +268,15 @@ namespace EnsureBusinesss.Business
             {
                 Orientation = Orientation.Horizontal,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top                
-               
+                VerticalAlignment = VerticalAlignment.Top
+
             };
 
             TextPanel = new LBorder
             {
                 CornerRadius = new CornerRadius(1),
                 BorderBrush = this.Stroke,
-                BorderThickness = new Thickness(1),                
+                BorderThickness = new Thickness(1),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
@@ -386,7 +387,7 @@ namespace EnsureBusinesss.Business
         }
         //TODO:Documentar
         protected override Geometry DefiningGeometry
-        {            
+        {
             get
             {
                 MyName.MaxWidth = 180;
@@ -424,7 +425,6 @@ namespace EnsureBusinesss.Business
                 else
                 {
                     MyName.Text = "(Disabled)" + ShortName;
-                    
                 }
                 if (ShortName == string.Empty)
                 {
@@ -773,6 +773,21 @@ namespace EnsureBusinesss.Business
             return segmentsToReturn;
         }
         /// <summary>
+        /// Get all descendant risk and counter mesure
+        /// </summary>
+        /// <returns>List of descendant</returns>
+        public List<RiskPolyLine> GetChilds()
+        {
+            List<RiskPolyLine> childList = new List<RiskPolyLine>();
+
+            childList.Add(this);
+            foreach (RiskPolyLine child in Children)
+            {
+                childList.AddRange(child.GetChilds());
+            }
+            return childList;
+        }
+        /// <summary>
         /// Point that contain minimun X 
         /// </summary>
         /// <returns>Point that contain minimun X</returns>
@@ -991,6 +1006,49 @@ namespace EnsureBusinesss.Business
                 visualParentStrokeThickness = Father.StrokeThickness;
             }
             return visualParentStrokeThickness;
+        }
+
+        public Rect Bounds(ScrollViewer scrollViewer)
+        {
+            Rect bounds = new Rect();
+
+            // La flecha comienza en la cola y termina en la flecha
+            Point beginAt, endAt;
+
+            if (Segments.Any())
+            {
+                beginAt = Segments.Last().Points[0];
+            }
+            else
+            {
+                beginAt = Points[0];
+            }
+
+            endAt = Points.Last();
+
+            double poliLineWidth = Math.Abs(endAt.X - beginAt.X) + StrokeThickness;
+
+            if (IsDiagonal)
+            {
+                double poliLineHeight = Math.Abs(endAt.Y - beginAt.Y) + StrokeThickness;
+
+                if (FromTop)
+                {
+                    bounds = TransformToAncestor(scrollViewer).TransformBounds(new Rect(beginAt.X, beginAt.Y, poliLineWidth, poliLineHeight));
+                }
+                else
+                {
+                    bounds = TransformToAncestor(scrollViewer).TransformBounds(new Rect(beginAt.X, beginAt.Y - poliLineHeight, poliLineWidth, poliLineHeight));
+                }
+            }
+            else
+            {
+                double poliLineHeight = Math.Abs(endAt.Y - beginAt.Y);
+
+                bounds = TransformToAncestor(scrollViewer).TransformBounds(new Rect(beginAt.X, beginAt.Y - StrokeThickness, poliLineWidth, poliLineHeight + StrokeThickness * 2));
+            }
+
+            return bounds;
         }
     }
 }

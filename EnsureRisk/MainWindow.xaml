@@ -345,10 +345,9 @@
                                                                         </DataGridTemplateColumn.Header>
                                                                         <DataGridTemplateColumn.CellTemplate>
                                                                             <DataTemplate>
-                                                                                <TextBox IsEnabled="{Binding {x:Static data:DT_RISK_WBS.IsProbabReadOnly}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
-                                                                                    
+                                                                                <TextBox VerticalAlignment="Center" LostFocus="TextProbabilityDataGrid_LostFocus" IsEnabled="{Binding {x:Static data:DT_RISK_WBS.IsProbabReadOnly}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">                                                                                    
                                                                                     <TextBox.Text>
-                                                                                        <Binding Path="probability" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}" ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
+                                                                                        <Binding Path="probability" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}" ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                                                                             <Binding.ValidationRules>
                                                                                                 <local:NegativePlusValidation ValidationStep="UpdatedValue" />
                                                                                             </Binding.ValidationRules>
@@ -405,149 +404,6 @@
                                             </StackPanel>
                                         </md:Card>
                                     </StackPanel>
-                                    <!--<StackPanel Orientation="Vertical" x:Name="WrapCM" Visibility="{Binding Path = ShowCMData, Converter={StaticResource BoolToVisConverter}}" >
-                                        <StackPanel Orientation="Vertical">
-                                            <TextBox md:HintAssist.Hint="CounterMeasure" x:Name="TextCM" Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" 
-                                                 HorizontalAlignment="Stretch" MinWidth="150" TextAlignment="Justify" VerticalScrollBarVisibility="Auto"
-                                                 md:HintAssist.IsFloating="True" TextWrapping="Wrap" TextOptions.TextHintingMode="Animated"
-                                                 LostFocus="TextCM_LostFocus" TextChanged="TextCM_TextChanged" KeyUp="TextCM_KeyUp" IsEnabled="{Binding Path = HasAccess}">
-                                                <TextBox.Text>
-                                                    <Binding Path="CMLineName" UpdateSourceTrigger="PropertyChanged">
-                                                        <Binding.ValidationRules>
-                                                            <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
-                                                        </Binding.ValidationRules>
-                                                    </Binding>
-                                                </TextBox.Text>
-                                            </TextBox>
-                                            <Border Width="{Binding ElementName=TextCM,Path=Width}" MaxHeight="160" HorizontalAlignment="Stretch" BorderBrush="Black"  BorderThickness="0" Margin="10,0,10,10">
-                                                <ScrollViewer x:Name="scrollCMAutocomplete" Visibility="Collapsed" VerticalScrollBarVisibility="Visible">
-                                                    <StackPanel Name="CMresultStack"></StackPanel>
-                                                </ScrollViewer>
-                                            </Border>
-
-                                        </StackPanel>
-
-                                        <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" MinWidth="150" HorizontalAlignment="Stretch"
-                                                 IsEnabled="{Binding Path = HasAccess}"  md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" 
-                                                 x:Name="TextCMDetail" TextWrapping="Wrap" TextAlignment="Justify" VerticalScrollBarVisibility="Auto" LostFocus="TextCMDetail_LostFocus"/>
-                                        <TextBox md:HintAssist.Hint="Risk Reduction(%)" Margin="10" x:Name="TextRReduction" LostFocus="TextRReduction_LostFocus" md:HintAssist.IsFloating="True" HorizontalAlignment="Left" Width="150" Text="{Binding Path = RiskReduction,
-                                                                            Converter={x:Static decimalconv:DecimalUIConverter.Instance},
-                                                                         ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
-                                                                        ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}, UpdateSourceTrigger = PropertyChanged}" IsEnabled="{Binding Path = HasAccess}" Height="42"/>
-                                        <md:Card Background="{DynamicResource MaterialDesignBackground}">
-                                            <StackPanel>
-                                                <Expander HorizontalAlignment="Stretch" Header="CM Values" IsExpanded="True">
-                                                    <StackPanel Orientation="Vertical" Margin="24,8,24,16">
-                                                        <Grid Background="#FFE5E5E5">
-                                                            <DataGrid Name="dgCMDamages" ItemsSource="{Binding DvCM_Damages}" Margin="1,1,0,0" 
-                                                                      ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" 
-                                                                      SelectedCellsChanged="DgCMDamages_SelectedCellsChanged" 
-                                                                      CellEditEnding="DgCMDamages_CellEditEnding" 
-                                                                      SelectionChanged="DgCMDamages_SelectionChanged" CanUserDeleteRows="False" 
-                                                                      CanUserAddRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
-                                                                <DataGrid.Columns>
-                                                                    <DataGridTextColumn x:Name="WBSName" Header="WBS/User" Binding="{Binding {x:Static data:DT_WBS_CM_Damage.WBS_USER}}" Width="*"/>
-                                                                    <DataGridTextColumn x:Name="DamageName" Header="Damage" Binding="{Binding {x:Static data:DT_WBS_CM_Damage.DAMAGE}}" Width="200"/>
-                                                                    <DataGridTextColumn x:Name="CMDamageValue" Header="Value" Width="100">
-                                                                        <DataGridTextColumn.Binding>
-                                                                            <Binding Path="value" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
-                                                                         ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}"
-                                                                        ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
-                                                                                <Binding.ValidationRules>
-                                                                                    <classes:NegativeValidation ValidationStep="UpdatedValue" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
-                                                                                </Binding.ValidationRules>
-                                                                            </Binding>
-                                                                        </DataGridTextColumn.Binding>
-                                                                    </DataGridTextColumn>
-                                                                </DataGrid.Columns>
-                                                            </DataGrid>
-                                                        </Grid>
-                                                    </StackPanel>
-                                                </Expander>
-                                                <Border Background="{DynamicResource MaterialDesignDivider}" Height="5" HorizontalAlignment="Stretch" SnapsToDevicePixels="True" />
-                                                <Expander HorizontalAlignment="Stretch" Header="WBS-Risk Reduction" IsExpanded="True">
-                                                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                                                        <Grid Background="#FFE5E5E5">
-                                                            <DataGrid Name="dgWBSCM" ItemsSource="{Binding DVCMWBS}" CanUserDeleteRows="False" Margin="1,1,0,0" 
-                                                                      ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" 
-                                                                      SelectedCellsChanged="DgWBSCM_SelectedCellsChanged" 
-                                                                      CellEditEnding="DgWBSCM_CellEditEnding" SelectionChanged="DgWBSCM_SelectionChanged" 
-                                                                      CanUserAddRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
-                                                                <DataGrid.Columns>
-                                                                    <DataGridTemplateColumn x:Name="cmwbsBtn">
-                                                                        <DataGridTemplateColumn.Header>
-                                                                            <Button Name="BtnAddCMWBS" Width="40" Height="40" ToolTip="Add WBS" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" IsEnabled="{Binding Path = HasAccess}" VerticalAlignment="Top" Click="BtnAddWBSCM_Click" md:ShadowAssist.ShadowDepth="Depth5">
-                                                                                <md:PackIcon Kind="Plus"/>
-                                                                            </Button>
-                                                                        </DataGridTemplateColumn.Header>
-                                                                        <DataGridTemplateColumn.CellTemplate>
-                                                                            <DataTemplate>
-                                                                                <Button x:Name="BtnDelWBS" Height="20" Width="20" ToolTip="Delete row" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" IsEnabled="{Binding Path = HasAccess}" Click="BtnDelWBSCM_Click" md:ShadowAssist.ShadowDepth="Depth5">
-                                                                                    <md:PackIcon Kind="Trash"/>
-                                                                                </Button>
-                                                                            </DataTemplate>
-                                                                        </DataGridTemplateColumn.CellTemplate>
-                                                                    </DataGridTemplateColumn>
-                                                                    <DataGridTextColumn x:Name="LevelCM" Header="Level" Binding="{Binding  {x:Static data:DT_CM_WBS.NIVEL}}" Width="100" IsReadOnly="True"/>
-                                                                    <DataGridTextColumn x:Name="WBSCM" Header="WBS/User" Binding="{Binding  {x:Static data:DT_CM_WBS.WBS_USER}}" Width="*" IsReadOnly="True"/>
-                                                                    <DataGridTextColumn x:Name="WBSProbCM" Header="Risk Red.(%)" Width="100" IsReadOnly="False">
-                                                                        <DataGridTextColumn.Binding >
-                                                                            <Binding Path="probability" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}"
-                                                                         ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}"
-                                                                        ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
-                                                                                <Binding.ValidationRules>
-                                                                                    <classes:NegativePlusValidation ValidationStep="UpdatedValue" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
-                                                                                </Binding.ValidationRules>
-                                                                            </Binding>
-                                                                        </DataGridTextColumn.Binding>
-                                                                    </DataGridTextColumn>
-                                                                    <DataGridTemplateColumn x:Name="cmPRIMARY" Header="Primary">
-                                                                        <DataGridTemplateColumn.CellTemplate>
-                                                                            <DataTemplate>
-                                                                                <ToggleButton IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" Checked="CMKeyToggleButtonChecked" Style="{StaticResource MaterialDesignActionToggleButton}" IsChecked="{Binding {x:Static data:DT_CM_WBS.IS_PRIMARY}}">
-                                                                                    <md:ToggleButtonAssist.OnContent>
-                                                                                        <md:PackIcon Kind="Key" Width="20" Height="20"/>
-                                                                                    </md:ToggleButtonAssist.OnContent>
-                                                                                </ToggleButton>
-                                                                            </DataTemplate>
-                                                                        </DataGridTemplateColumn.CellTemplate>
-                                                                    </DataGridTemplateColumn>
-                                                                </DataGrid.Columns>
-                                                            </DataGrid>
-                                                        </Grid>
-                                                    </StackPanel>
-                                                </Expander>
-                                                <Border Background="{DynamicResource MaterialDesignDivider}" Height="5" HorizontalAlignment="Stretch" SnapsToDevicePixels="True" />
-                                                <Expander HorizontalAlignment="Stretch" Header="Roles" IsExpanded="True">
-                                                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                                                        <Grid Background="#FFE5E5E5">
-                                                            <DataGrid Name="dgRolesCM" ItemsSource="{Binding DvRoleCM}" Margin="1,1,0,0" 
-                                                                      ColumnHeaderStyle="{StaticResource CustomColumnHeader}" AutoGenerateColumns="False" 
-                                                                      IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
-                                                                <DataGrid.Columns>
-                                                                    <DataGridTemplateColumn x:Name="roleCMBtn">
-                                                                        <DataGridTemplateColumn.Header>
-                                                                            <Button Name="BtnAddRoleCM" Width="40" Height="40" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Add Role"  HorizontalAlignment="Left"  VerticalAlignment="Center" Click="BtnAddRoleCM_Click" md:ShadowAssist.ShadowDepth="Depth5">
-                                                                                <md:PackIcon Kind="Plus"/>
-                                                                            </Button>
-                                                                        </DataGridTemplateColumn.Header>
-                                                                        <DataGridTemplateColumn.CellTemplate>
-                                                                            <DataTemplate>
-                                                                                <Button x:Name="BtnDelRoleCM" ToolTip="Delete Row" Height="20" Width="20"  HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" Click="BtnDelRoleCM_Click" md:ShadowAssist.ShadowDepth="Depth5">
-                                                                                    <md:PackIcon Kind="Trash"/>
-                                                                                </Button>
-                                                                            </DataTemplate>
-                                                                        </DataGridTemplateColumn.CellTemplate>
-                                                                    </DataGridTemplateColumn>
-                                                                    <DataGridTextColumn x:Name="RoleCM" Header="Role" Binding="{Binding {x:Static data:DT_Role_CM.Role}}" Width="*"/>
-                                                                </DataGrid.Columns>
-                                                            </DataGrid>
-                                                        </Grid>
-                                                    </StackPanel>
-                                                </Expander>
-                                            </StackPanel>
-                                        </md:Card>
-                                    </StackPanel>-->
                                 </StackPanel>
                             </ScrollViewer>
                         </xcad:LayoutAnchorable>
@@ -559,7 +415,6 @@
                     <xcad:LayoutAnchorablePaneGroup DockWidth="250" ScrollViewer.CanContentScroll="True" DockMinWidth="50" FloatingWidth="250">
                         <xcad:LayoutAnchorablePane ScrollViewer.CanContentScroll="True">
                             <xcad:LayoutAnchorable x:Name="AnchorDiagramList"  Title="Diagrams" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Diagrams" AutoHideWidth="250" FloatingWidth="250">
-                                <!--<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">-->
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="50" />
@@ -626,10 +481,9 @@
                                         </md:HintAssist.Hint>
                                     </ComboBox>
                                     <DataGrid ColumnHeaderStyle="{StaticResource CustomColumnHeader}" Grid.Row="2" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" VerticalAlignment="Stretch" 
-                                              AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False" Grid.ColumnSpan="2" MouseLeave="DgRisksCross_MouseLeave" 
-                                              SelectedCellsChanged="DgRisksCross_SelectedCellsChanged" LostFocus="DgRisksCross_LostFocus" CanUserDeleteRows="False" SelectionChanged="DgRisksCross_SelectionChanged" 
-                                              CellEditEnding="DgRisksCross_CellEditEnding" IsTextSearchEnabled="True" CanUserAddRows="False" ItemsSource="{Binding DV_CrossRisk}" VerticalContentAlignment="Center" >
-
+                                              AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False" Grid.ColumnSpan="2" 
+                                              MouseLeave="DgRisksCross_MouseLeave" SelectionChanged="DgRisksCross_SelectionChanged" CanUserDeleteRows="False" 
+                                              IsTextSearchEnabled="True" CanUserAddRows="False" ItemsSource="{Binding DV_CrossRisk}" VerticalContentAlignment="Center">
                                     <DataGrid.Columns>
                                             <DataGridTemplateColumn x:Name="RiskEnabled" Header="Active?">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -641,15 +495,41 @@
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTextColumn x:Name="RiskName" Header="Risk" Binding="{Binding {x:Static data:DT_Risk_Damages.RISK_NAMESHORT}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300"/>
+                                            <!--<DataGridTextColumn x:Name="RiskName" Header="Risk" Binding="{Binding {x:Static data:DT_Risk_Damages.RISK_NAMESHORT}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300"/>-->
+                                            <DataGridTemplateColumn x:Name="CrossRiskName" MinWidth="100" MaxWidth="300" Header="Risk" >
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBox VerticalAlignment="Center" LostFocus="RiskNameCrossRisk_LostFocus" Style="{StaticResource TextRiskNameStyle}" Text="{Binding {x:Static data:DT_Risk_Damages.RISK_NAMESHORT}}" 
+                                                                 IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditName}}"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+
                                             <DataGridTextColumn x:Name="RiskFather" Header="Father" Binding="{Binding {x:Static data:DT_Risk_Damages.FATHER}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
                                             <DataGridTextColumn x:Name="RiskWBSName" Header="WBS Name" Binding="{Binding {x:Static data:DT_Risk_Damages.WBS_NAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
                                             <DataGridTextColumn x:Name="RiskuserName" Header="User" Binding="{Binding {x:Static data:DT_Risk_Damages.USERNAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
-                                            <DataGridTextColumn x:Name="RiskProbability" Header="Probability (%)" 
+                                            <!--<DataGridTextColumn x:Name="RiskProbability" Header="Probability (%)" 
                                                                 Binding="{Binding {x:Static data:DT_Risk_Damages.PROBABILITY},Converter={x:Static decimalconv:DecimalUIConverter.Instance},
                                                                          ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
                                                                         ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}"
-                                                                MinWidth="100" MaxWidth="300"/>
+                                                                MinWidth="100" MaxWidth="300"/>-->
+                                            <DataGridTemplateColumn x:Name="CrossRiskProbability" MinWidth="100" MaxWidth="300" Header="Probability (%)" >
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBox VerticalAlignment="Center" LostFocus="ProbabilityCrossRisk_LostFocus" IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditProbability}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
+                                                            <TextBox.Text>
+                                                                <Binding Path="probability" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}" 
+                                                                         ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" 
+                                                                         ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
+                                                                    <Binding.ValidationRules>
+                                                                        <local:NegativePlusValidation ValidationStep="UpdatedValue" />
+                                                                    </Binding.ValidationRules>
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
                                         </DataGrid.Columns>
                                     </DataGrid>
                                     <md:DialogHost Grid.RowSpan="3" x:Name="DialogCrossRisk" IsOpen="{Binding IsCalculatingRisk,UpdateSourceTrigger=PropertyChanged}">
@@ -693,8 +573,7 @@
                                     <DataGrid ColumnHeaderStyle="{StaticResource CustomColumnHeader}" Grid.Row="2" x:Name="dgCrossCM" HorizontalAlignment="Stretch" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
                                               VerticalAlignment="Stretch" AutoGenerateColumns="False" 
                                               CanUserSortColumns="True" CanUserReorderColumns="True"  IsReadOnly="False"  Grid.ColumnSpan="2" MouseLeave="DgCrossCM_MouseLeave" 
-                                              SelectedCellsChanged="DgCrossCM_SelectedCellsChanged" LostFocus="DgCrossCM_LostFocus" CanUserDeleteRows="False" 
-                                              SelectionChanged="DgCrossCM_SelectionChanged" CellEditEnding="DgCrossCM_CellEditEnding" CanUserAddRows="False" ItemsSource="{Binding DV_Cross_CM}">
+                                              CanUserDeleteRows="False" SelectionChanged="DgCrossCM_SelectionChanged" CanUserAddRows="False" ItemsSource="{Binding DV_Cross_CM}">
                                         <DataGrid.Columns>
                                             <DataGridTemplateColumn x:Name="CMEnabled" Header="Active?">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -706,15 +585,35 @@
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTextColumn x:Name="CMName" Header="Counter M." Binding="{Binding {x:Static data:DT_Risk_Damages.RISK_NAMESHORT}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300"/>
+                                            <DataGridTemplateColumn x:Name="CrossCMName" MinWidth="100" MaxWidth="300" Header="Counter M." >
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBox VerticalAlignment="Center" LostFocus="RiskNameCrossRisk_LostFocus" Style="{StaticResource TextRiskNameStyle}" Text="{Binding {x:Static data:DT_Risk_Damages.RISK_NAMESHORT}}" 
+                                                                 IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditName}}"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+
                                             <DataGridTextColumn x:Name="CMFather" Header="Risk" Binding="{Binding {x:Static data:DT_Risk_Damages.FATHER}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
                                             <DataGridTextColumn x:Name="CMWBSName" Header="WBS Name" Binding="{Binding {x:Static data:DT_Risk_Damages.WBS_NAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
                                             <DataGridTextColumn x:Name="CMuserName" Header="User" Binding="{Binding {x:Static data:DT_Risk_Damages.USERNAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
-                                            <DataGridTextColumn x:Name="CMRiskRed" Header="Risk Reduction(%)"
-                                                                Binding="{Binding {x:Static data:DT_Risk_Damages.PROBABILITY},Converter={x:Static decimalconv:DecimalUIConverter.Instance},
-                                                                         ConverterParameter={x:Static decimalconv:DecimalUIConverter.ConverterParams},
-                                                                        ConverterCulture={x:Static decimalconv:DecimalUIConverter.CultureInfo}}"
-                                                                MinWidth="100" MaxWidth="300"/>
+                                            <DataGridTemplateColumn x:Name="CMRiskRed" MinWidth="100" MaxWidth="300" Header="R. Reduct. (%)" >
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBox VerticalAlignment="Center" LostFocus="ProbabilityCrossRisk_LostFocus" IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditProbability}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
+                                                            <TextBox.Text>
+                                                                <Binding Path="probability" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}" 
+                                                                         ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" 
+                                                                         ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
+                                                                    <Binding.ValidationRules>
+                                                                        <local:NegativePlusValidation ValidationStep="UpdatedValue" />
+                                                                    </Binding.ValidationRules>
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
 
                                         </DataGrid.Columns>
                                     </DataGrid>

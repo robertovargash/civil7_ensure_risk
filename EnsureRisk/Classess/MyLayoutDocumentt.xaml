@@ -73,6 +73,7 @@
                         <ColumnDefinition Width="150"/>
                         <ColumnDefinition Width="25"/>
                         <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
                     <ProgressBar Grid.Column="1" x:Name="TheProgressBar" VerticalAlignment="Center" Visibility="Collapsed" HorizontalAlignment="Stretch" IsIndeterminate="True"/>
                     <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left">
@@ -103,7 +104,11 @@
 
                     <ToggleButton Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}" ToolTip="MiniMap" x:Name="EnableMiniMap" Grid.Column="7" IsChecked="True" Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked" HorizontalAlignment="Center" >
                         <md:PackIcon Kind="VectorArrangeAbove"/>
+                    </ToggleButton> 
+                    <ToggleButton Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}" ToolTip="Enabled custom thickness" x:Name="EnableThickness" Grid.Column="8" IsChecked="True" Checked="EnableThickness_Checked" Unchecked="EnableThickness_Unchecked" HorizontalAlignment="Center" >
+                        <md:PackIcon Kind="Approval"/>
                     </ToggleButton>
+                    <!--<Button Content="{md:PackIcon Kind=Mixer}" x:Name="IsUserVisible" Grid.Column="8" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignToolButton}" HorizontalAlignment="Right" Click="IsUserVisible_Click"/>-->
                 </Grid>
 
             </Grid>

@@ -27,6 +27,9 @@ namespace DataMapping.Data
         public const string WBS_NAME = "WBSName";
         public const string USERNAME = "userName";
         public const string iS_CM = "isCM";
+        public const string CanEditName = "CanEditName";
+        public const string CanEditProbability = "CanEditProbability";
+
         public static string IS_CM => iS_CM;
 
 
@@ -59,6 +62,8 @@ namespace DataMapping.Data
             Columns.Add(ID_WBS, typeof(decimal));
             Columns.Add(WBS_NAME, typeof(string));
             Columns.Add(USERNAME, typeof(string));
+            Columns.Add(CanEditName, typeof(bool));
+            Columns.Add(CanEditProbability, typeof(bool));
             PrimaryKey = PK_COLUMN;
         }       
     }

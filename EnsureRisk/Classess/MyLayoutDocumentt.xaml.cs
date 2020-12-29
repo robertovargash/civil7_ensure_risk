@@ -66,6 +66,7 @@ namespace EnsureRisk.Classess
         public bool Creando { get; set; }
         public bool Copiando { get { return ((MainWindow)MyWindow).COPIANDO; } }
         public bool IsExportingToExcel { get; set; }
+        private bool IsUniformThickness = true;
         public LineGroup GroupSelected { get; set; }
         public decimal ID_Diagram { get; set; }
         //public Popin Popin { get; set; }
@@ -104,6 +105,8 @@ namespace EnsureRisk.Classess
         public RiskPolyLine MainLine { get; set; }
         public RiskPolyLine Line_Created { get; set; }
         public RiskPolyLine LineInMoving { get; set; }
+        private decimal idWBSFilter = -1;
+        public decimal IdWBSFilter { get => idWBSFilter; set { idWBSFilter = value; RaisePropertyChanged("IdWBSFilter"); } }
         #endregion
         /// <summary>
         /// Initializes a new instance of the MyLayoutDocumentt class
@@ -131,7 +134,7 @@ namespace EnsureRisk.Classess
             };
             BindingOperations.SetBinding(TheZoomComboBox, ComboBox.TextProperty, myBinding);
             TheZoomComboBox.Text = "100";
-            MoviendoRisk = MoviendoCM = NameEditing = ChoosingCM = ChoosingRisk = IsRootSelected = SelectingToGroup = Creando = false;            
+            MoviendoRisk = MoviendoCM = NameEditing = ChoosingCM = ChoosingRisk = IsRootSelected = SelectingToGroup = Creando = false;
             EnterWorking();
             exportToExcelWorker.WorkerReportsProgress = true;
             exportToExcelWorker.WorkerSupportsCancellation = true;
@@ -142,7 +145,7 @@ namespace EnsureRisk.Classess
             MiniMapGHT.DataContext = this;
             MiniMapGHT.MapSource = this.ScrollGridPaint;
             GridPaintLines.DataContext = this;
-        }        
+        }
 
 
         public void MostrarYesNo(string text)
@@ -175,7 +178,7 @@ namespace EnsureRisk.Classess
                 if (((MainWindow)MyWindow).OpenedDocuments.Contains(this))
                 {
                     ((MainWindow)MyWindow).OpenedDocuments.Remove(this);
-                } 
+                }
                 ((MainWindow)MyWindow).ShowRiskData = false;
                 ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear();
                 ((MainWindow)MyWindow).DV_Cross_CM.Table.Clear();
@@ -502,8 +505,8 @@ namespace EnsureRisk.Classess
         //}
 
         /// <summary>
-            /// Update value damage properties
-            /// </summary>
+        /// Update value damage properties
+        /// </summary>
         public void DrawNumbers()
         {
             try
@@ -584,7 +587,7 @@ namespace EnsureRisk.Classess
                 if (!(CbFilterTopR.SelectedValue is null))
                 {
                     //IdDamageSelected = IdDamageSelected;
-                    if (IdDamageSelected != 0)
+                    if (IdDamageSelected != 0 && IsUniformThickness)
                     {
                         General.UpdateLinesThickness(LinesList);
                         foreach (RiskPolyLine polyLine in LinesList)
@@ -659,12 +662,36 @@ namespace EnsureRisk.Classess
         {
             try
             {
-                if (Creando)
-                {
-                    Line_Created.IsDiagonal = false;
-                    Line_Created.NewDrawAtPoint(Line_Created.StartDrawPoint);
-                }
                 SetLinesThickness();
+                if (!IsUniformThickness)
+                {
+                    RiskPolyLine polyLine = null;
+
+                    if (sender is RiskPolyLine)
+                    {
+                        polyLine = ((RiskPolyLine)sender);
+                    }
+                    if (sender is SegmentPolyLine)
+                    {
+                        polyLine = ((SegmentPolyLine)sender).Father;
+                    }
+                    if (sender is LabelPolyLine)
+                    {
+                        polyLine = ((LabelPolyLine)sender).Line;
+                    }
+
+                    if (polyLine != null)
+                    {
+                        polyLine.StrokeThickness = 2;
+                        if (polyLine.Segments.Any())
+                        {
+                            foreach (SegmentPolyLine segment in polyLine.Segments)
+                            {
+                                segment.StrokeThickness = 2;
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -801,7 +828,7 @@ namespace EnsureRisk.Classess
         /// </summary>
         private void CreateCounterMeasureShapes()
         {
-            foreach (DataRow cm in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram + " AND " + DT_Risk.IS_CM + " = 1" ))
+            foreach (DataRow cm in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram + " AND " + DT_Risk.IS_CM + " = 1"))
             {
                 DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + cm[DT_Risk.ID].ToString());
                 bool haspermission = false;
@@ -813,6 +840,29 @@ namespace EnsureRisk.Classess
                         break;
                     }
                 }
+                foreach (var damageRow in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + cm[DT_Risk.ID]))
+                {
+                    damageRow[DT_Risk_Damages.CanEditName] = FullAccess(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find((decimal)cm[DT_Risk.ID]));
+                    if (IdWBSFilter != -1)
+                    {
+                        bool userUseWBS = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.USERNAME + " = '" + LoginUser + "'" + " and " + DT_RISK_WBS.ID_WBS + " = " + IdWBSFilter + " and " + DT_RISK_WBS.ID_RISK + " = " + cm[DT_Risk.ID]).Any();
+                        if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { cm[DT_Risk.ID], IdWBSFilter }))
+                        {
+                            DataRow theWBSRiskRow = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { cm[DT_Risk.ID], IdWBSFilter });
+                            damageRow[DT_Risk_Damages.CanEditProbability] = userUseWBS && WBSOperations.IsRiskWBSLow(theWBSRiskRow, ((MainWindow)MyWindow).DsWBS, Ds.Tables[DT_RISK_WBS.TABLE_NAME]);
+
+                        }
+                        else
+                        {
+                            damageRow[DT_Risk_Damages.CanEditProbability] = false;
+                        }
+                    }
+                    else
+                    {
+                        damageRow[DT_Risk_Damages.CanEditProbability] = false;
+                    }
+                }
+
                 RiskPolyLine cmline = haspermission ? CreateCounterMeasureShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, MenuCM, true, cm) : CreateCounterMeasureShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, null, true, cm);
                 SetPolyLineGroup(cmline, cm);
 
@@ -857,11 +907,11 @@ namespace EnsureRisk.Classess
         /// <param name="color">Risk line color</param>
         private void CreateRiskShapes(Color color)
         {
-            foreach (DataRow item in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram + " AND " + DT_Risk.IS_CM + " = 0"))
+            foreach (DataRow risk in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram + " AND " + DT_Risk.IS_CM + " = 0"))
             {
-                if (!((bool)item[DT_Risk.IS_ROOT]))
+                if (!((bool)risk[DT_Risk.IS_ROOT]))
                 {
-                    DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + item[DT_Risk.ID].ToString());
+                    DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + risk[DT_Risk.ID].ToString());
                     bool haspermission = false;
                     foreach (DataRow itemii in dr)
                     {
@@ -871,15 +921,38 @@ namespace EnsureRisk.Classess
                             break;
                         }
                     }
-                    RiskPolyLine riskLine = haspermission ? CreateRiskShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, MenuRisk, false, item) : CreateRiskShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, null, false, item);
-                    SetPolyLineGroup(riskLine, item);
+                    foreach (var damageRow in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + risk[DT_Risk.ID]))
+                    {
+                        damageRow[DT_Risk_Damages.CanEditName] = FullAccess(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find((decimal)risk[DT_Risk.ID]));
+                        if (IdWBSFilter != -1)
+                        {
+                            bool userUseWBS = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.USERNAME + " = '" + LoginUser + "'" + " and " + DT_RISK_WBS.ID_WBS + " = " + IdWBSFilter + " and " + DT_RISK_WBS.ID_RISK + " = " + risk[DT_Risk.ID]).Any();
+                            if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { risk[DT_Risk.ID], IdWBSFilter }))
+                            {
+                                DataRow theWBSRiskRow = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { risk[DT_Risk.ID], IdWBSFilter });
+                                damageRow[DT_Risk_Damages.CanEditProbability] = userUseWBS && WBSOperations.IsRiskWBSLow(theWBSRiskRow, ((MainWindow)MyWindow).DsWBS, Ds.Tables[DT_RISK_WBS.TABLE_NAME]);
 
-                    riskLine.Collapsed = (bool)item[DT_Risk.ISCOLLAPSED];
-                    if (((bool)item[DT_Risk.IS_ACTIVE]))
+                            }
+                            else
+                            {
+                                damageRow[DT_Risk_Damages.CanEditProbability] = false;
+                            }
+                        }
+                        else
+                        {
+                            damageRow[DT_Risk_Damages.CanEditProbability] = false;
+                        }
+                    }
+
+                    RiskPolyLine riskLine = haspermission ? CreateRiskShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, MenuRisk, false, risk) : CreateRiskShape(((MainWindow)MyWindow).TheCurrentLayout.GridPaintLines, null, false, risk);
+                    SetPolyLineGroup(riskLine, risk);
+
+                    riskLine.Collapsed = (bool)risk[DT_Risk.ISCOLLAPSED];
+                    if (((bool)risk[DT_Risk.IS_ACTIVE]))
                     {
                         ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.DisableValue;
 
-                        riskLine.ShortName = item[DT_Risk.NAMESHORT].ToString();
+                        riskLine.ShortName = risk[DT_Risk.NAMESHORT].ToString();
                         if (haspermission)
                         {
                             riskLine.SetColor(new SolidColorBrush(color));
@@ -892,7 +965,7 @@ namespace EnsureRisk.Classess
                     else
                     {
                         ((MenuItem)MenuRisk.Items[(int)MenuRiskItems.Enable]).ToolTip = StringResources.EnableValue;
-                        riskLine.ShortName = item[DT_Risk.NAMESHORT].ToString();
+                        riskLine.ShortName = risk[DT_Risk.NAMESHORT].ToString();
                         riskLine.SetColor(new SolidColorBrush(Colors.Gray));
                     }
                     riskLine.MyName.AttachDoubleClick(riskLine.MyName, Risk_LabelName_MouseDoubleClick);
@@ -1057,7 +1130,7 @@ namespace EnsureRisk.Classess
                 }
             }
         }
-        
+
         private decimal FatherThingAmbit(RiskPolyLine father, RiskPolyLine child)
         {
             return FishHeadController.AcumulatedLikelihood(father, father.Children.Where(rl => rl.Points[1].X <= child.Points[1].X).ToList()) * GetValueRisk_Damage(child.Father);
@@ -1074,7 +1147,7 @@ namespace EnsureRisk.Classess
                 return new List<RiskPolyLine>();
             }
         }
-                
+
         private decimal GetValueRisk_Damage(RiskPolyLine riskLine)
         {
             if (Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { riskLine.ID, IdDamageSelected }))
@@ -1135,28 +1208,7 @@ namespace EnsureRisk.Classess
             return access;
         }
 
-        public bool DescendantsArePrimary(DataSet dsWBS, RiskPolyLine line)
-        {
-            bool access = false;
-            foreach (DataRow drRISKWBS in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + line.ID))
-            {
-                if (WBSOperations.HasParent((decimal)drRISKWBS[DT_RISK_WBS.ID_WBS], dsWBS))
-                {
-                    decimal idPadre = (decimal)dsWBS.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.ID_WBS + " = " + drRISKWBS[DT_RISK_WBS.ID_WBS]).First()[DT_WBS.ID_FATHER];
-                    if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + line.ID).CopyToDataTable().Select(DT_RISK_WBS.ID_WBS + " = " + idPadre).Any())
-                    {
-                        DataRow drreturn = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + line.ID).CopyToDataTable().Select(DT_RISK_WBS.ID_WBS + " = " + idPadre).First();
-                        if (drreturn[DT_RISK_WBS.USERNAME].ToString() == LoginUser)
-                        {
-                            access = true;
-                        }
-                    }
-                }
-            }
-
-            return access;
-        }
-
+       
         public bool DescendantsArePrimary(DataSet dsWBS, DataRow riskRow)
         {
             bool access = false;
@@ -1164,12 +1216,12 @@ namespace EnsureRisk.Classess
             {
                 foreach (DataRow descendant in WBSOperations.MyWBSDescendants(dsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(drRISKWBS[DT_RISK_WBS.ID_WBS]), dsWBS.Tables[DT_WBS.TABLE_NAME]))
                 {
-                    if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] {riskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] }))
+                    if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { riskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] }))
                     {
                         if ((bool)Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { riskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] })[DT_RISK_WBS.IS_PRIMARY])
                         {
                             access = true; break;
-                        }                
+                        }
                     }
                 }
             }
@@ -1573,23 +1625,7 @@ namespace EnsureRisk.Classess
                 MostrarDialog(ex.Message);
             }
         }
-
-        public void CMLeave(RiskPolyLine CMLeave)
-        {
-            if (CMLeave != null && CMLeave.IsCM)
-            {
-                CMLeave.StrokeThickness = 3;
-                CMLeave.StrokeDashArray = new DoubleCollection { 5, 2 };
-            }
-            OcultarPopCMWindow();
-            //if (Popin != null)
-            //{
-            //    Popin.Visibility = Visibility.Collapsed;
-            //    GridPaintLines.Children.Remove(Popin);
-            //    Popin = null;
-            //}
-        }
-
+        
         private void Cmline_MouseDown(object sender, MouseButtonEventArgs e)
         {
             try
@@ -1767,7 +1803,7 @@ namespace EnsureRisk.Classess
         private void CM_LabelName_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             try
-            {               
+            { 
                 EditSelectedPolyLineShorName();
             }
             catch (Exception ex)
@@ -2166,7 +2202,48 @@ namespace EnsureRisk.Classess
         {
             try
             {
-                RiskLeave();
+                RiskPolyLine polyLine = null;
+
+                if (sender is RiskPolyLine)
+                {
+                    polyLine = ((RiskPolyLine)sender);
+                }
+                if (sender is SegmentPolyLine)
+                {
+                    polyLine = ((SegmentPolyLine)sender).Father;
+                }
+                if (sender is LabelPolyLine)
+                {
+                    polyLine = ((LabelPolyLine)sender).Line;
+                }
+                CMLeave(polyLine);
+
+                if (!IsUniformThickness)
+                {
+                    if (polyLine != null)
+                    {
+                        if (sender is RiskPolyLine)
+                        {
+                            polyLine = ((RiskPolyLine)sender);
+                        }
+                        if (sender is SegmentPolyLine)
+                        {
+                            polyLine = ((SegmentPolyLine)sender).Father;
+                        }
+                        if (sender is LabelPolyLine)
+                        {
+                            polyLine = ((LabelPolyLine)sender).Line;
+                        }
+                        polyLine.StrokeThickness = 2;
+                        if (polyLine.Segments.Any())
+                        {
+                            foreach (SegmentPolyLine segment in polyLine.Segments)
+                            {
+                                segment.StrokeThickness = 2;
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -2174,26 +2251,43 @@ namespace EnsureRisk.Classess
             }
         }
 
-        public void RiskLeave()
+        public void CMLeave(RiskPolyLine CMLeave)
         {
-            SetLinesThickness();
-            if (Creando)
+            if (CMLeave != null)
             {
-                Line_Created.IsDiagonal = false;
-                Line_Created.NewDrawAtPoint(Line_Created.StartDrawPoint);
+                if (CMLeave.IsCM)
+                {
+                    CMLeave.StrokeThickness = 3;
+                    CMLeave.StrokeDashArray = new DoubleCollection { 5, 2 };
+                    OcultarPopCMWindow();
+                    if (MoviendoRisk || MoviendoCM)
+                    {
+                        if (LineInMoving != null)
+                        {
+                            LineInMoving.IsDiagonal = false;
+                            LineInMoving.NewDrawAtPoint(LineInMoving.StartDrawPoint);
+                        }
+                    }
+                }
+                else
+                {
+                    SetLinesThickness();
+                    if (Creando)
+                    {
+                        Line_Created.IsDiagonal = false;
+                        Line_Created.NewDrawAtPoint(Line_Created.StartDrawPoint);
+                    }
+                    if (MoviendoRisk || MoviendoCM)
+                    {
+                        if (LineInMoving != null)
+                        {
+                            LineInMoving.IsDiagonal = false;
+                            LineInMoving.NewDrawAtPoint(LineInMoving.StartDrawPoint);
+                        }
+                    }
+                    OcultarPopWindow();
+                }
             }
-            if (MoviendoRisk)
-            {
-                LineInMoving.IsDiagonal = false;
-                LineInMoving.NewDrawAtPoint(LineInMoving.StartDrawPoint);
-            }
-            OcultarPopWindow();
-            //if (Popin != null)
-            //{
-            //    GridPaintLines.Children.Remove(Popin);
-            //    Popin.Visibility = Visibility.Collapsed;
-            //    Popin = null;
-            //}
         }
 
         private void Risk_MouseHover(object sender, MouseEventArgs e)
@@ -2275,7 +2369,7 @@ namespace EnsureRisk.Classess
                 }
                 else
                 {
-                    if (MoviendoRisk)
+                    if (LineInMoving != null)
                     {
                         LineInMoving.IsDiagonal = !TheLine.IsDiagonal;
                         LineInMoving.FromTop = TheLine.FromTop;
@@ -2287,7 +2381,6 @@ namespace EnsureRisk.Classess
             {
                 MostrarDialog(ex.Message);
             }
-
         }
 
         private void Risk_LabelName_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -2401,16 +2494,15 @@ namespace EnsureRisk.Classess
         private void MoveRisk(RiskPolyLine destinationPolyLine, Point point)
         {
             if (FullAccess(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID)))
-            {
-
-                //Eliminar el Risk que se mueve de su padre
-                Line_Selected.Father.Children.Remove(Line_Selected);
-
-                //Reestablecer la posición de los PolyLine en su padre
-                SetPolyLinePosition(Line_Selected.Father.Children);
+            {                
                 WindowCopyPasteMoveConfirm wcpc = new WindowCopyPasteMoveConfirm("Do you want to Move the selected items with all their properties(WBS, damages, probabilities etc.)?");
                 if (wcpc.ShowDialog() == true)
                 {
+                    //Eliminar el Risk que se mueve de su padre
+                    Line_Selected.Father.Children.Remove(Line_Selected);
+
+                    //Reestablecer la posición de los PolyLine en su padre
+                    SetPolyLinePosition(Line_Selected.Father.Children);
                     DataSet ImportDSs = Ds.Copy();
                     DataRow drNewRisk;
                     RiskPolyLine Line_Created;
@@ -2420,19 +2512,18 @@ namespace EnsureRisk.Classess
                     switch (wcpc.OptionSelected)
                     {
                         case 0:
-                            drNewRisk = CopyPasteController.CopyAllValuesFromLineSource(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
-                                                                                                ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList, false);
-                            CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS, false);
-                                                      
+                            drNewRisk = CopyPasteController.KeepAllData(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                                                                                                ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList);
                             break;
                         case 1:
-                            drNewRisk = CopyPasteController.CopyAllValuesFromLineSource(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
-                                                                                                ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList, true);
-                            CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS, false);
+                            drNewRisk = CopyPasteController.KeepOnlyWBS(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                                                                                                ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList);
+                            //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS, false);
+
                             break;
                         default:
-                            drNewRisk = CopyPasteController.CopyRiskWithoutSourceData(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
-                                                    ID_Diagram, ((MainWindow)MyWindow).DsWBS);                           
+                            drNewRisk = CopyPasteController.KeepNothing(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                                                    ID_Diagram, ((MainWindow)MyWindow).DsWBS);
                             break;
                     }
                     Ds = ImportDSs;
@@ -2454,8 +2545,11 @@ namespace EnsureRisk.Classess
                         IsCM = Line_Selected.IsCM
                     };
                     TreeOperation.DeleteLine(linetoDel, Ds);
+                    
+                }
+                if (LineInMoving != null)
+                {
                     GridPaintLines.Children.Remove(LineInMoving);
-                    GridPaintLines.Children.Remove(LineInMoving.TextPanel);
                     LineInMoving = null;
                 }
                 Line_Selected = destinationPolyLine;
@@ -2465,15 +2559,15 @@ namespace EnsureRisk.Classess
         private void MoveCounterMeasure(RiskPolyLine destinationPolyLine, Point point)
         {
             if (FullAccess(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID)))
-            {
-                //Eliminar la CM que se mueve de su padre
-                Line_Selected.Father.Children.Remove(Line_Selected);
-
-                //Reestablecer la posición de los PolyLine en su padre
-                SetPolyLinePosition(Line_Selected.Father.Children);
+            {                
                 WindowCopyPasteMoveConfirm wcpc = new WindowCopyPasteMoveConfirm("Do you want to Move the selected item with all their properties(WBS, damages, probabilities etc.)?");
                 if (wcpc.ShowDialog() == true)
                 {
+                    //Eliminar la CM que se mueve de su padre
+                    Line_Selected.Father.Children.Remove(Line_Selected);
+
+                    //Reestablecer la posición de los PolyLine en su padre
+                    SetPolyLinePosition(Line_Selected.Father.Children);
                     DataSet ImportDSs = Ds.Copy();
                     DataRow drNewCM;
                     RiskPolyLine Line_Created;
@@ -2482,25 +2576,26 @@ namespace EnsureRisk.Classess
 
                     switch (wcpc.OptionSelected)
                     {
-                        case 0:
-                            drNewCM = CopyPasteController.SetValuesOriginalAndNewCopiedCM(Line_Selected, ImportDSs, 
-                                Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS, false);
-                            CopyPasteController.SetValuesFromChildToAncestors(drNewCM, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS, true);
 
+                        case 0:
+                            drNewCM = CopyPasteController.KeepAllData(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                                                                                                ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList);
                             break;
                         case 1:
-                            drNewCM = CopyPasteController.SetValuesOriginalAndNewCopiedCM(Line_Selected, ImportDSs,
-                                Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS, true);
-                            CopyPasteController.SetValuesFromChildToAncestors(drNewCM, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS, true);
+                            drNewCM = CopyPasteController.KeepOnlyWBS(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                                                                                                ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList);
+                            //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS, false);
 
                             break;
                         default:
-                            drNewCM = CopyPasteController.SetNewCMValues(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ID_Diagram, ((MainWindow)MyWindow).DsWBS);                           
+                            drNewCM = CopyPasteController.KeepNothing(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
+                                                    ID_Diagram, ((MainWindow)MyWindow).DsWBS);
                             break;
                     }
                     Ds = ImportDSs;
                     ImportDSs.Dispose();
                     MoviendoRisk = false;
+                    MoviendoCM = false;
                     Line_Created = new RiskPolyLine
                     {
                         ID = (decimal)drNewCM[DT_Risk.ID],
@@ -2517,10 +2612,9 @@ namespace EnsureRisk.Classess
                     };
                     TreeOperation.DeleteLine(linetoDel, Ds);
                 }
-                GridPaintLines.Children.Remove(LineInMoving);
-                if (LineInMoving != null && LineInMoving.TextPanel != null)
+                if (LineInMoving != null)
                 {
-                    GridPaintLines.Children.Remove(LineInMoving.TextPanel);
+                    GridPaintLines.Children.Remove(LineInMoving);
                 }
                 LineInMoving = null;
                 Line_Selected = destinationPolyLine;
@@ -2530,8 +2624,6 @@ namespace EnsureRisk.Classess
         /// <summary>
         /// Reorder risk into same father
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void ReorderRisk(RiskPolyLine risk, Point point)
         {
             risk.Children.Remove(Line_Selected);
@@ -2551,8 +2643,6 @@ namespace EnsureRisk.Classess
         /// <summary>
         /// Reorder risk into same father
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void ReorderCounterMeasure(RiskPolyLine risk, Point point)
         {
             risk.Children.Remove(Line_Selected);
@@ -2564,7 +2654,7 @@ namespace EnsureRisk.Classess
             {
                 pos = lastCounterMeasurePosition + 1;
             }
-
+            GridPaintLines.Children.Remove(LineInMoving);
             risk.Children.Insert(pos, Line_Selected);
             SetPolyLinePosition(risk.Children);
         }
@@ -2706,7 +2796,7 @@ namespace EnsureRisk.Classess
                         }
                         else
                         {
-                            MostrarDialog("No countermeasures can be creaded on the main line");
+                            MostrarDialog("No countermeasures can be added on the main line");
                         }
                         GridPaintLines.Children.Remove(Line_Created);
                         Line_Created = null;
@@ -2749,6 +2839,10 @@ namespace EnsureRisk.Classess
                             Line_Selected = MainLine;
                         }
                     }
+                }
+                else
+                {
+                    MostrarDialog("No countermeasures can be added on the main line");
                 }
             }
             catch (Exception ex)
@@ -2808,6 +2902,10 @@ namespace EnsureRisk.Classess
                     }
                     DrawFishBone();
                 }
+                if (MoviendoCM)
+                {
+                    MostrarDialog("No countermeasures can be created on the main line");
+                }
             }
             catch (Exception ex)
             {
@@ -2834,6 +2932,8 @@ namespace EnsureRisk.Classess
                 MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 40 / 100;
                 MiniMapGHT.MapSource = new ScrollViewer();
                 MiniMapGHT.MapSource = this.ScrollGridPaint;
+
+                this.ScrollGridPaint.UpdateLayout();
             }
             catch (Exception ex)
             {
@@ -2984,7 +3084,7 @@ namespace EnsureRisk.Classess
                 MostrarDialog(ex.Message);
             }
         }
-        
+
         #region TextChangeName
         private void TextChangeName_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -3158,25 +3258,53 @@ namespace EnsureRisk.Classess
                             {
                                 if (Line_Selected.IsCM)
                                 {
-                                    if (!(MoviendoCM))
+                                    if (MoviendoCM)
+                                    {
+                                        if (LineInMoving != null)
+                                        {
+                                            LineInMoving.NewDrawAtPoint(e.GetPosition(GridPaintLines));
+                                            TreeOperation.MoveLines(new List<RiskPolyLine>() { LineInMoving }, e.GetPosition(GridPaintLines).X - LineInMoving.Points[1].X - 25, e.GetPosition(GridPaintLines).Y - LineInMoving.Points[1].Y);
+                                            X = e.GetPosition(GridPaintLines).X;
+                                            Y = e.GetPosition(GridPaintLines).Y;
+                                            Main_Y = MainLine.Points[0].Y;
+                                        }
+                                    }
+                                    else
                                     {
                                         MoviendoCM = true;
-                                        LinesMoving = new List<RiskPolyLine>() { Line_Selected };
+                                        LinesMoving = new List<RiskPolyLine>();
+                                        LinesMoving.AddRange(TreeOperation.GetMeAndMyChildrenWithCM(Line_Selected));
+                                        foreach (var item in LinesMoving)
+                                        {
+                                            item.Hidden = true;
+                                        }
+                                        if (LineInMoving != null)
+                                        {
+                                            GridPaintLines.Children.Remove(LineInMoving);                                            
+                                        }
+                                        System.Windows.Media.Color color = Colors.Black;
+
+                                        LineInMoving = new RiskPolyLine(GridPaintLines, MenuCM, false)
+                                        {
+                                            Stroke = new SolidColorBrush(color),
+                                            StrokeThickness = 3,
+                                            IsMoving = true
+                                        };
+                                        LineInMoving.NewDrawAtPoint(new Point(X, Y), "");
                                     }
-                                    TreeOperation.MoveLines(LinesMoving, e.GetPosition(GridPaintLines).X - Line_Selected.Points[1].X - 35, e.GetPosition(GridPaintLines).Y - Line_Selected.Points[1].Y);
-                                    X = e.GetPosition(GridPaintLines).X;
-                                    Y = e.GetPosition(GridPaintLines).Y;
-                                    Main_Y = MainLine.Points[0].Y;
                                 }
                                 else
                                 {
                                     if (MoviendoRisk)
                                     {
-                                        LineInMoving.NewDrawAtPoint(e.GetPosition(GridPaintLines));
-                                        TreeOperation.MoveLines(new List<RiskPolyLine>() { LineInMoving }, e.GetPosition(GridPaintLines).X - LineInMoving.Points[1].X - 25, e.GetPosition(GridPaintLines).Y - LineInMoving.Points[1].Y);
-                                        X = e.GetPosition(GridPaintLines).X;
-                                        Y = e.GetPosition(GridPaintLines).Y;
-                                        Main_Y = MainLine.Points[0].Y;
+                                        if (LineInMoving != null)
+                                        {
+                                            LineInMoving.NewDrawAtPoint(e.GetPosition(GridPaintLines));
+                                            TreeOperation.MoveLines(new List<RiskPolyLine>() { LineInMoving }, e.GetPosition(GridPaintLines).X - LineInMoving.Points[1].X - 25, e.GetPosition(GridPaintLines).Y - LineInMoving.Points[1].Y);
+                                            X = e.GetPosition(GridPaintLines).X;
+                                            Y = e.GetPosition(GridPaintLines).Y;
+                                            Main_Y = MainLine.Points[0].Y;
+                                        }
                                     }
                                     else
                                     {
@@ -3187,8 +3315,10 @@ namespace EnsureRisk.Classess
                                         {
                                             item.Hidden = true;
                                         }
-                                        GridPaintLines.Children.Remove(LineInMoving);
-                                        //System.Drawing.Color lnColor = System.Drawing.Color.FromArgb(int.Parse(Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
+                                        if (LineInMoving != null)
+                                        {
+                                            GridPaintLines.Children.Remove(LineInMoving);                                            
+                                        }
                                         System.Windows.Media.Color color = ((SolidColorBrush)new BrushConverter().ConvertFrom(Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
 
                                         LineInMoving = new RiskPolyLine(GridPaintLines, MenuRisk, false)
@@ -3197,6 +3327,8 @@ namespace EnsureRisk.Classess
                                             StrokeThickness = 3,
                                             IsMoving = true
                                         };
+                                        X = e.GetPosition(GridPaintLines).X;
+                                        Y = e.GetPosition(GridPaintLines).Y;
                                         LineInMoving.NewDrawAtPoint(new Point(X, Y), "");
                                     }
                                 }
@@ -3209,20 +3341,26 @@ namespace EnsureRisk.Classess
                         {
                             if (MoviendoRisk)
                             {
-                                LineInMoving.NewDrawAtPoint(e.GetPosition(GridPaintLines));
-                                TreeOperation.MoveLines(new List<RiskPolyLine>() { LineInMoving }, e.GetPosition(GridPaintLines).X - LineInMoving.Points[1].X - 25, e.GetPosition(GridPaintLines).Y - LineInMoving.Points[1].Y);
+                                if (LineInMoving != null)
+                                {
+                                    LineInMoving.NewDrawAtPoint(e.GetPosition(GridPaintLines));                                   
+                                }
+                                TreeOperation.MoveLines(LinesMoving, e.GetPosition(GridPaintLines).X - LineInMoving.Points[1].X - 25, e.GetPosition(GridPaintLines).Y - LineInMoving.Points[1].Y);
                                 X = e.GetPosition(GridPaintLines).X;
                                 Y = e.GetPosition(GridPaintLines).Y;
                                 Main_Y = MainLine.Points[0].Y;
                             }
                             if (MoviendoCM)
                             {
+                                if (LineInMoving != null)
+                                {
+                                    LineInMoving.NewDrawAtPoint(e.GetPosition(GridPaintLines));
+                                }
                                 TreeOperation.MoveLines(LinesMoving, e.GetPosition(GridPaintLines).X - Line_Selected.Points[1].X - 35, e.GetPosition(GridPaintLines).Y - Line_Selected.Points[1].Y);
                                 X = e.GetPosition(GridPaintLines).X;
                                 Y = e.GetPosition(GridPaintLines).Y;
                                 Main_Y = MainLine.Points[0].Y;
                             }
-
                         }
                         else
                         {
@@ -3327,7 +3465,7 @@ namespace EnsureRisk.Classess
                 Loose = true;
                 if (MoviendoRisk || MoviendoCM)
                 {
-                    if (MoviendoRisk)
+                    if (LineInMoving != null)
                     {
                         GridPaintLines.Children.Remove(LineInMoving);
                     }
@@ -3450,8 +3588,6 @@ namespace EnsureRisk.Classess
                     }
                 }
             }
-            
-           
         }
         void ExportToExcelWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -3494,7 +3630,7 @@ namespace EnsureRisk.Classess
                         {
                             item.ExitWorking();
                         }
-                        this.EnterWorking(); 
+                        this.EnterWorking();
                         ((MainWindow)MyWindow).ShowRiskData = false;
                         UpdateDataGridRiskAndGridCM();
                     }
@@ -3622,7 +3758,6 @@ namespace EnsureRisk.Classess
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -3642,7 +3777,7 @@ namespace EnsureRisk.Classess
                     }
                 }
             }
-            MessageBox.Show(cont + " lineas son: "+ message);
+            MessageBox.Show(cont + " lineas son: " + message);
         }
         private bool IsUserVisible(RiskPolyLine element, FrameworkElement container)
         {
@@ -3658,7 +3793,7 @@ namespace EnsureRisk.Classess
             //GUSTAVO, COMO PUEDES VER DECLARE LAS VARIABLES ANCHO Y ALTO, ESTAS VARIABLES SEGUN "DIAGONAL" Y "FROMTOP" CALCULA EL WIDTH Y HEIGHT DE LAS LINEAS
             //LO QUE TE TOCA ES AJUSTAR ESO SEGUN LA CANTIDAD DE SEGMENTOS QUE TENGA ESA LINEA
             //ADEMAS DE SI ES UNA CONTRAMEDIDA (CM) SEGUN RECUERDO TENIA UN PUNTO MAS, ASI QUE VALIDA ESO TAMBIEN
-            double ancho;double alto;            
+            double ancho; double alto;
             Rect bounds;
             Point elPuntoMasArriba;
             if (element.IsDiagonal)
@@ -3773,55 +3908,76 @@ namespace EnsureRisk.Classess
 
         private void GridPaintLines_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (IsPanEnable && ScrollGridPaint.IsMouseOver && e.LeftButton == MouseButtonState.Pressed)
+            try
             {
-                // Save starting point, used later when determining how much to scroll.
-                scrollStartPoint = e.GetPosition(ScrollGridPaint);
-                scrollStartOffset.X = ScrollGridPaint.HorizontalOffset;
-                scrollStartOffset.Y = ScrollGridPaint.VerticalOffset;
-                //Mouse.SetCursor(CursorHelper.FromByteArray(Properties.Resources.HandGrabbing));
-                GridPaintLines.Cursor = CursorHelper.FromByteArray(Properties.Resources.HandGrabbing);
-                GridPaintLines.CaptureMouse();
-                //Mouse.Capture(TheCurrentLayout.ScrollGridPaint);
+                if (IsPanEnable && ScrollGridPaint.IsMouseOver && e.LeftButton == MouseButtonState.Pressed)
+                {
+                    // Save starting point, used later when determining how much to scroll.
+                    scrollStartPoint = e.GetPosition(ScrollGridPaint);
+                    scrollStartOffset.X = ScrollGridPaint.HorizontalOffset;
+                    scrollStartOffset.Y = ScrollGridPaint.VerticalOffset;
+                    //Mouse.SetCursor(CursorHelper.FromByteArray(Properties.Resources.HandGrabbing));
+                    GridPaintLines.Cursor = CursorHelper.FromByteArray(Properties.Resources.HandGrabbing);
+                    GridPaintLines.CaptureMouse();
+                    //Mouse.Capture(TheCurrentLayout.ScrollGridPaint);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
             }
         }
 
         private void GridPaintLines_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (IsPanEnable)
+            try
             {
-                if (GridPaintLines.IsMouseCaptured)
+                if (IsPanEnable)
                 {
-                    GridPaintLines.Cursor = CursorHelper.FromByteArray(Properties.Resources.HandOpen);
-                    GridPaintLines.ReleaseMouseCapture();
+                    if (GridPaintLines.IsMouseCaptured)
+                    {
+                        GridPaintLines.Cursor = CursorHelper.FromByteArray(Properties.Resources.HandOpen);
+                        GridPaintLines.ReleaseMouseCapture();
+                    }
+                }
+                else
+                {
+                    GridPaintLines.Cursor = Cursors.Arrow;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                GridPaintLines.Cursor = Cursors.Arrow;
+                MostrarDialog(ex.Message);
             }
         }
 
         private void GridPaintLines_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (GridPaintLines.IsMouseCaptured && IsPanEnable)
+            try
             {
-                // Get the new scroll position.
-                Point point = e.GetPosition(ScrollGridPaint);
+                if (GridPaintLines.IsMouseCaptured && IsPanEnable)
+                {
+                    // Get the new scroll position.
+                    Point point = e.GetPosition(ScrollGridPaint);
 
-                // Determine the new amount to scroll.
-                Point delta = new Point(
-                    (point.X > this.scrollStartPoint.X) ?
-                        -(point.X - this.scrollStartPoint.X) :
-                        (this.scrollStartPoint.X - point.X),
+                    // Determine the new amount to scroll.
+                    Point delta = new Point(
+                        (point.X > this.scrollStartPoint.X) ?
+                            -(point.X - this.scrollStartPoint.X) :
+                            (this.scrollStartPoint.X - point.X),
 
-                    (point.Y > this.scrollStartPoint.Y) ?
-                        -(point.Y - this.scrollStartPoint.Y) :
-                        (this.scrollStartPoint.Y - point.Y));
+                        (point.Y > this.scrollStartPoint.Y) ?
+                            -(point.Y - this.scrollStartPoint.Y) :
+                            (this.scrollStartPoint.Y - point.Y));
 
-                // Scroll to the new position.
-                ScrollGridPaint.ScrollToHorizontalOffset(this.scrollStartOffset.X + delta.X);
-                ScrollGridPaint.ScrollToVerticalOffset(this.scrollStartOffset.Y + delta.Y);
+                    // Scroll to the new position.
+                    ScrollGridPaint.ScrollToHorizontalOffset(this.scrollStartOffset.X + delta.X);
+                    ScrollGridPaint.ScrollToVerticalOffset(this.scrollStartOffset.Y + delta.Y);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
             }
         }
 
@@ -3829,22 +3985,9 @@ namespace EnsureRisk.Classess
         {
             try
             {
-
                 if (e.Key == Key.F2)
                 {
-                    //BrigIntoViewSelectedRiskPolyline(Line_Selected);
-                    //UpdateSelectedPolyLineVisualInfo();
                     EditSelectedPolyLineShorName();
-                    //if (TengoPermiso(Line_Selected) && Line_Selected.IsActivated && FullAccess(Line_Selected))
-                    //{
-                    //    NameEditing = true;
-                    //    Loose = true;
-                    //    Line_Selected.ExtrasVisibility(Visibility.Hidden);
-                    //    TextChangeName.Background = new SolidColorBrush(Colors.Black);
-                    //    TextChangeName.Foreground = new SolidColorBrush(Colors.White);
-                    //    TextChangeName.Margin = Line_Selected.TextPanel.Margin;
-                    //    ManageTextChangeProperties(Line_Selected.ShortName, Visibility.Visible);
-                    //}
                 }
                 if (Creando)
                 {
@@ -3863,5 +4006,315 @@ namespace EnsureRisk.Classess
             }
         }
 
+        private void IsUserVisible_Click(object sender, RoutedEventArgs e)
+        {
+            if (LinesList != null)
+            {
+                //Console.WriteLine("== Visibles PolyLines are: ==");
+                //foreach (RiskPolyLine polyLine in LinesList)
+                //{
+                //    //bool isPartiallyClickable = false;
+                //    //bool isClickable = IsElementClickable<RiskPolyLine>(polyLine.MyContainer as UIElement, polyLine as UIElement, out isPartiallyClickable);
+                //    bool isClickable = IsËlementUserVisible(polyLine);
+                //    if (isClickable)
+                //    {
+                //        Console.WriteLine(polyLine.ShortName);
+                //    }
+                //}
+                DrawRentangles();
+            }
+        }
+
+        private void DrawRentangles()
+        {
+            if (LinesList != null)
+            {
+                RectangleGeometry myRectangleGeometry, viewPortRectangleGeometry;
+                Path myPath;
+
+                viewPortRectangleGeometry = new RectangleGeometry();
+
+                viewPortRectangleGeometry.Rect = new Rect(0.0, 0.0, ScrollGridPaint.ViewportWidth - 3, ScrollGridPaint.ViewportHeight - 3);
+
+                Console.WriteLine("====En el ViewPort estan====");
+
+                List<RiskPolyLine> polyLinesInViewPort = new List<RiskPolyLine>();
+
+                foreach (RiskPolyLine polyLine in LinesList)
+                {
+                    myRectangleGeometry = new RectangleGeometry();
+
+                    myRectangleGeometry.Rect = polyLine.Bounds(ScrollGridPaint);
+
+                    myPath = new Path();
+                    myPath.Fill = System.Windows.Media.Brushes.Transparent;
+                    myPath.Stroke = System.Windows.Media.Brushes.Blue;
+                    myPath.StrokeThickness = 1;
+                    myPath.Data = myRectangleGeometry;
+                    polyLine.MyContainer.Children.Add(myPath);
+
+                    if (viewPortRectangleGeometry.Rect.IntersectsWith(myRectangleGeometry.Rect))
+                    {
+                        Console.WriteLine(polyLine.ShortName);
+                        polyLinesInViewPort.Add(polyLine);
+                    }
+                }
+
+                myPath = new Path();
+                myPath.Fill = System.Windows.Media.Brushes.Transparent;
+                myPath.Stroke = System.Windows.Media.Brushes.Green;
+                myPath.StrokeThickness = 1;
+
+                myPath.Data = viewPortRectangleGeometry;
+
+                LinesList[0].MyContainer.Children.Add(myPath);
+
+                List<RiskPolyLine> polyLinesBaseOwner = new List<RiskPolyLine>();
+
+                foreach (RiskPolyLine polyLineInViewPort in polyLinesInViewPort)
+                {
+                    if (polyLineInViewPort.BaseFather != null && !polyLinesBaseOwner.Contains(polyLineInViewPort.BaseFather))
+                    {
+                        polyLinesBaseOwner.Add(polyLineInViewPort.BaseFather);
+                    }
+                }
+
+                List<RiskPolyLine> polyLinesToUpdateThickness = new List<RiskPolyLine>();
+
+                polyLinesToUpdateThickness.Add(MainLine);
+                foreach (RiskPolyLine polyLine in polyLinesBaseOwner)
+                {
+                    polyLinesToUpdateThickness.AddRange(polyLine.GetChilds());
+                }
+
+                UpdateLinesThickness(polyLinesToUpdateThickness);
+
+                decimal min = 1;
+                decimal max = 1;
+                if (polyLinesToUpdateThickness.Where(p => !p.IsRoot).Any())
+                {
+                    //min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage);
+                    //max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage);
+
+                    min = polyLinesToUpdateThickness.Where(p => !p.IsRoot).Min(l => l.AcDamage2);
+                    max = polyLinesToUpdateThickness.Where(p => !p.IsRoot).Max(l => l.AcDamage2);
+                }
+                General.UpdateLinesThickness(polyLinesToUpdateThickness, min, max);
+            }
+        }
+
+        public void UpdateLinesThickness(List<RiskPolyLine> linesList)
+        {
+            decimal min = 0;
+            decimal max = 0;
+            if (linesList.Where(p => !p.IsRoot).Any())
+            {
+                //min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage);
+                //max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage);
+
+                min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage2);
+                max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage2);
+            }
+
+            foreach (var item in linesList)
+            {
+                if (!(item.IsCM))
+                {
+                    if (item.IsLeaf())
+                    {
+                        item.SetThickness(item.AcDamage, min, max);
+                    }
+                    else
+                    {
+                        item.SetThickness(item.Children.First().AcDamage2, min, max);
+                    }
+                }
+            }
+            RiskPolyLine rootPolyLine = linesList.Find(r => r.IsRoot);
+            rootPolyLine.StrokeThickness = General.MaxThickness;
+
+            //UpdateSegmentsStrokeThickness(rootPolyLine);
+            UpdateSegmentsStrokeThickness(rootPolyLine, min, max);
+        }
+
+        private void UpdateSegmentsStrokeThickness(RiskPolyLine riskPolyLine, decimal min, decimal max)
+        {
+            if (riskPolyLine.Children.Any())
+            {
+                IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderBy(pl => pl.Points[1].X);
+                foreach (RiskPolyLine polyLine in orderedChild)
+                {
+                    //UpdateSegmentsStrokeThickness(polyLine);
+                    UpdateSegmentsStrokeThickness(polyLine, min, max);
+                    polyLine.UpdateSegmentsStrokeThickness(min, max);
+                }
+            }
+            riskPolyLine.UpdateSegmentsStrokeThickness(min, max);
+        }
+
+        private void EnableThickness_Checked(object sender, RoutedEventArgs e)
+        {
+            IsUniformThickness = true;
+            SetLinesThickness();
+        }
+
+        private void EnableThickness_Unchecked(object sender, RoutedEventArgs e)
+        {
+            IsUniformThickness = false;
+            foreach (RiskPolyLine polyLine in LinesList)
+            {
+                polyLine.StrokeThickness = 2;
+                if (polyLine.Segments.Any())
+                {
+                    foreach (SegmentPolyLine segment in polyLine.Segments)
+                    {
+                        segment.StrokeThickness = 2;
+                    }
+                }
+            }
+            //DrawRentangles();
+            UpdateViewPortLinesThickness();
+        }
+
+        private void UpdateViewPortLinesThickness()
+        {
+            if (LinesList != null)
+            {
+                //RectangleGeometry myRectangleGeometry, viewPortRectangle;
+                //Path myPath;
+
+                //viewPortRectangle = new RectangleGeometry();
+
+                //viewPortRectangle.Rect = new Rect(0.0, 0.0, ScrollGridPaint.ViewportWidth - 3, ScrollGridPaint.ViewportHeight - 3);
+
+                Rect viewPortRectangle  = new Rect(0.0, 0.0, ScrollGridPaint.ViewportWidth - 3, ScrollGridPaint.ViewportHeight - 3);
+
+                Console.WriteLine("====En el ViewPort estan====");
+
+                List<RiskPolyLine> polyLinesInViewPort = new List<RiskPolyLine>();
+
+                foreach (RiskPolyLine polyLine in LinesList)
+                {
+                    //myRectangleGeometry = new RectangleGeometry();
+
+                    Rect bounds = polyLine.Bounds(ScrollGridPaint);
+
+                    //myPath = new Path();
+                    //myPath.Fill = System.Windows.Media.Brushes.Transparent;
+                    //myPath.Stroke = System.Windows.Media.Brushes.Blue;
+                    //myPath.StrokeThickness = 1;
+                    //myPath.Data = myRectangleGeometry;
+                    //polyLine.MyContainer.Children.Add(myPath);
+
+                    //if (viewPortRectangle.Rect.IntersectsWith(bounds))
+                    if (viewPortRectangle.IntersectsWith(bounds))
+                    {
+                        Console.WriteLine(polyLine.ShortName);
+                        polyLinesInViewPort.Add(polyLine);
+                    }
+                }
+
+                //myPath = new Path();
+                //myPath.Fill = System.Windows.Media.Brushes.Transparent;
+                //myPath.Stroke = System.Windows.Media.Brushes.Green;
+                //myPath.StrokeThickness = 1;
+
+                //myPath.Data = viewPortRectangle;
+
+                //LinesList[0].MyContainer.Children.Add(myPath);
+
+                List<RiskPolyLine> polyLinesBaseOwner = new List<RiskPolyLine>();
+
+                foreach (RiskPolyLine polyLineInViewPort in polyLinesInViewPort)
+                {
+                    if (polyLineInViewPort.BaseFather != null && !polyLinesBaseOwner.Contains(polyLineInViewPort.BaseFather))
+                    {
+                        polyLinesBaseOwner.Add(polyLineInViewPort.BaseFather);
+                    }
+                }
+
+                List<RiskPolyLine> polyLinesToUpdateThickness = new List<RiskPolyLine>();
+
+                polyLinesToUpdateThickness.Add(MainLine);
+                foreach (RiskPolyLine polyLine in polyLinesBaseOwner)
+                {
+                    polyLinesToUpdateThickness.AddRange(polyLine.GetChilds());
+                }
+
+                Console.WriteLine("====Lineas a actualizar el THICKNESS====");
+                if (polyLinesToUpdateThickness.Any())
+                {
+                    foreach (RiskPolyLine polyLine in polyLinesToUpdateThickness)
+                    {
+                        Console.WriteLine(polyLine.ShortName);
+                    }
+                }
+
+                //UpdateLinesThickness(polyLinesToUpdateThickness);
+
+                decimal min = 1;
+                decimal max = 1;
+                if (polyLinesToUpdateThickness.Where(p => !p.IsRoot).Any())
+                {
+                    //min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage);
+                    //max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage);
+
+                    min = polyLinesToUpdateThickness.Where(p => !p.IsRoot).Min(l => l.AcDamage2);
+                    max = polyLinesToUpdateThickness.Where(p => !p.IsRoot).Max(l => l.AcDamage2);
+                }
+                UpdateLinesThickness(polyLinesToUpdateThickness, min, max);
+            }
+        }
+
+        public void UpdateLinesThickness(List<RiskPolyLine> polyLinesToUpdateThickness, decimal minAcDamage2, decimal maxAcDamage2)
+        {
+            //decimal min = 0;
+            //decimal max = 0;
+            //if (linesList.Where(p => !p.IsRoot).Any())
+            //{
+            //    //min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage);
+            //    //max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage);
+
+            //    min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage2);
+            //    max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage2);
+            //}
+
+            foreach (var item in polyLinesToUpdateThickness)
+            {
+                if (!(item.IsCM))
+                {
+                    if (item.IsLeaf())
+                    {
+                        item.SetThickness(item.AcDamage, minAcDamage2, maxAcDamage2);
+                    }
+                    else
+                    {
+                        item.SetThickness(item.Children.First().AcDamage2, minAcDamage2, maxAcDamage2);
+                    }
+                }
+            }
+            RiskPolyLine rootPolyLine = polyLinesToUpdateThickness.Find(r => r.IsRoot);
+            rootPolyLine.StrokeThickness = General.MaxThickness;
+            //UpdateSegmentsStrokeThickness(rootPolyLine);
+            //UpdateSegmentsStrokeThickness(rootPolyLine, minAcDamage2, maxAcDamage2);
+            UpdateRootSegmentsStrokeThickness(rootPolyLine, polyLinesToUpdateThickness, minAcDamage2, maxAcDamage2);
+        }
+
+        private void UpdateRootSegmentsStrokeThickness(RiskPolyLine riskPolyLine, List<RiskPolyLine> polyLinesToUpdateThickness, decimal min, decimal max)
+        {
+            if (riskPolyLine.Children.Any())
+            {
+                IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderBy(pl => pl.Points[1].X);
+                foreach (RiskPolyLine polyLine in orderedChild)
+                {
+                    if (polyLinesToUpdateThickness.Contains(polyLine)) {
+                        //UpdateSegmentsStrokeThickness(polyLine);
+                        UpdateSegmentsStrokeThickness(polyLine, min, max);
+                        polyLine.UpdateSegmentsStrokeThickness(min, max);
+                    }
+                }
+            }
+            riskPolyLine.UpdateSegmentsStrokeThickness(min, max);
+        }
     }
 }

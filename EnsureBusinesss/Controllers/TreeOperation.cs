@@ -672,11 +672,13 @@ namespace EnsureBusinesss
                     if (line.Father.Father == null)
                     {
                         line.IsDiagonal = true;
+                        line.BaseFather = line;
                     }
                     else
                     {
                         line.IsDiagonal = !line.Father.IsDiagonal;
                         line.FromTop = line.Father.FromTop;
+                        line.BaseFather = line.Father.BaseFather;
                     }
                     if (i == 0)
                     {
@@ -1134,11 +1136,6 @@ namespace EnsureBusinesss
 
         public static void SetPositionRiskChildren(DataRow drRiskFather, DataSet ds, int positionOfCM)
         {
-            //for (int i = 0; i < ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID]).Count(); i++)
-            //{
-            //    decimal idRIsk = (decimal)ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID])[i][DT_RiskStructure.IDRISK];
-            //    ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRIsk)[DT_Risk.POSITION] = i + positionOfCM;
-            //}
             for (int i = 0; i < ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID]).Count(); i++)
             {
                 decimal idRIsk = (decimal)ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID])[i][DT_RiskStructure.IDRISK];
