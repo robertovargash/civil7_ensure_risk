@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EnsureBusinesss
 {
@@ -68,7 +66,7 @@ namespace EnsureBusinesss
         {
             foreach (DataRow riskWBS in dtRisk_WBS.Select(DT_RISK_WBS.ID_RISK + " = " + rowRiskWBS[DT_RISK_WBS.ID_RISK]))
             {
-                if (rowRiskWBS[DT_RISK_WBS.ID_WBS] != riskWBS[DT_RISK_WBS.ID_WBS] )
+                if (rowRiskWBS[DT_RISK_WBS.ID_WBS] != riskWBS[DT_RISK_WBS.ID_WBS])
                 {
                     if (dsWBS.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.ID_FATHER + " = " + rowRiskWBS[DT_RISK_WBS.ID_WBS] + " and " + DT_WBS.ID_WBS + " = " + riskWBS[DT_RISK_WBS.ID_WBS]).Any())
                     {
@@ -207,7 +205,7 @@ namespace EnsureBusinesss
             {
                 foreach (DataRow descendant in MyWBSDescendants(DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(rowWBStoDelete[DT_RISK_WBS.ID_WBS]), DsWBS.Tables[DT_WBS.TABLE_NAME]))
                 {
-                    if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] {iDriskSelected, descendant[DT_WBS.ID_WBS] }))
+                    if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { iDriskSelected, descendant[DT_WBS.ID_WBS] }))
                     {
                         if ((bool)Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { iDriskSelected, descendant[DT_WBS.ID_WBS] })[DT_RISK_WBS.IS_PRIMARY])
                         {
@@ -216,14 +214,14 @@ namespace EnsureBusinesss
                     }
                 }
             }
-            
+
             if (isPrimary && Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + iDriskSelected).Any())
             {
                 foreach (DataRow ancestor in GetAncestors((decimal)rowWBStoDelete[DT_RISK_WBS.ID_WBS], DsWBS.Tables[DT_WBS.TABLE_NAME].Clone(), DsWBS).Rows)
                 {
                     if (ancestor[DT_WBS.USERNAME].ToString() == logguedUser)
                     {
-                        if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] {iDriskSelected, ancestor[DT_WBS.ID_WBS]}))
+                        if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { iDriskSelected, ancestor[DT_WBS.ID_WBS] }))
                         {
                             DataRow RiskRow = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(iDriskSelected);
                             Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { iDriskSelected, ancestor[DT_WBS.ID_WBS] })[DT_RISK_WBS.IS_PRIMARY] = true;
@@ -284,7 +282,7 @@ namespace EnsureBusinesss
                 }
                 //if (ds.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.ID_WBS + " = 0").Any())
                 //{
-                    
+
                 //}
             }
             return ListaRow;
@@ -313,7 +311,7 @@ namespace EnsureBusinesss
                         newRiskWBS[DT_RISK_WBS.USERNAME] = rowWBS[DT_WBS.USERNAME];
                         newRiskWBS[DT_RISK_WBS.WBS] = rowWBS[DT_WBS.WBS_NAME];
                         newRiskWBS[DT_RISK_WBS.WBS_USER] = rowWBS[DT_WBS.WBS_NAME] + "[" + rowWBS[DT_WBS.USERNAME] + "]";
-                        ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);                       
+                        ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
                         foreach (DataRow rowRiskDamage in ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + riskRow[DT_Risk.ID]))
                         {
                             rowRiskDamage[DT_Risk_Damages.WBS_NAME] = rowWBS[DT_WBS.NIVEL].ToString() + " " + rowWBS[DT_WBS.WBS_NAME].ToString();

@@ -44,7 +44,7 @@ namespace EnsureRisk
         /// <param name="menuRisk">Menu for all risks</param>
         public static void CreateRisks(MyLayoutDocumentt originalLayout, List<RiskPolyLine> listToFill, ContextMenu menuRisk)
         {
-            foreach (DataRow item in originalLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + originalLayout.ID_Diagram))
+            foreach (DataRow item in originalLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + originalLayout.ID_Diagram + " and " + DT_Risk.IS_CM + " = 0"))
             {
                 int myPosition = item[DT_Risk.POSITION] == DBNull.Value ? 0 : (int)item[DT_Risk.POSITION];
                 RiskPolyLine riskLine = new RiskPolyLine(new Grid(), menuRisk, false)
@@ -81,19 +81,31 @@ namespace EnsureRisk
         /// <param name="menuCM">Menu for all CMs</param>
         public static void CreateCMs(MyLayoutDocumentt originalLayout, List<RiskPolyLine> cmPolyLines, ContextMenu menuCM)
         {
-            foreach (DataRow item in originalLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + originalLayout.ID_Diagram + " and " + DT_Risk.IS_CM + " = 1"))
+            foreach (DataRow rowRisk in originalLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + originalLayout.ID_Diagram + " and " + DT_Risk.IS_CM + " = 1"))
             {
                 RiskPolyLine cmline = new RiskPolyLine(new Grid(), menuCM, true)
                 {
                     IsCM = true,
-                    Position = (int)item[DT_Risk.POSITION],
+                    Position = (int)rowRisk[DT_Risk.POSITION],
                     FromTop = false,
-                    ShortName = item[DT_Risk.NAMESHORT].ToString(),
-                    IdRiskFather = (decimal)item[DT_Risk.IDRISK_FATHER],
-                    ID = (decimal)item[DT_Risk.ID],
-                    Probability = (decimal)item[DT_Risk.PROBABILITY],
-                    IsActivated = (bool)item[DT_Risk.IS_ACTIVE]
+                    ShortName = rowRisk[DT_Risk.NAMESHORT].ToString(),
+                    IdRiskFather = (decimal)rowRisk[DT_Risk.IDRISK_FATHER],
+                    ID = (decimal)rowRisk[DT_Risk.ID],
+                    Probability = (decimal)rowRisk[DT_Risk.PROBABILITY],
+                    IsActivated = (bool)rowRisk[DT_Risk.IS_ACTIVE]
                 };
+                if (originalLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains((decimal)rowRisk[DT_Risk.ID]))
+                {
+                    if (originalLayout.Ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + (decimal)rowRisk[DT_Risk.ID]).Any())
+                    {
+                        cmline.IdRiskFather = (decimal)originalLayout.Ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + (decimal)rowRisk[DT_Risk.ID]).First()[DT_RiskStructure.IDRISK_FATHER];
+                    }
+                    else
+                    {
+                        cmline.IdRiskFather = 0;
+                    }
+                }
+                else { cmline.IdRiskFather = 0; }
                 cmPolyLines.Add(cmline);
             }
         }
@@ -193,13 +205,16 @@ namespace EnsureRisk
                     {
                         drRisk[DT_Risk.ID] = riskRow[DT_Risk.ID];
                     }
-                    if ((decimal)riskRow[DT_Risk.IDRISK_FATHER] >= 0)
+                    if (riskRow[DT_Risk.IDRISK_FATHER] != DBNull.Value)
                     {
-                        drRisk[DT_Risk.IDRISK_FATHER] = (decimal)riskRow[DT_Risk.IDRISK_FATHER] * (-1);
-                    }
-                    else
-                    {
-                        drRisk[DT_Risk.IDRISK_FATHER] = riskRow[DT_Risk.IDRISK_FATHER];
+                        if ((decimal)riskRow[DT_Risk.IDRISK_FATHER] >= 0)
+                        {
+                            drRisk[DT_Risk.IDRISK_FATHER] = (decimal)riskRow[DT_Risk.IDRISK_FATHER] * (-1);
+                        }
+                        else
+                        {
+                            drRisk[DT_Risk.IDRISK_FATHER] = riskRow[DT_Risk.IDRISK_FATHER];
+                        }
                     }
                     drRisk[DT_Risk.ID_DIAGRAM] = drTargetDiagram[DT_Diagram.ID_DIAGRAM];
                     drRisk[DT_Risk.NAMESHORT] = riskRow[DT_Risk.NAMESHORT];
@@ -214,41 +229,6 @@ namespace EnsureRisk
                     drRisk[DT_Risk.ID_WBS] = riskRow[DT_Risk.ID_WBS];
                     targetDS.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
                 }
-
-                //foreach (var cmRow in lahostia.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + drSourceDiagram[DT_Diagram.ID_DIAGRAM] + " and " + DT_Risk.IS_CM + " = 1"))
-                //{
-                //    ImportRiskDamages(targetDS, lahostia, cmRow);
-                //    ImportRiskWBS(targetDS, lahostia, cmRow);
-                //    ImportRiskRole(targetDS, lahostia, cmRow);
-                //    ImportRiskWBSDamages(targetDS, lahostia, cmRow);
-                //    ImportRiskStructure(targetDS, lahostia, cmRow);
-                //    DataRow drCM = targetDS.Tables[DT_Risk.TABLE_NAME].NewRow();
-                //    drCM[DT_Risk.ID_DIAGRAM] = drTargetDiagram[DT_Diagram.ID_DIAGRAM];
-                //    if ((decimal)cmRow[DT_Risk.ID] >= 0)
-                //    {
-                //        drCM[DT_Risk.ID] = (decimal)cmRow[DT_Risk.ID] * (-1);
-                //    }
-                //    else
-                //    {
-                //        drCM[DT_Risk.ID] = cmRow[DT_Risk.ID];
-                //    }
-                //    if ((decimal)cmRow[DT_Risk.IDRISK_FATHER] >= 0)
-                //    {
-                //        drCM[DT_Risk.IDRISK_FATHER] = (decimal)cmRow[DT_Risk.IDRISK_FATHER] * (-1);
-                //    }
-                //    else
-                //    {
-                //        drCM[DT_Risk.IDRISK_FATHER] = cmRow[DT_Risk.IDRISK_FATHER];
-                //    }
-                //    drCM[DT_Risk.NAMESHORT] = cmRow[DT_Risk.NAMESHORT];
-                //    drCM[DT_Risk.COMMENTS] = cmRow[DT_Risk.COMMENTS];
-                //    drCM[DT_Risk.PROBABILITY] = cmRow[DT_Risk.PROBABILITY];
-                //    drCM[DT_Risk.POSITION] = cmRow[DT_Risk.POSITION];
-                //    drCM[DT_Risk.IS_ACTIVE] = cmRow[DT_Risk.IS_ACTIVE];
-                //    drCM[DT_Risk.ID_GROUPE] = cmRow[DT_Risk.ID_GROUPE];
-                //    drCM[DT_Risk.ID_WBS] = cmRow[DT_Risk.ID_WBS];
-                //    targetDS.Tables[DT_Risk.TABLE_NAME].Rows.Add(drCM);
-                //}
             }
         }
 
@@ -273,6 +253,8 @@ namespace EnsureRisk
                 {
                     drFather[DT_RiskStructure.IDRISK_FATHER] = riskFather[DT_RiskStructure.IDRISK_FATHER];
                 }
+                riskRow[DT_Risk.IDRISK_FATHER] = drFather[DT_RiskStructure.IDRISK_FATHER];
+
                 targetDS.Tables[DT_RiskStructure.TABLE_NAME].Rows.Add(drFather);
             }
         }

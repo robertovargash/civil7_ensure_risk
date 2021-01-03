@@ -146,6 +146,15 @@
     <Compile Include="Controllers\Export\ExportRiskTree.cs" />
     <Compile Include="Controllers\Export\Trader\DataSetTrader.cs" />
     <Compile Include="Controllers\Export\Trader\RiskTreeDataSetTrader.cs" />
+    <Compile Include="DialogContent\ErrorStackPanel.xaml.cs">
+      <DependentUpon>ErrorStackPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DialogContent\InformationDialogContent.xaml.cs">
+      <DependentUpon>InformationDialogContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DialogContent\YesNoDialogContent.xaml.cs">
+      <DependentUpon>YesNoDialogContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\SetConnectionPage.xaml.cs">
       <DependentUpon>SetConnectionPage.xaml</DependentUpon>
     </Compile>
@@ -363,6 +372,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Classess\PopWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DialogContent\ErrorStackPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DialogContent\InformationDialogContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DialogContent\YesNoDialogContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

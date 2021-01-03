@@ -241,8 +241,8 @@ namespace EnsureRisk.Controllers.Import
         public void SetDataToMainRisk(DataRow drRisk, DataRow theDiagram)
         {
             drRisk[DT_Risk.ID] = 0000;
-            drRisk[DT_Risk.NAMESHORT] = "Root " + theDiagram[DT_Diagram.DIAGRAM_NAME];
-            drRisk[DT_Risk.COMMENTS] = "Total Risk " + theDiagram[DT_Diagram.DIAGRAM_NAME];
+            drRisk[DT_Risk.NAMESHORT] = "Main Risk";
+            drRisk[DT_Risk.COMMENTS] = "Main Risk of " + theDiagram[DT_Diagram.DIAGRAM_NAME];
             drRisk[DT_Risk.IS_ROOT] = true;
             drRisk[DT_Risk.IS_CM] = false;
             drRisk[DT_Risk.ISCOLLAPSED] = false;

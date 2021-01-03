@@ -28,7 +28,7 @@ namespace EnsureBusinesss
             drNewRisk[DT_Risk.ID_DIAGRAM] = ID_Diagram;
             drNewRisk[DT_Risk.ISCOLLAPSED] = false;
             drNewRisk[DT_Risk.IS_ROOT] = false;
-            drNewRisk[DT_Risk.NAMESHORT] = sourceLine.IsRoot ? DiagramName : sourceLine.ShortName;
+            drNewRisk[DT_Risk.NAMESHORT] = sourceLine.IsRoot ? DiagramName + " Main Risk" : sourceLine.ShortName;
             drNewRisk[DT_Risk.POSITION] = isMain ? LinesList.Find(r => r.ID == (decimal)drTargetRisk[DT_Risk.ID]).Children.Count : targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceLine.ID)[DT_Risk.POSITION];
 
             drNewRisk[DT_Risk.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceLine.ID)[DT_Risk.GROUPE_NAME];
@@ -202,7 +202,7 @@ namespace EnsureBusinesss
             drNewRisk[DT_Risk.ID_DIAGRAM] = ID_Diagram;
             drNewRisk[DT_Risk.ISCOLLAPSED] = false;
             drNewRisk[DT_Risk.IS_ROOT] = false;
-            drNewRisk[DT_Risk.NAMESHORT] = sourceLine.IsRoot ? DiagramName : sourceLine.ShortName;
+            drNewRisk[DT_Risk.NAMESHORT] = sourceLine.IsRoot ? DiagramName + " Main Risk" : sourceLine.ShortName;
             drNewRisk[DT_Risk.POSITION] = isMain ? LinesList.Find(r => r.ID == (decimal)drTargetRisk[DT_Risk.ID]).Children.Count : targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceLine.ID)[DT_Risk.POSITION];
 
             drNewRisk[DT_Risk.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceLine.ID)[DT_Risk.GROUPE_NAME];
@@ -213,6 +213,7 @@ namespace EnsureBusinesss
             drNewRisk[DT_Risk.IS_CM] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceLine.ID)[DT_Risk.IS_CM];
             drNewRisk[DT_Risk.PROBABILITY] = (bool)drNewRisk[DT_Risk.IS_CM] ? 0 : 100;
             drNewRisk[DT_Risk.IDRISK_FATHER] = drTargetRisk[DT_Risk.ID];
+            drNewRisk[DT_Risk.FATHER] = drTargetRisk[DT_Risk.NAMESHORT];
             targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Add(drNewRisk);
             DataRow rowstructure = targetDataset.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
             rowstructure[DT_RiskStructure.IDRISK] = drNewRisk[DT_Risk.ID];
@@ -252,7 +253,7 @@ namespace EnsureBusinesss
                     DataRow drRiskDamage = targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].NewRow();
                     drRiskDamage[DT_Risk_Damages.COLOR] = diagramDamages[DT_Diagram_Damages.COLOR];
                     drRiskDamage[DT_Risk_Damages.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
-                    drRiskDamage[DT_Risk_Damages.FATHER] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drRiskCopied[DT_Risk.IDRISK_FATHER])[DT_Risk.NAMESHORT];
+                    drRiskDamage[DT_Risk_Damages.FATHER] = drRiskCopied[DT_Risk.FATHER];
                     drRiskDamage[DT_Risk_Damages.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drRiskCopied[DT_Risk.ID])[DT_Risk.GROUPE_NAME];
                     drRiskDamage[DT_Risk_Damages.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
                     drRiskDamage[DT_Risk_Damages.ID_FATHER] = drRiskCopied[DT_Risk.IDRISK_FATHER];
@@ -410,7 +411,7 @@ namespace EnsureBusinesss
             drNewRisk[DT_Risk.ID_DIAGRAM] = ID_Diagram;
             drNewRisk[DT_Risk.ISCOLLAPSED] = false;
             drNewRisk[DT_Risk.IS_ROOT] = false;
-            drNewRisk[DT_Risk.NAMESHORT] = sourceRisk.IsRoot ? DiagramName : sourceRisk.ShortName;
+            drNewRisk[DT_Risk.NAMESHORT] = sourceRisk.IsRoot ? DiagramName + " Main Risk" : sourceRisk.ShortName;
             drNewRisk[DT_Risk.POSITION] = isMain ? sourceRisk.Position : targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.POSITION];
 
             drNewRisk[DT_Risk.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drTargetRisk[DT_Risk.ID])[DT_Risk.GROUPE_NAME]; ;
@@ -423,6 +424,8 @@ namespace EnsureBusinesss
             drNewRisk[DT_Risk.PROBABILITY] = (bool)drNewRisk[DT_Risk.IS_CM] ? 0 : 100;
 
             drNewRisk[DT_Risk.IDRISK_FATHER] = drTargetRisk[DT_Risk.ID];
+            drNewRisk[DT_Risk.FATHER] = drTargetRisk[DT_Risk.NAMESHORT];
+
             targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Add(drNewRisk);
 
             DataRow rowstructure = targetDataset.Tables[DT_RiskStructure.TABLE_NAME].NewRow();
@@ -459,7 +462,6 @@ namespace EnsureBusinesss
                     DataRow drRiskDamage = targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].NewRow();
                     drRiskDamage[DT_Risk_Damages.COLOR] = diagramDamages[DT_Diagram_Damages.COLOR];
                     drRiskDamage[DT_Risk_Damages.DAMAGE] = diagramDamages[DT_Diagram_Damages.DAMAGE];
-                    drRiskDamage[DT_Risk_Damages.FATHER] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drRiskCopied[DT_Risk.IDRISK_FATHER])[DT_Risk.NAMESHORT];
                     drRiskDamage[DT_Risk_Damages.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drRiskCopied[DT_Risk.ID])[DT_Risk.GROUPE_NAME];
                     drRiskDamage[DT_Risk_Damages.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
                     drRiskDamage[DT_Risk_Damages.ID_FATHER] = drRiskCopied[DT_Risk.IDRISK_FATHER];

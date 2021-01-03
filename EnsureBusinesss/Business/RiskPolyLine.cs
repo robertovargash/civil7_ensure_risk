@@ -6,8 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Input;
-using System.Windows.Data;
 
 namespace EnsureBusinesss.Business
 {
@@ -44,8 +42,8 @@ namespace EnsureBusinesss.Business
         //public static readonly DependencyProperty IsRootProperty =
         //   DependencyProperty.Register("IsRoot", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
-        //public static readonly DependencyProperty OcultoProperty =
-        //   DependencyProperty.Register("Oculto", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender));
+        public static readonly DependencyProperty OcultoProperty =
+           DependencyProperty.Register("Oculto", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender));
 
         public static readonly DependencyProperty IsCMProperty =
            DependencyProperty.Register("IsCM", typeof(bool), typeof(RiskPolyLine), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
@@ -80,8 +78,8 @@ namespace EnsureBusinesss.Business
         }
         public bool Hidden
         {
-            set; /*{ SetValue(OcultoProperty, value); }*/
-            get; /*{ return (bool)GetValue(OcultoProperty); }*/
+            set { SetValue(OcultoProperty, value); }
+            get { return (bool)GetValue(OcultoProperty); }
         }
         public bool IsCM
         {

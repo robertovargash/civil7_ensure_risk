@@ -43,4 +43,3 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ro\ERD
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ERDock.csproj.CopyComplete
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ERDock.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ERDock.pdb
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ERDock.csprojAssemblyReference.cache

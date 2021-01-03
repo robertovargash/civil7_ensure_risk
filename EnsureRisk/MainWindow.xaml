@@ -10,6 +10,7 @@
         xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:decimalconv="clr-namespace:EnsureRisk.DataBinding"
+        xmlns:dialogs="clr-namespace:EnsureRisk.DialogContent"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Medium"
@@ -317,9 +318,7 @@
                                                         <Grid Background="#FFE5E5E5">
                                                             <DataGrid Name="DgRiskWBS" ItemsSource="{Binding DvRiskWBS}" Margin="1,1,0,0" 
                                                                       ColumnHeaderStyle="{StaticResource CustomColumnHeader}" 
-                                                                      AutoGenerateColumns="False" SelectedCellsChanged="DgRiskWBS_SelectedCellsChanged" 
-                                                                      CellEditEnding="DgRiskWBS_CellEditEnding" 
-                                                                      SelectionChanged="DgRiskWBS_SelectionChanged" CanUserAddRows="False" 
+                                                                      AutoGenerateColumns="False" CanUserAddRows="False" 
                                                                       CanUserDeleteRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
                                                                 <DataGrid.Columns>
                                                                     <DataGridTemplateColumn x:Name="wbsBtn">
@@ -345,7 +344,7 @@
                                                                         </DataGridTemplateColumn.Header>
                                                                         <DataGridTemplateColumn.CellTemplate>
                                                                             <DataTemplate>
-                                                                                <TextBox VerticalAlignment="Center" LostFocus="TextProbabilityDataGrid_LostFocus" IsEnabled="{Binding {x:Static data:DT_RISK_WBS.IsProbabReadOnly}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">                                                                                    
+                                                                                <TextBox VerticalAlignment="Center" LostFocus="TextProbabilityDataGrid_LostFocus" IsEnabled="{Binding {x:Static data:DT_RISK_WBS.IsProbabReadOnly}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
                                                                                     <TextBox.Text>
                                                                                         <Binding Path="probability" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}" ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                                                                             <Binding.ValidationRules>
@@ -414,7 +413,7 @@
                     </xcad:LayoutDocumentPaneGroup >
                     <xcad:LayoutAnchorablePaneGroup DockWidth="250" ScrollViewer.CanContentScroll="True" DockMinWidth="50" FloatingWidth="250">
                         <xcad:LayoutAnchorablePane ScrollViewer.CanContentScroll="True">
-                            <xcad:LayoutAnchorable x:Name="AnchorDiagramList"  Title="Diagrams" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Diagrams" AutoHideWidth="250" FloatingWidth="250">
+                            <xcad:LayoutAnchorable x:Name="AnchorDiagramList" Title="Diagrams" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Diagrams" AutoHideWidth="250" FloatingWidth="250">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="50" />
@@ -484,7 +483,7 @@
                                               AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False" Grid.ColumnSpan="2" 
                                               MouseLeave="DgRisksCross_MouseLeave" SelectionChanged="DgRisksCross_SelectionChanged" CanUserDeleteRows="False" 
                                               IsTextSearchEnabled="True" CanUserAddRows="False" ItemsSource="{Binding DV_CrossRisk}" VerticalContentAlignment="Center">
-                                    <DataGrid.Columns>
+                                        <DataGrid.Columns>
                                             <DataGridTemplateColumn x:Name="RiskEnabled" Header="Active?">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
@@ -696,76 +695,17 @@
         </Grid>
         <md:DialogHost IsOpen="False" x:Name="ErrorDialogMessage" Grid.RowSpan="3" >
             <md:DialogHost.DialogContent >
-                <StackPanel Margin="15">
-                    <StackPanel Orientation="Horizontal">
-                        <md:PackIcon Kind="ErrorOutline" Width="30" Height="50"/>
-                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="ERROR!!!" TextAlignment="Justify"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical">                       
-                        <Expander HorizontalAlignment="Stretch" IsExpanded="True">
-                            <Expander.Header >
-                                <TextBlock Text="Expand for details" Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}}, 
-                                    Path=IsExpanded, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}"/>
-                            </Expander.Header>
-                            <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                                <TextBox x:Name="TextMessage" MaxWidth="500" MaxHeight="500" Opacity=".68" SpellCheck.IsEnabled="True" VerticalScrollBarVisibility="Auto" TextAlignment="Justify" Text="" VerticalAlignment="Stretch" TextWrapping="Wrap" />
-                            </StackPanel>
-                        </Expander>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
-                            CLOSE
-                        </Button>
-                    </StackPanel>
-                </StackPanel>
+                <dialogs:ErrorStackPanel x:Name="ErrorContent"/>
             </md:DialogHost.DialogContent>
         </md:DialogHost>
         <md:DialogHost IsOpen="False" x:Name="YesNoDialog" Grid.RowSpan="3" DialogClosing="YesNoDialog_DialogClosing">
             <md:DialogHost.DialogContent>
-                <StackPanel Margin="15">
-                    <StackPanel Orientation="Horizontal">
-                        <md:PackIcon Kind="WarningCircleOutline" Width="30" Height="50"/>
-                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="WARNING!!!" TextAlignment="Justify"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                        <TextBlock x:Name="TextYesNoMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="mY TEXT" TextWrapping="Wrap" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
-                            <Button.CommandParameter>
-                                <system:Boolean>True</system:Boolean>
-                            </Button.CommandParameter>
-                            ACCEPT
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
-                            <Button.CommandParameter>
-                                <system:Boolean>False</system:Boolean>
-                            </Button.CommandParameter>
-                            CANCEL
-                        </Button>
-                    </StackPanel>
-                </StackPanel>
+                <dialogs:YesNoDialogContent x:Name="yesNoContent"/>
             </md:DialogHost.DialogContent>
         </md:DialogHost>
         <md:DialogHost IsOpen="False" x:Name="InformationMessageDialog" Grid.RowSpan="3">
             <md:DialogHost.DialogContent>
-                <StackPanel Margin="15">
-                    <StackPanel Orientation="Horizontal">
-                        <md:PackIcon Kind="InformationOutline" Width="30" Height="50"/>
-                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="INFORMATION!!!" TextAlignment="Justify"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                        <TextBlock x:Name="TextInformationMessage" MaxWidth="500" Opacity=".68" TextAlignment="Justify" Text="DEFAULT TEXT" TextWrapping="Wrap" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
-                            <Button.CommandParameter>
-                                <system:Boolean>True</system:Boolean>
-                            </Button.CommandParameter>
-                            ACCEPT
-                        </Button>
-                    </StackPanel>
-                </StackPanel>
+                <dialogs:InformationDialogContent x:Name="infoContent"/>
             </md:DialogHost.DialogContent>
         </md:DialogHost>
         <md:DialogHost IsOpen="False" Grid.RowSpan="3" x:Name="LoginDialog" DialogOpened="LoginDialog_DialogOpened" DialogClosing="LoginDialog_DialogClosing">
