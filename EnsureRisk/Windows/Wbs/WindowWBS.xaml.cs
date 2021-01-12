@@ -34,6 +34,7 @@ namespace EnsureRisk.Windows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
+        //TODO: 01-EXPLICAR A GUSTAVO LA HERENCIA
 
         public WindowWBS()
         {
@@ -55,15 +56,11 @@ namespace EnsureRisk.Windows
             {
                 using (ServiceUserController.WebServiceUser wsu = new ServiceUserController.WebServiceUser())
                 {
-                    DtUsuarios = wsu.GetUserData().Tables[DT_User.User_TABLA].Copy();
-                    //cbUser.ItemsSource = DtUsuarios.DefaultView;
-                    //cbUser.SelectedValuePath = DT_User.USERNAME;
-                    //cbUser.DisplayMemberPath = DT_User.USERNAME;
+                    DtUsuarios = wsu.GetUserData().Tables[DT_User.TABLE_NAME].Copy();
                     if (Operation == General.UPDATE)
                     {
                         TextName.Text = DrWBS[DT_WBS.WBS_NAME].ToString();
                         TextLevel.Text = DrWBS[DT_WBS.NIVEL].ToString();
-                        //chkIsManager.IsChecked = (bool)DrWBS[DT_WBS.IS_MANAGER];
                         cbUser.Text = DrWBS[DT_WBS.USERNAME].ToString();
                     }
                     if (TextName.Text == "")
@@ -91,16 +88,13 @@ namespace EnsureRisk.Windows
                     DrWBS[DT_WBS.WBS_NAME] = TextName.Text;
                     DrWBS[DT_WBS.NIVEL] = TextLevel.Text;
                     DrWBS[DT_WBS.IDPROJECT] = IdProject;
-                    //DrWBS[DT_WBS.IS_MANAGER] = chkIsManager.IsChecked;
                     DrWBS[DT_WBS.USERNAME] = cbUser.Text;
                 }
                 if (Operation == General.UPDATE)
                 {
                     DrWBS[DT_WBS.IDPROJECT] = IdProject;
-                    //DrWBS[DT_WBS.IS_MANAGER] = chkIsManager.IsChecked;
                     DrWBS[DT_WBS.USERNAME] = cbUser.Text;
                     WBS_Encoder.Rows.Find(DrWBS[DT_WBS.ID_WBS])[DT_WBS.WBS_NAME] = TextName.Text;
-                    //WBS_Encoder.Rows.Find(DrWBS[DT_WBS.ID_WBS])[DT_WBS.IS_MANAGER] = chkIsManager.IsChecked;
                     WBS_Encoder.Rows.Find(DrWBS[DT_WBS.ID_WBS])[DT_WBS.USERNAME] = cbUser.Text;
                 }
 
@@ -132,11 +126,6 @@ namespace EnsureRisk.Windows
             wBSChild.DrWBS_Structure[DT_WBS.ID_FATHER] = DrWBS[DT_WBS.ID_WBS];
             wBSChild.DrWBS_Structure[DT_WBS.WBS_FNAME] = DrWBS[DT_WBS.WBS_NAME];
             wBSChild.ShowDialog();
-            //if (wBSChild.ShowDialog() == true)
-            //{                
-            //    WBS_Encoder.Rows.Add(wBSChild.DrWBS);
-            //    WBS_Structure.Rows.Add(wBSChild.DrWBS_Structure);
-            //}
         }
 
         private void Delete()

@@ -349,7 +349,6 @@ namespace EnsureRisk.Export.Trader
                 orderby riskDataRow.Field<int?>(POSITION_COLUMNNAME)
                 select riskDataRow;
             riskDataRowQuery.CopyToDataTable<DataRow>(dataTable, LoadOption.OverwriteChanges);
-            //TODO: Ojo con esto
             return dataTable;
         }
 

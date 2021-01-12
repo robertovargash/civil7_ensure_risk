@@ -378,12 +378,11 @@ namespace EnsureBusinesss.Business
                 this.TextPanel.Margin = new Thickness(Points[1].X - horizontalShiftLabelX, Points[1].Y + StrokeThickness, 0, 0);
             }
         }
-        //TODO: Documentar
         private void DrawLabelLineName()
         {
             this.MyName.Line = this;
         }
-        //TODO:Documentar
+
         protected override Geometry DefiningGeometry
         {
             get

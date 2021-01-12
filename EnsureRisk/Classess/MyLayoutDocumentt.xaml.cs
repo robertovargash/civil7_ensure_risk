@@ -44,11 +44,11 @@ namespace EnsureRisk.Classess
         private DataView dvDamage;
         //private readonly Cursor GrabHand = CursorHelper.FromByteArray(Properties.Resources.HandGrabbing);
 
-
         public DataView DvDamage { get => dvDamage; set { dvDamage = value; RaisePropertyChanged("DvDamage"); } }
         public decimal IdDamageSelected { get => idDamageSelected; set { idDamageSelected = value; RaisePropertyChanged("IdDamageSelected"); } }
         #region Booleans
-        public bool IsScoping { get; set; }
+        private bool isScoping;
+        public bool IsScoping { get => isScoping; set { isScoping = value; RaisePropertyChanged("IsScoping"); } }
         public bool MoviendoRisk { get; set; }
         public bool NameEditing { get; set; }
         public bool MoviendoCM { get; set; }
@@ -68,7 +68,7 @@ namespace EnsureRisk.Classess
         public Point MIdPoint { get; set; }
         public DataSet Ds { get; set; }
         public DataRow DrDiagram { get; set; }
-        public Window MyWindow { get; set; }
+        public MainWindow MyWindow { get; set; }
         private readonly BackgroundWorker exportToExcelWorker = new BackgroundWorker();
         #endregion        
 
@@ -102,6 +102,1962 @@ namespace EnsureRisk.Classess
         public RiskPolyLine LineInMoving { get; set; }
         private decimal idWBSFilter = -1;
         public decimal IdWBSFilter { get => idWBSFilter; set { idWBSFilter = value; RaisePropertyChanged("IdWBSFilter"); } }
+        #endregion
+
+        #region COMMANDS
+        #region MENU_RISK
+        #region ADD_RISK
+        private ICommand _defaultAddRiskCommand;
+        public static readonly DependencyProperty AddRiskCommandProperty = DependencyProperty.Register("AddRiskCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnAddRiskCommandChanged), new CoerceValueCallback(CoerceAddRiskCommandValue)));
+
+        public ICommand AddRiskCommand { get { return (ICommand)GetValue(AddRiskCommandProperty); } set { SetValue(AddRiskCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the AddRiskCommand property.
+        /// </summary>
+        private static void OnAddRiskCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).AddRIskCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the AddRiskCommand property.
+        /// </summary>
+        protected virtual void AddRIskCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the AddRiskCommand value.
+        /// </summary>
+        private static object CoerceAddRiskCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteAddRiskCommand(object parameter) => this != null;
+
+        private void ExecuteAddRiskCommand(object parameter)
+        {
+            try
+            {
+                ShowWindowAddRisk(false);
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        private void ShowWindowAddRisk(bool isCM)
+        {
+            WindowRisk wrisk = new WindowRisk()
+            {
+                RiskRow = Ds.Tables[DT_Risk.TABLE_NAME].NewRow(),
+                Ds = Ds,
+                LOGIN_USER = LoginUser,
+                ID_PROJECT = (decimal)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT],
+                Operation = General.INSERT,
+                RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
+                RiskTreeID = ID_Diagram,
+                RiskSelected = Line_Selected,
+                MyRisks = Ds.Tables[DT_Risk.TABLE_NAME].Copy(),
+                ChildrenLines = new List<RiskPolyLine>(),
+                HasAccess = true
+            };
+            wrisk.RiskRow[DT_Risk.IS_CM] = isCM;
+            if (isCM)
+            {
+                wrisk.Probability = 0;
+            }
+            if (wrisk.ShowDialog() == true)
+            {
+                RiskPolyLine Line_Created = new RiskPolyLine
+                {
+                    ID = (decimal)wrisk.RiskRow[DT_Risk.ID],
+                    IsCM = false,
+                    ShortName = "LineCreated",
+                    Father = Line_Selected,
+                    IdRiskFather = Line_Selected.ID
+                };
+                if (isCM)
+                {
+                    InsertCM(Line_Created, Line_Selected, PointSelected);
+                }
+                else
+                {
+                    InsertRisk(Line_Created, Line_Selected, PointSelected);
+                }
+                DropLines();
+                DropRectangles();
+                LoadLines();
+                LoadRectangles();
+                DrawNumbers();
+                SetLinesThickness();
+                MyWindow.CrossRiskRightTab(Ds);
+                MyWindow.CrossCMRightTab(Ds);
+            }
+        }
+        #endregion
+
+        #region EDIT_RISK
+        private ICommand _defaultEditRiskCommand;
+
+        public static readonly DependencyProperty EditRiskCommandProperty = DependencyProperty.Register("EditRiskCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnEditRiskCommandChanged), new CoerceValueCallback(CoerceEditRiskCommandValue)));
+
+        public ICommand EditRiskCommand { get { return (ICommand)GetValue(EditRiskCommandProperty); } set { SetValue(EditRiskCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the EditRiskCommand property.
+        /// </summary>
+        private static void OnEditRiskCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).EditRIskCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the EditRiskCommand property.
+        /// </summary>
+        protected virtual void EditRIskCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the EditRiskCommand value.
+        /// </summary>
+        private static object CoerceEditRiskCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteEditRiskCommand(object parameter) => this != null;
+
+        private void ExecuteEditRiskCommand(object parameter)
+        {
+            try
+            {
+                WindowRisk wrisk = new WindowRisk
+                {
+                    RiskRow = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
+                    Ds = Ds,
+                    LOGIN_USER = LoginUser,
+                    ID_PROJECT = (decimal)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT],
+                    Operation = General.UPDATE,
+                    Posicion = (int)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.POSITION],
+                    ChildrenLines = TreeOperation.GetOnlyMyChildrenWithCM(Line_Selected),
+                    MyRisks = Ds.Tables[DT_Risk.TABLE_NAME].Copy(),
+                };
+                wrisk.HasAccess = FullAccess(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID));
+                if (Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains(Line_Selected.ID))
+                {
+                    wrisk.RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.IdRiskFather);
+                }
+                wrisk.RiskTreeID = ID_Diagram;
+
+                if (wrisk.ShowDialog() == true)
+                {
+                    TreeOperation.SetRiskLineValues(Line_Selected, wrisk.RiskRow);
+                    int pos = LinesList.FindIndex(rl => rl.ID == Line_Selected.ID);
+                    LinesList[pos] = Line_Selected;
+                    DrawNumbers();
+                    UpdateLinesValues();
+                    SetLinesThickness();
+                    ((MainWindow)MyWindow).CrossRiskRightTab(Ds);
+                    ((MainWindow)MyWindow).CrossCMRightTab(Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Delete_RISK
+        private ICommand _defaultDeleteRiskCommand;
+
+        public static readonly DependencyProperty DeleteRiskCommandProperty = DependencyProperty.Register("DeleteRiskCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnDeleteRiskCommandChanged), new CoerceValueCallback(CoerceDeleteRiskCommandValue)));
+
+        public ICommand DeleteRiskCommand { get { return (ICommand)GetValue(DeleteRiskCommandProperty); } set { SetValue(DeleteRiskCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the DeleteRiskCommand property.
+        /// </summary>
+        private static void OnDeleteRiskCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).DeleteRIskCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the DeleteRiskCommand property.
+        /// </summary>
+        protected virtual void DeleteRIskCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the DeleteRiskCommand value.
+        /// </summary>
+        private static object CoerceDeleteRiskCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteDeleteRiskCommand(object parameter) => this != null;
+
+        private void ExecuteDeleteRiskCommand(object parameter)
+        {
+            try
+            {
+                if (Line_Selected.Children.Count > 0)
+                {
+                    ((MainWindow)MyWindow).MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Line_Selected.ShortName + "] and all its children?");
+                    ((MainWindow)MyWindow).IS_DELETING_RISK = true;
+                }
+                else
+                {
+                    ((MainWindow)MyWindow).MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Line_Selected.ShortName + "] ?");
+                    ((MainWindow)MyWindow).IS_DELETING_RISK = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+        #endregion
+
+        #region MOVE_RISK
+        private ICommand _defaultMoveRiskCommand;
+
+        public static readonly DependencyProperty MoveRiskCommandProperty = DependencyProperty.Register("MoveRiskCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnMoveRiskCommandChanged), new CoerceValueCallback(CoerceMoveRiskCommandValue)));
+
+        public ICommand MoveRiskCommand { get { return (ICommand)GetValue(MoveRiskCommandProperty); } set { SetValue(MoveRiskCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the MoveRiskCommand property.
+        /// </summary>
+        private static void OnMoveRiskCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).MoveRIskCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the MoveRiskCommand property.
+        /// </summary>
+        protected virtual void MoveRIskCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the MoveRiskCommand value.
+        /// </summary>
+        private static object CoerceMoveRiskCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteMoveRiskCommand(object parameter) => this != null;
+
+        private void ExecuteMoveRiskCommand(object parameter)
+        {
+            try
+            {
+                new GhostWindow("Moving").ShowDialog();
+                MoviendoRisk = true;
+                Color lnColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
+                StartMovingLine(lnColor);
+                MyWindow.Cursor = Cursors.Hand;
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Copy_Risk
+        private ICommand _defaultCopy_RiskCommand;
+
+        public static readonly DependencyProperty Copy_RiskCommandProperty = DependencyProperty.Register("Copy_RiskCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnCopy_RiskCommandChanged), new CoerceValueCallback(CoerceCopy_RiskCommandValue)));
+
+        public ICommand Copy_RiskCommand { get { return (ICommand)GetValue(Copy_RiskCommandProperty); } set { SetValue(Copy_RiskCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the Copy_RiskCommand property.
+        /// </summary>
+        private static void OnCopy_RiskCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).Copy_RiskCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the Copy_RiskCommand property.
+        /// </summary>
+        protected virtual void Copy_RiskCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the Copy_RiskCommand value.
+        /// </summary>
+        private static object CoerceCopy_RiskCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteCopy_RiskCommand(object parameter) => this != null;
+
+        private void ExecuteCopy_RiskCommand(object parameter)
+        {
+            try
+            {
+                GhostWindow win = new GhostWindow("Copying...");
+                win.ShowDialog();
+                Copy(Line_Selected);
+                CopyToGlobal(Line_Selected);
+                MyWindow.COPIANDO = true;
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Copy the risk and its children in memory.
+        /// </summary>
+        private void Copy(RiskPolyLine LineToCpy)
+        {
+            try
+            {
+                ListCopy = new List<RiskPolyLine>();
+                CopyRisk = new RiskPolyLine(GridPaintLines, MenuRisk, false)
+                {
+                    ShortName = LineToCpy.ShortName,
+                    ID = LineToCpy.ID,
+                    IdRiskFather = 0,
+                    Position = 0,
+                    Collapsed = LineToCpy.Collapsed,
+                    Probability = LineToCpy.Probability,
+                    IsCM = LineToCpy.IsCM,
+                    IsRoot = false
+                };
+                CopyRisk.TextPanel.Visibility = Visibility.Collapsed;
+                ListCopy.Add(CopyRisk);
+                foreach (var item in TreeOperation.GetOnlyMyChildrenWithCM(LineToCpy))
+                {
+                    if (!(item.IsCM))
+                    {
+                        RiskPolyLine line = new RiskPolyLine(GridPaintLines, MenuRisk, false)
+                        {
+                            ID = item.ID,
+                            IdRiskFather = item.IdRiskFather,
+                            Stroke = item.Stroke,
+                            ShortName = item.ShortName,
+                            Position = item.Position,
+                            IsCM = item.IsCM,
+                            Collapsed = item.Collapsed,
+                            FromTop = item.FromTop,
+                            IsRoot = item.IsRoot
+                        };
+                        line.TextPanel.Visibility = Visibility.Collapsed;
+                        ListCopy.Add(line);
+                    }
+                    else
+                    {
+                        RiskPolyLine cmLine = new RiskPolyLine(GridPaintLines, MenuCM, true)
+                        {
+                            ID = item.ID,
+                            IdRiskFather = item.IdRiskFather,
+                            Stroke = item.Stroke,
+                            ShortName = item.ShortName,
+                            Position = item.Position,
+                            IsCM = item.IsCM,
+                            Collapsed = item.Collapsed,
+                            FromTop = item.FromTop,
+                            IsRoot = item.IsRoot
+                        };
+                        cmLine.TextPanel.Visibility = Visibility.Collapsed;
+                        ListCopy.Add(cmLine);
+                    }
+                }
+                TreeOperation.Build_Tree(ListCopy, CopyRisk);
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        private void CopyToGlobal(RiskPolyLine LineToCpy)
+        {
+            try
+            {
+                MyWindow.GlobalListCopy = new List<RiskPolyLine>();
+                MyWindow.GlobalCopyLine = new RiskPolyLine(GridPaintLines, MenuRisk, false)
+                {
+                    ShortName = LineToCpy.ShortName,
+                    ID = LineToCpy.ID,
+                    IdRiskFather = 0,
+                    Position = 0,
+                    Collapsed = LineToCpy.Collapsed,
+                    Probability = LineToCpy.Probability,
+                    IsCM = LineToCpy.IsCM,
+                    IsRoot = false
+                };
+                MyWindow.GlobalCopyLine.TextPanel.Visibility = Visibility.Collapsed;
+                MyWindow.GlobalListCopy.Add(CopyRisk);
+                foreach (var item in TreeOperation.GetOnlyMyChildrenWithCM(LineToCpy))
+                {
+                    if (!(item.IsCM))
+                    {
+                        RiskPolyLine line = new RiskPolyLine(GridPaintLines, MenuRisk, false)
+                        {
+                            ID = item.ID,
+                            IdRiskFather = item.IdRiskFather,
+                            Stroke = item.Stroke,
+                            ShortName = item.ShortName,
+                            Position = item.Position,
+                            IsCM = item.IsCM,
+                            Collapsed = item.Collapsed,
+                            FromTop = item.FromTop,
+                            IsRoot = item.IsRoot
+                        };
+                        line.TextPanel.Visibility = Visibility.Collapsed;
+                        MyWindow.GlobalListCopy.Add(line);
+                    }
+                    else
+                    {
+                        RiskPolyLine cmLine = new RiskPolyLine(GridPaintLines, MenuCM, true)
+                        {
+                            ID = item.ID,
+                            IdRiskFather = item.IdRiskFather,
+                            Stroke = item.Stroke,
+                            ShortName = item.ShortName,
+                            Position = item.Position,
+                            IsCM = item.IsCM,
+                            Collapsed = item.Collapsed,
+                            FromTop = item.FromTop,
+                            IsRoot = item.IsRoot
+                        };
+                        cmLine.TextPanel.Visibility = Visibility.Collapsed;
+                        MyWindow.GlobalListCopy.Add(cmLine);
+                    }
+                }
+                TreeOperation.Build_Tree(MyWindow.GlobalListCopy, MyWindow.GlobalCopyLine);
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Paste_Risk
+        private ICommand _defaultPaste_RiskCommand;
+
+        public static readonly DependencyProperty Paste_RiskCommandProperty = DependencyProperty.Register("Paste_RiskCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnPaste_RiskCommandChanged), new CoerceValueCallback(CoercePaste_RiskCommandValue)));
+
+        public ICommand Paste_RiskCommand { get { return (ICommand)GetValue(Paste_RiskCommandProperty); } set { SetValue(Paste_RiskCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the Paste_RiskCommand property.
+        /// </summary>
+        private static void OnPaste_RiskCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).Paste_RiskCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the Paste_RiskCommand property.
+        /// </summary>
+        protected virtual void Paste_RiskCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the Paste_RiskCommand value.
+        /// </summary>
+        private static object CoercePaste_RiskCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecutePaste_RiskCommand(object parameter) => this != null;
+
+        private void ExecutePaste_RiskCommand(object parameter)
+        {
+            try
+            {
+                if (MyWindow.COPIANDO)
+                {
+                    GhostWindow win = new GhostWindow("Paste...");
+                    win.ShowDialog();
+                    WindowCopyPasteMoveConfirm wcpc = new WindowCopyPasteMoveConfirm("Do you want to Copy the selected items with all their properties(WBS, damages, probabilities etc.)?");
+                    if (wcpc.ShowDialog() == true)
+                    {
+                        DataSet ImportDSs = Ds.Copy();
+                        DataRow drNewRisk;
+                        RiskPolyLine Line_Created;
+                        switch (wcpc.OptionSelected)
+                        {
+                            case 0:
+                                if (ID_Diagram == (decimal)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(MyWindow.GlobalCopyLine.ID)[DT_Risk.ID_DIAGRAM])
+                                {
+                                    CopyRisk.Father = Line_Selected;
+                                    CopyRisk.Position = Line_Selected.Children.Count - 1;
+                                    drNewRisk = CopyPasteController.KeepAllData(CopyRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), true,
+                                                                                                        ID_Diagram, MyWindow.DsWBS, LinesList);
+                                    //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), DsWBS, false);
+
+                                }
+                                else
+                                {
+                                    decimal ID_DiagramImported = (decimal)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(MyWindow.GlobalCopyLine.ID)[DT_Risk.ID_DIAGRAM];
+                                    if (MyWindow.OpenedDocuments.FindIndex(o => o.ID_Diagram == ID_DiagramImported) >= 0)
+                                    {
+                                        ImportDSs.Merge(MyWindow.OpenedDocuments.Find(o => o.ID_Diagram == ID_DiagramImported).Ds);
+                                    }
+                                    DataRow[] drImportados = ImportDSs.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_DiagramImported);
+                                    CopyPasteController.AddDamageToDiagram(ImportDSs, drImportados, ID_Diagram);
+                                    CopyPasteController.AddImportedDamagesToAllRisk(ImportDSs, drImportados, ID_Diagram, MyWindow.DsWBS);
+                                    drNewRisk = CopyPasteController.KeepAllData(MyWindow.GlobalCopyLine, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
+                                                        true, ID_Diagram, MyWindow.DsWBS, LinesList);
+                                    //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), DsWBS, false);                                    
+                                }
+                                break;
+                            case 1:
+                                if (ID_Diagram == (decimal)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(MyWindow.GlobalCopyLine.ID)[DT_Risk.ID_DIAGRAM])
+                                {
+                                    CopyRisk.Father = Line_Selected;
+                                    CopyRisk.Position = Line_Selected.Children.Count - 1;
+                                    drNewRisk = CopyPasteController.KeepOnlyWBS(CopyRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), true,
+                                                                                                        ID_Diagram, MyWindow.DsWBS, LinesList);
+                                    //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), DsWBS, false);
+
+                                }
+                                else
+                                {
+                                    decimal ID_DiagramImported = (decimal)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(MyWindow.GlobalCopyLine.ID)[DT_Risk.ID_DIAGRAM];
+                                    if (MyWindow.OpenedDocuments.FindIndex(o => o.ID_Diagram == ID_DiagramImported) >= 0)
+                                    {
+                                        ImportDSs.Merge(MyWindow.OpenedDocuments.Find(o => o.ID_Diagram == ID_DiagramImported).Ds);
+                                    }
+                                    DataRow[] drImportados = ImportDSs.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_DiagramImported);
+                                    CopyPasteController.AddDamageToDiagram(ImportDSs, drImportados, ID_Diagram);
+                                    CopyPasteController.AddImportedDamagesToAllRisk(ImportDSs, drImportados, ID_Diagram, MyWindow.DsWBS);
+                                    drNewRisk = CopyPasteController.KeepOnlyWBS(MyWindow.GlobalCopyLine, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
+                                                        true, ID_Diagram, MyWindow.DsWBS, LinesList);
+                                    //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), DsWBS, false);
+                                }
+                                break;
+                            default:
+                                if (ID_Diagram == (decimal)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(MyWindow.GlobalCopyLine.ID)[DT_Risk.ID_DIAGRAM])
+                                {
+                                    CopyRisk.Father = Line_Selected;
+                                    drNewRisk = CopyPasteController.KeepNothing(CopyRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), true,
+                                                            ID_Diagram, MyWindow.DsWBS);
+                                }
+                                else
+                                {
+                                    decimal ID_DiagramImported = (decimal)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(MyWindow.GlobalCopyLine.ID)[DT_Risk.ID_DIAGRAM];
+                                    if (MyWindow.OpenedDocuments.FindIndex(o => o.ID_Diagram == ID_DiagramImported) >= 0)
+                                    {
+                                        ImportDSs.Merge(MyWindow.OpenedDocuments.Find(o => o.ID_Diagram == ID_DiagramImported).Ds);
+                                    }
+                                    MyWindow.GlobalCopyLine.Father = Line_Selected;
+                                    drNewRisk = CopyPasteController.KeepNothing(MyWindow.GlobalCopyLine, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), true,
+                                                        ID_Diagram, MyWindow.DsWBS);
+                                }
+                                break;
+                        }
+                        Ds = ImportDSs;
+                        ImportDSs.Dispose();
+                        Line_Created = new RiskPolyLine
+                        {
+                            ID = (decimal)drNewRisk[DT_Risk.ID],
+                            IsCM = false,
+                            ShortName = "LineCreated",
+                            Father = Line_Selected,
+                            IdRiskFather = Line_Selected.ID
+                        };
+                        InsertRisk(Line_Created, Line_Selected, PointSelected);
+                        MyWindow.GlobalListCopy = new List<RiskPolyLine>();
+                        MyWindow.COPIANDO = false;
+                    }
+                    DropLines();
+                    DropRectangles();
+                    LoadComboDamage();
+                    LoadLines();
+                    LoadRectangles();
+                    DrawNumbers();
+                    SetLinesThickness();
+                    DrawNumbers();
+                    SetLinesThickness();
+                    MyWindow.CrossRiskRightTab(Ds);
+                    MyWindow.CrossCMRightTab(Ds);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region ADD_CM
+        private ICommand _defaultAdd_CMCommand;
+
+        public static readonly DependencyProperty Add_CMCommandProperty = DependencyProperty.Register("Add_CMCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnAdd_CMCommandChanged), new CoerceValueCallback(CoerceAdd_CMCommandValue)));
+
+        public ICommand Add_CMCommand { get { return (ICommand)GetValue(Add_CMCommandProperty); } set { SetValue(Add_CMCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the Add_CMCommand property.
+        /// </summary>
+        private static void OnAdd_CMCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).Add_CMCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the Add_CMCommand property.
+        /// </summary>
+        protected virtual void Add_CMCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the Add_CMCommand value.
+        /// </summary>
+        private static object CoerceAdd_CMCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteAdd_CMCommand(object parameter) => this != null;
+
+        private void ExecuteAdd_CMCommand(object parameter)
+        {
+            try
+            {
+                ShowWindowAddRisk(true);
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+        #endregion
+
+        #region SCOPE_RISK
+        private ICommand _defaultScopeRiskCommand;
+
+        public static readonly DependencyProperty ScopeRiskCommandProperty = DependencyProperty.Register("ScopeRiskCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnScopeRiskCommandChanged), new CoerceValueCallback(CoerceScopeRiskCommandValue)));
+
+        public ICommand ScopeRiskCommand { get { return (ICommand)GetValue(ScopeRiskCommandProperty); } set { SetValue(ScopeRiskCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the ScopeRiskCommand property.
+        /// </summary>
+        private static void OnScopeRiskCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).ScopeRiskCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the ScopeRiskCommand property.
+        /// </summary>
+        protected virtual void ScopeRiskCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the ScopeRiskCommand value.
+        /// </summary>
+        private static object CoerceScopeRiskCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteScopeRiskCommand(object parameter) => this != null;
+
+        private void ExecuteScopeRiskCommand(object parameter)
+        {
+            try
+            {
+                GhostWindow win = new GhostWindow("Scope");
+                win.ShowDialog();
+                IsScoping = true;
+                DropRectangles();
+                ScopeLine = Line_Selected;
+                Scope();
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+        #endregion
+
+        #region IMPORT_PROJECT
+        private ICommand _defaultImportProjectCommand;
+
+        public static readonly DependencyProperty ImportProjectCommandProperty = DependencyProperty.Register("ImportProjectCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnImportProjectCommandChanged), new CoerceValueCallback(CoerceImportProjectCommandValue)));
+
+        public ICommand ImportProjectCommand { get { return (ICommand)GetValue(ImportProjectCommandProperty); } set { SetValue(ImportProjectCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the ImportProjectCommand property.
+        /// </summary>
+        private static void OnImportProjectCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).ImportProjectCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the ImportProjectCommand property.
+        /// </summary>
+        protected virtual void ImportProjectCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the ImportProjectCommand value.
+        /// </summary>
+        private static object CoerceImportProjectCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteImportProjectCommand(object parameter) => this != null;
+
+        private void ExecuteImportProjectCommand(object parameter)
+        {
+            try
+            {
+                decimal ID_DiagramImported = 0;
+
+                WindowSingleSelection frmSelection = new WindowSingleSelection
+                {
+                    Dt = General.DeleteExists(Ds.Tables[DT_Diagram.TABLE_NAME].Copy(),
+                    Ds.Tables[DT_Diagram.TABLE_NAME].Select(DT_Diagram.ID_DIAGRAM + " = " + ID_Diagram).CopyToDataTable(), DT_Diagram.ID_DIAGRAM),
+                    DcolumToShow = new string[] { DT_Diagram.DIAGRAM_NAME },
+                    DcolumToShowAlias = new string[] { DT_Diagram.DIAGRAM_NAME },
+                    Title = "Diagrams"
+                };
+                frmSelection.FilterString = "Diagrams";
+                frmSelection.ColumnToFilter = DT_Diagram.DIAGRAM_NAME;
+                if (frmSelection.ShowDialog() == true)
+                {
+                    WindowCopyPasteMoveConfirm wcpc = new WindowCopyPasteMoveConfirm("Do you want to import the selected diagram with all their properties(WBS, damages, probabilities etc.)?");
+                    if (wcpc.ShowDialog() == true)
+                    {
+                        DataRow drNewRisk;
+                        RiskPolyLine Line_Created;
+                        bool onlyWBSData = false; ;
+                        bool case0and1 = false;
+                        switch (wcpc.OptionSelected)
+                        {
+                            case 0:
+                                onlyWBSData = false;
+                                case0and1 = true;
+                                break;
+                            case 1:
+                                onlyWBSData = true;
+                                case0and1 = true;
+                                break;
+                            default:
+                                DataSet ds = Ds.Copy();
+                                if (MyWindow.OpenedDocuments.FindIndex(o => o.ID_Diagram == (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM]) >= 0)
+                                {
+                                    ds.Merge(MyWindow.OpenedDocuments.Find(o => o.ID_Diagram == (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM]).Ds);
+                                }
+
+                                ListCopy = new List<RiskPolyLine>();
+                                LlenarListaDeCopiaToImport(ds, (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM]);
+                                CopyRisk.Position = LinesList.Find(r => r.ID == (decimal)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.ID]).Children.Count;
+                                drNewRisk = CopyPasteController.KeepNothing(CopyRisk, ds, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), true,
+                                                    ID_Diagram, MyWindow.DsWBS);
+                                Ds = ds;
+                                Line_Created = new RiskPolyLine
+                                {
+                                    ID = (decimal)drNewRisk[DT_Risk.ID],
+                                    IsCM = false,
+                                    ShortName = "LineCreated",
+                                    Father = Line_Selected,
+                                    IdRiskFather = Line_Selected.ID
+                                };
+                                InsertRisk(Line_Created, Line_Selected, PointSelected);
+                                break;
+                        }
+                        if (case0and1)
+                        {
+                            ListCopy = new List<RiskPolyLine>();
+                            ID_DiagramImported = (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM];
+                            DataSet ImportDSs = Ds.Copy();
+                            if (MyWindow.OpenedDocuments.FindIndex(o => o.ID_Diagram == (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM]) >= 0)
+                            {
+                                ImportDSs.Merge(MyWindow.OpenedDocuments.Find(o => o.ID_Diagram == (decimal)frmSelection.RowSelected[DT_Diagram.ID_DIAGRAM]).Ds);
+                            }
+                            LlenarListaDeCopiaToImport(ImportDSs, ID_DiagramImported);
+                            if (!onlyWBSData)
+                            {
+                                DataRow[] drImportados = ImportDSs.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_DiagramImported);
+                                CopyPasteController.AddDamageToDiagram(ImportDSs, drImportados, ID_Diagram);
+                                CopyPasteController.AddImportedDamagesToAllRisk(ImportDSs, drImportados, ID_Diagram, MyWindow.DsWBS);
+                            }
+                            if (onlyWBSData)
+                            {
+                                drNewRisk = CopyPasteController.KeepOnlyWBS(CopyRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), true,
+                                                    ID_Diagram, MyWindow.DsWBS, LinesList);
+                            }
+                            else
+                            {
+                                drNewRisk = CopyPasteController.KeepAllData(CopyRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), true,
+                                                    ID_Diagram, MyWindow.DsWBS, LinesList);
+                            }
+                            //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), DsWBS, false);
+
+                            Ds = ImportDSs;
+                            ImportDSs.Dispose();
+                            Line_Created = new RiskPolyLine
+                            {
+                                ID = (decimal)drNewRisk[DT_Risk.ID],
+                                IsCM = false,
+                                ShortName = "LineCreated",
+                                Father = Line_Selected,
+                                IdRiskFather = Line_Selected.ID
+                            };
+                            InsertRisk(Line_Created, Line_Selected, PointSelected);
+                        }
+                    }
+                    DropLines();
+                    DropRectangles();
+                    LoadComboDamage();
+                    LoadLines();
+                    LoadRectangles();
+                    DrawNumbers();
+                    SetLinesThickness();
+                    DrawNumbers();
+                    SetLinesThickness();
+                    MyWindow.CrossRiskRightTab(Ds);
+                    MyWindow.CrossCMRightTab(Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        public void LlenarListaDeCopiaToImport(DataSet targetDataSet, decimal SelectedDiagram_ID)
+        {
+            ListCopy = new List<RiskPolyLine>();
+            foreach (DataRow item in targetDataSet.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + SelectedDiagram_ID + " and " + DT_Risk.IS_CM + " = 0"))
+            {
+                RiskPolyLine riskLine = new RiskPolyLine(new Grid(), MenuRisk, false)
+                {
+                    ShortName = item[DT_Risk.NAMESHORT].ToString(),
+                    ID = (decimal)item[DT_Risk.ID],
+                    Position = item[DT_Risk.POSITION] == DBNull.Value ? 0 : (int)item[DT_Risk.POSITION],
+                    IsRoot = (bool)item[DT_Risk.IS_ROOT],
+                    Collapsed = (bool)item[DT_Risk.ISCOLLAPSED],
+                    Probability = (decimal)item[DT_Risk.PROBABILITY],
+                    IsCM = false
+                };
+                if (targetDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Contains(item[DT_Risk.ID]))
+                {
+                    if (targetDataSet.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + item[DT_Risk.ID]).Any())
+                    {
+                        riskLine.IdRiskFather = (decimal)targetDataSet.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + item[DT_Risk.ID]).First()[DT_RiskStructure.IDRISK_FATHER];
+                    }
+                }
+                else { riskLine.IdRiskFather = 0; }
+                ListCopy.Add(riskLine);
+            }
+            foreach (DataRow item in targetDataSet.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + SelectedDiagram_ID + " and " + DT_Risk.IS_CM + " = 1"))
+            {
+                RiskPolyLine cmline = new RiskPolyLine(new Grid(), MenuCM, true)
+                {
+                    IsCM = true,
+                    Position = (int)item[DT_Risk.POSITION],
+                    FromTop = false,
+                    ShortName = item[DT_Risk.NAMESHORT].ToString(),
+                    ID = (decimal)item[DT_Risk.ID],
+                    Probability = (decimal)item[DT_Risk.PROBABILITY],
+                    IsActivated = (bool)item[DT_Risk.IS_ACTIVE]
+                };
+                if (targetDataSet.Tables[DT_Risk.TABLE_NAME].Rows.Contains(item[DT_Risk.ID]))
+                {
+                    if (targetDataSet.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + item[DT_Risk.ID]).Any())
+                    {
+                        cmline.IdRiskFather = (decimal)targetDataSet.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + item[DT_Risk.ID]).First()[DT_RiskStructure.IDRISK_FATHER];
+                    }
+                }
+                else { cmline.IdRiskFather = 0; }
+                ListCopy.Add(cmline);
+            }
+            TreeOperation.Build_Tree(ListCopy);
+            CopyRisk = ListCopy.FirstOrDefault(p => p.IsRoot);
+        }
+
+        #endregion
+
+        #region Enable_Risk
+        private ICommand _defaultEnable_RiskCommand;
+
+        public static readonly DependencyProperty Enable_RiskCommandProperty = DependencyProperty.Register("Enable_RiskCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnEnable_RiskCommandChanged), new CoerceValueCallback(CoerceEnable_RiskCommandValue)));
+
+        public ICommand Enable_RiskCommand { get { return (ICommand)GetValue(Enable_RiskCommandProperty); } set { SetValue(Enable_RiskCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the Enable_RiskCommand property.
+        /// </summary>
+        private static void OnEnable_RiskCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).Enable_RiskCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the Enable_RiskCommand property.
+        /// </summary>
+        protected virtual void Enable_RiskCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the Enable_RiskCommand value.
+        /// </summary>
+        private static object CoerceEnable_RiskCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteEnable_RiskCommand(object parameter) => this != null;
+
+        private void ExecuteEnable_RiskCommand(object parameter)
+        {
+            try
+            {
+                bool result = EnableRisk(Line_Selected, false, false);
+                if (result)
+                {
+                    GhostWindow win = new GhostWindow("Enabled");
+                    win.ShowDialog();
+                }
+                else
+                {
+                    GhostWindow win = new GhostWindow("Disabled");
+                    win.ShowDialog();
+                }
+                DrawNumbers();
+                //TextProbabilityChange(TheCurrentLayout.MainLine);
+                SetLinesThickness();
+
+                MyWindow.CrossRiskRightTab(Ds);
+                MyWindow.CrossCMRightTab(Ds);
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Enable/Disable risk
+        /// </summary>
+        /// <param name="Risk"> Risk to Enable/Disable</param>
+        /// <param name="isGroup"> True if risk group, else if individual risk</param>
+        /// <param name="estadoActual"> Risk group state (Enable/Disable)</param>
+        public bool EnableRisk(RiskPolyLine Risk, bool isGroup = false, bool estadoActual = false)
+        {
+            try
+            {
+                bool result = false;
+                bool enabledColumn = (isGroup) ? estadoActual : (bool)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.IS_ACTIVE];
+                if (enabledColumn)
+                {
+                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.IS_ACTIVE] = false;
+                    foreach (DataRow damageRow in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + Risk.ID))
+                    {
+                        damageRow[DT_Risk_Damages.STATUS] = false;
+                    }
+                    (LinesList.Find(item => (item.ID == Risk.ID))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
+                    (LinesList.Find(item => (item.ID == Risk.ID))).IsActivated = false;
+                    foreach (var itemi in Risk.Children)
+                    {
+                        if (itemi.IsCM)
+                        {
+                            itemi.IsActivated = false;
+                            itemi.SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
+                            (LinesList.Find(item => (item.ID == itemi.ID))).SetColor(new SolidColorBrush(Colors.Gray));
+                            (LinesList.Find(item => (item.ID == itemi.ID))).IsActivated = false;
+                            Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(itemi.ID)[DT_Risk.IS_ACTIVE] = false;
+                            foreach (DataRow damageRow in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + itemi.ID))
+                            {
+                                damageRow[DT_Risk_Damages.STATUS] = false;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Risk.ID)[DT_Risk.IS_ACTIVE] = true;
+                    foreach (DataRow damageRow in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + Risk.ID))
+                    {
+                        damageRow[DT_Risk_Damages.STATUS] = true;
+                    }
+                    Color drawingCColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram)[CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
+
+                    (LinesList.Find(item => (item.ID == Risk.ID))).SetColor(new SolidColorBrush(drawingCColor));
+                    (LinesList.Find(item => (item.ID == Risk.ID))).IsActivated = true;
+
+                    foreach (var itemi in Risk.Children)
+                    {
+                        if (itemi.IsCM)
+                        {
+                            DisableCounterMeasure(itemi, true, !LinesListCMState[Convert.ToDecimal(itemi.ID)]);
+                        }
+                    }
+                    result = true;
+                }
+                UpdateLinesValues();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("EnableRisk: " + ex.Message);
+            }
+
+        }
+
+        #endregion
+        #endregion
+
+        #region MENU_CM
+        #region Edit_CM
+        private ICommand _defaultEdit_CMCommand;
+
+        public static readonly DependencyProperty Edit_CMCommandProperty = DependencyProperty.Register("Edit_CMCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnEdit_CMCommandChanged), new CoerceValueCallback(CoerceEdit_CMCommandValue)));
+
+        public ICommand Edit_CMCommand { get { return (ICommand)GetValue(Edit_CMCommandProperty); } set { SetValue(Edit_CMCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the Edit_CMCommand property.
+        /// </summary>
+        private static void OnEdit_CMCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).Edit_CMCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the Edit_CMCommand property.
+        /// </summary>
+        protected virtual void Edit_CMCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the Edit_CMCommand value.
+        /// </summary>
+        private static object CoerceEdit_CMCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteEdit_CMCommand(object parameter) => this != null;
+
+        private void ExecuteEdit_CMCommand(object parameter)
+        {
+            try
+            {
+                if (Line_Selected.IsActivated)
+                {
+                    WindowRisk windowCM = new WindowRisk
+                    {
+                        RiskRow = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
+                        Ds = Ds,
+                        ID_PROJECT = (decimal)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT],
+                        Operation = General.UPDATE,
+                        LOGIN_USER = LoginUser,
+                        Posicion = (int)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.POSITION],
+                        ChildrenLines = TreeOperation.GetOnlyMyChildrenWithCM(Line_Selected),
+                        MyRisks = Ds.Tables[DT_Risk.TABLE_NAME].Copy(),
+                    };
+                    windowCM.HasAccess = FullAccess(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID));
+                    if (Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains(Line_Selected.ID))
+                    {
+                        windowCM.RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.IdRiskFather);
+                    }
+                    windowCM.RiskTreeID = ID_Diagram;
+
+                    if (windowCM.ShowDialog() == true)
+                    {
+                        TreeOperation.SetRiskLineValues(Line_Selected, windowCM.RiskRow);
+                        int pos = LinesList.FindIndex(rl => rl.ID == Line_Selected.ID);
+                        LinesList[pos] = Line_Selected;
+                        DrawNumbers();
+                        UpdateLinesValues();
+                        SetLinesThickness();
+                        MyWindow.CrossRiskRightTab(Ds);
+                        MyWindow.CrossCMRightTab(Ds);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("The object selected is disabled. Please enable it to change this value.", "Ensure Risk Message", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Move_CM
+        private ICommand _defaultMove_CMCommand;
+
+        public static readonly DependencyProperty Move_CMCommandProperty = DependencyProperty.Register("Move_CMCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnMove_CMCommandChanged), new CoerceValueCallback(CoerceMove_CMCommandValue)));
+
+        public ICommand Move_CMCommand { get { return (ICommand)GetValue(Move_CMCommandProperty); } set { SetValue(Move_CMCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the Move_CMCommand property.
+        /// </summary>
+        private static void OnMove_CMCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).Move_CMCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the Move_CMCommand property.
+        /// </summary>
+        protected virtual void Move_CMCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the Move_CMCommand value.
+        /// </summary>
+        private static object CoerceMove_CMCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteMove_CMCommand(object parameter) => this != null;
+
+        private void ExecuteMove_CMCommand(object parameter)
+        {
+            try
+            {
+                MoviendoCM = true;
+                StartMovingLine(Colors.Black);
+                MyWindow.Cursor = Cursors.Hand;
+                GhostWindow win = new GhostWindow("Moving");
+                win.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Enable_CM
+        private ICommand _defaultEnable_CMCommand;
+
+        public static readonly DependencyProperty Enable_CMCommandProperty = DependencyProperty.Register("Enable_CMCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnEnable_CMCommandChanged), new CoerceValueCallback(CoerceEnable_CMCommandValue)));
+
+        public ICommand Enable_CMCommand { get { return (ICommand)GetValue(Enable_CMCommandProperty); } set { SetValue(Enable_CMCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the Enable_CMCommand property.
+        /// </summary>
+        private static void OnEnable_CMCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).Enable_CMCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the Enable_CMCommand property.
+        /// </summary>
+        protected virtual void Enable_CMCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the Enable_CMCommand value.
+        /// </summary>
+        private static object CoerceEnable_CMCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteEnable_CMCommand(object parameter) => this != null;
+
+        private void ExecuteEnable_CMCommand(object parameter)
+        {
+            try
+            {
+                bool result = DisableCounterMeasure(Line_Selected);
+                UpdateLinesValues();
+                DrawNumbers();
+                SetLinesThickness();
+
+                MyWindow.CrossRiskRightTab(Ds);
+                MyWindow.CrossCMRightTab(Ds); 
+                if (result)
+                {
+                    GhostWindow win = new GhostWindow("Enabled");
+                    win.ShowDialog();
+                }
+                else
+                {
+                    if (Line_Selected.Father.IsActivated)
+                    {
+                        GhostWindow win = new GhostWindow("Disabled");
+                        win.ShowDialog();
+                    }
+                    else
+                    {
+                        GhostWindow win = new GhostWindow("No Changes");
+                        win.ShowDialog();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Disable or enable one counter measure.
+        /// </summary>
+        /// <param name="cm_Selected"></param>
+        public bool DisableCounterMeasure(RiskPolyLine cm_Selected, bool isGroup = false, bool estadoActual = false)
+        {
+            try
+            {
+                bool result = false;
+                bool enabledColumn = (isGroup) ? estadoActual : (bool)Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_Risk.IS_ACTIVE];
+                if (enabledColumn)
+                {
+                    Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_Risk.IS_ACTIVE] = false;
+                    foreach (DataRow damageRow in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + cm_Selected.ID))
+                    {
+                        damageRow[DT_Risk_Damages.STATUS] = false;
+                    }
+                    LinesListCMState[Convert.ToDecimal(cm_Selected.ID)] = false;
+                    (LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Gray));
+                    (LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).IsActivated = false;
+                    result = false;
+                }
+                else
+                {
+                    if (cm_Selected.Father.IsActivated) // si el padre esta disabled no habilito cm
+                    {
+                        Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(cm_Selected.ID)[DT_Risk.IS_ACTIVE] = true;
+                        foreach (DataRow damageRow in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + cm_Selected.ID))
+                        {
+                            damageRow[DT_Risk_Damages.STATUS] = true;
+                        }
+                        LinesListCMState[Convert.ToDecimal(cm_Selected.ID)] = true;
+                        (LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).SetColor(new SolidColorBrush(System.Windows.Media.Colors.Black));
+                        (LinesList.Find(item => (item.ID == cm_Selected.ID && item.IsCM))).IsActivated = true;
+                        result = true;
+                    }
+                }
+                UpdateLinesValues();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("DisableCounterMeasure: " + ex.Message);
+            }
+        }
+
+        #endregion
+        #endregion
+
+        #region MENU_GROUP_RISK
+        #region ActiveInactive_Risk
+        private ICommand _defaultActiveInactive_RiskCommand;
+
+        public static readonly DependencyProperty ActiveInactive_RiskCommandProperty = DependencyProperty.Register("ActiveInactive_RiskCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnActiveInactive_RiskCommandChanged), new CoerceValueCallback(CoerceActiveInactive_RiskCommandValue)));
+
+        public ICommand ActiveInactive_RiskCommand { get { return (ICommand)GetValue(ActiveInactive_RiskCommandProperty); } set { SetValue(ActiveInactive_RiskCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the ActiveInactive_RiskCommand property.
+        /// </summary>
+        private static void OnActiveInactive_RiskCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).ActiveInactive_RiskCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the ActiveInactive_RiskCommand property.
+        /// </summary>
+        protected virtual void ActiveInactive_RiskCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the ActiveInactive_RiskCommand value.
+        /// </summary>
+        private static object CoerceActiveInactive_RiskCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteActiveInactive_RiskCommand(object parameter) => this != null;
+
+        private void ExecuteActiveInactive_RiskCommand(object parameter)
+        {
+            try
+            {
+                bool estadoActual = false;
+                var query = from item in RiskGroupSelected
+                            where (bool)item.IsActivated == true
+                            select item;
+                List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
+
+                if (result.Count > 0)
+                {
+                    // si hay al menos una "Enabled" envio true, para desactivarlas todas
+                    estadoActual = true;
+                }
+                else
+                {
+                    estadoActual = false;
+                }
+
+                foreach (RiskPolyLine rpl in RiskGroupSelected)
+                {
+                    EnableRisk(rpl, true, estadoActual);
+                    //rpl.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
+                    rpl.SetColor(new SolidColorBrush(System.Windows.Media.Colors.LightSkyBlue));
+                }
+
+                if (!estadoActual)
+                {
+                    GhostWindow win = new GhostWindow("Enabled");
+                    win.ShowDialog();
+                }
+                else
+                {
+                    GhostWindow win = new GhostWindow("Disabled");
+                    win.ShowDialog();
+                }
+
+                DrawNumbers();
+                SetLinesThickness();
+
+                MyWindow.CrossRiskRightTab(Ds);
+                MyWindow.CrossCMRightTab(Ds);
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+
+        #endregion
+
+        #region AddCMGroupRisk
+        private ICommand _defaultAddCMGroupRiskCommand;
+
+        public static readonly DependencyProperty AddCMGroupRiskCommandProperty = DependencyProperty.Register("AddCMGroupRiskCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnAddCMGroupRiskCommandChanged), new CoerceValueCallback(CoerceAddCMGroupRiskCommandValue)));
+
+        public ICommand AddCMGroupRiskCommand { get { return (ICommand)GetValue(AddCMGroupRiskCommandProperty); } set { SetValue(AddCMGroupRiskCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the AddCMGroupRiskCommand property.
+        /// </summary>
+        private static void OnAddCMGroupRiskCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).AddCMGroupRiskCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the AddCMGroupRiskCommand property.
+        /// </summary>
+        protected virtual void AddCMGroupRiskCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the AddCMGroupRiskCommand value.
+        /// </summary>
+        private static object CoerceAddCMGroupRiskCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteAddCMGroupRiskCommand(object parameter) => this != null;
+
+        private void ExecuteAddCMGroupRiskCommand(object parameter)
+        {
+            try
+            {
+                WindowCMGroup windowCMGroup = new WindowCMGroup()
+                {
+                    DsCM = Ds,
+                    RiskTreeID = ID_Diagram,
+                    MyCM = Ds.Tables[DT_Risk.TABLE_NAME].Copy(),
+                    Probability = new decimal(0),
+                    TopRiskTable = Ds.Tables[DT_Risk_Damages.TABLE_NAME].Clone()
+                };
+                //Roberto: Agrego esto para que cuando la Ventana Cargue, el DataGrid, tenga los valores en 0 para cada Damage
+                foreach (DataRow item in Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
+                {
+                    DataRow rowTop = windowCMGroup.TopRiskTable.NewRow();
+                    rowTop[DT_Risk_Damages.COLOR] = item[DT_Diagram_Damages.COLOR];
+                    rowTop[DT_Risk_Damages.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
+                    rowTop[DT_Risk_Damages.ID_RISK] = -100;
+                    rowTop[DT_Risk_Damages.VALUE] = 0;
+                    rowTop[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
+                    windowCMGroup.TopRiskTable.Rows.Add(rowTop);
+                }
+                if (windowCMGroup.ShowDialog() == true)
+                {
+                    foreach (var itemRisk in RiskGroupSelected)
+                    {
+                        DataRow CMRow = Ds.Tables[DT_Risk.TABLE_NAME].NewRow();
+                        //Roberto: Si capturo un id que va a ser global, lo hago fuera del ciclo para no buscar tanto lo mismo.
+                        DataRow RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(itemRisk.ID);
+                        DataTable TopRiskTable = Ds.Tables[DT_Risk_Damages.TABLE_NAME].Copy();
+                        DataTable CM_RoleTable = Ds.Tables[DT_Role_Risk.TABLE_NAME].Copy();
+                        int Posicion = 0;
+
+                        CMRow[DT_Risk.NAMESHORT] = windowCMGroup.NameShort;
+                        CMRow[DT_Risk.COMMENTS] = windowCMGroup.Detail;
+                        CMRow[DT_Risk.ID_DIAGRAM] = ID_Diagram;
+                        CMRow[DT_Risk.IDRISK_FATHER] = itemRisk.ID;
+                        CMRow[DT_Risk.POSITION] = Posicion + 1;
+                        CMRow[DT_Risk.IS_ACTIVE] = true;
+                        CMRow[DT_Risk.PROBABILITY] = windowCMGroup.Probability;
+
+                        foreach (DataRow item in Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
+                        {
+                            DataRow rowTop = TopRiskTable.NewRow();
+                            rowTop[DT_Risk_Damages.COLOR] = item[DT_Diagram_Damages.COLOR];
+                            rowTop[DT_Risk_Damages.ID_DAMAGE] = item[DT_Diagram_Damages.ID_DAMAGE];
+                            rowTop[DT_Risk_Damages.ID_RISK] = CMRow[DT_Risk.ID];
+                            //Modificado por Roberto: El valor sera 0 porque el dueño ahora decide su valor
+                            rowTop[DT_Risk_Damages.VALUE] = 0;
+                            rowTop[DT_Risk_Damages.TOP_RISK] = item[DT_Diagram_Damages.TOP_RISK];
+                            TopRiskTable.Rows.Add(rowTop);
+                        }
+                        //GIVING FATHER´S ROLE TO CHILD
+                        foreach (DataRow item in Ds.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + itemRisk.ID))
+                        {
+                            DataRow newRow = CM_RoleTable.NewRow();
+                            newRow[DT_Role_Risk.ID_RISK] = CMRow[DT_Risk.ID];
+                            newRow[DT_Role_Risk.Role] = item[DT_Role_Risk.Role];
+                            newRow[DT_Role_Risk.IDROL_COLUMN] = item[DT_Role_Risk.IDROL_COLUMN];
+                            CM_RoleTable.Rows.Add(newRow);
+                        }
+                        foreach (DataRow item in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + itemRisk.ID))
+                        {
+                            DataRow newRow = Ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
+                            newRow[DT_RISK_WBS.ID_RISK] = CMRow[DT_Risk.ID];
+                            newRow[DT_RISK_WBS.ID_WBS] = item[DT_RISK_WBS.ID_WBS];
+                            newRow[DT_RISK_WBS.IS_PRIMARY] = item[DT_RISK_WBS.IS_PRIMARY];
+                            newRow[DT_RISK_WBS.NIVEL] = item[DT_RISK_WBS.NIVEL];
+                            newRow[DT_RISK_WBS.USERNAME] = item[DT_RISK_WBS.USERNAME];
+                            newRow[DT_RISK_WBS.WBS_USER] = item[DT_RISK_WBS.WBS] + "[" + item[DT_RISK_WBS.USERNAME] + "]";
+                            newRow[DT_RISK_WBS.WBS] = item[DT_RISK_WBS.WBS];
+                            Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRow);
+                        }
+                        foreach (DataRow item in Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + itemRisk.ID))
+                        {
+                            DataRow newRow = Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
+                            newRow[DT_WBS_RISK_DAMAGE.ID_RISK] = CMRow[DT_Risk.ID];
+                            newRow[DT_WBS_RISK_DAMAGE.DAMAGE] = item[DT_WBS_RISK_DAMAGE.DAMAGE];
+                            newRow[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = item[DT_WBS_RISK_DAMAGE.ID_DAMAGE];
+                            newRow[DT_WBS_RISK_DAMAGE.ID_WBS] = item[DT_WBS_RISK_DAMAGE.ID_WBS];
+                            newRow[DT_WBS_RISK_DAMAGE.VALUE] = 0;
+                            newRow[DT_WBS_RISK_DAMAGE.WBS] = item[DT_WBS_RISK_DAMAGE.WBS];
+                            newRow[DT_WBS_RISK_DAMAGE.WBS_USER] = item[DT_WBS_RISK_DAMAGE.WBS_USER];
+                            Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(newRow);
+                        }
+                        Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(CMRow);
+                        Ds.Tables[DT_Risk_Damages.TABLE_NAME].Merge(TopRiskTable);
+                        Ds.Tables[DT_Role_Risk.TABLE_NAME].Merge(CM_RoleTable);
+
+                        RiskPolyLine Line_Created = new RiskPolyLine
+                        {
+                            ID = (decimal)CMRow[DT_Risk.ID],
+                            IsCM = true,
+                            ShortName = "LineCreated",
+                            Father = itemRisk,
+                            IdRiskFather = itemRisk.ID
+                        };
+
+                        InsertCM(Line_Created, itemRisk, itemRisk.MyMinXPoint());
+                    }
+
+                    ResetGroupRiksSelection();
+                    DropLines();
+                    DropRectangles();
+                    LoadLines();
+                    LoadRectangles();
+                    DrawNumbers();
+                    SetLinesThickness();
+
+                    MyWindow.CrossRiskRightTab(Ds);
+                    MyWindow.CrossCMRightTab(Ds);
+                    MyWindow.UpdateGroupTab(Ds);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+
+        #endregion
+
+        #region GroupingGroupRisk
+        private ICommand _defaultGroupingGroupRiskCommand;
+
+        public static readonly DependencyProperty GroupingGroupRiskCommandProperty = DependencyProperty.Register("GroupingGroupRiskCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnGroupingGroupRiskCommandChanged), new CoerceValueCallback(CoerceGroupingGroupRiskCommandValue)));
+
+        public ICommand GroupingGroupRiskCommand { get { return (ICommand)GetValue(GroupingGroupRiskCommandProperty); } set { SetValue(GroupingGroupRiskCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the GroupingGroupRiskCommand property.
+        /// </summary>
+        private static void OnGroupingGroupRiskCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).GroupingGroupRiskCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the GroupingGroupRiskCommand property.
+        /// </summary>
+        protected virtual void GroupingGroupRiskCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the GroupingGroupRiskCommand value.
+        /// </summary>
+        private static object CoerceGroupingGroupRiskCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteGroupingGroupRiskCommand(object parameter) => this != null;
+
+        private void ExecuteGroupingGroupRiskCommand(object parameter)
+        {
+            try
+            {
+                WindowGroupe wg = new WindowGroupe
+                {
+                    DT_Groups = Ds.Tables[DT_Groupe.TABLE_NAME].Copy()
+                };
+                wg.ShowDialog();
+                if (wg.DialogResult == true)
+                {
+                    if (wg.IdGroup == -100)
+                    {
+                        DataRow drGroup = Ds.Tables[DT_Groupe.TABLE_NAME].NewRow();
+                        drGroup[DT_Groupe.GROUPE_NAME] = wg.GroupName;
+                        Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Add(drGroup);
+                        foreach (var item in RiskGroupSelected)
+                        {
+                            Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.ID_GROUPE] = drGroup[DT_Groupe.ID_GROUPE];
+                            Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.GROUPE_NAME] = drGroup[DT_Groupe.GROUPE_NAME];
+                        }
+                        foreach (var item in RiskGroupSelected)
+                        {
+                            item.Group.IdGroup = (decimal)drGroup[DT_Groupe.ID_GROUPE];
+                            item.Group.GroupName = drGroup[DT_Groupe.GROUPE_NAME].ToString();
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in RiskGroupSelected)
+                        {
+                            Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.ID_GROUPE] = wg.IdGroup;
+                            Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.GROUPE_NAME] = wg.GroupName;
+                        }
+                        foreach (var item in RiskGroupSelected)
+                        {
+                            item.Group.IdGroup = wg.IdGroup;
+                            item.Group.GroupName = wg.GroupName;
+                        }
+                    }
+                    MyWindow.CrossRiskRightTab(Ds);//Esta Linea estaba, la borre al integrar
+                }
+                MyWindow.UpdateGroupTab(Ds);
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+
+        #endregion
+        #endregion
+
+        #region MENU_GROUP_CM
+        #region ActiveInactive_CM
+        private ICommand _defaultActiveInactive_CMCommand;
+
+        public static readonly DependencyProperty ActiveInactive_CMCommandProperty = DependencyProperty.Register("ActiveInactive_CMCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnActiveInactive_CMCommandChanged), new CoerceValueCallback(CoerceActiveInactive_CMCommandValue)));
+
+        public ICommand ActiveInactive_CMCommand { get { return (ICommand)GetValue(ActiveInactive_CMCommandProperty); } set { SetValue(ActiveInactive_CMCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the ActiveInactive_CMCommand property.
+        /// </summary>
+        private static void OnActiveInactive_CMCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).ActiveInactive_CMCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the ActiveInactive_CMCommand property.
+        /// </summary>
+        protected virtual void ActiveInactive_CMCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the ActiveInactive_CMCommand value.
+        /// </summary>
+        private static object CoerceActiveInactive_CMCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteActiveInactive_CMCommand(object parameter) => this != null;
+
+        private void ExecuteActiveInactive_CMCommand(object parameter)
+        {
+            try
+            {
+                bool estadoActual = false;
+                var query = from item in CMGroupSelected
+                            where (bool)item.IsActivated == true
+                            select item;
+                List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
+
+                if (result.Count > 0)
+                {
+                    // si hay al menos una "Enabled" envio true, para desactivarlas todas
+                    estadoActual = true;
+                }
+                else
+                {
+                    estadoActual = false;
+                }
+
+                foreach (var cmline in CMGroupSelected)
+                {
+                    DisableCounterMeasure(cmline, true, estadoActual);
+                    //cmline.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
+                    cmline.SetColor(new SolidColorBrush(System.Windows.Media.Colors.LightSkyBlue));
+                }
+                if (!estadoActual)
+                {
+                    GhostWindow win = new GhostWindow("Enabled");
+                    win.ShowDialog();
+                }
+                else
+                {
+                    GhostWindow win = new GhostWindow("Disabled");
+                    win.ShowDialog();
+                }
+
+                DrawNumbers();
+                SetLinesThickness();
+
+                MyWindow.CrossRiskRightTab(Ds);
+                MyWindow.CrossCMRightTab(Ds); 
+                MyWindow.UpdateGroupTab(Ds);
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+
+        #endregion
+
+        #region DelCMGroupCM
+        private ICommand _defaultDelCMGroupCMCommand;
+
+        public static readonly DependencyProperty DelCMGroupCMCommandProperty = DependencyProperty.Register("DelCMGroupCMCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnDelCMGroupCMCommandChanged), new CoerceValueCallback(CoerceDelCMGroupCMCommandValue)));
+
+        public ICommand DelCMGroupCMCommand { get { return (ICommand)GetValue(DelCMGroupCMCommandProperty); } set { SetValue(DelCMGroupCMCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the DelCMGroupCMCommand property.
+        /// </summary>
+        private static void OnDelCMGroupCMCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).DelCMGroupCMCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the DelCMGroupCMCommand property.
+        /// </summary>
+        protected virtual void DelCMGroupCMCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the DelCMGroupCMCommand value.
+        /// </summary>
+        private static object CoerceDelCMGroupCMCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteDelCMGroupCMCommand(object parameter) => this != null;
+
+        private void ExecuteDelCMGroupCMCommand(object parameter)
+        {
+            try
+            {
+                if (CMGroupSelected.Count > 0)
+                {
+                    MyWindow.MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " selected countermeasure?");
+                    MyWindow.IS_DELETING_GROUP_CM = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+
+        #endregion
+
+        #region GroupingGroupCM
+        private ICommand _defaultGroupingGroupCMCommand;
+
+        public static readonly DependencyProperty GroupingGroupCMCommandProperty = DependencyProperty.Register("GroupingGroupCMCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnGroupingGroupCMCommandChanged), new CoerceValueCallback(CoerceGroupingGroupCMCommandValue)));
+
+        public ICommand GroupingGroupCMCommand { get { return (ICommand)GetValue(GroupingGroupCMCommandProperty); } set { SetValue(GroupingGroupCMCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the GroupingGroupCMCommand property.
+        /// </summary>
+        private static void OnGroupingGroupCMCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).GroupingGroupCMCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the GroupingGroupCMCommand property.
+        /// </summary>
+        protected virtual void GroupingGroupCMCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the GroupingGroupCMCommand value.
+        /// </summary>
+        private static object CoerceGroupingGroupCMCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteGroupingGroupCMCommand(object parameter) => this != null;
+
+        private void ExecuteGroupingGroupCMCommand(object parameter)
+        {
+            try
+            {
+                WindowGroupe wg = new WindowGroupe()
+                {
+                    DT_Groups = Ds.Tables[DT_Groupe.TABLE_NAME].Copy()
+                };
+                wg.ShowDialog();
+                if (wg.DialogResult == true)
+                {
+                    if (wg.IdGroup == -100)
+                    {
+                        DataRow drGroup = Ds.Tables[DT_Groupe.TABLE_NAME].NewRow();
+                        drGroup[DT_Groupe.GROUPE_NAME] = wg.GroupName;
+                        Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Add(drGroup);
+                        foreach (var item in CMGroupSelected)
+                        {
+                            Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.ID_GROUPE] = drGroup[DT_Groupe.ID_GROUPE];
+                            Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.GROUPE_NAME] = drGroup[DT_Groupe.GROUPE_NAME];
+                        }
+                        foreach (var item in CMGroupSelected)
+                        {
+                            item.Group.IdGroup = (decimal)drGroup[DT_Groupe.ID_GROUPE];
+                            item.Group.GroupName = drGroup[DT_Groupe.GROUPE_NAME].ToString();
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in CMGroupSelected)
+                        {
+                            Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.ID_GROUPE] = wg.IdGroup;
+                            Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.GROUPE_NAME] = wg.GroupName;
+                        }
+                        foreach (var item in CMGroupSelected)
+                        {
+                            item.Group.IdGroup = wg.IdGroup;
+                            item.Group.GroupName = wg.GroupName;
+                        }
+                    }
+                }
+                MyWindow.UpdateGroupTab(Ds);
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+
+        #endregion
+        #endregion
+
+        #region MENU_GROUP_MIXED
+        #region ActiveInactive_Mixed
+        private ICommand _defaultActiveInactive_MixedCommand;
+
+        public static readonly DependencyProperty ActiveInactive_MixedCommandProperty = DependencyProperty.Register("ActiveInactive_MixedCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnActiveInactive_MixedCommandChanged), new CoerceValueCallback(CoerceActiveInactive_MixedCommandValue)));
+
+        public ICommand ActiveInactive_MixedCommand { get { return (ICommand)GetValue(ActiveInactive_MixedCommandProperty); } set { SetValue(ActiveInactive_MixedCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the ActiveInactive_MixedCommand property.
+        /// </summary>
+        private static void OnActiveInactive_MixedCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).ActiveInactive_MixedCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the ActiveInactive_MixedCommand property.
+        /// </summary>
+        protected virtual void ActiveInactive_MixedCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the ActiveInactive_MixedCommand value.
+        /// </summary>
+        private static object CoerceActiveInactive_MixedCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteActiveInactive_MixedCommand(object parameter) => this != null;
+
+        private void ExecuteActiveInactive_MixedCommand(object parameter)
+        {
+            try
+            {
+                bool estadoActual = false;
+                var query = from item in RiskGroupSelected
+                            where (bool)item.IsActivated == true
+                            select item;
+                List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
+
+                var queryCM = from item in CMGroupSelected
+                              where (bool)item.IsActivated == true
+                              select item;
+                List<RiskPolyLine> resultCM = queryCM.ToList<RiskPolyLine>();
+
+                if (result.Count > 0 || resultCM.Count > 0)
+                {
+                    // si hay al menos una "Enabled" envio true, para desactivarlas todas
+                    estadoActual = true;
+                }
+                else
+                {
+                    estadoActual = false;
+                }
+
+                foreach (RiskPolyLine rpl in RiskGroupSelected)
+                {
+                    EnableRisk(rpl, true, estadoActual);
+                    //rpl.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
+                    rpl.SetColor(new SolidColorBrush(System.Windows.Media.Colors.LightSkyBlue));
+                }
+                foreach (var cmline in CMGroupSelected)
+                {
+                    DisableCounterMeasure(cmline, true, estadoActual);
+                    //cmline.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
+                    cmline.SetColor(new SolidColorBrush(System.Windows.Media.Colors.LightSkyBlue));
+                }
+                if (!estadoActual)
+                {
+                    GhostWindow win = new GhostWindow("Enabled");
+                    win.ShowDialog();
+                }
+                else
+                {
+                    GhostWindow win = new GhostWindow("Disabled");
+                    win.ShowDialog();
+                }
+
+                DrawNumbers();
+                SetLinesThickness();
+
+                MyWindow.CrossRiskRightTab(Ds);
+                MyWindow.CrossCMRightTab(Ds); 
+                MyWindow.UpdateGroupTab(Ds);
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+
+        #endregion
+
+        #region GroupingGroup_Mixed
+        private ICommand _defaultGroupingGroup_MixedCommand;
+
+        public static readonly DependencyProperty GroupingGroup_MixedCommandProperty = DependencyProperty.Register("GroupingGroup_MixedCommand", typeof(ICommand), typeof(MyLayoutDocumentt),
+        new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnGroupingGroup_MixedCommandChanged), new CoerceValueCallback(CoerceGroupingGroup_MixedCommandValue)));
+
+        public ICommand GroupingGroup_MixedCommand { get { return (ICommand)GetValue(GroupingGroup_MixedCommandProperty); } set { SetValue(GroupingGroup_MixedCommandProperty, value); } }
+
+        /// <summary>
+        /// Handles changes to the GroupingGroup_MixedCommand property.
+        /// </summary>
+        private static void OnGroupingGroup_MixedCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MyLayoutDocumentt)d).GroupingGroup_MixedCommandChanged(e);
+
+        /// <summary>
+        /// Provides derived classes an opportunity to handle changes to the GroupingGroup_MixedCommand property.
+        /// </summary>
+        protected virtual void GroupingGroup_MixedCommandChanged(DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Coerces the GroupingGroup_MixedCommand value.
+        /// </summary>
+        private static object CoerceGroupingGroup_MixedCommandValue(DependencyObject d, object value) => value;
+
+        private bool CanExecuteGroupingGroup_MixedCommand(object parameter) => this != null;
+
+        private void ExecuteGroupingGroup_MixedCommand(object parameter)
+        {
+            try
+            {
+                WindowGroupe wg = new WindowGroupe()
+                {
+                    DT_Groups = Ds.Tables[DT_Groupe.TABLE_NAME].Copy()
+                };
+                wg.ShowDialog();
+                if (wg.DialogResult == true)
+                {
+                    if (wg.IdGroup == -100)
+                    {
+                        DataRow drGroup = NewGroup(wg.GroupName);
+                        GroupRiskDataTableUpdate((decimal)drGroup[DT_Groupe.ID_GROUPE], wg.GroupName);
+                        GroupCounterMeasureDataTableUpdate((decimal)drGroup[DT_Groupe.ID_GROUPE], wg.GroupName);
+                        GroupRiskPolyLineUpdate(RiskGroupSelected, (decimal)drGroup[DT_Groupe.ID_GROUPE], wg.GroupName);
+                        GroupRiskPolyLineUpdate(CMGroupSelected, (decimal)drGroup[DT_Groupe.ID_GROUPE], wg.GroupName);
+                    }
+                    else
+                    {
+                        GroupRiskDataTableUpdate(wg.IdGroup, wg.GroupName);
+                        GroupCounterMeasureDataTableUpdate(wg.IdGroup, wg.GroupName);
+                        GroupRiskPolyLineUpdate(RiskGroupSelected, wg.IdGroup, wg.GroupName);
+                        GroupRiskPolyLineUpdate(CMGroupSelected, wg.IdGroup, wg.GroupName);
+                    }
+                }
+                MyWindow.UpdateGroupTab(Ds);
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+        //GHT:Adicionando para agrupar Mixto
+        /// <summary>
+        /// Create a new Group. A group can contain risks, counter measures or both
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <returns></returns>
+        private DataRow NewGroup(string groupName)
+        {
+            DataRow drGroup = Ds.Tables[DT_Groupe.TABLE_NAME].NewRow();
+            drGroup[DT_Groupe.GROUPE_NAME] = groupName;
+            Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Add(drGroup);
+            return drGroup;
+        }
+
+        //GHT:Adicionando para agrupar Mixto
+        /// <summary>
+        /// Update group owner for every risk selected
+        /// </summary>
+        /// <param name="idGroup">Group owner id</param>
+        /// <param name="groupName">Group owner name</param>
+        private void GroupRiskDataTableUpdate(decimal idGroup, string groupName)
+        {
+            foreach (var item in RiskGroupSelected)
+            {
+                Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.ID_GROUPE] = idGroup;
+                Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.GROUPE_NAME] = groupName;
+            }
+        }
+
+        //GHT:Adicionando para agrupar Mixto
+        /// <summary>
+        /// Update group owner for every counter measure selected
+        /// </summary>
+        /// <param name="idGroup">Group owner id</param>
+        /// <param name="groupName">Group owner name</param>
+        private void GroupCounterMeasureDataTableUpdate(decimal idGroup, string groupName)
+        {
+            foreach (var item in CMGroupSelected)
+            {
+                Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.ID_GROUPE] = idGroup;
+                Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(item.ID)[DT_Risk.GROUPE_NAME] = groupName;
+            }
+        }
+
+        //GHT:Adicionando para agrupar Mixto
+        /// <summary>
+        /// Update group owner for every riskpolyline instance selected
+        /// </summary>
+        /// <param name="riskPolyLineToUptate">RiskPolyLine list to update</param>
+        /// <param name="idGroup"></param>
+        /// <param name="groupName"></param>
+        private void GroupRiskPolyLineUpdate(List<RiskPolyLine> riskPolyLineToUptate, decimal idGroup, string groupName)
+        {
+            foreach (var rplToUpdate in riskPolyLineToUptate)
+            {
+                rplToUpdate.Group.IdGroup = idGroup;
+                rplToUpdate.Group.GroupName = groupName;
+            }
+        }
+
+        #endregion
+        #endregion
+
+
         #endregion
         /// <summary>
         /// Initializes a new instance of the MyLayoutDocumentt class
@@ -141,48 +2097,146 @@ namespace EnsureRisk.Classess
             MiniMapGHT.DataContext = this;
             MiniMapGHT.MapSource = this.ScrollGridPaint;
             GridPaintLines.DataContext = this;
+            BtnUndoneScope.DataContext = this;
+            IsScoping = false;
+            InitCommands();
+            ClearCommandBindings();
+            SetCommandBindings();
+        }
+
+        private void InitCommands()
+        {
+            _defaultAddRiskCommand = new RelayyCommand((p) => ExecuteAddRiskCommand(p), (p) => CanExecuteAddRiskCommand(p));
+            _defaultEditRiskCommand = new RelayyCommand((p) => ExecuteEditRiskCommand(p), (p) => CanExecuteEditRiskCommand(p));
+            _defaultDeleteRiskCommand = new RelayyCommand((p) => ExecuteDeleteRiskCommand(p), (p) => CanExecuteDeleteRiskCommand(p));
+            _defaultMoveRiskCommand = new RelayyCommand((p) => ExecuteMoveRiskCommand(p), (p) => CanExecuteMoveRiskCommand(p));
+
+            _defaultCopy_RiskCommand = new RelayyCommand((p) => ExecuteCopy_RiskCommand(p), (p) => CanExecuteCopy_RiskCommand(p));
+
+            _defaultPaste_RiskCommand = new RelayyCommand((p) => ExecutePaste_RiskCommand(p), (p) => CanExecutePaste_RiskCommand(p));
+
+            _defaultAdd_CMCommand = new RelayyCommand((p) => ExecuteAdd_CMCommand(p), (p) => CanExecuteAdd_CMCommand(p));
+            _defaultEdit_CMCommand = new RelayyCommand((p) => ExecuteEdit_CMCommand(p), (p) => CanExecuteEdit_CMCommand(p));
+            _defaultMove_CMCommand = new RelayyCommand((p) => ExecuteMove_CMCommand(p), (p) => CanExecuteMove_CMCommand(p));
+            _defaultEnable_CMCommand = new RelayyCommand((p) => ExecuteEnable_CMCommand(p), (p) => CanExecuteEnable_CMCommand(p));
+
+            _defaultScopeRiskCommand = new RelayyCommand((p) => ExecuteScopeRiskCommand(p), (p) => CanExecuteScopeRiskCommand(p));
+            _defaultImportProjectCommand = new RelayyCommand((p) => ExecuteImportProjectCommand(p), (p) => CanExecuteImportProjectCommand(p));
+            _defaultEnable_RiskCommand = new RelayyCommand((p) => ExecuteEnable_RiskCommand(p), (p) => CanExecuteEnable_RiskCommand(p));
+
+            _defaultActiveInactive_RiskCommand = new RelayyCommand((p) => ExecuteActiveInactive_RiskCommand(p), (p) => CanExecuteActiveInactive_RiskCommand(p));
+            _defaultAddCMGroupRiskCommand = new RelayyCommand((p) => ExecuteAddCMGroupRiskCommand(p), (p) => CanExecuteAddCMGroupRiskCommand(p));
+            _defaultGroupingGroupRiskCommand = new RelayyCommand((p) => ExecuteGroupingGroupRiskCommand(p), (p) => CanExecuteGroupingGroupRiskCommand(p));
+
+            _defaultActiveInactive_CMCommand = new RelayyCommand((p) => ExecuteActiveInactive_CMCommand(p), (p) => CanExecuteActiveInactive_CMCommand(p));
+            _defaultDelCMGroupCMCommand = new RelayyCommand((p) => ExecuteDelCMGroupCMCommand(p), (p) => CanExecuteDelCMGroupCMCommand(p));
+            _defaultGroupingGroupCMCommand = new RelayyCommand((p) => ExecuteGroupingGroupCMCommand(p), (p) => CanExecuteGroupingGroupCMCommand(p));
+
+            _defaultActiveInactive_MixedCommand = new RelayyCommand((p) => ExecuteActiveInactive_MixedCommand(p), (p) => CanExecuteActiveInactive_MixedCommand(p));
+            _defaultGroupingGroup_MixedCommand = new RelayyCommand((p) => ExecuteGroupingGroup_MixedCommand(p), (p) => CanExecuteGroupingGroup_MixedCommand(p));
+        }
+
+        private void SetCommandBindings()
+        {
+            if (AddRiskCommand == null)
+                AddRiskCommand = _defaultAddRiskCommand;
+            if (EditRiskCommand == null)
+                EditRiskCommand = _defaultEditRiskCommand;
+            if (DeleteRiskCommand == null)
+                DeleteRiskCommand = _defaultDeleteRiskCommand;
+            if (MoveRiskCommand == null)
+                MoveRiskCommand = _defaultMoveRiskCommand;
+            if (Copy_RiskCommand == null)
+                Copy_RiskCommand = _defaultCopy_RiskCommand;
+            if (Paste_RiskCommand == null)
+                Paste_RiskCommand = _defaultPaste_RiskCommand;
+            if (Add_CMCommand == null)
+                Add_CMCommand = _defaultAdd_CMCommand;
+            if (Edit_CMCommand == null)
+                Edit_CMCommand = _defaultEdit_CMCommand;
+            if (Move_CMCommand == null)
+                Move_CMCommand = _defaultMove_CMCommand;
+            if (Enable_CMCommand == null)
+                Enable_CMCommand = _defaultEnable_CMCommand;
+            if (ScopeRiskCommand == null)
+                ScopeRiskCommand = _defaultScopeRiskCommand;
+            if (ImportProjectCommand == null)
+                ImportProjectCommand = _defaultImportProjectCommand;
+            if (Enable_RiskCommand == null)
+                Enable_RiskCommand = _defaultEnable_RiskCommand;
+
+            if (ActiveInactive_RiskCommand == null)
+                ActiveInactive_RiskCommand = _defaultActiveInactive_RiskCommand;
+            if (AddCMGroupRiskCommand == null)
+                AddCMGroupRiskCommand = _defaultAddCMGroupRiskCommand;
+            if (GroupingGroupRiskCommand == null)
+                GroupingGroupRiskCommand = _defaultGroupingGroupRiskCommand;
+
+            if (ActiveInactive_CMCommand == null)
+                ActiveInactive_CMCommand = _defaultActiveInactive_CMCommand;
+            if (DelCMGroupCMCommand == null)
+                DelCMGroupCMCommand = _defaultDelCMGroupCMCommand;
+            if (GroupingGroupCMCommand == null)
+                GroupingGroupCMCommand = _defaultGroupingGroupCMCommand;
+
+            if (ActiveInactive_MixedCommand == null)
+                ActiveInactive_MixedCommand = _defaultActiveInactive_MixedCommand;
+            if (GroupingGroup_MixedCommand == null)
+                GroupingGroup_MixedCommand = _defaultGroupingGroup_MixedCommand;
+        }
+
+        private void ClearCommandBindings()
+        {
+            if (AddRiskCommand == _defaultAddRiskCommand)
+                BindingOperations.ClearBinding(this, AddRiskCommandProperty);
+            if (EditRiskCommand == _defaultEditRiskCommand)
+                BindingOperations.ClearBinding(this, EditRiskCommandProperty);
+            if (DeleteRiskCommand == _defaultDeleteRiskCommand)
+                BindingOperations.ClearBinding(this, DeleteRiskCommandProperty);
+            if (MoveRiskCommand == _defaultMoveRiskCommand)
+                BindingOperations.ClearBinding(this, MoveRiskCommandProperty); 
+            if (Copy_RiskCommand == _defaultCopy_RiskCommand)
+                BindingOperations.ClearBinding(this, Copy_RiskCommandProperty); 
+            if (Paste_RiskCommand == _defaultPaste_RiskCommand)
+                BindingOperations.ClearBinding(this, Paste_RiskCommandProperty);
+            if (Add_CMCommand == _defaultAdd_CMCommand)
+                BindingOperations.ClearBinding(this, Add_CMCommandProperty);
+            if (Edit_CMCommand == _defaultEdit_CMCommand)
+                BindingOperations.ClearBinding(this, Edit_CMCommandProperty);
+            if (Move_CMCommand == _defaultMove_CMCommand)
+                BindingOperations.ClearBinding(this, Move_CMCommandProperty);
+            if (Enable_CMCommand == _defaultEnable_CMCommand)
+                BindingOperations.ClearBinding(this, Enable_CMCommandProperty);
+            if (ScopeRiskCommand == _defaultScopeRiskCommand)
+                BindingOperations.ClearBinding(this, ScopeRiskCommandProperty);
+            if (ImportProjectCommand == _defaultImportProjectCommand)
+                BindingOperations.ClearBinding(this, ImportProjectCommandProperty);
+            if (Enable_RiskCommand == _defaultEnable_RiskCommand)
+                BindingOperations.ClearBinding(this, Enable_RiskCommandProperty);
+            if (ActiveInactive_RiskCommand == _defaultActiveInactive_RiskCommand)
+                BindingOperations.ClearBinding(this, ActiveInactive_RiskCommandProperty);
+            if (AddCMGroupRiskCommand == _defaultAddCMGroupRiskCommand)
+                BindingOperations.ClearBinding(this, AddCMGroupRiskCommandProperty);
+            if (GroupingGroupRiskCommand == _defaultGroupingGroupRiskCommand)
+                BindingOperations.ClearBinding(this, GroupingGroupRiskCommandProperty);
+
+            if (ActiveInactive_CMCommand == _defaultActiveInactive_CMCommand)
+                BindingOperations.ClearBinding(this, ActiveInactive_CMCommandProperty);
+            if (DelCMGroupCMCommand == _defaultDelCMGroupCMCommand)
+                BindingOperations.ClearBinding(this, DelCMGroupCMCommandProperty);
+            if (GroupingGroupCMCommand == _defaultGroupingGroupCMCommand)
+                BindingOperations.ClearBinding(this, GroupingGroupCMCommandProperty);
+
+            if (ActiveInactive_MixedCommand == _defaultActiveInactive_MixedCommand)
+                BindingOperations.ClearBinding(this, ActiveInactive_MixedCommandProperty);
+            if (GroupingGroup_MixedCommand == _defaultGroupingGroup_MixedCommand)
+                BindingOperations.ClearBinding(this, GroupingGroup_MixedCommandProperty);
         }
 
 
         public void MostrarYesNo(string text)
         {
             ((MainWindow)MyWindow).MostrarDialogYesNo(text);
-        }
-
-        private void MyLayoutDocument_Closed(object sender, EventArgs e)
-        {
-            try
-            {
-                if (exportToExcelWorker.IsBusy && exportToExcelWorker.WorkerSupportsCancellation)
-                {
-                    exportToExcelWorker.CancelAsync();
-                }
-                if (SaveAsClosing)
-                {
-                    if (Ds.HasChanges())
-                    {
-                        if (new WindowMessageYesNo("Do you want to save the changes on [" + this.Title + "]").ShowDialog() == true)
-                        {
-                            ((MainWindow)MyWindow).SaveData(Ds, true);
-                        }
-                        else
-                        {
-                            Ds.RejectChanges();
-                        }
-                    }
-                }
-                if (((MainWindow)MyWindow).OpenedDocuments.Contains(this))
-                {
-                    ((MainWindow)MyWindow).OpenedDocuments.Remove(this);
-                }
-                ((MainWindow)MyWindow).ShowRiskData = false;
-                ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear();
-                ((MainWindow)MyWindow).DV_Cross_CM.Table.Clear();
-            }
-            catch (Exception ex)
-            {
-                MostrarDialog(ex.Message);
-            }
         }
 
         public void MostrarPopWindow(Point pointToShow, string lineName, string probability, string value, string acumDamage, string acumValue, string EL, string totalAcumDamage)
@@ -220,7 +2274,6 @@ namespace EnsureRisk.Classess
             MyPopCMWindow.Visibility = Visibility.Collapsed;
         }
 
-        //TODO: Documentar
         public void Scope()
         {
             if (IsScoping)
@@ -253,7 +2306,7 @@ namespace EnsureRisk.Classess
                     //((MainWindow)MyWindow).TextDiagram.Text = LinesList.Find(x => x.ID == ScopeLine.ID).ShortName;
                     LinesList.Find(x => x.ID == ScopeLine.ID).ExtrasVisibility(Visibility.Hidden);
 
-                    BtnUndoneScope.Visibility = Visibility.Visible;
+                    //BtnUndoneScope.Visibility = Visibility.Visible;
                 }
                 catch (Exception ex)
                 {
@@ -281,7 +2334,7 @@ namespace EnsureRisk.Classess
             try
             {
                 bool haspermission = false;
-                DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + linea.ID.ToString());
+                DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + linea.ID.ToString());
 
                 foreach (DataRow itemii in dr)
                 {
@@ -826,7 +2879,7 @@ namespace EnsureRisk.Classess
         {
             foreach (DataRow cm in Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + ID_Diagram + " AND " + DT_Risk.IS_CM + " = 1"))
             {
-                DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + cm[DT_Risk.ID].ToString());
+                DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + cm[DT_Risk.ID].ToString());
                 bool haspermission = false;
                 foreach (DataRow itemii in dr)
                 {
@@ -907,7 +2960,7 @@ namespace EnsureRisk.Classess
             {
                 if (!((bool)risk[DT_Risk.IS_ROOT]))
                 {
-                    DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + risk[DT_Risk.ID].ToString());
+                    DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + risk[DT_Risk.ID].ToString());
                     bool haspermission = false;
                     foreach (DataRow itemii in dr)
                     {
@@ -1514,7 +3567,7 @@ namespace EnsureRisk.Classess
                 {
                     Line_Selected = ((LabelPolyLine)sender).Line;
                 }
-                DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + Line_Selected.ID);
+                DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + Line_Selected.ID);
                 bool haspermission = false;
                 foreach (DataRow item in dr)
                 {
@@ -1691,6 +3744,7 @@ namespace EnsureRisk.Classess
                                 Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.ID_GROUPE] = GroupSelected.IdGroup;
                                 Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.GROUPE_NAME] = GroupSelected.GroupName;
                                 LinesList.Find(x => x.ID == Line_Selected.ID).Group = GroupSelected;
+                                MyWindow.UpdateGroupTab(Ds);
                                 UpdateDataGridRiskAndGridCM();
                             }
                         }
@@ -1845,7 +3899,7 @@ namespace EnsureRisk.Classess
                 PointSelected = e.GetPosition(GridPaintLines);
                 //p.LSelected = Line_Selected.ShortName;
                 //p.TSelected = Line_Selected.IsCM ? "CounterMeasure" : "Risk";
-                DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + ID_Sender);
+                DataRow[] dr = Ds.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + ID_Sender);
                 bool haspermission = false;
                 foreach (DataRow item in dr)
                 {
@@ -2083,6 +4137,7 @@ namespace EnsureRisk.Classess
                                     Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID)[DT_Risk.GROUPE_NAME] = GroupSelected.GroupName;
                                     LinesList.Find(x => x.ID == Line_Selected.ID).Group = GroupSelected;
                                     RiskGroupSelected.Add(Line_Selected);
+                                    MyWindow.UpdateGroupTab(Ds);
                                     UpdateDataGridRiskAndGridCM();
                                 }
                             }
@@ -2750,40 +4805,7 @@ namespace EnsureRisk.Classess
                         SelectOneRisk(sender, e, ID_Sender);
                         if (!(Line_Created.IsCM))
                         {
-                            WindowRisk wrisk = new WindowRisk()
-                            {
-                                RiskRow = Ds.Tables[DT_Risk.TABLE_NAME].NewRow(),
-                                Ds = Ds,
-                                LOGIN_USER = LoginUser,
-                                ID_PROJECT = (decimal)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT],
-                                Operation = General.INSERT,
-                                RowFather = Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
-                                RiskTreeID = ID_Diagram,
-                                RiskSelected = Line_Selected,
-                                MyRisks = Ds.Tables[DT_Risk.TABLE_NAME].Copy()
-                            };
-                            wrisk.HasAccess = true;
-                            wrisk.RiskRow[DT_Risk.IS_CM] = false;
-                            if (wrisk.ShowDialog() == true)
-                            {
-                                RiskPolyLine Line_Created = new RiskPolyLine
-                                {
-                                    ID = (decimal)wrisk.RiskRow[DT_Risk.ID],
-                                    IsCM = false,
-                                    ShortName = "LineCreated",
-                                    Father = Line_Selected,
-                                    IdRiskFather = Line_Selected.ID
-                                };
-                                InsertRisk(Line_Created, Line_Selected, PointSelected);
-
-                                DropLines();
-                                DropRectangles();
-                                LoadLines();
-                                LoadRectangles();
-                                DrawNumbers();
-                                SetLinesThickness();
-                                ((MainWindow)MyWindow).CrossRiskRightTab(Ds);
-                            }
+                            ShowWindowAddRisk(false);
                         }
                         else
                         {
@@ -3579,11 +5601,11 @@ namespace EnsureRisk.Classess
                         foreach (var item in ((MainWindow)MyWindow).OpenedDocuments)
                         {
                             item.ExitWorking();
-                        }
-                        this.EnterWorking();
+                        } 
                         ((MainWindow)MyWindow).IdWBSFilter = -1;
                         ((MainWindow)MyWindow).ShowRiskData = false;
                         UpdateDataGridRiskAndGridCM();
+                        this.EnterWorking();                       
                     }
                 }
             }
@@ -3603,7 +5625,6 @@ namespace EnsureRisk.Classess
                 LoadLines();
                 LoadRectangles();
                 DrawNumbers();
-                BtnUndoneScope.Visibility = Visibility.Hidden;
                 Title = Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.DIAGRAM_NAME].ToString();
                 SetLinesThickness();
             }
@@ -3655,10 +5676,6 @@ namespace EnsureRisk.Classess
                     }
                     UpdateLinesValues();
                     SetLinesThickness();
-
-                    //IdDamageSelected
-                    //Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected)
-                    //Rectangle r = Rectangles.Select(DT_Risk_Damages.ID_DAMAGE + " = " + IdDamageSelected).First();
 
                     MoveElementsInArray(Rectangles, Rectangles.Count, index);
                     ReLoadRectangles();
@@ -3988,9 +6005,10 @@ namespace EnsureRisk.Classess
                 RectangleGeometry myRectangleGeometry, viewPortRectangleGeometry;
                 Path myPath;
 
-                viewPortRectangleGeometry = new RectangleGeometry();
-
-                viewPortRectangleGeometry.Rect = new Rect(0.0, 0.0, ScrollGridPaint.ViewportWidth - 3, ScrollGridPaint.ViewportHeight - 3);
+                viewPortRectangleGeometry = new RectangleGeometry
+                {
+                    Rect = new Rect(0.0, 0.0, ScrollGridPaint.ViewportWidth - 3, ScrollGridPaint.ViewportHeight - 3)
+                };
 
                 Console.WriteLine("====En el ViewPort estan====");
 
@@ -3998,15 +6016,18 @@ namespace EnsureRisk.Classess
 
                 foreach (RiskPolyLine polyLine in LinesList)
                 {
-                    myRectangleGeometry = new RectangleGeometry();
+                    myRectangleGeometry = new RectangleGeometry
+                    {
+                        Rect = polyLine.Bounds(ScrollGridPaint)
+                    };
 
-                    myRectangleGeometry.Rect = polyLine.Bounds(ScrollGridPaint);
-
-                    myPath = new Path();
-                    myPath.Fill = System.Windows.Media.Brushes.Transparent;
-                    myPath.Stroke = System.Windows.Media.Brushes.Blue;
-                    myPath.StrokeThickness = 1;
-                    myPath.Data = myRectangleGeometry;
+                    myPath = new Path
+                    {
+                        Fill = System.Windows.Media.Brushes.Transparent,
+                        Stroke = System.Windows.Media.Brushes.Blue,
+                        StrokeThickness = 1,
+                        Data = myRectangleGeometry
+                    };
                     polyLine.MyContainer.Children.Add(myPath);
 
                     if (viewPortRectangleGeometry.Rect.IntersectsWith(myRectangleGeometry.Rect))
@@ -4016,12 +6037,14 @@ namespace EnsureRisk.Classess
                     }
                 }
 
-                myPath = new Path();
-                myPath.Fill = System.Windows.Media.Brushes.Transparent;
-                myPath.Stroke = System.Windows.Media.Brushes.Green;
-                myPath.StrokeThickness = 1;
+                myPath = new Path
+                {
+                    Fill = System.Windows.Media.Brushes.Transparent,
+                    Stroke = System.Windows.Media.Brushes.Green,
+                    StrokeThickness = 1,
 
-                myPath.Data = viewPortRectangleGeometry;
+                    Data = viewPortRectangleGeometry
+                };
 
                 LinesList[0].MyContainer.Children.Add(myPath);
 
@@ -4035,9 +6058,10 @@ namespace EnsureRisk.Classess
                     }
                 }
 
-                List<RiskPolyLine> polyLinesToUpdateThickness = new List<RiskPolyLine>();
-
-                polyLinesToUpdateThickness.Add(MainLine);
+                List<RiskPolyLine> polyLinesToUpdateThickness = new List<RiskPolyLine>
+                {
+                    MainLine
+                };
                 foreach (RiskPolyLine polyLine in polyLinesBaseOwner)
                 {
                     polyLinesToUpdateThickness.AddRange(polyLine.GetChilds());
@@ -4194,9 +6218,10 @@ namespace EnsureRisk.Classess
                     }
                 }
 
-                List<RiskPolyLine> polyLinesToUpdateThickness = new List<RiskPolyLine>();
-
-                polyLinesToUpdateThickness.Add(MainLine);
+                List<RiskPolyLine> polyLinesToUpdateThickness = new List<RiskPolyLine>
+                {
+                    MainLine
+                };
                 foreach (RiskPolyLine polyLine in polyLinesBaseOwner)
                 {
                     polyLinesToUpdateThickness.AddRange(polyLine.GetChilds());
@@ -4277,6 +6302,46 @@ namespace EnsureRisk.Classess
                 }
             }
             riskPolyLine.UpdateSegmentsStrokeThickness(min, max);
+        }
+
+        private void MyLayoutDocument_Closed(object sender, CancelEventArgs e)
+        {
+            try
+            {
+                if (exportToExcelWorker.IsBusy && exportToExcelWorker.WorkerSupportsCancellation)
+                {
+                    exportToExcelWorker.CancelAsync();
+                }
+                if (SaveAsClosing)
+                {
+                    if (Ds.HasChanges())
+                    {
+                        if (new WindowMessageYesNo("Do you want to save the changes on [" + this.Title + "]").ShowDialog() == true)
+                        {
+                            MyWindow.SaveData(Ds, true);
+                        }
+                        else
+                        {
+                            Ds.RejectChanges();
+                        }
+                    }
+                }
+                if (((MainWindow)MyWindow).OpenedDocuments.Contains(this))
+                {
+                    ((MainWindow)MyWindow).OpenedDocuments.Remove(this);
+                }
+                ((MainWindow)MyWindow).ShowRiskData = false;
+                ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear();
+                ((MainWindow)MyWindow).DV_Cross_CM.Table.Clear();
+                if (!((MainWindow)MyWindow).OpenedDocuments.Any())
+                {
+                    ((MainWindow)MyWindow).TheCurrentLayout = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
         }
     }
 }

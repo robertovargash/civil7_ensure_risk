@@ -66,9 +66,9 @@ namespace EnsureRisk.Windows
                 password = General.Encrypt(TextPasword.Password);
                 UserDataSet ds = new UserDataSet();
                 ds.Merge(GetAccess());
-                if (ds.Tables[DT_User.User_TABLA].Rows.Count != 0)
+                if (ds.Tables[DT_User.TABLE_NAME].Rows.Count != 0)
                 {
-                    Usser = ds.Tables[DT_User.User_TABLA].Rows[0][DT_User.USERNAME].ToString();
+                    Usser = ds.Tables[DT_User.TABLE_NAME].Rows[0][DT_User.USERNAME].ToString();
                     this.DialogResult = true;
                     foreach (DataRow item in ds.Tables[DT_User_Operation.TABLE_NAME].Rows)
                     {

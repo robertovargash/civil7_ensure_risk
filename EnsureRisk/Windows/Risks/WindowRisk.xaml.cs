@@ -107,6 +107,8 @@ namespace EnsureRisk.Windows
         {
             try
             {
+                //TODO: 11-EXPLICAR LA HERENCIA DE LOS WBS DE PADRE A HIJOS (EN RIESGOS Y CMs), COMO CADA UNO LE PASA SUS WBS A SU HIJO
+                //ADEMAS DE LAS DUDAS QUE AUN PERSISTEN EN CUANTO A, QUE PASA SI UN RISK PADRE PIERDE UN WBS, SU RISK HIJO TAMBIEN LO PIERDE?
                 IsCM = (bool)RiskRow[DT_Risk.IS_CM];
                 ServiceWBS.WebServiceWBS wsWBS = new ServiceWBS.WebServiceWBS();
                 dsWBS = wsWBS.GetAllWBSFiltered(new object[] { ID_PROJECT }).Copy();
@@ -153,7 +155,7 @@ namespace EnsureRisk.Windows
                     TextFather.Text = RowFather[DT_Risk.NAMESHORT].ToString();
                 }
                 RiskName.Focus();
-                DvRoleRisk = Ds.Tables[DT_Role_Risk.TABLENAME].DefaultView;
+                DvRoleRisk = Ds.Tables[DT_Role_Risk.TABLE_NAME].DefaultView;
                 //DvRoleRisk = Ds.Tables[DT_Role_Risk.TABLENAME].DefaultView;
 
                 dgRoles.ItemsSource = DvRoleRisk;
@@ -165,19 +167,13 @@ namespace EnsureRisk.Windows
                 //DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
                 DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
 
-                //if (HasAccess)
-                //{
-                //    DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
-                //}
-                //else
-                //{
-                //    DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " AND " + DT_RISK_WBS.USERNAME + " = '" + LOGIN_USER + "'";
-                //}
+
 
                 DvTopRisk = Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].DefaultView;
-                //DvTopRisk = Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].DefaultView;
                 dgTopRisk.ItemsSource = DvTopRisk;
-                //DvTopRisk.RowFilter = DT_WBS_RISK_DAMAGE.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + ID_USER_WBS;
+
+                //TODO 14- AQUI ESTA EL FILTRO, SI EL USUARIO NO ES WBS MAS BAJITO EN EL RISK, NO TENDRA NINGUNA ROW EN ESTA TABLA
+                //POR LO QUE NO APARECERA NADA, TAL Y COMO HEMOS VISTO EN LOS EJEMPLOS.
                 DvTopRisk.RowFilter = DT_WBS_RISK_DAMAGE.ID_RISK + " = " + RiskRow[DT_Risk.ID];
                 if (dsWBS.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.USERNAME + " = '" + LOGIN_USER + "'").Any())
                 {
@@ -244,13 +240,13 @@ namespace EnsureRisk.Windows
         {
             if (RiskSelected != null)
             {
-                foreach (DataRow item in Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + RiskSelected.ID))
+                foreach (DataRow item in Ds.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + RiskSelected.ID))
                 {
-                    DataRow newRow = Ds.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                    DataRow newRow = Ds.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                     newRow[DT_Role_Risk.ID_RISK] = RiskRow[DT_Risk.ID];
                     newRow[DT_Role_Risk.Role] = item[DT_Role_Risk.Role];
                     newRow[DT_Role_Risk.IDROL_COLUMN] = item[DT_Role_Risk.IDROL_COLUMN];
-                    Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Add(newRow);
+                    Ds.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(newRow);
                 }
             }
         }
@@ -323,6 +319,10 @@ namespace EnsureRisk.Windows
         /// </summary>
         private void CompleteRiskWBSTable(bool hasWBS)
         {
+            //TODO: 12-LA IMPORTANCIA DE ESTE METODO ES EN CASO DE ERROR DEL SISTEMA, DE NO HEREDAR LOS WBS DEL PADRE
+            //AL MENOS HEREDA EL WBS QUE ESTA MAS AL TOP, PUES AL MENOS GARANTIZA QUE EL SUPER MANAGER DEL PROYECTO TENGA ACCESO
+            //DE LO CONTRARIO SE CREARIA UN RISK, QUE NADIE PODRIA ACCEDER A EL LUEGO, NI SIQUIERA ELIMINANDOLO, SOLO POR DENTRO DE LA BD
+            //COSA QUE SE HACE EN UNA EMPRESA QUE CONOCEMOS BIEN
             foreach (var item in WBSOperations.GetTopWBS(dsWBS))
             {
                 if (!(Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { RiskRow[DT_Risk.ID], item[DT_WBS.ID_WBS] })))
@@ -357,6 +357,9 @@ namespace EnsureRisk.Windows
         /// </summary>
         private void SetTableRisk_WBS_Damage(DataRow riskWBS)
         {
+            //TODO: 13-Y AQUI ES DONDE SE HACE LA MAGIA DE LOS VALORES DE LOS DAMAGE,
+            //SIEMPRE SE VALIDA QUE SEA EL WBS MAS BAJITO EN EL RISK, 
+            //IR AHORA AL todo 14 PARA VER EL FILTRO
             if (WBSOperations.IsRiskWBSLow(riskWBS, dsWBS, Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
             {
                 //AddWBS_Risk_Damage((decimal)RiskRow[DT_Risk.ID], riskWBS);
@@ -369,12 +372,13 @@ namespace EnsureRisk.Windows
             }
         }
 
-        //TODO: AQUI LA PROBABILIDAD
         /// <summary>
         /// Calculate the probability using an average with the WBS of the risk. just takes the lowest levels WBS
         /// </summary>
         private void CalculateProbability()
         {
+            //TODO: 6-AQUI Y EN LA VENTANA RISK ES DONDE SE VALIDA EL TEMA DE LA PROBABILIDAD
+            //PRIMERO VA A LA CLASE STATIC DE "WBSOperations" Y RESUELVE ESE PROBLEMA, LUEGO SE LO ASIGNA AL RIESGO PARA QUE SE ACTUALICE EL TEXTBOX DE LA PROBABILIDAD
             try
             {
                 Probability = WBSOperations.RiskWBSValidations(RiskRow, Ds, LOGIN_USER, dsWBS, hasAccess, IsCM);                
@@ -405,9 +409,9 @@ namespace EnsureRisk.Windows
                 DataTable roleCodif = ws.GetRolesData().Tables[DT_Role.ROLE_TABLE].Copy();
                 ws.Dispose();
                 WindowSelection frmSelection = new WindowSelection();
-                if (Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + (decimal)RiskRow[DT_Risk.ID]).Count() > 0)
+                if (Ds.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + (decimal)RiskRow[DT_Risk.ID]).Count() > 0)
                 {
-                    frmSelection.Dt = General.DeleteExists(roleCodif, Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + (decimal)RiskRow[DT_Risk.ID]).CopyToDataTable(), DT_Role.IDROL_COLUMN);
+                    frmSelection.Dt = General.DeleteExists(roleCodif, Ds.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + (decimal)RiskRow[DT_Risk.ID]).CopyToDataTable(), DT_Role.IDROL_COLUMN);
                 }
                 else
                 {
@@ -423,24 +427,24 @@ namespace EnsureRisk.Windows
                 {
                     foreach (DataRow itemRole in frmSelection.RowsSelected)
                     {
-                        DataRow drRole = Ds.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                        DataRow drRole = Ds.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                         drRole[DT_Role_Risk.ID_RISK] = RiskRow[DT_Risk.ID];
                         drRole[DT_Role_Risk.NAME_SHORT] = RiskName.Text;
                         drRole[DT_Role_Risk.Role] = itemRole[DT_Role.ROLE_COLUM];
                         drRole[DT_Role_Risk.IDROL_COLUMN] = itemRole[DT_Role.IDROL_COLUMN];
-                        Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRole);
+                        Ds.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(drRole);
                         if (Operation == General.UPDATE)
                         {
                             foreach (var item in ChildrenLines)
                             {
-                                if (!(Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { item.ID, itemRole[DT_Role.IDROL_COLUMN] })))
+                                if (!(Ds.Tables[DT_Role_Risk.TABLE_NAME].Rows.Contains(new object[] { item.ID, itemRole[DT_Role.IDROL_COLUMN] })))
                                 {
-                                    DataRow drRoleRisk = Ds.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                                    DataRow drRoleRisk = Ds.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                                     drRoleRisk[DT_Role_Risk.ID_RISK] = item.ID;
                                     drRoleRisk[DT_Role_Risk.NAME_SHORT] = item.ShortName;
                                     drRoleRisk[DT_Role_Risk.Role] = itemRole[DT_Role.ROLE_COLUM];
                                     drRoleRisk[DT_Role_Risk.IDROL_COLUMN] = itemRole[DT_Role.IDROL_COLUMN];
-                                    Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRoleRisk);
+                                    Ds.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(drRoleRisk);
                                 }
                             }
                         }
@@ -461,9 +465,9 @@ namespace EnsureRisk.Windows
                 {
                     foreach (var item in ChildrenLines)
                     {
-                        if (Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }))
+                        if (Ds.Tables[DT_Role_Risk.TABLE_NAME].Rows.Contains(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }))
                         {
-                            Ds.Tables[DT_Role_Risk.TABLENAME].Rows.Find(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }).Delete();
+                            Ds.Tables[DT_Role_Risk.TABLE_NAME].Rows.Find(new object[] { item.ID, fila[DT_Role.IDROL_COLUMN] }).Delete();
                         }
                     }
                 }
@@ -498,6 +502,9 @@ namespace EnsureRisk.Windows
         {
             try
             {
+                //TODO 15- TAMBIEN EXPLICAR LA BRUJERIA QUE SUPONE AGREGAR UN NUEVO WBS,
+                //TENER EN CUENTA QUE SI EL WBS AGREGADO ES EL UNICO BAJITO, CAMBIA TODO, ABSOLUTAMENTE TODO!!!!!!!!
+                //HASTA AQUI LAS CLASES, SOLO MUESTRA LOS BINDING EN EL XAML
                 ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS();
                 DataTable wbsCodif = ws.GetAllWBSFiltered(new object[] { ID_PROJECT }).Tables[DT_WBS.TABLE_NAME].Copy();
                 ws.Dispose();
@@ -869,7 +876,7 @@ namespace EnsureRisk.Windows
             resultStack.Children.Clear();
 
             // Add the result   
-            foreach (DataRow obj in Ds.Tables[DT_DefaulRisk.Risk_TABLA].Rows)
+            foreach (DataRow obj in Ds.Tables[DT_DefaulRisk.TABLE_NAME].Rows)
             {
                 if (obj[DT_DefaulRisk.RISK_NAME_COLUMNA].ToString().ToLower().StartsWith(query.ToLower()))
                 {
@@ -1028,7 +1035,7 @@ namespace EnsureRisk.Windows
                 {
                     rowRisk_WBS_Damage.Delete();
                 }
-                foreach (DataRow rowRisk_Role in Ds.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+                foreach (DataRow rowRisk_Role in Ds.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
                 {
                     rowRisk_Role.Delete();
                 }

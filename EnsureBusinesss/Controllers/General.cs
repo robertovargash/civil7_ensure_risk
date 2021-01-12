@@ -213,7 +213,6 @@ namespace EnsureBusinesss
             return Versioned.IsNumeric(number);
         }
 
-        //TODO: GUSTAVO
         public static void UpdateLinesThickness(List<RiskPolyLine> linesList)
         {
             decimal min = 0;

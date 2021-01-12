@@ -25,18 +25,18 @@ namespace EnsureRiskWS
 
             DataSet dsTemp = new DataSet();
             DataRow rowUsuario = null;
-            SQLAccessBuilder adUsuario = new SQLAccessBuilder(DT_User.User_TABLA);
+            SQLAccessBuilder adUsuario = new SQLAccessBuilder(DT_User.TABLE_NAME);
             //Dim adSesiones As New AD.SQLAccesoDatosUnica(SesionesDatos.SESIONES_TABLA)
 
             tempValidarUsuario = string.Empty;
             try
             {
-                string[] tables = { DT_User.User_TABLA, DT_Role.ROLE_TABLE };
+                string[] tables = { DT_User.TABLE_NAME, DT_Role.ROLE_TABLE };
                 adUsuario.GetDataset(ref dsTemp, "pa_ValidateFullUser", new object[] { usuario, contrasena });
                 dsTemp.Tables[1].TableName = DT_Role.ROLE_TABLE;
                 dsTemp.Tables[2].TableName = DT_User_Operation.TABLE_NAME;
                 dsConfiguracion.Merge(dsTemp);
-                DataTable dtUsuarios = dsConfiguracion.Tables[DT_User.User_TABLA];
+                DataTable dtUsuarios = dsConfiguracion.Tables[DT_User.TABLE_NAME];
                 if (dtUsuarios.Rows.Count == 0)
                 {
                     return "";

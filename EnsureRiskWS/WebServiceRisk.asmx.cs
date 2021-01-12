@@ -33,10 +33,10 @@ namespace EnsureRiskWS
                     ds.Tables[4].TableName = DT_Risk_Damages.TABLE_NAME;
                     ds.Tables[5].TableName = DT_RISK_WBS.TABLE_NAME;
                     ds.Tables[6].TableName = DT_WBS_RISK_DAMAGE.TABLE_NAME;
-                    ds.Tables[7].TableName = DT_Role_Risk.TABLENAME;
+                    ds.Tables[7].TableName = DT_Role_Risk.TABLE_NAME;
                     ds.Tables[8].TableName = DT_User_Role.TABLE_NAME;
                     ds.Tables[9].TableName = DT_Role.ROLE_TABLE;
-                    ds.Tables[10].TableName = DT_DefaulRisk.Risk_TABLA;
+                    ds.Tables[10].TableName = DT_DefaulRisk.TABLE_NAME;
                     ds.Tables[11].TableName = DT_Groupe.TABLE_NAME;
                     userds.Merge(ds);
                     return userds;
@@ -55,7 +55,7 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_DefaulRisk.Risk_TABLA);
+                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_DefaulRisk.TABLE_NAME);
                 SQL.GetDataset(ref ds, "pa_SelectDefaultRisk");
                 userds.Merge(ds);
                 return userds;
@@ -83,8 +83,8 @@ namespace EnsureRiskWS
                 SQLAccessBuilder risk_WBSDA = new SQLAccessBuilder(trans, ds.Tables[DT_RISK_WBS.TABLE_NAME].TableName, ds.Tables[DT_RISK_WBS.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder riskDA = new SQLAccessBuilder(trans, ds.Tables[DT_Risk.TABLE_NAME].TableName, ds.Tables[DT_Risk.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder riskStructDA = new SQLAccessBuilder(trans, ds.Tables[DT_RiskStructure.TABLE_NAME].TableName, ds.Tables[DT_RiskStructure.TABLE_NAME].PrimaryKey);
-                SQLAccessBuilder roleriskDA = new SQLAccessBuilder(trans, ds.Tables[DT_Role_Risk.TABLENAME].TableName, ds.Tables[DT_Role_Risk.TABLENAME].PrimaryKey);
-                SQLAccessBuilder defaultRiskDA = new SQLAccessBuilder(trans, ds.Tables[DT_DefaulRisk.Risk_TABLA].TableName, ds.Tables[DT_DefaulRisk.Risk_TABLA].PrimaryKey);
+                SQLAccessBuilder roleriskDA = new SQLAccessBuilder(trans, ds.Tables[DT_Role_Risk.TABLE_NAME].TableName, ds.Tables[DT_Role_Risk.TABLE_NAME].PrimaryKey);
+                SQLAccessBuilder defaultRiskDA = new SQLAccessBuilder(trans, ds.Tables[DT_DefaulRisk.TABLE_NAME].TableName, ds.Tables[DT_DefaulRisk.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder groupeDA = new SQLAccessBuilder(trans, ds.Tables[DT_Groupe.TABLE_NAME].TableName, ds.Tables[DT_Groupe.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder wbsriskdamageDA = new SQLAccessBuilder(trans, ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].TableName, ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].PrimaryKey);
 
@@ -160,10 +160,10 @@ namespace EnsureRiskWS
                     ds.Tables[4].TableName = DT_Risk_Damages.TABLE_NAME;
                     ds.Tables[5].TableName = DT_RISK_WBS.TABLE_NAME;
                     ds.Tables[6].TableName = DT_WBS_RISK_DAMAGE.TABLE_NAME;
-                    ds.Tables[7].TableName = DT_Role_Risk.TABLENAME;
+                    ds.Tables[7].TableName = DT_Role_Risk.TABLE_NAME;
                     ds.Tables[8].TableName = DT_User_Role.TABLE_NAME;
                     ds.Tables[9].TableName = DT_Role.ROLE_TABLE;
-                    ds.Tables[10].TableName = DT_DefaulRisk.Risk_TABLA;
+                    ds.Tables[10].TableName = DT_DefaulRisk.TABLE_NAME;
                     ds.Tables[11].TableName = DT_Groupe.TABLE_NAME;
                     userds.Merge(ds);
                     return userds;

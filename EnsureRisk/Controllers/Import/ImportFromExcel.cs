@@ -534,12 +534,12 @@ namespace EnsureRisk.Controllers.Import
         /// </summary>
         public void AsignRoleAdminToLine(DataSet dsImporting, DataRow drRisk)
         {
-            if (!(dsImporting.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], 101 })))
+            if (!(dsImporting.Tables[DT_Role_Risk.TABLE_NAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], 101 })))
             {
-                DataRow drRiskRole = dsImporting.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                DataRow drRiskRole = dsImporting.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                 drRiskRole[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
                 drRiskRole[DT_Role_Risk.IDROL_COLUMN] = 101;
-                dsImporting.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRiskRole);
+                dsImporting.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(drRiskRole);
             }
         }
 

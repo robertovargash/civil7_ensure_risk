@@ -31,6 +31,7 @@ namespace EnsureRisk.Windows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
+        //TODO: 02-EXPLICAR A GUSTAVO LOS HIJOS DE LA HERENCIA
 
         public WindowWBSChild()
         {
@@ -50,7 +51,7 @@ namespace EnsureRisk.Windows
         {
             using (ServiceUserController.WebServiceUser wsu = new ServiceUserController.WebServiceUser())
             {
-                DtUsuarios = wsu.GetUserData().Tables[DT_User.User_TABLA].Copy();
+                DtUsuarios = wsu.GetUserData().Tables[DT_User.TABLE_NAME].Copy();
             }            
         }
 

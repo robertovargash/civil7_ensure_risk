@@ -7,6 +7,7 @@ using System.Linq;
 
 namespace EnsureBusinesss
 {
+    //TODO: EXPLICAR EL MONDONGUERO ESTE
     public class CopyPasteController
     {
         #region Copy&Paste/Move/Import_WithSourceData
@@ -73,6 +74,7 @@ namespace EnsureBusinesss
         public static void SetOriginalAndNewDamagesCopiedRisk(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drRiskCreated, decimal ID_Diagram)
         {
             //TODOS LOS DAMAGES DEL DIAGRAM SOURCE
+            //segunda nota: TENGO QUE IR AL SOURCE PARA SABER EL VALOR QUE TENIA ORIGINALMENTE.
             foreach (DataRow oldRiskDamage in targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + sourceRisk.ID))
             {
                 if (!(targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { drRiskCreated[DT_Risk.ID], oldRiskDamage[DT_Risk_Damages.ID_DAMAGE] })))
@@ -109,6 +111,7 @@ namespace EnsureBusinesss
                 }
             }
             //LOS DAMAGES DEL DIAGRAM TARGET
+            //segunda nota, LUEGO DE RECORRER EL SOURCE, CON LOS NUEVOS DAMAGES SE ESTABLECE EL VALUE EN 0
             foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
             {
                 //EVALUO QUE NO ESTE YA PARA NO SOBREEESCRIBIR 
@@ -246,6 +249,9 @@ namespace EnsureBusinesss
         /// <param name="ID_Diagram">ID of the Current Diagram</param>
         public static void SetDamageNewCopiedRiskInCero(DataSet targetDataset, DataRow drRiskCopied, decimal ID_Diagram)
         {
+            //A DIFERENCIA DEL METODO "SetOriginalAndNewDamagesCopiedRisk", NO NECESITO HACER 2 RECORRIDOS ENTRE SOURCE Y TARGET,
+            //PORQUE ANTES DE LLAMAR AL METODO PADRE A ESTE, SE LLAMA A UN METODO QUE AGREGA AL DIAGRAMA LOS DAMAGES QUE LE CORRESPONDEN
+            //O SEA, LOS SEL TARGET Y SOURCE, Y COMO LOS VALORES SON POR DEFECTOS, PUES SE HACE EL RECORRIDO UNA VEZ
             foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
             {
                 if (!(targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { drRiskCopied[DT_Risk.ID], diagramDamages[DT_Diagram_Damages.ID_DAMAGE] })))
@@ -272,69 +278,6 @@ namespace EnsureBusinesss
                     drRiskDamage[DT_Risk_Damages.USERNAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drRiskCopied[DT_Risk.IDRISK_FATHER])[DT_Risk.USER_NAME];
                     drRiskDamage[DT_Risk_Damages.VALUE] = 0;
                     drRiskDamage[DT_Risk_Damages.WBS_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drRiskCopied[DT_Risk.IDRISK_FATHER])[DT_Risk.WBS_NAME];
-                    targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Add(drRiskDamage);
-                }
-            }
-        }
-
-        public static void SetOriginalAndNewDamagesCopiedRiskInCero(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drRiskCreated, decimal ID_Diagram)
-        {
-            //TODOS LOS DAMAGES DEL DIAGRAM SOURCE
-            foreach (DataRow oldRiskDamage in targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + sourceRisk.ID))
-            {
-                if (!(targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { drRiskCreated[DT_Risk.ID], oldRiskDamage[DT_Risk_Damages.ID_DAMAGE] })))
-                {
-                    DataRow drRiskDamage = targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].NewRow();
-                    drRiskDamage[DT_Risk_Damages.COLOR] = targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Find(new object[] { ID_Diagram, oldRiskDamage[DT_Risk_Damages.ID_DAMAGE] })[DT_Diagram_Damages.COLOR];
-                    drRiskDamage[DT_Risk_Damages.DAMAGE] = targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Find(new object[] { ID_Diagram, oldRiskDamage[DT_Risk_Damages.ID_DAMAGE] })[DT_Diagram_Damages.DAMAGE]; ;
-                    drRiskDamage[DT_Risk_Damages.FATHER] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drRiskCreated[DT_Risk.IDRISK_FATHER])[DT_Risk.NAMESHORT];
-                    drRiskDamage[DT_Risk_Damages.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.GROUPE_NAME];
-                    drRiskDamage[DT_Risk_Damages.ID_DAMAGE] = oldRiskDamage[DT_Risk_Damages.ID_DAMAGE];
-                    drRiskDamage[DT_Risk_Damages.ID_FATHER] = drRiskCreated[DT_Risk.IDRISK_FATHER];
-                    drRiskDamage[DT_Risk_Damages.ID_GROUPE] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_GROUPE];
-                    drRiskDamage[DT_Risk_Damages.ID_RISK] = drRiskCreated[DT_Risk.ID];
-                    drRiskDamage[DT_Risk_Damages.ID_RISK_TREE] = ID_Diagram;
-                    drRiskDamage[DT_Risk_Damages.ID_WBS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_WBS];
-                    drRiskDamage[DT_Risk_Damages.IS_ROOT] = false;
-                    drRiskDamage[DT_Risk_Damages.PROBABILITY] = sourceRisk.IsCM ? 0 : 100;
-                    drRiskDamage[DT_Risk_Damages.RISK_NAMESHORT] = sourceRisk.ShortName;
-                    drRiskDamage[DT_Risk_Damages.RISK_TREE] = targetDataset.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.DIAGRAM_NAME];
-                    drRiskDamage[DT_Risk_Damages.STATUS] = true;
-                    drRiskDamage[DT_Risk_Damages.TOP_RISK] = oldRiskDamage[DT_Risk_Damages.TOP_RISK];
-                    drRiskDamage[DT_Risk_Damages.USERNAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drRiskCreated[DT_Risk.IDRISK_FATHER])[DT_Risk.USER_NAME];
-
-                    drRiskDamage[DT_Risk_Damages.VALUE] = 0;
-
-                    drRiskDamage[DT_Risk_Damages.WBS_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drRiskCreated[DT_Risk.IDRISK_FATHER])[DT_Risk.WBS_NAME];
-                    targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Add(drRiskDamage);
-                }
-            }
-            //LOS DAMAGES DEL DIAGRAM TARGET
-            foreach (DataRow diagramDamages in targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + ID_Diagram))
-            {
-                //EVALUO QUE NO ESTE YA PARA NO SOBREEESCRIBIR 
-                if (!(targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { drRiskCreated[DT_Risk.ID], diagramDamages[DT_Diagram_Damages.ID_DAMAGE] })))
-                {
-                    DataRow drRiskDamage = targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].NewRow();
-                    drRiskDamage[DT_Risk_Damages.COLOR] = targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Find(new object[] { ID_Diagram, diagramDamages[DT_Diagram_Damages.ID_DAMAGE] })[DT_Diagram_Damages.COLOR];
-                    drRiskDamage[DT_Risk_Damages.DAMAGE] = targetDataset.Tables[DT_Diagram_Damages.TABLE_NAME].Rows.Find(new object[] { ID_Diagram, diagramDamages[DT_Diagram_Damages.ID_DAMAGE] })[DT_Diagram_Damages.DAMAGE];
-                    drRiskDamage[DT_Risk_Damages.FATHER] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drRiskCreated[DT_Risk.IDRISK_FATHER])[DT_Risk.NAMESHORT];
-                    drRiskDamage[DT_Risk_Damages.GROUPE_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.GROUPE_NAME];
-                    drRiskDamage[DT_Risk_Damages.ID_DAMAGE] = diagramDamages[DT_Diagram_Damages.ID_DAMAGE];
-                    drRiskDamage[DT_Risk_Damages.ID_FATHER] = drRiskCreated[DT_Risk.IDRISK_FATHER];
-                    drRiskDamage[DT_Risk_Damages.ID_GROUPE] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_GROUPE];
-                    drRiskDamage[DT_Risk_Damages.ID_RISK] = drRiskCreated[DT_Risk.ID];
-                    drRiskDamage[DT_Risk_Damages.ID_RISK_TREE] = ID_Diagram;
-                    drRiskDamage[DT_Risk_Damages.ID_WBS] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.ID_WBS];
-                    drRiskDamage[DT_Risk_Damages.IS_ROOT] = false;
-                    drRiskDamage[DT_Risk_Damages.PROBABILITY] = sourceRisk.IsCM ? 0 : 100;
-                    drRiskDamage[DT_Risk_Damages.RISK_NAMESHORT] = sourceRisk.ShortName;
-                    drRiskDamage[DT_Risk_Damages.RISK_TREE] = targetDataset.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.DIAGRAM_NAME];
-                    drRiskDamage[DT_Risk_Damages.STATUS] = true;
-                    drRiskDamage[DT_Risk_Damages.TOP_RISK] = diagramDamages[DT_Diagram_Damages.TOP_RISK];
-                    drRiskDamage[DT_Risk_Damages.USERNAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(sourceRisk.ID)[DT_Risk.USER_NAME];
-                    drRiskDamage[DT_Risk_Damages.VALUE] = 0;
-                    drRiskDamage[DT_Risk_Damages.WBS_NAME] = targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(drRiskCreated[DT_Risk.IDRISK_FATHER])[DT_Risk.WBS_NAME];
                     targetDataset.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Add(drRiskDamage);
                 }
             }
@@ -587,16 +530,16 @@ namespace EnsureBusinesss
         /// <param name="drTargetRisk">The Data of the Risk Father </param>
         public static void SetRoleRisk(DataSet targetDataset, DataRow drRiskCreated, DataRow drTargetRisk)
         {
-            foreach (DataRow riskRole in targetDataset.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + drTargetRisk[DT_Risk.ID]))
+            foreach (DataRow riskRole in targetDataset.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + drTargetRisk[DT_Risk.ID]))
             {
-                if (!(targetDataset.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRiskCreated[DT_Risk.ID], riskRole[DT_Role_Risk.IDROL_COLUMN] })))
+                if (!(targetDataset.Tables[DT_Role_Risk.TABLE_NAME].Rows.Contains(new object[] { drRiskCreated[DT_Risk.ID], riskRole[DT_Role_Risk.IDROL_COLUMN] })))
                 {
-                    DataRow drRiskRole = targetDataset.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                    DataRow drRiskRole = targetDataset.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                     drRiskRole[DT_Role_Risk.IDROL_COLUMN] = riskRole[DT_Role_Risk.IDROL_COLUMN];
                     drRiskRole[DT_Role_Risk.ID_RISK] = drRiskCreated[DT_Risk.ID];
                     drRiskRole[DT_Role_Risk.NAME_SHORT] = drRiskCreated[DT_Risk.NAMESHORT];
                     drRiskRole[DT_Role_Risk.Role] = riskRole[DT_Role_Risk.Role];
-                    targetDataset.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRiskRole);
+                    targetDataset.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(drRiskRole);
                 }
             }
         }
@@ -790,29 +733,29 @@ namespace EnsureBusinesss
         public static void SetNewAndOriginalRoleRisk(RiskPolyLine sourceRisk, DataSet targetDataset, DataRow drRiskCopied, DataRow drTargetRisk)
         {
             //Original
-            foreach (DataRow riskOriginalRole in targetDataset.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + sourceRisk.ID))
+            foreach (DataRow riskOriginalRole in targetDataset.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + sourceRisk.ID))
             {
-                if (!(targetDataset.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRiskCopied[DT_Risk.ID], riskOriginalRole[DT_Role_Risk.IDROL_COLUMN] })))
+                if (!(targetDataset.Tables[DT_Role_Risk.TABLE_NAME].Rows.Contains(new object[] { drRiskCopied[DT_Risk.ID], riskOriginalRole[DT_Role_Risk.IDROL_COLUMN] })))
                 {
-                    DataRow drRiskRole = targetDataset.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                    DataRow drRiskRole = targetDataset.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                     drRiskRole[DT_Role_Risk.IDROL_COLUMN] = riskOriginalRole[DT_Role_Risk.IDROL_COLUMN];
                     drRiskRole[DT_Role_Risk.ID_RISK] = drRiskCopied[DT_Risk.ID];
                     drRiskRole[DT_Role_Risk.NAME_SHORT] = drRiskCopied[DT_Risk.NAMESHORT];
                     drRiskRole[DT_Role_Risk.Role] = riskOriginalRole[DT_Role_Risk.Role];
-                    targetDataset.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRiskRole);
+                    targetDataset.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(drRiskRole);
                 }
             }
             //New
-            foreach (DataRow riskRole in targetDataset.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + drTargetRisk[DT_Risk.ID]))
+            foreach (DataRow riskRole in targetDataset.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + drTargetRisk[DT_Risk.ID]))
             {
-                if (!(targetDataset.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRiskCopied[DT_Risk.ID], riskRole[DT_Role_Risk.IDROL_COLUMN] })))
+                if (!(targetDataset.Tables[DT_Role_Risk.TABLE_NAME].Rows.Contains(new object[] { drRiskCopied[DT_Risk.ID], riskRole[DT_Role_Risk.IDROL_COLUMN] })))
                 {
-                    DataRow drRiskRole = targetDataset.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                    DataRow drRiskRole = targetDataset.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                     drRiskRole[DT_Role_Risk.IDROL_COLUMN] = riskRole[DT_Role_Risk.IDROL_COLUMN];
                     drRiskRole[DT_Role_Risk.ID_RISK] = drRiskCopied[DT_Risk.ID];
                     drRiskRole[DT_Role_Risk.NAME_SHORT] = drRiskCopied[DT_Risk.NAMESHORT];
                     drRiskRole[DT_Role_Risk.Role] = riskRole[DT_Role_Risk.Role];
-                    targetDataset.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRiskRole);
+                    targetDataset.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(drRiskRole);
                 }
             }
         }
@@ -917,27 +860,27 @@ namespace EnsureBusinesss
 
         private static void FillRiskRole(DataSet dsSource, DataSet dsTarget, RiskPolyLine riskFather, DataRow drRisk, RiskPolyLine rourceRisk)
         {
-            foreach (DataRow itemo in dsSource.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + riskFather.ID))
+            foreach (DataRow itemo in dsSource.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + riskFather.ID))
             {
-                if (!(dsTarget.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], itemo[DT_Role_Risk.IDROL_COLUMN] })))
+                if (!(dsTarget.Tables[DT_Role_Risk.TABLE_NAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], itemo[DT_Role_Risk.IDROL_COLUMN] })))
                 {
-                    DataRow newRow = dsTarget.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                    DataRow newRow = dsTarget.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                     newRow[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
                     newRow[DT_Role_Risk.IDROL_COLUMN] = itemo[DT_Role_Risk.IDROL_COLUMN];
                     newRow[DT_Role_Risk.Role] = itemo[DT_Role_Risk.Role];
-                    dsTarget.Tables[DT_Role_Risk.TABLENAME].Rows.Add(newRow);
+                    dsTarget.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(newRow);
                 }
             }
             //for each role that original have 
-            foreach (DataRow itemo in dsSource.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + rourceRisk.ID))
+            foreach (DataRow itemo in dsSource.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + rourceRisk.ID))
             {
-                if (!(dsTarget.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], itemo[DT_Role_Risk.IDROL_COLUMN] })))
+                if (!(dsTarget.Tables[DT_Role_Risk.TABLE_NAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], itemo[DT_Role_Risk.IDROL_COLUMN] })))
                 {
-                    DataRow newRow = dsTarget.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                    DataRow newRow = dsTarget.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                     newRow[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
                     newRow[DT_Role_Risk.Role] = itemo[DT_Role_Risk.Role];
                     newRow[DT_Role_Risk.IDROL_COLUMN] = itemo[DT_Role_Risk.IDROL_COLUMN];
-                    dsTarget.Tables[DT_Role_Risk.TABLENAME].Rows.Add(newRow);
+                    dsTarget.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(newRow);
                 }
             }
         }
@@ -1040,27 +983,27 @@ namespace EnsureBusinesss
         private static void FillCMRoles(DataSet dsSource, DataSet dsResult, RiskPolyLine risk, DataRow drCM, RiskPolyLine item)
         {
             //foreach role that its father have
-            foreach (DataRow itemo in dsSource.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + risk.ID))
+            foreach (DataRow itemo in dsSource.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + risk.ID))
             {
-                if (!(dsResult.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drCM[DT_Risk.ID], itemo[DT_Role_Risk.IDROL_COLUMN] })))
+                if (!(dsResult.Tables[DT_Role_Risk.TABLE_NAME].Rows.Contains(new object[] { drCM[DT_Risk.ID], itemo[DT_Role_Risk.IDROL_COLUMN] })))
                 {
-                    DataRow newRow = dsResult.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                    DataRow newRow = dsResult.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                     newRow[DT_Role_Risk.ID_RISK] = drCM[DT_Risk.ID];
                     newRow[DT_Role_Risk.Role] = itemo[DT_Role_Risk.Role];
                     newRow[DT_Role_Risk.IDROL_COLUMN] = itemo[DT_Role_Risk.IDROL_COLUMN];
-                    dsResult.Tables[DT_Role_Risk.TABLENAME].Rows.Add(newRow);
+                    dsResult.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(newRow);
                 }
             }
             //for each role that original have 
-            foreach (DataRow itemo in dsSource.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + item.ID))
+            foreach (DataRow itemo in dsSource.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + item.ID))
             {
-                if (!(dsResult.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drCM[DT_Risk.ID], itemo[DT_Role_Risk.IDROL_COLUMN] })))
+                if (!(dsResult.Tables[DT_Role_Risk.TABLE_NAME].Rows.Contains(new object[] { drCM[DT_Risk.ID], itemo[DT_Role_Risk.IDROL_COLUMN] })))
                 {
-                    DataRow newRow = dsResult.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                    DataRow newRow = dsResult.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                     newRow[DT_Role_Risk.ID_RISK] = drCM[DT_Risk.ID];
                     newRow[DT_Role_Risk.Role] = itemo[DT_Role_Risk.Role];
                     newRow[DT_Role_Risk.IDROL_COLUMN] = itemo[DT_Role_Risk.IDROL_COLUMN];
-                    dsResult.Tables[DT_Role_Risk.TABLENAME].Rows.Add(newRow);
+                    dsResult.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(newRow);
                 }
             }
         }

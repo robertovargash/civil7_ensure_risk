@@ -60,7 +60,7 @@ namespace EnsureRisk.Windows
             {
                 WindowUser adduser = new WindowUser
                 {
-                    User = Ds.Tables[DT_User.User_TABLA].NewRow(),
+                    User = Ds.Tables[DT_User.TABLE_NAME].NewRow(),
                     RoleTable = Ds.Tables[DT_User_Role.TABLE_NAME].Clone(),
                     //WBSTable = Ds.Tables[DT_User_WBS.TABLE_NAME].Copy(),
                     Operation = General.INSERT,
@@ -69,7 +69,7 @@ namespace EnsureRisk.Windows
                 if (adduser.ShowDialog() == true)
                 {
                     //DataSet temp = new DataSet();
-                    Ds.Tables[DT_User.User_TABLA].Rows.Add(adduser.User);
+                    Ds.Tables[DT_User.TABLE_NAME].Rows.Add(adduser.User);
                     Ds.Tables[DT_User_Role.TABLE_NAME].Merge(adduser.RoleTable);
                     //Ds.Tables[DT_User_WBS.TABLE_NAME].Merge(adduser.WBSTable);
                     if (Ds.HasChanges())
@@ -95,7 +95,7 @@ namespace EnsureRisk.Windows
                 int intcell = dgUser.SelectedIndex;
                 if (intcell >= 0)
                 {
-                    DataRow dr = Ds.Tables[DT_User.User_TABLA].Rows[dgUser.SelectedIndex];
+                    DataRow dr = Ds.Tables[DT_User.TABLE_NAME].Rows[dgUser.SelectedIndex];
                     if (dr[DT_User.USERNAME].ToString() != "admin")
                     {
                         WindowUser adduser = new WindowUser
@@ -140,9 +140,9 @@ namespace EnsureRisk.Windows
             {
                 if (dgUser.SelectedIndex >= 0)
                 {
-                    if (Ds.Tables[DT_User.User_TABLA].Rows[dgUser.SelectedIndex][DT_User.USERNAME].ToString() != "admin")
+                    if (Ds.Tables[DT_User.TABLE_NAME].Rows[dgUser.SelectedIndex][DT_User.USERNAME].ToString() != "admin")
                     {
-                        Ds.Tables[DT_User.User_TABLA].Rows[dgUser.SelectedIndex].Delete();
+                        Ds.Tables[DT_User.TABLE_NAME].Rows[dgUser.SelectedIndex].Delete();
                         if (Ds.HasChanges())
                         {
                             using (ServiceUserController.WebServiceUser user = new ServiceUserController.WebServiceUser())
@@ -181,7 +181,7 @@ namespace EnsureRisk.Windows
                 if (dgUser.SelectedIndex >= 0)
                 {
                     IS_DELETING = true;
-                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Ds.Tables[DT_User.User_TABLA].Rows[dgUser.SelectedIndex][DT_User.USERNAME] + "]?");
+                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Ds.Tables[DT_User.TABLE_NAME].Rows[dgUser.SelectedIndex][DT_User.USERNAME] + "]?");
                 }
             }
             catch (Exception ex)
@@ -213,7 +213,7 @@ namespace EnsureRisk.Windows
                 Ds = new UserDataSet();
                 ServiceUserController.WebServiceUser user = new ServiceUserController.WebServiceUser();
                 Ds.Merge(user.GetUserData());
-                dgUser.ItemsSource = Ds.Tables[DT_User.User_TABLA].DefaultView;
+                dgUser.ItemsSource = Ds.Tables[DT_User.TABLE_NAME].DefaultView;
             }
             catch (Exception ex)
             {

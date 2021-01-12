@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
+
 namespace EnsureBusinesss
 {
     public class WBSOperations
@@ -64,6 +65,7 @@ namespace EnsureBusinesss
         /// <returns>Return if the current WBS is the lowest in the Risk Selected</returns>
         public static bool IsRiskWBSLow(DataRow rowRiskWBS, DataSet dsWBS, DataTable dtRisk_WBS)
         {
+            //TODO: 9-EXPLICAR ESTO
             foreach (DataRow riskWBS in dtRisk_WBS.Select(DT_RISK_WBS.ID_RISK + " = " + rowRiskWBS[DT_RISK_WBS.ID_RISK]))
             {
                 if (rowRiskWBS[DT_RISK_WBS.ID_WBS] != riskWBS[DT_RISK_WBS.ID_WBS])
@@ -343,6 +345,7 @@ namespace EnsureBusinesss
             return dtReturn;
         }
 
+        //TODO: 7-EXPLICAR AQUI COMO FUNCIONA EL AJUSTE DE PROBABILIDAD, PUES AQUI SE MEZCLAN PROBABILIDAD CON RISK REDUCTION DE LAS CM
         public static decimal RiskWBSValidations(DataRow RiskRow, DataSet Ds, string LoginUser, DataSet DsWBS, bool hasAccess, bool isCM)
         {
             decimal probability = 0;
@@ -352,6 +355,8 @@ namespace EnsureBusinesss
                 rowRiskWbs[DT_RISK_WBS.CanDelete] = false;
                 rowRiskWbs[DT_RISK_WBS.CanEditPrimary] = false;
                 rowRiskWbs[DT_RISK_WBS.IsProbabReadOnly] = false;
+                //TODO: 8-EXPLICAR LA FUNCION TANTO LA IMPORTANCIA DEL METODO "IsRiskWBSLow" CON LOS PARAMETROS QUE LLEVA
+                //PUES ES EL QUE VALIDA QUE UN WBS SEA HOJA EN UN  RIESGO O CM
                 if (IsRiskWBSLow(rowRiskWbs, DsWBS, Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
                 {
                     if (rowRiskWbs[DT_RISK_WBS.PROBABILITY] == DBNull.Value)
@@ -381,7 +386,7 @@ namespace EnsureBusinesss
             }
             else
             {
-                probability = isCM ? 100 : 0;
+                probability = isCM ? 0 : 100;
             }
 
             foreach (DataRow riskWBS in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " and "
@@ -390,6 +395,8 @@ namespace EnsureBusinesss
                 riskWBS[DT_RISK_WBS.CanEditPrimary] = hasAccess;
                 if (IsRiskWBSLow(riskWBS, DsWBS, Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
                 {
+                    //TODO: 10-EXPLICAR LA IMPORTANCIA DE LAS COLUMNAS TEMPORALES DE CONTROL BOOL PARA BINDING 
+                    //"IsProbabReadOnly", "CanDelete" Y "CanEditPrimary" DENTRO DE LA TABLA Risk_WBS
                     riskWBS[DT_RISK_WBS.IsProbabReadOnly] = true;
                 }
                 foreach (DataRow descendant in MyWBSDescendants(riskWBS, DsWBS.Tables[DT_WBS.TABLE_NAME]))
@@ -408,6 +415,5 @@ namespace EnsureBusinesss
             }
             return probability;
         }
-
     }
 }

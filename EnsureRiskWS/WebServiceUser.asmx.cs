@@ -25,10 +25,10 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_User.User_TABLA))
+                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_User.TABLE_NAME))
                 {
                     SQL.GetDataset(ref ds, "pa_SelectUsername");
-                    ds.Tables[0].TableName = DT_User.User_TABLA;
+                    ds.Tables[0].TableName = DT_User.TABLE_NAME;
                     userds.Merge(ds);
                     return userds;
                 }
@@ -46,7 +46,7 @@ namespace EnsureRiskWS
             {
                 UserDataSet userds = new UserDataSet();
                 DataSet ds = new DataSet();
-                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_User.User_TABLA))
+                using (SQLAccessBuilder SQL = new SQLAccessBuilder(DT_User.TABLE_NAME))
                 {
                     SQL.GetDataset(ref ds, "pa_SelectUserWithRole", param);
                     ds.Tables[1].TableName = DT_User_Role.TABLE_NAME;
@@ -72,7 +72,7 @@ namespace EnsureRiskWS
             trans = (SqlTransaction)conection.BeginTransaction();
             try
             {
-                SQLAccessBuilder userDA = new SQLAccessBuilder(trans, ds.Tables[DT_User.User_TABLA].TableName, ds.Tables[DT_User.User_TABLA].PrimaryKey);
+                SQLAccessBuilder userDA = new SQLAccessBuilder(trans, ds.Tables[DT_User.TABLE_NAME].TableName, ds.Tables[DT_User.TABLE_NAME].PrimaryKey);
                 SQLAccessBuilder userRoleDA = new SQLAccessBuilder(trans, ds.Tables[DT_User_Role.TABLE_NAME].TableName, ds.Tables[DT_User_Role.TABLE_NAME].PrimaryKey);
                 //SQLAccessBuilder userWBSDA = new SQLAccessBuilder(trans, ds.Tables[DT_User_WBS.TABLE_NAME].TableName, ds.Tables[DT_User_WBS.TABLE_NAME].PrimaryKey);
 

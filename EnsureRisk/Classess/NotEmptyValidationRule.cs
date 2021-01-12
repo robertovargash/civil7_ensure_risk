@@ -75,7 +75,7 @@ namespace EnsureRisk.Classess
         }
     }
 
-    public class BooleanToVisibilityConverter : IValueConverter
+    public class BooleanToVisConverter : IValueConverter
     {
         public Visibility TrueValue { get; set; } = Visibility.Visible;
         public Visibility FalseValue { get; set; } = Visibility.Collapsed;

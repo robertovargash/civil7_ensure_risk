@@ -4,7 +4,7 @@ namespace DataMapping.Data
 {
     public class DT_Operation : DataTable
     {
-        public const string OPERATION_TABLE = "Operation";
+        public const string TABLE_NAME = "Operation";
 
         public const string OPERATION_COLUMN = "Operation";
 
@@ -18,7 +18,7 @@ namespace DataMapping.Data
         private void CreateTable()
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
-            this.TableName = OPERATION_TABLE;
+            this.TableName = TABLE_NAME;
             PK_COLUMN[0] = this.Columns.Add(ID_COLUM, typeof(decimal));
             this.Columns.Add(OPERATION_COLUMN, typeof(string));
             this.PrimaryKey = PK_COLUMN;

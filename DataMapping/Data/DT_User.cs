@@ -6,7 +6,7 @@ namespace DataMapping.Data
 
     public partial class DT_User : DataTable {
 		
-        public const string User_TABLA = "Username"; 
+        public const string TABLE_NAME = "Username"; 
 
         public const string USERNAME = "userName";
         public const string USERPASSWORD= "userPassword";
@@ -21,7 +21,7 @@ namespace DataMapping.Data
         private void CreateTable()
         {
             DataColumn[] PK_COLUMN = new DataColumn[1];
-            this.TableName = User_TABLA;
+            this.TableName = TABLE_NAME;
             PK_COLUMN[0] = this.Columns.Add(USERNAME, typeof(string));
             //PK_COLUMN[0].AutoIncrement = true; PK_COLUMN[0].AutoIncrementSeed = -100; PK_COLUMN[0].AutoIncrementStep = -1;
             this.Columns.Add(USERPASSWORD, typeof(System.Byte[]));

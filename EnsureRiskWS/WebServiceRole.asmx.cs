@@ -45,7 +45,7 @@ namespace EnsureRiskWS
                 DataSet ds = new DataSet();
                 SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Role.ROLE_TABLE);
                 SQL.GetDataset(ref ds, "pa_SelectRoleWithOperation", param);
-                ds.Tables[1].TableName = DT_OperationRole.OPERATION_ROLE_TABLE;
+                ds.Tables[1].TableName = DT_OperationRole.TABLE_NAME;
                 userds.Merge(ds);
                 return userds;
             }
@@ -62,7 +62,7 @@ namespace EnsureRiskWS
             {
                 UserDataSet user = new UserDataSet();
                 DataSet ds = new DataSet();
-                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Operation.OPERATION_TABLE);
+                SQLAccessBuilder SQL = new SQLAccessBuilder(DT_Operation.TABLE_NAME);
                 SQL.GetDataset(ref ds, "pa_SelectOperation");
                 user.Merge(ds);
                 return user;
@@ -85,7 +85,7 @@ namespace EnsureRiskWS
             try
             {
                 SQLAccessBuilder roleDA = new SQLAccessBuilder(trans, ds.Tables[DT_Role.ROLE_TABLE].TableName, ds.Tables[DT_Role.ROLE_TABLE].PrimaryKey);
-                SQLAccessBuilder opDA = new SQLAccessBuilder(trans, ds.Tables[DT_OperationRole.OPERATION_ROLE_TABLE].TableName, ds.Tables[DT_OperationRole.OPERATION_ROLE_TABLE].PrimaryKey);
+                SQLAccessBuilder opDA = new SQLAccessBuilder(trans, ds.Tables[DT_OperationRole.TABLE_NAME].TableName, ds.Tables[DT_OperationRole.TABLE_NAME].PrimaryKey);
 
                 roleDA.Delete(ds);
                 opDA.Delete(ds);

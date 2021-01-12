@@ -62,7 +62,7 @@ namespace EnsureRisk.Windows
             try
             {
                 ServiceRoleController.WebServiceRole ws = new ServiceRoleController.WebServiceRole();
-                DataTable OpCod = ws.GetOperation().Tables[DT_Operation.OPERATION_TABLE].Copy();
+                DataTable OpCod = ws.GetOperation().Tables[DT_Operation.TABLE_NAME].Copy();
                 WindowSelection frm = new WindowSelection
                 {
                     Dt = General.DeleteExists(OpCod, OperationTable, DT_Operation.ID_COLUM),
@@ -177,7 +177,7 @@ namespace EnsureRisk.Windows
                 try
                 {
                     ServiceRoleController.WebServiceRole ws = new ServiceRoleController.WebServiceRole();
-                    OperationTable = ws.GetRolesOperation(new object[] { (Int32)dRow[DT_Role.IDROL_COLUMN] }).Tables[DT_OperationRole.OPERATION_ROLE_TABLE].Copy();
+                    OperationTable = ws.GetRolesOperation(new object[] { (Int32)dRow[DT_Role.IDROL_COLUMN] }).Tables[DT_OperationRole.TABLE_NAME].Copy();
                     dv = OperationTable.DefaultView;
                     TextRole.Text = dRow[DT_Role.ROLE_COLUM].ToString();
                     dgOperation.ItemsSource = dv;

@@ -43,7 +43,7 @@ namespace EnsureRisk.Windows
                 Ds = new UserDataSet();
                 ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk();
                 Ds.Merge(ws.GetDefaultRisk());
-                Dv = Ds.Tables[DT_DefaulRisk.Risk_TABLA].DefaultView;
+                Dv = Ds.Tables[DT_DefaulRisk.TABLE_NAME].DefaultView;
                 dgRisk.ItemsSource = Dv;
             }
             catch (Exception ex)

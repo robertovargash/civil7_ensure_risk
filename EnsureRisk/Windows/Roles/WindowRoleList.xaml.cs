@@ -79,14 +79,14 @@ namespace EnsureRisk.Windows
                 WindowRole addrole = new WindowRole
                 {
                     dRow = ds.Tables[DT_Role.ROLE_TABLE].NewRow(),
-                    OperationTable = ds.Tables[DT_OperationRole.OPERATION_ROLE_TABLE].Copy(),
+                    OperationTable = ds.Tables[DT_OperationRole.TABLE_NAME].Copy(),
                     Operation = General.INSERT,
                     Icon = Icon
                 };
                 if (addrole.ShowDialog() == true)
                 {
                     ds.Tables[DT_Role.ROLE_TABLE].Rows.Add(addrole.dRow);
-                    ds.Tables[DT_OperationRole.OPERATION_ROLE_TABLE].Merge(addrole.OperationTable);
+                    ds.Tables[DT_OperationRole.TABLE_NAME].Merge(addrole.OperationTable);
                     if (ds.HasChanges())
                     {
                         DataSet temp = new DataSet();
@@ -118,12 +118,12 @@ namespace EnsureRisk.Windows
                         {
                             dRow = dr,
                             Operation = General.UPDATE,
-                            OperationTable = ds.Tables[DT_OperationRole.OPERATION_ROLE_TABLE].Copy(),
+                            OperationTable = ds.Tables[DT_OperationRole.TABLE_NAME].Copy(),
                             Icon = Icon
                         };
                         if (wr.ShowDialog() == true)
                         {
-                            ds.Tables[DT_OperationRole.OPERATION_ROLE_TABLE].Merge(wr.OperationTable);
+                            ds.Tables[DT_OperationRole.TABLE_NAME].Merge(wr.OperationTable);
                             if (ds.HasChanges())
                             {
                                 DataSet temp = new DataSet();

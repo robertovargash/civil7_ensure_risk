@@ -144,15 +144,15 @@ namespace EnsureRisk
                 targetDS.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Add(topR);
             }
 
-            foreach (DataRow item in sourceDS.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + lineToCopy.ID))
+            foreach (DataRow item in sourceDS.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + lineToCopy.ID))
             {
-                if (!(targetDS.Tables[DT_Role_Risk.TABLENAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], item[DT_Role_Risk.IDROL_COLUMN] })))
+                if (!(targetDS.Tables[DT_Role_Risk.TABLE_NAME].Rows.Contains(new object[] { drRisk[DT_Risk.ID], item[DT_Role_Risk.IDROL_COLUMN] })))
                 {
-                    DataRow newRow = targetDS.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                    DataRow newRow = targetDS.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                     newRow[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
                     newRow[DT_Role_Risk.IDROL_COLUMN] = item[DT_Role_Risk.IDROL_COLUMN];
                     newRow[DT_Role_Risk.Role] = item[DT_Role_Risk.Role];
-                    targetDS.Tables[DT_Role_Risk.TABLENAME].Rows.Add(newRow);
+                    targetDS.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(newRow);
                 }
             }
             foreach (DataRow item in sourceDS.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + lineToCopy.ID))
@@ -281,9 +281,9 @@ namespace EnsureRisk
 
         private static void ImportRiskRole(DataSet targetDS, DataSet lahostia, DataRow riskRow)
         {
-            foreach (var riskRoleRow in lahostia.Tables[DT_Role_Risk.TABLENAME].Select(DT_Role_Risk.ID_RISK + " = " + riskRow[DT_Risk.ID]))
+            foreach (var riskRoleRow in lahostia.Tables[DT_Role_Risk.TABLE_NAME].Select(DT_Role_Risk.ID_RISK + " = " + riskRow[DT_Risk.ID]))
             {
-                DataRow drRiskRole = targetDS.Tables[DT_Role_Risk.TABLENAME].NewRow();
+                DataRow drRiskRole = targetDS.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                 if ((decimal)riskRoleRow[DT_Role_Risk.ID_RISK] >= 0)
                 {
                     drRiskRole[DT_Role_Risk.ID_RISK] = (decimal)riskRoleRow[DT_Role_Risk.ID_RISK] * (-1);
@@ -293,7 +293,7 @@ namespace EnsureRisk
                     drRiskRole[DT_Role_Risk.ID_RISK] = riskRoleRow[DT_Role_Risk.ID_RISK];
                 }
                 drRiskRole[DT_Role_Risk.IDROL_COLUMN] = riskRoleRow[DT_Role_Risk.IDROL_COLUMN];
-                targetDS.Tables[DT_Role_Risk.TABLENAME].Rows.Add(drRiskRole);
+                targetDS.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(drRiskRole);
             }
         }
 
