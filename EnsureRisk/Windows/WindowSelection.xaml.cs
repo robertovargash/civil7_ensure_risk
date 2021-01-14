@@ -76,7 +76,10 @@ namespace EnsureRisk.Windows
                 {
                     dgSelection.Columns.Add(new DataGridTextColumn { Header = DcolumToShowAlias[i], Binding = new Binding(DcolumToShow[i]), IsReadOnly = true });
                 }
-                Dt.Columns.Add("Is_Selected", typeof(bool));
+                if (!Dt.Columns.Contains("Is_Selected"))
+                {
+                    Dt.Columns.Add("Is_Selected", typeof(bool));
+                }
                 foreach (DataRow item in Dt.Rows)
                 {
                     item["Is_Selected"] = false;
@@ -159,38 +162,18 @@ namespace EnsureRisk.Windows
         {
             txtFilterRisk.Clear();
         }
-
-        private void DgRisksCross_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        
+        private void Button_UnSelect(object sender, RoutedEventArgs e)
         {
             try
             {
-                //if (sender is DataGrid riskDataGrid && riskDataGrid.SelectedItem != null)
-                //{
-                //    if (riskDataGrid.SelectedItem is DataRowView)
-                //    {
-                //        if ((bool)((DataRowView)riskDataGrid.SelectedItem).Row["Is_Selected"])
-                //        {
-                //            ((DataRowView)riskDataGrid.SelectedItem).Row["Is_Selected"] = false;
-                //        }
-                //        else
-                //        {
-                //            ((DataRowView)riskDataGrid.SelectedItem).Row["Is_Selected"] = true;
-                //        }
-                //    }
-                //}
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-
-        }
-
-        private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                ((DataRowView)((ToggleButton)e.Source).DataContext).Row["Is_Selected"] = false;
+                if (e.Source is Button checkboxx)
+                {
+                    if (checkboxx.DataContext is DataRowView rowView)
+                    {
+                        rowView.Row["Is_Selected"] = false;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -198,11 +181,17 @@ namespace EnsureRisk.Windows
             }
         }
 
-        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        private void Button_Select(object sender, RoutedEventArgs e)
         {
             try
             {
-                ((DataRowView)((ToggleButton)e.Source).DataContext).Row["Is_Selected"] = true;
+                if (e.Source is Button checkboxx)
+                {
+                    if (checkboxx.DataContext is DataRowView rowView)
+                    {
+                        rowView.Row["Is_Selected"] = true;
+                    }
+                }
             }
             catch (Exception ex)
             {

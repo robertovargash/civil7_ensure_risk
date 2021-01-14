@@ -203,7 +203,7 @@
                 </StackPanel>
             </StackPanel>
         </business:MyTreeItemGroup.Header>
-        <!--<DataGrid AutoGenerateColumns="False" ItemsSource="{Binding DvTableGroup}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False">
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Path=MyDV, RelativeSource={RelativeSource AncestorType={x:Type business:MyTreeItemGroup}}}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
@@ -217,7 +217,7 @@
                         <DataGridTextColumn Header="Father" Binding="{Binding Father}"/>
                         <DataGridTextColumn Header="Probability" Binding="{Binding Probability}"/>
                     </DataGrid.Columns>
-                </DataGrid>-->
+                </DataGrid>
     </business:MyTreeItemGroup>
 
 

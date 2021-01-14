@@ -11,6 +11,7 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\de\ERDock.
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\sv\ERDock.resources.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\zh-Hans\ERDock.resources.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\Output\Debug\ro\ERDock.resources.dll
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ERDock.csprojAssemblyReference.cache
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ERDock_MarkupCompile.cache
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ERDock_MarkupCompile.lref
@@ -43,4 +44,3 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ro\ERD
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ERDock.csproj.CopyComplete
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ERDock.dll
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ERDock.pdb
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERDock\obj\Debug\ERDock.csprojAssemblyReference.cache

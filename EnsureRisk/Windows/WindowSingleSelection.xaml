@@ -7,8 +7,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EnsureRisk.Windows"
+        xmlns:local1="clr-namespace:EnsureRisk"
         mc:Ignorable="d"
         Title="Selection" Height="473.646" Width="641.285" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+            <local1:OpositeBoolToVisibilityConverter x:Key="OpositeBoolToVisConverter" />
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -36,9 +43,10 @@
                     <DataGridTemplateColumn Width="80" x:Name="Selectbtn" >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox Unchecked="ToggleButton_Unchecked" Checked="ToggleButton_Checked" Width="20" Height="20" Style="{StaticResource MaterialDesignCheckBox}" 
-                                              IsChecked="{Binding Path= Is_Selected}">
-                                </CheckBox>
+                                <StackPanel Orientation="Vertical">
+                                    <Button Width="20" Height="20" Click="Button_UnSelect" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{md:PackIcon Kind=Check}" Visibility="{Binding Is_Selected, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                    <Button Width="20" Height="20" Click="Button_Select" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=Close}" Visibility="{Binding Is_Selected, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>                                
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

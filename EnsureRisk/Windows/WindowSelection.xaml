@@ -8,8 +8,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EnsureRisk.Windows"
-        mc:Ignorable="d"
+    xmlns:local1="clr-namespace:EnsureRisk"
+    mc:Ignorable="d"
         Title="WindowSelection" Height="473.646" Width="641.285" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen"  >
+    <Window.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+            <local1:OpositeBoolToVisibilityConverter x:Key="OpositeBoolToVisConverter" />
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -31,15 +38,16 @@
             </Button>
         </Grid>
         <Grid Grid.Row="1">
-            <DataGrid Name="dgSelection" Margin="12,10,4,67" IsReadOnly="True" AutoGenerateColumns="False" MouseDoubleClick="dgSelection_MouseDoubleClick" ColumnWidth="*"  SelectionChanged="DgRisksCross_SelectionChanged" >
+            <DataGrid Name="dgSelection" Margin="12,10,4,67" IsReadOnly="True" AutoGenerateColumns="False" ColumnWidth="*">
                 <DataGrid.Columns>
                     <!--<DataGridCheckBoxColumn Binding="{Binding Is_Selected}" Width="60"/>-->
                     <DataGridTemplateColumn Width="80" x:Name="Selectbtn" >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox Unchecked="ToggleButton_Unchecked" Checked="ToggleButton_Checked" Width="20" Height="20" Style="{StaticResource MaterialDesignCheckBox}" 
-                                              IsChecked="{Binding Path= Is_Selected}">
-                                </CheckBox>
+                                <StackPanel Orientation="Vertical">
+                                    <Button Width="20" Height="20" Click="Button_UnSelect" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{md:PackIcon Kind=Check}" Visibility="{Binding Is_Selected, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                    <Button Width="20" Height="20" Click="Button_Select" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=Close}" Visibility="{Binding Is_Selected, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

@@ -158,7 +158,7 @@
     <Compile Include="DialogContent\YesNoDialogContent.xaml.cs">
       <DependentUpon>YesNoDialogContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MyTreeGroupItem.xaml.cs">
+    <Compile Include="MainWindowElements\MyTreeGroupItem.xaml.cs">
       <DependentUpon>MyTreeGroupItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SetConnectionPage.xaml.cs">
@@ -166,6 +166,9 @@
     </Compile>
     <Compile Include="Pages\ThemePage.xaml.cs">
       <DependentUpon>ThemePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindowElements\PropertyTabContent.xaml.cs">
+      <DependentUpon>PropertyTabContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Resources\Recursos.en-US1.Designer.cs">
       <DependentUpon>Recursos.en-US.resx</DependentUpon>
@@ -417,7 +420,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MyTreeGroupItem.xaml">
+    <Page Include="MainWindowElements\MyTreeGroupItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -428,6 +431,10 @@
     <Page Include="Pages\ThemePage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindowElements\PropertyTabContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>

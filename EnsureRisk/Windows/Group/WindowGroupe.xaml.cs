@@ -50,11 +50,6 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                //using (GroupService.WebServiceGroupe ws = new GroupService.WebServiceGroupe())
-                //{
-                //    DataTable topCodif = ws.GetAllGroupes().Tables[DT_Groupe.TABLE_NAME].Copy();
-                    
-                //}
                 WindowSingleSelection frmSelection = new WindowSingleSelection
                 {
                     Dt = DT_Groups,

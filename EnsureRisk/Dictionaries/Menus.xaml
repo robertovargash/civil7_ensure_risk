@@ -1,8 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:EnsureRisk.Dictionaries"
-                    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-                    xmlns:classess="clr-namespace:EnsureRisk.Classess">
+                    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml"/>
     </ResourceDictionary.MergedDictionaries>
@@ -146,7 +144,7 @@
         </MenuItem>
         <MenuItem Height="35" x:Name="MenuGroupingGroupMixed">
             <MenuItem.Header>
-                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="GroupingGroupMixedButton" Command="{Binding Path=TheCurrentLayout.GroupingGroupCMCommand}" Content="{md:PackIcon Kind=Group}" Width="32" Height="32" ToolTip="Group"/>
+                <Button Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" x:Name="GroupingGroupMixedButton" Command="{Binding Path=TheCurrentLayout.GroupingGroup_MixedCommand}" Content="{md:PackIcon Kind=Group}" Width="32" Height="32" ToolTip="Group"/>
             </MenuItem.Header>
         </MenuItem>
     </ContextMenu>
