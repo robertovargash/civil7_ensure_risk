@@ -128,13 +128,10 @@
     <Compile Include="Classess\MyLayoutDocumentt.xaml.cs">
       <DependentUpon>MyLayoutDocumentt.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classess\MyRadioButton.cs" />
-    <Compile Include="Classess\MyTreeItem.cs" />
     <Compile Include="Classess\MyTreeViewItem.xaml.cs">
       <DependentUpon>MyTreeViewItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classess\NotEmptyValidationRule.cs" />
-    <Compile Include="Classess\PannelWBS.cs" />
     <Compile Include="Classess\PopCMWindow.xaml.cs">
       <DependentUpon>PopCMWindow.xaml</DependentUpon>
     </Compile>
@@ -155,12 +152,19 @@
     <Compile Include="DialogContent\InformationDialogContent.xaml.cs">
       <DependentUpon>InformationDialogContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DialogContent\LoginDialogContent.xaml.cs">
+      <DependentUpon>LoginDialogContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DialogContent\YesNoDialogContent.xaml.cs">
       <DependentUpon>YesNoDialogContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindowElements\GridWBS.xaml.cs">
+      <DependentUpon>GridWBS.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindowElements\MyTreeGroupItem.xaml.cs">
       <DependentUpon>MyTreeGroupItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindowElements\ObservableObject.cs" />
     <Compile Include="Pages\SetConnectionPage.xaml.cs">
       <DependentUpon>SetConnectionPage.xaml</DependentUpon>
     </Compile>
@@ -392,7 +396,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="DialogContent\LoginDialogContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DialogContent\YesNoDialogContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dictionaries\Commands.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -401,6 +413,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dictionaries\Styless.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindowElements\GridWBS.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -859,7 +875,6 @@
     </EmbeddedResource>
     <None Include="HandGrabbing.cur" />
     <None Include="HandOpen.cur" />
-    <Resource Include="Delete.ico" />
     <Resource Include="DiagCross.cur" />
     <Resource Include="Images\clear.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

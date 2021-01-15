@@ -56,15 +56,22 @@ namespace EnsureRisk.Windows
                 };
                 if (adduser.ShowDialog() == true)
                 {
-                    DataSet temp = new DataSet();
                     Ds.Tables[DT_Project.TABLE_NAME].Rows.Add(adduser.DrProject);
+                    DataRow drWBS = Ds.Tables[DT_WBS.TABLE_NAME].NewRow();
+                    drWBS[DT_WBS.IDPROJECT] = adduser.DrProject[DT_Project.ID_PROJECT];
+                    drWBS[DT_WBS.NIVEL] = "1";
+                    drWBS[DT_WBS.WBS_NAME] = adduser.DrProject[DT_Project.PROJECT_NAME];
+                    drWBS[DT_WBS.USERNAME] = "admin";
+                    Ds.Tables[DT_WBS.TABLE_NAME].Rows.Add(drWBS);
                     if (Ds.HasChanges())
                     {
-                        ServiceProject.WebServiceProject ws = new ServiceProject.WebServiceProject();
-                        temp = Ds.GetChanges();
-                        temp = ws.SaveProject(temp);
-                        Ds.Merge(temp);
-                        Ds.AcceptChanges();
+                        using (ServiceProject.WebServiceProject ws = new ServiceProject.WebServiceProject())
+                        {
+                            DataSet temp = Ds.GetChanges();
+                            temp = ws.SaveProject(temp);
+                            Ds.Merge(temp);
+                            Ds.AcceptChanges();
+                        }
                     }
                 }
             }

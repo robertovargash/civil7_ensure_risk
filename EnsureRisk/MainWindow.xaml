@@ -29,36 +29,17 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml"/>
                 <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/Styless.xaml"/>
                 <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/Menus.xaml"/>
+                <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/Commands.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
             <local:OpositeBoolToVisibilityConverter x:Key="OpositeBoolToVisConverter" />
             <local:BoolToCMProbabilityConverter x:Key="BoolToCMConverter" />
             <local:BoolToCMProbabilityShortConverter x:Key="BoolToCMShortConverter" />
             <local:BoolToCheckConverter x:Key="CheckConverter" />
-            <!-- UI commands. -->
-            <RoutedUICommand x:Key="Commands.Login" />
-            <RoutedUICommand x:Key="Commands.Project" />
-            <RoutedUICommand x:Key="Commands.User" />
-            <RoutedUICommand x:Key="Commands.Role" />
-            <RoutedUICommand x:Key="Commands.Damage" />
-            <RoutedUICommand x:Key="Commands.Default" />
-            <RoutedUICommand x:Key="Commands.Settings" />
-            <RoutedUICommand x:Key="Commands.Logs" />
-            <RoutedUICommand x:Key="Commands.Risk" />
-            <RoutedUICommand x:Key="Commands.CounterMeasure" />
-            <RoutedUICommand x:Key="Commands.WBS" />
-            <RoutedUICommand x:Key="Commands.Properties" />
-            <RoutedUICommand x:Key="Commands.Export" />
-            <RoutedUICommand x:Key="Commands.PP" />                        
             <md:PackIcon Kind="ChevronDoubleLeft" x:Key="Left"/>
-            <md:PackIcon Kind="Delete" x:Key="BtnDelete"/>
-            <md:PackIcon Kind="RenameBox" x:Key="ChangeName"/>
-            <Style x:Key="Estilo" />
             <md:PackIcon Kind="ChevronDoubleRight" x:Key="Right"/>
             <md:PackIcon Kind="Lan" x:Key="Tree"/>
             <md:PackIcon Kind="Fish" x:Key="Fish"/>
-            <Slider x:Key="CommonSlider"/>
-            <ComboBox x:Key="CommonCB"/>
         </ResourceDictionary>
     </Window.Resources>
     <Window.CommandBindings>        
@@ -75,6 +56,9 @@
         <CommandBinding Command="{StaticResource Commands.WBS}" Executed="WBS_CommandBinding_Executed" CanExecute="WBS_CanExecute"/>
         <CommandBinding Command="{StaticResource Commands.Properties}" Executed="Properties_CommandBinding_Executed" CanExecute="Properties_CanExecute"/>
         <CommandBinding Command="{StaticResource Commands.Export}" Executed="ExportCommandBinding_Executed" CanExecute="Export_CanExecute" />
+        <CommandBinding Command="{StaticResource Commands.PanDragDiagram}" Executed="PanDragDiagramCommandBinding_Executed" CanExecute="PanDragDiagram_CanExecute" />
+        <CommandBinding Command="{StaticResource Commands.ReloadApplication}" Executed="ReloadApplicationCommandBinding_Executed"/>
+        <CommandBinding Command="{StaticResource Commands.ExportToExcel}" Executed="ExportToExcelCommandBinding_Executed" CanExecute="ExportToExcel_CanExecute"/>
         <CommandBinding Command="{StaticResource Commands.PP}" Executed="PPCommandBinding_Executed" />
 
         <CommandBinding Command="SaveAs" Executed="SaveAsCommandBinding_Executed" CanExecute="SaveAs_CanExecute"/>
@@ -99,7 +83,7 @@
         <KeyBinding Key="S" Modifiers="Control" Command="Save"/>
         <KeyBinding Key="P" Modifiers="Control" Command="Print"/>
     </Window.InputBindings>
-    <Grid x:Name="Supergrid">        
+    <Grid x:Name="Supergrid" Background="{DynamicResource MaterialDesignPaper}">        
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
@@ -118,21 +102,12 @@
                 <xcad:LayoutPanel Orientation="Horizontal">                    
                     <xcad:LayoutAnchorablePane DockWidth="200" FloatingWidth="200" >
                         <xcad:LayoutAnchorable x:Name="AnchorWBSList" Title="WBS" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="WBS List" AutoHideWidth="300" FloatingWidth="300">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="60"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Grid Grid.Row="0">
-                                    <md:PopupBox DataContext="{Binding ElementName=thisWindow}" x:Name="MenuWBS" ToolTip="More" Style="{StaticResource PopupWBS}" PlacementMode="RightAndAlignMiddles" HorizontalAlignment="Left" VerticalAlignment="Top" UnfurlOrientation="Horizontal"/>
-                                </Grid>
-                                <Grid Grid.Row="1">
-                                    <TreeView Name="TreeViewWBS" Foreground="{DynamicResource MaterialDesignBody}"/>
-                                </Grid>
-                            </Grid>
+                            <!--Muestra el panel del WBS, ir al componente en la carpeta Main WIndow COmponent-->
+                            <local:GridWBS/>
                         </xcad:LayoutAnchorable>
                         <xcad:LayoutAnchorable ContentId="properties" x:Name="LayoutProperties"  Title="Properties" CanHide="true" CanClose="False" AutoHideWidth="240">
-                            <local:PropertyTabContent x:Name="wrapRisk" DataContext="{Binding ElementName=thisWindow}"/>
+                            <!--Muestra el panel de propiedades de los riesgos, ir al componente en la carpeta Main WIndow Component-->
+                            <local:PropertyTabContent x:Name="wrapRisk" DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
                         </xcad:LayoutAnchorable>
                     </xcad:LayoutAnchorablePane>
                     <xcad:LayoutDocumentPaneGroup x:Name="LayoutDocPaneGroup">
@@ -141,13 +116,6 @@
                     </xcad:LayoutDocumentPaneGroup >
                     <xcad:LayoutAnchorablePaneGroup DockWidth="250" ScrollViewer.CanContentScroll="True" DockMinWidth="50" FloatingWidth="250">
                         <xcad:LayoutAnchorablePane ScrollViewer.CanContentScroll="True">
-                            <xcad:LayoutAnchorable x:Name="AnchorGroupRisk" Title="Groups" IsActive="True" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Groups" AutoHideWidth="300" FloatingWidth="300">
-                                <Grid Name="GridGroupRisk">
-                                    <StackPanel Orientation="Vertical">
-                                        <TreeView x:Name="TreeViewGroup"/>
-                                    </StackPanel>
-                                </Grid>
-                            </xcad:LayoutAnchorable>
                             <xcad:LayoutAnchorable x:Name="AnchorDiagramList" Title="Diagrams" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Diagrams" AutoHideWidth="250" FloatingWidth="250">
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -175,7 +143,7 @@
                                             <Button x:Name="ImportExcel" ToolTip="Load from Excel" HorizontalAlignment="Left" Click="ImportExcel_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=FileExcel}" md:ShadowAssist.ShadowDepth="Depth5"/>
                                         </StackPanel>
                                     </Grid>
-                                    <md:DialogHost DataContext="{Binding ElementName=thisWindow}" Grid.RowSpan="2" x:Name="DialogDIagram" IsOpen="{Binding IsImporting,UpdateSourceTrigger=PropertyChanged}">
+                                    <md:DialogHost DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Grid.RowSpan="2" x:Name="DialogDIagram" IsOpen="{Binding IsImporting,UpdateSourceTrigger=PropertyChanged}">
                                         <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter}}">
                                             <Grid>
                                                 <ProgressBar x:Name="pp" Width="50" Height="50" Style="{StaticResource MaterialDesignCircularProgressBar}" Value="50" IsIndeterminate="True" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter} }"/>                    
@@ -206,7 +174,7 @@
                                             <md:PackIcon Kind="Close" Opacity=".56" />
                                         </Button>
                                     </Grid>
-                                    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" ItemsSource="{Binding DvCBWBS}" DataContext="{Binding ElementName=thisWindow}" DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" SelectedValue="{Binding Path=IdWBSFilter, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed"  VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" ItemsSource="{Binding DvCBWBS}" DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" SelectedValue="{Binding Path=IdWBSFilter, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed"  VerticalAlignment="Top" HorizontalAlignment="Left">
                                         <md:HintAssist.Hint>
                                             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
                                                 <md:PackIcon Kind="FileTree" />
@@ -214,7 +182,7 @@
                                             </StackPanel>
                                         </md:HintAssist.Hint>
                                     </ComboBox>
-                                    <DataGrid DataContext="{Binding ElementName=thisWindow}" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" Grid.Row="2" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" VerticalAlignment="Stretch" 
+                                    <DataGrid DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" Grid.Row="2" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" VerticalAlignment="Stretch" 
                                               AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False" Grid.ColumnSpan="2" 
                                               MouseLeave="DgRisksCross_MouseLeave" SelectionChanged="DgRisksCross_SelectionChanged" CanUserDeleteRows="False" 
                                               IsTextSearchEnabled="True" CanUserAddRows="False" ItemsSource="{Binding DV_CrossRisk}" VerticalContentAlignment="Center">
@@ -259,7 +227,7 @@
                                             </DataGridTemplateColumn>
                                         </DataGrid.Columns>
                                     </DataGrid>
-                                    <md:DialogHost DataContext="{Binding ElementName=thisWindow}" Grid.RowSpan="3" x:Name="DialogCrossRisk" IsOpen="{Binding IsCalculatingRisk,UpdateSourceTrigger=PropertyChanged}">
+                                    <md:DialogHost DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Grid.RowSpan="3" x:Name="DialogCrossRisk" IsOpen="{Binding IsCalculatingRisk,UpdateSourceTrigger=PropertyChanged}">
                                         <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculatingRisk, Converter={StaticResource BoolToVisConverter} }">
                                             <Grid>
                                                 <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" x:Name="progressCrossRisk" IsIndeterminate="True" Value="45" Visibility="{Binding Path = IsCalculatingRisk, Converter={StaticResource BoolToVisConverter} }"/>
@@ -289,7 +257,7 @@
                                             <md:PackIcon Kind="Close" Opacity=".56"  />
                                         </Button>
                                     </Grid>
-                                    <ComboBox DataContext="{Binding ElementName=thisWindow}" x:Name="CbFilterWBSCM" Margin="5" ItemsSource="{Binding DvCBWBS}" DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" SelectedValue="{Binding Path=IdWBSFilter, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <ComboBox DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" x:Name="CbFilterWBSCM" Margin="5" ItemsSource="{Binding DvCBWBS}" DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" SelectedValue="{Binding Path=IdWBSFilter, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed" VerticalAlignment="Top" HorizontalAlignment="Left">
                                         <md:HintAssist.Hint>
                                             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
                                                 <md:PackIcon Kind="FileTree" />
@@ -297,7 +265,7 @@
                                             </StackPanel>
                                         </md:HintAssist.Hint>
                                     </ComboBox>
-                                    <DataGrid DataContext="{Binding ElementName=thisWindow}" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" Grid.Row="2" x:Name="dgCrossCM" HorizontalAlignment="Stretch" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
+                                    <DataGrid DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" Grid.Row="2" x:Name="dgCrossCM" HorizontalAlignment="Stretch" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
                                               VerticalAlignment="Stretch" AutoGenerateColumns="False" 
                                               CanUserSortColumns="True" CanUserReorderColumns="True"  IsReadOnly="False"  Grid.ColumnSpan="2" MouseLeave="DgCrossCM_MouseLeave" 
                                               CanUserDeleteRows="False" SelectionChanged="DgCrossCM_SelectionChanged" CanUserAddRows="False" ItemsSource="{Binding DV_Cross_CM}">
@@ -344,7 +312,7 @@
 
                                         </DataGrid.Columns>
                                     </DataGrid>
-                                    <md:DialogHost DataContext="{Binding ElementName=thisWindow}" Grid.RowSpan="3" x:Name="DialogCrossCM" IsOpen="{Binding IsCalculatingCM,UpdateSourceTrigger=PropertyChanged}">
+                                    <md:DialogHost DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Grid.RowSpan="3" x:Name="DialogCrossCM" IsOpen="{Binding IsCalculatingCM,UpdateSourceTrigger=PropertyChanged}">
                                         <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculatingCM, Converter={StaticResource BoolToVisConverter}}">
                                             <Grid>
                                                 <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" x:Name="progressCrossCM" IsIndeterminate="True" Value="45" Visibility="{Binding Path = IsCalculatingCM, Converter={StaticResource BoolToVisConverter} }"/>
@@ -352,7 +320,14 @@
                                         </md:Card>
                                     </md:DialogHost>
                                 </Grid>
-                            </xcad:LayoutAnchorable>                            
+                            </xcad:LayoutAnchorable>
+                            <xcad:LayoutAnchorable x:Name="AnchorGroupRisk" Title="Groups" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Groups" AutoHideWidth="300" FloatingWidth="300">
+                                <Grid Name="GridGroupRisk">
+                                    <StackPanel Orientation="Vertical">
+                                        <TreeView x:Name="TreeViewGroup"/>
+                                    </StackPanel>
+                                </Grid>
+                            </xcad:LayoutAnchorable>
                         </xcad:LayoutAnchorablePane>
                     </xcad:LayoutAnchorablePaneGroup>
                 </xcad:LayoutPanel>
@@ -370,16 +345,16 @@
                         <ToolBar.Resources>
                             <local:BoolToIconConverter x:Key="IconConverter" />
                         </ToolBar.Resources>
-                        <Button DataContext="{Binding ElementName=thisWindow}" x:Name="ButtonHand" Click="ButtonHand_Click"  Content="{Binding IsPanEnabled, Converter={StaticResource IconConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" x:Name="ButtonHand" Command="{StaticResource Commands.PanDragDiagram}" Content="{Binding IsPanEnabled, Converter={StaticResource IconConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                         <Separator/>
                         <Button x:Name="MenuItemOptionNewRisk" ToolTip="New Risk (Ctrl + R)" Command="{StaticResource Commands.Risk}" Content="{md:PackIcon Kind=ArrowBottomRight}" />
                         <Button x:Name="MenuItemOptionNewCM" ToolTip="New CM (Ctrl + M)" Command="{StaticResource Commands.CounterMeasure}" Content="{md:PackIcon Kind=BlurOff}" />
                         <Separator />
                         <Button x:Name="MenuItemSave" ToolTip="Save (Ctrl + S)" Command="Save" Content="{md:PackIcon Kind=ContentSave}"/>
                         <Button x:Name="MenuItemSaveAs" ToolTip="Save As (Ctrl + Shift + S)" Command="SaveAs" Content="{md:PackIcon Kind=ContentSaveAll}"/>
-                        <Button x:Name="ExportToExcel" ToolTip="Save to Excel" HorizontalAlignment="Left" Click="ExportToExcel_Click" Content="{md:PackIcon Kind=FileExport}"/>
+                        <Button x:Name="ExportToExcel" ToolTip="Save to Excel" HorizontalAlignment="Left" Command="{StaticResource Commands.ExportToExcel}" Content="{md:PackIcon Kind=FileExport}"/>
                         <Separator/>
-                        <Button x:Name="MenuItemReload" ToolTip="Restart" Click="MenuItemReload_Click" Content="{md:PackIcon Kind=Restart}" />
+                        <Button x:Name="MenuItemReload" ToolTip="Restart" Command="{StaticResource Commands.ReloadApplication}" Content="{md:PackIcon Kind=Restart}" />
                         <Button x:Name="MenuItemFish_Tree" ToolTip="View current diagram as Tree" IsEnabled="True" Click="MenuItemFish_Tree_Click" Content="{md:PackIcon Kind=Lan}" Visibility="Collapsed"/>
                         <Button x:Name="MenuItemExport" ToolTip="Export to Image" Command="{StaticResource Commands.Export}" Content="{md:PackIcon Kind=Image}" />
                         <Button x:Name="MenuItemPrint" ToolTip="Print diagram" Command="Print" Content="{md:PackIcon Kind=Printer}" />
@@ -414,7 +389,7 @@
         <Image x:Name="ImageLanguage" Visibility="Collapsed" Source="Images/English.png" HorizontalAlignment="Left" Margin="16,6,0,4" Width="25" RenderTransformOrigin="0.5,0.5"/>
         <ComboBox x:Name="cbLanguage" Visibility="Collapsed" HorizontalAlignment="left" Margin="58,3,0,0" Width="162" HorizontalContentAlignment="Center" VerticalAlignment="Center" DropDownClosed="CbLanguage_DropDownClosed"/>
         <Grid Grid.Row="2">
-            <ProgressBar DataContext="{Binding ElementName=thisWindow}" x:Name="TheProgress" IsIndeterminate="true" Visibility="{Binding IsImporting, Converter={StaticResource BoolToVisConverter},UpdateSourceTrigger=PropertyChanged}"/>
+            <ProgressBar DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" x:Name="TheProgress" IsIndeterminate="true" Visibility="{Binding IsImporting, Converter={StaticResource BoolToVisConverter},UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
         <md:DialogHost IsOpen="False" x:Name="ErrorDialogMessage" Grid.RowSpan="3" >
             <md:DialogHost.DialogContent >
@@ -433,37 +408,7 @@
         </md:DialogHost>
         <md:DialogHost IsOpen="False" Grid.RowSpan="3" x:Name="LoginDialog" DialogOpened="LoginDialog_DialogOpened" DialogClosing="LoginDialog_DialogClosing">
             <md:DialogHost.DialogContent >
-                <StackPanel Orientation="Vertical" Margin="10">
-                    <StackPanel Orientation="Horizontal">
-                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" >
-                            <md:PackIcon Name="IconUser" Kind="AccountCircle" Height="161" Width="152" />
-                        </Grid>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                            <StackPanel Orientation="Horizontal">
-                                <md:PackIcon Kind="User" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding ElementName=TextUser, Path=BorderBrush}"/>
-                                <TextBox md:HintAssist.Hint="User" Width="200" Margin="0,15,15,15" md:HintAssist.IsFloating="True" GotFocus="TextUser_GotFocus" x:Name="TextUser" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" TabIndex="1"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <md:PackIcon Kind="TextboxPassword" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{Binding ElementName=TextPasword, Path=BorderBrush}"/>
-                                <PasswordBox md:HintAssist.Hint="Password"  Margin="0,15,15,15" Width="200" GotFocus="TextPasword_GotFocus" md:HintAssist.IsFloating="True" x:Name="TextPasword" HorizontalAlignment="Left"  VerticalAlignment="Top" TabIndex="2"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
-                            <Button.CommandParameter>
-                                <system:Boolean>True</system:Boolean>
-                            </Button.CommandParameter>
-                            LOGIN
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignFlatButton}" IsCancel="True" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
-                            <Button.CommandParameter>
-                                <system:Boolean>False</system:Boolean>
-                            </Button.CommandParameter>
-                            CLOSE
-                        </Button>
-                    </StackPanel>
-                </StackPanel>
+                <dialogs:LoginDialogContent x:Name="loginContent"/>
             </md:DialogHost.DialogContent>
         </md:DialogHost>
     </Grid>

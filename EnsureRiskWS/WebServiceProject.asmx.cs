@@ -29,6 +29,7 @@ namespace EnsureRiskWS
                 {
                     SQL.GetDataset(ref ds, "pa_SelectProjectFiltered", new object[] { -9999 });
                     ds.Tables[0].TableName = DT_Project.TABLE_NAME;
+                    ds.Tables[1].TableName = DT_WBS.TABLE_NAME;
                     userds.Merge(ds);
                     return userds;
                 }
@@ -48,14 +49,17 @@ namespace EnsureRiskWS
             trans = (SqlTransaction)conection.BeginTransaction();
             try
             {
-                using (SQLAccessBuilder trDA = new SQLAccessBuilder(trans, ds.Tables[DT_Project.TABLE_NAME].TableName, ds.Tables[DT_Project.TABLE_NAME].PrimaryKey))
-                {
-                    trDA.Delete(ds);
+                SQLAccessBuilder trProject = new SQLAccessBuilder(trans, ds.Tables[DT_Project.TABLE_NAME].TableName, ds.Tables[DT_Project.TABLE_NAME].PrimaryKey);
+                SQLAccessBuilder trWBS = new SQLAccessBuilder(trans, ds.Tables[DT_WBS.TABLE_NAME].TableName, ds.Tables[DT_WBS.TABLE_NAME].PrimaryKey);
 
-                    trDA.Update(ds);
+                trProject.Delete(ds);
+                trWBS.Delete(ds);
 
-                    trDA.Insert(ds);
-                }
+                trProject.Update(ds);
+                trWBS.Update(ds);
+
+                trProject.Insert(ds);
+                trWBS.Insert(ds);
 
                 if (ds.HasErrors)
                 {

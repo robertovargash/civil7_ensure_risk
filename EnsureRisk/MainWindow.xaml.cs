@@ -34,6 +34,11 @@ namespace EnsureRisk
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+
+        private ObservableCollection<WBSNodes> mRootNodes;
+
+        public ObservableCollection<WBSNodes> RootNodes { get { return mRootNodes; } set { mRootNodes = value; OnPropertyChanged("RootNodes"); } }
+
         #region BindingStuff
         decimal idwbsfilter = -1;
         private string line_Selected = "None";
@@ -51,6 +56,10 @@ namespace EnsureRisk
         private readonly BackgroundWorker importToExcelWorker = new BackgroundWorker();
         public bool IsCalculatingRisk { get { return isCalculatingRisk; } set { isCalculatingRisk = value; OnPropertyChanged("IsCalculatingRisk"); } }
         public bool IsCalculatingCM { get { return isCalculatingCM; } set { isCalculatingCM = value; OnPropertyChanged("IsCalculatingCM"); } }
+
+        private bool isWBSEyed = false;
+
+        public bool IsWBSEyedOff { get { return isWBSEyed; } set { isWBSEyed = value; OnPropertyChanged("IsWBSEyedOff"); } }
 
         public bool IsImporting { get { return isImporting; } set { isImporting = value; OnPropertyChanged("IsImporting"); } }
 
@@ -238,10 +247,9 @@ namespace EnsureRisk
                 CollapseWBSCommand = new RelayyCommand(
                    _ =>
                    {
-                       foreach (var item in TreeViewWBS.Items)
+                       foreach (var wbsNode in RootNodes)
                        {
-                       //((TreeViewItem)item).IsExpanded = false;
-                       WBSTreeViewCollapseAll((TreeViewItem)item);
+                           wbsNode.IsExpanded = false;
                        }
                    });
             }
@@ -250,16 +258,7 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }   
         }
-
-        private void WBSTreeViewCollapseAll(TreeViewItem ItemFather)
-        {
-            ItemFather.IsExpanded = false;
-            foreach (var item in ItemFather.Items)
-            {
-                WBSTreeViewCollapseAll((TreeViewItem)item);
-            }
-        }
-
+        
         public RelayyCommand UnSelectWBSCommand { get; set; }
         private void ImplementUnSelectCommand()
         {
@@ -268,6 +267,8 @@ namespace EnsureRisk
                 UnSelectWBSCommand = new RelayyCommand(
               _ =>
               {
+                  IsWBSEyedOff = false;
+
                   if (TheCurrentLayout != null)
                   {
                       //dgWBS.SelectedIndex = -1;
@@ -284,6 +285,125 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
+
+        public RelayyCommand EyeWBSCommand { get; set; }
+        private void ImplementEyeCommand()
+        {
+            try
+            {
+                EyeWBSCommand = new RelayyCommand(
+              parameter =>
+              {
+                  if (parameter is decimal idBWS)
+                  {
+                      IsWBSEyedOff = true;
+                      if (TheCurrentLayout != null)
+                      {
+                          Color drawingCColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
+
+                          foreach (var line in TheCurrentLayout.LinesList)
+                          {
+                              if (!(TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + line.ID + " and " + DT_RISK_WBS.ID_WBS + " = " + idBWS).Any()))
+                              {
+                                  if (line.IsCM)
+                                  {
+                                      line.SetColor(new SolidColorBrush(Color.FromArgb(50, Colors.Black.R, Colors.Black.G, Colors.Black.B)));
+                                  }
+                                  else
+                                  {
+                                      line.SetColor(new SolidColorBrush(Color.FromArgb(50, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
+                                  }
+                              }
+                              else
+                              {
+                                  if (line.IsCM)
+                                  {
+                                      line.SetColor(new SolidColorBrush(Colors.Black));
+                                  }
+                                  else
+                                  {
+                                      line.SetColor(new SolidColorBrush(Color.FromArgb(drawingCColor.A, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
+                                  }
+                              }
+                          }
+                      }
+                  }
+              });
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        public RelayyCommand EditTreeWBSCommand { get; set; }
+        private void ImplementEditTreeWBSCommand()
+        {
+            try
+            {
+                EditTreeWBSCommand = new RelayyCommand(
+              parameter =>
+              {
+                  if (parameter is decimal idBWS)
+                  {
+                      DataRow dr = DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idBWS);
+                      WindowWBS wbs = new WindowWBS
+                      {
+                          DrWBS = dr,
+                          IdProject = IdProject,
+                          //WBS_Structure = DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Copy(),
+                          WBS_Encoder = DsWBS.Tables[DT_WBS.TABLE_NAME].Copy(),
+                          Operation = General.UPDATE,
+                          Icon = Icon
+                      };
+                      if (wbs.ShowDialog() == true)
+                      {
+                          DsWBS.Tables[DT_WBS.TABLE_NAME].Merge(wbs.WBS_Encoder);
+                          //DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Merge(wbs.WBS_Structure);
+                          if (DsWBS.HasChanges())
+                          {
+                              //DataSet temp = new DataSet();
+                              using (ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS())
+                              {
+                                  DataSet temp = DsWBS.GetChanges();
+                                  temp = ws.SaveWBS(temp);
+                                  DsWBS.Merge(temp);
+                                  DsWBS.AcceptChanges();
+                                  RefreshWBS();
+                              }
+                          }
+                      }
+                  }
+              });
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        public RelayyCommand DeleteTreeWBSCommand { get; set; }
+        private void ImplementDeleteTreeWBSCommand()
+        {
+            try
+            {
+                DeleteTreeWBSCommand = new RelayyCommand(
+              parameter =>
+              {
+                  if (parameter is decimal idBWS)
+                  {
+                      DrWBStoDelete = DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idBWS);
+                      IS_DELETING_WBS = true;
+                      MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + DrWBStoDelete[DT_WBS.WBS_NAME] + "]?");
+                  }
+              });
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
         #endregion
 
         #region PROPERTIES_TAB_COMMANDS
@@ -1280,7 +1400,22 @@ namespace EnsureRisk
                 importToExcelWorker.WorkerSupportsCancellation = true;
                 importToExcelWorker.DoWork += ImportToExcelWorker_DoWork; ;
                 importToExcelWorker.RunWorkerCompleted += ImportToExcelWorker_RunWorkerCompleted;
+               // mRootNodes = new ObservableCollection<WBSNodes>();
 
+               // //Test data for example purposes
+
+               //WBSNodes root = new WBSNodes() { Name = "Root" };
+               // WBSNodes a = new WBSNodes(root) { Name = "Node A" };
+               // root.Children.Add(a);
+               // WBSNodes b = new WBSNodes(root) { Name = "Node B" };
+               // root.Children.Add(b);
+               // WBSNodes c = new WBSNodes(b) { Name = "Node C" };
+               // b.Children.Add(c);
+               // WBSNodes d = new WBSNodes(b) { Name = "Node D" };
+               // b.Children.Add(d);
+               // WBSNodes e = new WBSNodes(root) { Name = "Node E" };
+               // root.Children.Add(e);
+               // mRootNodes.Add(root);
             }
             catch (Exception ex)
             {
@@ -1371,9 +1506,14 @@ namespace EnsureRisk
                 Thread.CurrentThread.CurrentCulture = new CultureInfo((string)cbLanguage.SelectedValue);
                 ChangeLanguage();
                 CbProjects_DropDownClosed(sender, e);
+                //TAB WBS
                 ImplementAddWBSCommand();
                 ImplementCollapseWBSCommand();
                 ImplementUnSelectCommand();
+                ImplementEyeCommand();
+                ImplementEditTreeWBSCommand();
+                ImplementDeleteTreeWBSCommand();
+
                 AddRiskToGroupCommandFunction();
                 RemoveGroupCommandFunction();
                 RemoveFilterGroupCommandFunction();
@@ -1725,12 +1865,6 @@ namespace EnsureRisk
             //}
         }
 
-        private void MenuItemReload_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start(Application.ResourceAssembly.Location);
-            Application.Current.Shutdown();
-        }
-
         private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try
@@ -1893,7 +2027,7 @@ namespace EnsureRisk
 
         #endregion
 
-        #region Add,Edit,Delete,ExportExcel Diagram
+        #region Add,Edit,Delete,ImportExcel Diagram
 
         /// <summary>
         /// Add a new diagram to App
@@ -1983,8 +2117,6 @@ namespace EnsureRisk
             YesNoDialog.IsOpen = true;
             yesNoContent.TextYesNoMessage.Text = textAlert;
         }
-
-        //private void OpenDiagramFromDiagramList(int indexx)
 
         private void OpenDiagramFromDiagramList(decimal DIAGRAM_ID)
         {
@@ -2412,44 +2544,6 @@ namespace EnsureRisk
 
 
         #endregion
-
-        #region ExportarExcel
-        /// <summary>
-        /// Export to excel button click event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExportToExcel_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (OpenedDocuments.Count != 0 && TheCurrentLayout != null && TheCurrentLayout.ID_Diagram >= 0 && !TheCurrentLayout.IsExportingToExcel)
-                {
-                    using (System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
-                    {
-                        saveFileDialog.OverwritePrompt = false;
-                        if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                        {
-                            string fileName = saveFileDialog.FileName;
-                            if (File.Exists(fileName))
-                            {
-                                string targetFileName = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
-
-                                File.Copy(fileName, targetFileName + ".bak", true);
-                                File.Delete(fileName);
-                            }
-                            TheCurrentLayout.ExportToExcel(fileName);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-        #endregion
-
 
         #endregion
 
@@ -3777,7 +3871,6 @@ namespace EnsureRisk
 
         #region AppEvents
 
-
         /// <summary>
         /// Change the language of the App
         /// </summary>
@@ -4220,7 +4313,8 @@ namespace EnsureRisk
                 using (ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS())
                 {
                     DsWBS.Merge(ws.GetAllWBSFiltered(new object[] { IdProject }));
-                    TranslateToTreeViewWBS(DsWBS);
+                    //TranslateToTreeViewWBS(DsWBS);
+                    LoadTreeview(DsWBS);
                     DV_WBS = DsWBS.Tables[DT_WBS.TABLE_NAME].DefaultView;
                     FillCBWBSFilter();
                 }
@@ -4269,157 +4363,41 @@ namespace EnsureRisk
             }
         }
 
-        /// <summary>
-        /// Display in the TreeView Panel the Structure of the WBS
-        /// </summary>
-        /// <param name="ds">The dataset of the WBS</param>
-        private void TranslateToTreeViewWBS(DataSet ds)
+        private void LoadTreeview(DataSet ds)
         {
-            if (TreeViewWBS != null)
-            {
-                TreeViewWBS.Items.Clear();
-                foreach (DataRow item in WBSOperations.GetTopWBS(ds))
-                {
-                    MyTreeViewItem tItem = new MyTreeViewItem
-                    {
-                        IsExpanded = true,
-                        MyID = (decimal)item[DT_WBS.ID_WBS]
-                    };
-                    tItem.TextWBS.Text = item[DT_WBS.NIVEL] + " " + item[DT_WBS.WBS_NAME] + " [" + item[DT_WBS.USERNAME] + "]";
-                    tItem.BtnEye.Click += WBSTreeviewBtnEye_Click;
-                    tItem.BtnDelete.Click += WBSTreeviewBtnDelete_Click;
-                    tItem.BtnEdit.Click += WBSTreeViewBtnEdit_Click;
-                    tItem.BtnEye.IdWBS = tItem.BtnDelete.IdWBS = tItem.BtnEdit.IdWBS = tItem.MyID;
+            RootNodes = new ObservableCollection<WBSNodes>();
 
-                    TreeViewWBS.Items.Add(tItem);
-                    tItem.EnableBtns(LoginUser == item[DT_WBS.USERNAME].ToString());
-                    GetWBSChildren(ds, (decimal)item[DT_WBS.ID_WBS], tItem, LoginUser == item[DT_WBS.USERNAME].ToString());
-                }
+            foreach (DataRow item in WBSOperations.GetTopWBS(ds))
+            {                
+                WBSNodes root = new WBSNodes()
+                {
+                    Name = item[DT_WBS.NIVEL] + " " + item[DT_WBS.WBS_NAME] + " [" + item[DT_WBS.USERNAME] + "]",
+                    ID_WBS = (decimal)item[DT_WBS.ID_WBS],
+                    CanEdit = LoginUser == item[DT_WBS.USERNAME].ToString(),
+                    CanDelete = false,
+                    IsEyedOff = IsWBSEyedOff
+                };
+                GetWBSChildren(ds, (decimal)item[DT_WBS.ID_WBS], root);
+
+                mRootNodes.Add(root);
             }
         }
 
-        /// <summary>
-        /// Search All the Children of the WBS giving it ID
-        /// </summary>
-        /// <param name="ds">The current Dataset</param>
-        /// <param name="idFather">The ID of the WBS to search children</param>
-        /// <param name="treeItem">The treepanel when will be allocated the WBS</param>
-        /// <param name="isUser">If the WBS belong to the Autenticated User</param>
-        public void GetWBSChildren(DataSet ds, decimal idFather, MyTreeViewItem treeItem, bool isUser)
+        public void GetWBSChildren(DataSet ds, decimal idFather, WBSNodes father)
         {
             foreach (DataRow item in ds.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.ID_FATHER + " = " + idFather))
             {
-                MyTreeViewItem tItem = new MyTreeViewItem
-                {
-                    IsExpanded = true,
-                    MyID = (decimal)item[DT_WBS.ID_WBS]
+                WBSNodes wbs = new WBSNodes(father) 
+                { 
+                    Name = item[DT_WBS.NIVEL] + " " + item[DT_WBS.WBS_NAME] + " [" + item[DT_WBS.USERNAME] + "]", 
+                    ID_WBS = (decimal)item[DT_WBS.ID_WBS],
+                    CanDelete = father.CanEdit && LoginUser != item[DT_WBS.USERNAME].ToString(),
+                    CanEdit = LoginUser == item[DT_WBS.USERNAME].ToString() || father.CanEdit,
+                    IsEyedOff = IsWBSEyedOff
                 };
-                tItem.TextWBS.Text = item[DT_WBS.NIVEL] + " " + item[DT_WBS.WBS_NAME] + " [" + item[DT_WBS.USERNAME] + "]";
-                tItem.BtnEye.Click += WBSTreeviewBtnEye_Click;
-                tItem.BtnDelete.Click += WBSTreeviewBtnDelete_Click;
-                tItem.BtnEdit.Click += WBSTreeViewBtnEdit_Click;
-                tItem.BtnEye.IdWBS = tItem.BtnDelete.IdWBS = tItem.BtnEdit.IdWBS = tItem.MyID;
-
-                treeItem.Items.Add(tItem);
-                if (isUser)
-                {
-                    GetWBSChildren(ds, (decimal)item[DT_WBS.ID_WBS], tItem, isUser);
-                }
-                else
-                {
-                    bool vari = false;
-                    if (LoginUser == item[DT_WBS.USERNAME].ToString())
-                    {
-                        tItem.EnableBtns(true);
-                        vari = true;
-                        GetWBSChildren(ds, (decimal)item[DT_WBS.ID_WBS], tItem, vari);
-                    }
-                    else
-                    {
-                        tItem.EnableBtns(false);
-                        vari = false;
-                        GetWBSChildren(ds, (decimal)item[DT_WBS.ID_WBS], tItem, vari);
-                    }
-
-                }
-
+                father.Children.Add(wbs);
+                GetWBSChildren(ds, (decimal)item[DT_WBS.ID_WBS], wbs);
             }
-        }
-
-        private void WBSTreeviewBtnEye_Click(object sender, RoutedEventArgs e)
-        {
-            if (TheCurrentLayout != null && OpenedDocuments.Count > 0)
-            {
-                if (sender is ButtonWBS btnEye)
-                {
-                    try
-                    {
-                        if (TheCurrentLayout != null)
-                        {
-                            System.Windows.Media.Color drawingCColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
-
-                            DataRow dr = DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(btnEye.IdWBS);
-                            foreach (var item in TheCurrentLayout.LinesList)
-                            {
-                                if (!(TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + item.ID + " and " + DT_RISK_WBS.ID_WBS + " = " + dr[DT_WBS.ID_WBS]).Any()))
-                                {
-                                    item.SetColor(new SolidColorBrush(System.Windows.Media.Color.FromArgb(50, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
-                                }
-                                else
-                                {
-                                    item.SetColor(new SolidColorBrush(System.Windows.Media.Color.FromArgb(drawingCColor.A, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MostrarErrorDialog(ex.Message);
-                    }
-                }
-            }
-        }
-
-        private void WBSTreeViewBtnEdit_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (sender is ButtonWBS btnWBS)
-                {
-                    DataRow dr = DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(btnWBS.IdWBS);
-                    WindowWBS wbs = new WindowWBS
-                    {
-                        DrWBS = dr,
-                        IdProject = IdProject,
-                        //WBS_Structure = DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Copy(),
-                        WBS_Encoder = DsWBS.Tables[DT_WBS.TABLE_NAME].Copy(),
-                        Operation = General.UPDATE,
-                        Icon = Icon
-                    };
-                    if (wbs.ShowDialog() == true)
-                    {
-                        DsWBS.Tables[DT_WBS.TABLE_NAME].Merge(wbs.WBS_Encoder);
-                        //DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Merge(wbs.WBS_Structure);
-                        if (DsWBS.HasChanges())
-                        {
-                            //DataSet temp = new DataSet();
-                            using (ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS())
-                            {
-                                DataSet temp = DsWBS.GetChanges();
-                                temp = ws.SaveWBS(temp);
-                                DsWBS.Merge(temp);
-                                DsWBS.AcceptChanges();
-                                RefreshWBS();
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-
         }
 
         /// <summary>
@@ -4449,24 +4427,6 @@ namespace EnsureRisk
             {
                 IS_DELETING_WBS = false;
                 MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        private void WBSTreeviewBtnDelete_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (sender is ButtonWBS btnWBS)
-                {
-                    DrWBStoDelete = DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(btnWBS.IdWBS);
-                    IS_DELETING_WBS = true;
-                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + DrWBStoDelete[DT_WBS.WBS_NAME] + "]?");
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-                IS_DELETING_WBS = false;
             }
         }
 
@@ -4512,95 +4472,6 @@ namespace EnsureRisk
 
 
         #endregion
-
-        #region Pan Mouse Events
-        //protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
-        //{
-        //    if (TheCurrentLayout != null && TheCurrentLayout.IsPanEnable)
-        //    {
-        //        if (TheCurrentLayout.ScrollGridPaint.IsMouseOver && e.LeftButton == MouseButtonState.Pressed)
-        //        {
-        //            // Save starting point, used later when determining how much to scroll.
-        //            scrollStartPoint = e.GetPosition(this);
-        //            scrollStartOffset.X = TheCurrentLayout.ScrollGridPaint.HorizontalOffset;
-        //            scrollStartOffset.Y = TheCurrentLayout.ScrollGridPaint.VerticalOffset;
-        //            this.CaptureMouse();
-        //        }
-        //    }
-        //    base.OnPreviewMouseDown(e);
-        //}
-
-        //protected override void OnPreviewMouseMove(MouseEventArgs e)
-        //{
-        //    if (TheCurrentLayout != null && TheCurrentLayout.IsPanEnable)
-        //    {
-        //        if (this.IsMouseCaptured)
-        //        {
-        //            // Get the new scroll position.
-        //            Point point = e.GetPosition(this);
-
-        //            // Determine the new amount to scroll.
-        //            Point delta = new Point(
-        //                (point.X > this.scrollStartPoint.X) ?
-        //                    -(point.X - this.scrollStartPoint.X) :
-        //                    (this.scrollStartPoint.X - point.X),
-
-        //                (point.Y > this.scrollStartPoint.Y) ?
-        //                    -(point.Y - this.scrollStartPoint.Y) :
-        //                    (this.scrollStartPoint.Y - point.Y));
-
-        //            // Scroll to the new position.
-        //            TheCurrentLayout.ScrollGridPaint.ScrollToHorizontalOffset(this.scrollStartOffset.X + delta.X);
-        //            TheCurrentLayout.ScrollGridPaint.ScrollToVerticalOffset(this.scrollStartOffset.Y + delta.Y);
-        //        }
-        //    }
-        //    base.OnPreviewMouseMove(e);
-        //}
-
-        //protected override void OnPreviewMouseUp(MouseButtonEventArgs e)
-        //{
-        //    if (TheCurrentLayout != null)
-        //    {
-        //        if (TheCurrentLayout != null && TheCurrentLayout.IsPanEnable)
-        //        {
-        //            if (this.IsMouseCaptured)
-        //            {
-        //                //TheCurrentLayout.pipinto.Cursor = OpenHand;
-        //                this.ReleaseMouseCapture();
-        //            }
-        //        }
-        //        else
-        //        {
-        //            //TheCurrentLayout.pipinto.Cursor = Cursors.ArrowCD;
-        //        }
-        //    }
-        //    base.OnPreviewMouseUp(e);
-        //}
-
-        private void ButtonHand_Click(object sender, RoutedEventArgs e)
-        {
-            if (TheCurrentLayout != null)
-            {
-                if (!TheCurrentLayout.IsPanEnable)
-                {
-                    foreach (var item in OpenedDocuments)
-                    {
-                        item.IsPanEnable = true;
-                    }
-                    IsPanEnabled = true;
-                }
-                else
-                {
-                    foreach (var item in OpenedDocuments)
-                    {
-                        item.IsPanEnable = false;
-                    }
-                    IsPanEnabled = false;
-                }
-            }
-        }
-        #endregion
-
 
         private void CloseOpenedDiagrams()
         {
@@ -4752,17 +4623,17 @@ namespace EnsureRisk
 
         private void TextPasword_GotFocus(object sender, RoutedEventArgs e)
         {
-            TextPasword.SelectAll();
+            loginContent.TextPasword.SelectAll();
         }
 
         private void TextUser_GotFocus(object sender, RoutedEventArgs e)
         {
-            TextUser.SelectAll();
+            loginContent.TextUser.SelectAll();
         }
 
         private void LoginDialog_DialogOpened(object sender, MaterialDesignThemes.Wpf.DialogOpenedEventArgs eventArgs)
         {
-            TextUser.Focus();
+            loginContent.TextUser.Focus();
         }
 
         private void LoginDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
@@ -4776,10 +4647,6 @@ namespace EnsureRisk
                         Flag_login = false;
                         Close();
                     }
-                    //if (IS_REPEATING_NAME)
-                    //{
-                    //    IS_REPEATING_NAME = false;
-                    //}
                     return;
                 }
                 if (Equals(eventArgs.Parameter, true))
@@ -4787,7 +4654,7 @@ namespace EnsureRisk
                     if (IS_LOGIN)
                     {
 
-                        if (TextUser.Text != "")
+                        if (loginContent.TextUser.Text != "")
                         {
                             Autenticar();
 
@@ -4820,7 +4687,7 @@ namespace EnsureRisk
                     {
                         string Mensaje = ".";
                         string Sesion = ".";
-                        tempObtenerAcceso.Merge(ws.AuthenticateUsers(TextUser.Text, General.Encrypt(TextPasword.Password), ref Mensaje, Environment.UserName,
+                        tempObtenerAcceso.Merge(ws.AuthenticateUsers(loginContent.TextUser.Text, General.Encrypt(loginContent.TextPasword.Password), ref Mensaje, Environment.UserName,
                             Environment.UserDomainName + "\\" + Environment.MachineName, ref Sesion));
                     }
                 }
@@ -4839,11 +4706,11 @@ namespace EnsureRisk
 
         private void Autenticar()
         {
-            if (TextUser.Text != "")
+            if (loginContent.TextUser.Text != "")
             {
                 General gen = new General();
                 AccessList = new List<decimal>();
-                gen.Usser = TextUser.Text;
+                gen.Usser = loginContent.TextUser.Text;
                 using (UserDataSet ds = new UserDataSet())
                 {
                     ds.Merge(GetAccess());
@@ -4854,10 +4721,10 @@ namespace EnsureRisk
                         {
                             AccessList.Add((decimal)item[DT_User_Operation.ID_OPERATION_COLUMN]);
                         }
-                        Title = "Ensure Risk | " + StringResources.CONNECTED_STRING + " " + TextUser.Text;
+                        Title = "Ensure Risk | " + StringResources.CONNECTED_STRING + " " + loginContent.TextUser.Text;
                         LoginMenuItem.Header = StringResources.LOGOFF;
                         Flag_login = true;
-                        TextPasword.Clear();
+                        loginContent.TextPasword.Clear();
                         ValidateAccess();
                         RefreshWBS();
                         foreach (var item in OpenedDocuments)
@@ -4872,7 +4739,7 @@ namespace EnsureRisk
                         LoginMenuItem.Header = StringResources.LoginMenu;
                         Title = "Ensure Risk";
                         LoginUser = "";
-                        TextPasword.Clear();
+                        loginContent.TextPasword.Clear();
                         MostrarErrorDialog(StringResources.WRONG_PASSWORD);
                         ValidateAccess();
                     }
@@ -4880,10 +4747,7 @@ namespace EnsureRisk
             }
             IS_LOGIN = false;
         }
-
-
         #endregion
-
 
         private void Login_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -4985,6 +4849,65 @@ namespace EnsureRisk
             }
         }
 
+        private void PanDragDiagramCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (TheCurrentLayout != null)
+            {
+                IsPanEnabled = !IsPanEnabled;
+                TheCurrentLayout.IsPanEnable = IsPanEnabled;
+                foreach (var diagram in OpenedDocuments)
+                {
+                    diagram.IsPanEnable = IsPanEnabled;
+                }
+            }
+        }
+
+        private void PanDragDiagram_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = TheCurrentLayout != null;
+        }
+
+        private void ReloadApplicationCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
+        }
+
+        private void ExportToExcelCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                if (OpenedDocuments.Count != 0 && TheCurrentLayout != null && TheCurrentLayout.ID_Diagram >= 0 && !TheCurrentLayout.IsExportingToExcel)
+                {
+                    using (System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
+                    {
+                        saveFileDialog.OverwritePrompt = false;
+                        if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        {
+                            string fileName = saveFileDialog.FileName;
+                            if (File.Exists(fileName))
+                            {
+                                string targetFileName = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
+
+                                File.Copy(fileName, targetFileName + ".bak", true);
+                                File.Delete(fileName);
+                            }
+                            TheCurrentLayout.ExportToExcel(fileName);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+
+        }
+
+        private void ExportToExcel_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = TheCurrentLayout != null;
+        }
     }
     class Lang : DependencyObject
     {

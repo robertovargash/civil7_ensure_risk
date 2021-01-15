@@ -20,6 +20,7 @@ namespace EnsureRisk.Windows
         private string _project;
         public string Project { get { return _project; } set { _project = value; OnPropertyChanged("Project"); } }
         public DataRow DrProject { get; set; }
+
         public string Operation { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string property)

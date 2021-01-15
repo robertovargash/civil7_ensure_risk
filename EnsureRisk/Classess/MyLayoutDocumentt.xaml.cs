@@ -59,7 +59,7 @@ namespace EnsureRisk.Classess
         public bool SaveAsClosing { get; set; }
         public bool SelectingToGroup { get; set; }
         public bool Creando { get; set; }
-        public bool Copiando { get { return ((MainWindow)MyWindow).COPIANDO; } }
+        public bool Copiando { get { return MyWindow.COPIANDO; } }
         public bool IsExportingToExcel { get; set; }
         public bool IsUniformThickness { get; set; }
         public LineGroup GroupSelected { get; set; }
@@ -2059,6 +2059,7 @@ namespace EnsureRisk.Classess
 
 
         #endregion
+
         /// <summary>
         /// Initializes a new instance of the MyLayoutDocumentt class
         /// </summary>
@@ -2232,7 +2233,6 @@ namespace EnsureRisk.Classess
             if (GroupingGroup_MixedCommand == _defaultGroupingGroup_MixedCommand)
                 BindingOperations.ClearBinding(this, GroupingGroup_MixedCommandProperty);
         }
-
 
         public void MostrarYesNo(string text)
         {
@@ -2711,6 +2711,14 @@ namespace EnsureRisk.Classess
         {
             try
             {
+                if (MoviendoRisk || MoviendoCM)
+                {
+                    if (LineInMoving != null)
+                    {
+                        LineInMoving.IsDiagonal = false;
+                        LineInMoving.NewDrawAtPoint(LineInMoving.StartDrawPoint);
+                    }
+                }
                 SetLinesThickness();
                 if (!IsUniformThickness)
                 {
@@ -2773,6 +2781,22 @@ namespace EnsureRisk.Classess
                         Line_Created.FromTop = false;
                     }
                     Line_Created.DrawSingleLine();
+                }
+                if (MoviendoRisk || MoviendoCM)
+                {
+                    if (LineInMoving != null)
+                    {
+                        LineInMoving.IsDiagonal = true;
+                        if (e.GetPosition(GridPaintLines).Y <= MainLine.Points[1].Y)
+                        {
+                            LineInMoving.FromTop = true;
+                        }
+                        else
+                        {
+                            LineInMoving.FromTop = false;
+                        }
+                        LineInMoving.DrawSingleLine();
+                    }
                 }
                 SetLineThickness(TheLine);
             }

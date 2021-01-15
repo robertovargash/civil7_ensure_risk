@@ -6,6 +6,7 @@ namespace DataMapping.Data
     {
         #region DataRelations
         public const string PROJECT_DIAGRAM_RELATION = "PROJECT_DIAGRAM";
+        public const string PROJECT_WBS_RELATION = "PROJECT_WBS";
         public const string RISK_TREE_RELATION = "RISK_TREE";
         public const string RISK_STRUCTURE_RELATION = "RISK_STRUCTURE";
         public const string STRUCTURE_RISK_RELATION = "STRUCTURE_RISK";
@@ -87,6 +88,14 @@ namespace DataMapping.Data
             DataRelation dr1 = Relations[PROJECT_DIAGRAM_RELATION];
             dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
             dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
+
+            _ = this.Relations.Add(PROJECT_WBS_RELATION, this.Tables[DT_Project.TABLE_NAME].Columns[DT_Project.ID_PROJECT],
+                           this.Tables[DT_WBS.TABLE_NAME].Columns[DT_WBS.IDPROJECT]);
+
+            dr1 = Relations[PROJECT_WBS_RELATION];
+            dr1.ChildKeyConstraint.UpdateRule = Rule.Cascade;
+            dr1.ChildKeyConstraint.DeleteRule = Rule.Cascade;
+
 
             _ = this.Relations.Add(WBS_FATHER_RELATION, this.Tables[DT_WBS.TABLE_NAME].Columns[DT_WBS.ID_WBS],
                                        this.Tables[DT_WBS.TABLE_NAME].Columns[DT_WBS.ID_FATHER]);

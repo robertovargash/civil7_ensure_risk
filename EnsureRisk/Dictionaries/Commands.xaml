@@ -1,0 +1,21 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:EnsureRisk.Dictionaries">
+    <RoutedUICommand x:Key="Commands.Login" />
+    <RoutedUICommand x:Key="Commands.Project" />
+    <RoutedUICommand x:Key="Commands.User" />
+    <RoutedUICommand x:Key="Commands.Role" />
+    <RoutedUICommand x:Key="Commands.Damage" />
+    <RoutedUICommand x:Key="Commands.Default" />
+    <RoutedUICommand x:Key="Commands.Settings" />
+    <RoutedUICommand x:Key="Commands.Logs" />
+    <RoutedUICommand x:Key="Commands.Risk" />
+    <RoutedUICommand x:Key="Commands.CounterMeasure" />
+    <RoutedUICommand x:Key="Commands.WBS" />
+    <RoutedUICommand x:Key="Commands.Properties" />
+    <RoutedUICommand x:Key="Commands.Export" />
+    <RoutedUICommand x:Key="Commands.PP" />
+    <RoutedUICommand x:Key="Commands.PanDragDiagram" />
+    <RoutedUICommand x:Key="Commands.ReloadApplication" />
+    <RoutedUICommand x:Key="Commands.ExportToExcel" />
+</ResourceDictionary>
