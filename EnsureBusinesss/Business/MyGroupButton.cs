@@ -17,6 +17,42 @@ namespace EnsureBusinesss.Business
         }
     }
 
+    public class MyExpanderGroup: Expander
+    {
+        public static readonly DependencyProperty IdGroupProperty =
+  DependencyProperty.Register("IdGroup", typeof(decimal), typeof(MyTreeItemGroup), new PropertyMetadata(default(decimal)));
+
+
+        public decimal IdGroup
+        {
+            get { return (decimal)GetValue(IdGroupProperty); }
+            set { SetValue(IdGroupProperty, value); }
+        }
+
+        public static readonly DependencyProperty dataViewProperty =
+  DependencyProperty.Register("MyDV", typeof(DataView), typeof(MyTreeItemGroup), new PropertyMetadata(default(DataView)));
+
+        public DataView MyDV
+        {
+            get { return (DataView)GetValue(dataViewProperty); }
+            set { SetValue(dataViewProperty, value); }
+        }
+
+        public static readonly DependencyProperty GroupNameProperty = DependencyProperty.Register(
+           "GroupName", typeof(string), typeof(MyTreeItemGroup), new PropertyMetadata(default(string)));
+
+        public string GroupName
+        {
+            get { return (string)GetValue(GroupNameProperty); }
+            set { SetValue(GroupNameProperty, value); }
+        }
+
+        public MyExpanderGroup():base()
+        {
+
+        }
+    }
+
     public class MyTreeItemGroup : TreeViewItem
     {
 
@@ -44,7 +80,7 @@ namespace EnsureBusinesss.Business
 
         public string GroupName
         {
-            get { return (string)GetValue(IdGroupProperty); }
+            get { return (string)GetValue(GroupNameProperty); }
             set { SetValue(GroupNameProperty, value); }
         }
 

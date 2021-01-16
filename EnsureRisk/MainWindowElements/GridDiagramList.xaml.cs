@@ -16,19 +16,11 @@ using System.Windows.Shapes;
 namespace EnsureRisk
 {
     /// <summary>
-    /// Interaction logic for PanelWBS.xaml
+    /// Interaction logic for GridDiagramList.xaml
     /// </summary>
-    public partial class PanelWBS : StackPanel
+    public partial class GridDiagramList : Grid
     {
-        public static readonly DependencyProperty TextoProperty =
-            DependencyProperty.Register("Texto", typeof(string), typeof(PanelWBS), new FrameworkPropertyMetadata("Nada"));
-
-        public string Texto
-        {
-            set { SetValue(TextoProperty, value); }
-            get { return (string)GetValue(TextoProperty); }
-        }
-        public PanelWBS()
+        public GridDiagramList()
         {
             InitializeComponent();
         }

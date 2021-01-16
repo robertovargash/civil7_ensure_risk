@@ -1,0 +1,74 @@
+﻿<Grid x:Class="EnsureRisk.GridDiagramList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EnsureRisk"
+              xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
+            Background="{DynamicResource MaterialDesignPaper}"
+            TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+            TextElement.FontWeight="Medium"
+            TextElement.FontSize="14"
+            xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+            mc:Ignorable="d" >
+    <Grid.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+        </ResourceDictionary>
+    </Grid.Resources>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="50" />
+        <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <Grid Grid.Row="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="RefreshButton" ToolTip="Refresh Data!" Grid.Column="0" Content="{md:PackIcon Kind=Restart}" 
+                                                Style="{DynamicResource MaterialDesignToolForegroundButton}" Command="{Binding RefreshButtonCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+
+        </Button>
+        <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Project Name" x:Name="cbProjects"  ItemsSource="{Binding DvCBProjects, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                                  
+                                                  DisplayMemberPath="{x:Static data:DT_Project.PROJECT_NAME}" SelectedValuePath="{x:Static data:DT_Project.ID_PROJECT}" 
+                                                  SelectedIndex="0" SelectedValue="{Binding IdProject, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"
+                                                   VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2"/>
+    </Grid>
+    <Grid Grid.Row="1">
+        <DataGrid x:Name="dgTreeDiagrams" ItemsSource="{Binding DVRisk_Tree, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Margin="55,0,0,0" AutoGenerateColumns="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False" IsReadOnly="True" Grid.ColumnSpan="2" 
+                                                  HeadersVisibility="Column">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding DiagramListDoubleClickCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="RiskTree" Header="Diagrams" Binding="{Binding {x:Static data:DT_Diagram.DIAGRAM_NAME}}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel HorizontalAlignment="Left"  Margin="1,0,0,0" VerticalAlignment="Top" Width="50">
+            <Button x:Name="AddTree" ToolTip="Add New Diagram" Command="{Binding AddDiagramCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HorizontalAlignment="Left" Margin="0,20,0,0" md:ShadowAssist.ShadowDepth="Depth5">
+                <md:PackIcon Kind="Plus"/>
+            </Button>
+            <Button x:Name="EditTree" ToolTip="Load and Edit Diagram" Command="{Binding DiagramListDoubleClickCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HorizontalAlignment="Left" Margin="0,20,0,0" md:ShadowAssist.ShadowDepth="Depth5">
+                <md:PackIcon Kind="Pencil"/>
+            </Button>
+            <Button x:Name="RemoveTree" ToolTip="Remove Diagram" Command="{Binding DeleteDiagramCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HorizontalAlignment="Left" Margin="0,20,0 0" md:ShadowAssist.ShadowDepth="Depth5">
+                <md:PackIcon Kind="Delete"/>
+            </Button>
+            <Button x:Name="ImportExcel" ToolTip="Load from Excel" Command="{Binding ImportFromExcelDiagramCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HorizontalAlignment="Left" Margin="0,20,0 0" md:ShadowAssist.ShadowDepth="Depth5">
+                <md:PackIcon Kind="FileExcel"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+    <md:DialogHost Grid.RowSpan="2" x:Name="DialogDIagram" IsOpen="{Binding IsImporting,UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+        <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter}, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+            <Grid>
+                <ProgressBar x:Name="pp" Width="50" Height="50" Style="{StaticResource MaterialDesignCircularProgressBar}" Value="50" IsIndeterminate="True" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter} , RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+            </Grid>
+        </md:Card>
+    </md:DialogHost>
+
+</Grid>

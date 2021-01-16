@@ -3,12 +3,18 @@ using System.Data;
 
 namespace DataMapping.Data
 {
-    public class DT_Project : DataTable
+    public partial class DT_Project : DataTable
     {
-        public const string TABLE_NAME = "Project";
+        private const string tABLE_NAME = "Project";
 
-        public const string ID_PROJECT = "idProject";
-        public const string PROJECT_NAME = "ProjectName";
+        private const string iD_PROJECT = "idProject";
+        private const string pROJECT_NAME = "ProjectName";
+
+        public static string TABLE_NAME => tABLE_NAME;
+
+        public static string ID_PROJECT => iD_PROJECT;
+
+        public static string PROJECT_NAME => pROJECT_NAME;
 
         public DT_Project() : base()
         {

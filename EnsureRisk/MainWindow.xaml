@@ -107,51 +107,16 @@
                         </xcad:LayoutAnchorable>
                         <xcad:LayoutAnchorable ContentId="properties" x:Name="LayoutProperties"  Title="Properties" CanHide="true" CanClose="False" AutoHideWidth="240">
                             <!--Muestra el panel de propiedades de los riesgos, ir al componente en la carpeta Main WIndow Component-->
-                            <local:PropertyTabContent x:Name="wrapRisk" DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                            <local:PropertyTabContent x:Name="wrapRisk" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
                         </xcad:LayoutAnchorable>
                     </xcad:LayoutAnchorablePane>
                     <xcad:LayoutDocumentPaneGroup x:Name="LayoutDocPaneGroup">
-                        <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel">                            
-                        </xcad:LayoutDocumentPane>
+                        <xcad:LayoutDocumentPane x:Name="LayoutDocumentPanel"/>
                     </xcad:LayoutDocumentPaneGroup >
                     <xcad:LayoutAnchorablePaneGroup DockWidth="250" ScrollViewer.CanContentScroll="True" DockMinWidth="50" FloatingWidth="250">
                         <xcad:LayoutAnchorablePane ScrollViewer.CanContentScroll="True">
                             <xcad:LayoutAnchorable x:Name="AnchorDiagramList" Title="Diagrams" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Diagrams" AutoHideWidth="250" FloatingWidth="250">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="50" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="40"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Button Name="RefreshButton" ToolTip="Refresh Data!" Grid.Column="0" Content="{md:PackIcon Kind=Restart}" Click="RefreshButton_Click" Style="{DynamicResource MaterialDesignToolForegroundButton}"/>
-                                        <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Project Name" Name="cbProjects" DropDownClosed="CbProjects_DropDownClosed" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2"/>
-                                    </Grid>
-                                    <Grid Grid.Row="1">
-                                        <DataGrid x:Name="dgTreeDiagrams" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" SelectionChanged="DgTreeDiagrams_SelectionChanged" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Margin="55,0,0,0" AutoGenerateColumns="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False" IsReadOnly="True" Grid.ColumnSpan="2" MouseDoubleClick="DgTreeDiagrams_MouseDoubleClick" HeadersVisibility="Column">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn x:Name="RiskTree" Header="Risk Diagram" Binding="{Binding RiskTree}" />
-                                            </DataGrid.Columns>
-                                        </DataGrid>
-                                        <StackPanel HorizontalAlignment="Left"  Margin="1,0,0,0" VerticalAlignment="Top" Width="50">
-                                            <Button x:Name="AddTree" ToolTip="Add New Diagram" HorizontalAlignment="Left" Click="AddTree_Click" Margin="0,20,0,0" Content="{md:PackIcon Kind=Plus  }"  md:ShadowAssist.ShadowDepth="Depth5"/>
-                                            <Button x:Name="EditTree" ToolTip="Load and Edit Diagram" HorizontalAlignment="Left" Click="EditTree_Click" Margin="0,20,0,0" Content="{md:PackIcon Kind=Pencil}" md:ShadowAssist.ShadowDepth="Depth5"/>
-                                            <Button x:Name="RemoveTree" ToolTip="Remove Diagram" HorizontalAlignment="Left" Click="RemoveTree_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=Delete}" md:ShadowAssist.ShadowDepth="Depth5"/>
-                                            <Button x:Name="ImportExcel" ToolTip="Load from Excel" HorizontalAlignment="Left" Click="ImportExcel_Click" Margin="0,20,0 0" Content="{md:PackIcon Kind=FileExcel}" md:ShadowAssist.ShadowDepth="Depth5"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <md:DialogHost DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Grid.RowSpan="2" x:Name="DialogDIagram" IsOpen="{Binding IsImporting,UpdateSourceTrigger=PropertyChanged}">
-                                        <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter}}">
-                                            <Grid>
-                                                <ProgressBar x:Name="pp" Width="50" Height="50" Style="{StaticResource MaterialDesignCircularProgressBar}" Value="50" IsIndeterminate="True" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter} }"/>                    
-                                            </Grid>
-                                        </md:Card>
-                                    </md:DialogHost>
-                                </Grid>
-                                <!--</ScrollViewer>-->
+                                <local:GridDiagramList x:Name="gridDiagramList"/>
                             </xcad:LayoutAnchorable>
                             <xcad:LayoutAnchorable x:Name="AnchorRiskList" Title="Risks"  CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="List of Risks" AutoHideWidth="300" FloatingWidth="300" >
                                 <Grid x:Name="GridRisksCross">
@@ -213,7 +178,7 @@
                                                     <DataTemplate>
                                                         <TextBox VerticalAlignment="Center" LostFocus="ProbabilityCrossRisk_LostFocus" IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditProbability}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
                                                             <TextBox.Text>
-                                                                <Binding Path="probability" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}" 
+                                                                <Binding Path="{x:Static data:DT_Risk_Damages.PROBABILITY}" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}" 
                                                                          ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" 
                                                                          ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                                                     <Binding.ValidationRules>
@@ -324,7 +289,10 @@
                             <xcad:LayoutAnchorable x:Name="AnchorGroupRisk" Title="Groups" CanHide="True" ScrollViewer.CanContentScroll="True" ToolTip="Groups" AutoHideWidth="300" FloatingWidth="300">
                                 <Grid Name="GridGroupRisk">
                                     <StackPanel Orientation="Vertical">
-                                        <TreeView x:Name="TreeViewGroup"/>
+                                        <TreeView x:Name="TreeViewGroup" Visibility="Collapsed"/>
+                                        <md:Card Background="{DynamicResource MaterialDesignBackground}">
+                                            <StackPanel x:Name="groupPanel"/>
+                                        </md:Card>
                                     </StackPanel>
                                 </Grid>
                             </xcad:LayoutAnchorable>

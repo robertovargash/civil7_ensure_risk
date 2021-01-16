@@ -1,0 +1,70 @@
+﻿<business:MyExpanderGroup x:Class="EnsureRisk.MyExpanderGroupItemm"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EnsureRisk"
+             xmlns:business="clr-namespace:EnsureBusinesss.Business;assembly=EnsureBusinesss"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"      
+             Background="{DynamicResource MaterialDesignPaper}"
+            TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+            TextElement.FontWeight="Medium"
+            TextElement.FontSize="14"
+            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+            FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+            IsExpanded="True" HorizontalAlignment="Stretch" Style="{DynamicResource MaterialDesignExpander}">
+    <business:MyExpanderGroup.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/Styless.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </business:MyExpanderGroup.Resources>        
+    <business:MyExpanderGroup.Header>
+        <TextBox IsReadOnly="True" md:HintAssist.Hint="Group Name" Width="{Binding ElementName=stackButtons, Path=ActualWidth}" TextOptions.TextHintingMode="Animated" md:HintAssist.IsFloating="True" Margin="0" VerticalAlignment="Center" Text="{Binding GroupName, RelativeSource={RelativeSource AncestorType={x:Type business:MyExpanderGroup}}}" HorizontalAlignment="Left">
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="LostFocus">
+                    <i:InvokeCommandAction Command="{Binding RenameGroupCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type business:MyExpanderGroup}}}">
+                        
+                    </i:InvokeCommandAction>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->
+        </TextBox>
+    </business:MyExpanderGroup.Header>
+    <business:MyExpanderGroup.Content>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Margin="10 0 0 10" Name="stackButtons">
+                <Button Command="{Binding AddRiskToGroupCommand}" Width="25" Height="25"
+                                                    CommandParameter="{Binding Path=IdGroup, RelativeSource={RelativeSource AncestorType={x:Type business:MyExpanderGroup}}}" Margin="0 0 10 0" Content="{md:PackIcon Kind=Plus}" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Add More"/>
+                <Button Command="{Binding RenameGroupCommand}" Width="25" Height="25"
+                                                    CommandParameter="{Binding Path=IdGroup, RelativeSource={RelativeSource AncestorType={x:Type business:MyExpanderGroup}}}"  Margin="0 0 10 0" Content="{md:PackIcon Kind=Pencil}" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Rename Group"/>
+                <Button Command="{Binding RemoveGroupCommand}" Width="25" Height="25"
+                                                    CommandParameter="{Binding Path=IdGroup, RelativeSource={RelativeSource AncestorType={x:Type business:MyExpanderGroup}}}"  Margin="0 0 10 0" Content="{md:PackIcon Kind=DeleteForeverOutline}" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Remove the filter"/>
+                <Button Command="{Binding RemoveFilterGroupCommand}" Width="25" Height="25"
+                                                    CommandParameter="{Binding Path=IdGroup, RelativeSource={RelativeSource AncestorType={x:Type business:MyExpanderGroup}}}"  Margin="0 0 10 0" Content="{md:PackIcon Kind=DeleteForever}" Style="{DynamicResource MaterialDesignFloatingActionMiniAccentButton}" ToolTip="Remove the group (delete from database)"/>
+                <Button Command="{Binding EnableDisableGroupCommand}" Width="25" Height="25" Content="{md:PackIcon Kind=ToggleSwitch}" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Enable/Disable"/>
+            </StackPanel>
+            <DataGrid x:Name="MyDataGrid" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 0 0 0" AutoGenerateColumns="False" ItemsSource="{Binding Path=MyDV, RelativeSource={RelativeSource AncestorType={x:Type business:MyExpanderGroup}}}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Delete?">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="{md:PackIcon Kind=Trash}" Command="{Binding DeleteRiskFromGroupCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                                    CommandParameter="{Binding ID}" Width="25" Height="25" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Element" Binding="{Binding Element}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Father" Binding="{Binding Father}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Probability" Binding="{Binding Probability}" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </business:MyExpanderGroup.Content>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="GotFocus">
+            <i:InvokeCommandAction Command="{Binding TreviewItemGotFocusCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type business:MyExpanderGroup}}}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+</business:MyExpanderGroup>

@@ -6357,6 +6357,7 @@ namespace EnsureRisk.Classess
                 ((MainWindow)MyWindow).ShowRiskData = false;
                 ((MainWindow)MyWindow).DV_CrossRisk.Table.Clear();
                 ((MainWindow)MyWindow).DV_Cross_CM.Table.Clear();
+                MyWindow.groupPanel.Children.Clear();
                 if (!((MainWindow)MyWindow).OpenedDocuments.Any())
                 {
                     ((MainWindow)MyWindow).TheCurrentLayout = null;

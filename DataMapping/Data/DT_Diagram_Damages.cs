@@ -2,17 +2,33 @@
 
 namespace DataMapping.Data
 {
-    public class DT_Diagram_Damages:DataTable
+    public partial class DT_Diagram_Damages:DataTable
     {
-        public const string TABLE_NAME = "RiskTree_TopRisk";
+        private const string tABLE_NAME = "RiskTree_TopRisk";
 
-        public const string ID_RISKTREE = "idRiskTree";
-        public const string ID_DAMAGE = "idTopRisk";
-        public const string TOP_RISK = "TopRisk";
-        public const string COLOR= "Color";
-        public const string RISK_TREE = "RiskTree"; 
-        public const string UM = "UM";
-        public const string DAMAGE = "Damage";
+        private const string iD_RISKTREE = "idRiskTree";
+        private const string iD_DAMAGE = "idTopRisk";
+        private const string tOP_RISK = "TopRisk";
+        private const string cOLOR = "Color";
+        private const string rISK_TREE = "RiskTree";
+        private const string uM = "UM";
+        private const string dAMAGE = "Damage";
+
+        public static string TABLE_NAME => tABLE_NAME;
+
+        public static string ID_RISKTREE => iD_RISKTREE;
+
+        public static string ID_DAMAGE => iD_DAMAGE;
+
+        public static string TOP_RISK => tOP_RISK;
+
+        public static string COLOR => cOLOR;
+
+        public static string RISK_TREE => rISK_TREE;
+
+        public static string UM => uM;
+
+        public static string DAMAGE => dAMAGE;
 
         public DT_Diagram_Damages() : base()
         {

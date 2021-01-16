@@ -10,7 +10,7 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
         <local:OpositeBoolToVisibilityConverter x:Key="OpositeBoolToVisConverter" />
     </Grid.Resources>
-    <TreeView DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Margin="10" ItemsSource="{Binding RootNodes}">
+    <TreeView DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Margin="10" ItemsSource="{Binding WBSNodeList}">
         <ItemsControl.ItemContainerStyle>
             <Style TargetType="{x:Type TreeViewItem}">
                 <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />

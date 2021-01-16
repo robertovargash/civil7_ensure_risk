@@ -13,7 +13,6 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Di
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\DialogContent\InformationDialogContent.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\DialogContent\YesNoDialogContent.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\MainWindow.g.cs
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\MainWindowElements\MyTreeGroupItem.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Pages\SetConnectionPage.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Pages\ThemePage.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Windows\Damages\WindowSelectDamageDiagram.g.cs
@@ -73,7 +72,6 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Di
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Dictionaries\Menus.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Dictionaries\Styless.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\MainWindow.baml
-C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\MainWindowElements\MyTreeGroupItem.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Pages\SetConnectionPage.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Pages\ThemePage.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Themes\Generic.baml
@@ -132,3 +130,9 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\Ma
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\MainWindowElements\GridWBS.baml
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\DialogContent\LoginDialogContent.g.cs
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\DialogContent\LoginDialogContent.baml
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\MainWindowElements\MyBorderGroup.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\MainWindowElements\MyExpanderGroupItemm.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\MainWindowElements\MyBorderGroup.baml
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\MainWindowElements\MyExpanderGroupItemm.baml
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\MainWindowElements\GridDiagramList.g.cs
+C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\MainWindowElements\GridDiagramList.baml

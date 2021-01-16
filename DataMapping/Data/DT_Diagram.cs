@@ -2,15 +2,27 @@
 
 namespace DataMapping.Data
 {
-    public class DT_Diagram : DataTable
+    public partial class DT_Diagram : DataTable
     {
-        public const string TABLE_NAME = "RiskTree";
+        private const string tABLE_NAME = "RiskTree";
 
-        public const string ID_DIAGRAM = "idRiskTree";
-        public const string DIAGRAM_NAME = "RiskTree";
-        public const string ROOT_NAME_SHORT = "nameShort";
-        public const string ROOT_ID = "idRisk";
-        public const string ID_PROJECT = "idProject";
+        private const string iD_DIAGRAM = "idRiskTree";
+        private const string dIAGRAM_NAME = "RiskTree";
+        private const string rOOT_NAME_SHORT = "nameShort";
+        private const string rOOT_ID = "idRisk";
+        private const string iD_PROJECT = "idProject";
+
+        public static string TABLE_NAME => tABLE_NAME;
+
+        public static string ID_DIAGRAM => iD_DIAGRAM;
+
+        public static string DIAGRAM_NAME => dIAGRAM_NAME;
+
+        public static string ROOT_NAME_SHORT => rOOT_NAME_SHORT;
+
+        public static string ROOT_ID => rOOT_ID;
+
+        public static string ID_PROJECT => iD_PROJECT;
 
         public DT_Diagram()
             : base()

@@ -158,13 +158,19 @@
     <Compile Include="DialogContent\YesNoDialogContent.xaml.cs">
       <DependentUpon>YesNoDialogContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindowElements\GridDiagramList.xaml.cs">
+      <DependentUpon>GridDiagramList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindowElements\GridWBS.xaml.cs">
       <DependentUpon>GridWBS.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindowElements\MyTreeGroupItem.xaml.cs">
-      <DependentUpon>MyTreeGroupItem.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindowElements\ObservableObject.cs" />
+    <Compile Include="MainWindowElements\MyBorderGroup.xaml.cs">
+      <DependentUpon>MyBorderGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindowElements\MyExpanderGroupItemm.xaml.cs">
+      <DependentUpon>MyExpanderGroupItemm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\SetConnectionPage.xaml.cs">
       <DependentUpon>SetConnectionPage.xaml</DependentUpon>
     </Compile>
@@ -416,6 +422,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MainWindowElements\GridDiagramList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindowElements\GridWBS.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -436,7 +446,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindowElements\MyTreeGroupItem.xaml">
+    <Page Include="MainWindowElements\MyBorderGroup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindowElements\MyExpanderGroupItemm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
