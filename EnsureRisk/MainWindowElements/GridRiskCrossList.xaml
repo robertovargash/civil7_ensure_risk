@@ -1,0 +1,147 @@
+﻿<Grid x:Class="EnsureRisk.GridRiskCrossList"
+              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"        
+            xmlns:decimalconv="clr-namespace:EnsureRisk.DataBinding"
+            xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EnsureRisk"
+             mc:Ignorable="d" 
+            Background="{DynamicResource MaterialDesignPaper}"
+            TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+            TextElement.FontWeight="Medium"
+            TextElement.FontSize="14"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
+    <Grid.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/Styless.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+            <local:OpositeBoolToVisibilityConverter x:Key="OpositeBoolToVisConverter" />
+            <local:BoolToCMProbabilityConverter x:Key="BoolToCMConverter" />
+            <local:BoolToCMProbabilityShortConverter x:Key="BoolToCMShortConverter" />
+        </ResourceDictionary>
+    </Grid.Resources>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="50"/>
+        <RowDefinition Height="50"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Grid Grid.Row="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Button Style="{DynamicResource MaterialDesignToolButton}" x:Name="btnFilterRisk" 
+                Command="{Binding FilterRiskCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+            <md:PackIcon Kind="Magnify" Opacity=".56" />
+        </Button>
+        <TextBox Text="{Binding TextFilterRisk, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}" 
+                 x:Name="txtFilterRisk" Grid.Column="1" Margin="8 0 0 0" md:HintAssist.Hint="Filter Risk" 
+                 md:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0" MinWidth="200" VerticalAlignment="Center" >
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TextChanged">
+                    <i:InvokeCommandAction Command="{Binding FilterRiskCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TextBox>
+        <Button Style="{DynamicResource MaterialDesignToolButton}" Command="{Binding ClearFilterRiskCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                x:Name="btnClearFilter" Grid.Column="2">
+            <md:PackIcon Kind="Close" Opacity=".56" />
+        </Button>
+    </Grid>
+    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" ItemsSource="{Binding DvCBWBS, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+              DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedIndex="0" 
+              SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" 
+              SelectedValue="{Binding Path=IdWBSFilterSelected, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}" 
+              Style="{StaticResource MaterialDesignFloatingHintComboBox}" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <md:HintAssist.Hint>
+            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+                <md:PackIcon Kind="FileTree" />
+                <TextBlock Text="WBS Filter"/>
+            </StackPanel>
+        </md:HintAssist.Hint>
+    </ComboBox>
+    <DataGrid ColumnHeaderStyle="{StaticResource CustomColumnHeader}" Grid.Row="2" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" 
+              GridLinesVisibility="All" VerticalAlignment="Stretch" 
+                                              AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False" Grid.ColumnSpan="2" 
+                                              MouseLeave="DgRisksCross_MouseLeave" SelectionChanged="DgRisksCross_SelectionChanged" CanUserDeleteRows="False" 
+                                              IsTextSearchEnabled="True" CanUserAddRows="False" ItemsSource="{Binding DV_CrossRisk, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" VerticalContentAlignment="Center">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="MouseLeave">
+                <i:InvokeCommandAction Command="{Binding DgRiskMouseLeaveCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+            </i:EventTrigger>
+            <i:EventTrigger EventName="SelectionChanged">
+                <i:InvokeCommandAction Command="{Binding DgRiskSelectionChangedCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                                       CommandParameter="{Binding {x:Static data:DT_Risk_Damages.ID_RISK}, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+        <DataGrid.Columns>
+            <DataGridTemplateColumn x:Name="RiskEnabled" Header="Active?">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20"
+                                    Command="{Binding ActivateRiskCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                    CommandParameter="{Binding {x:Static data:DT_Risk_Damages.ID_RISK}, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                    Click="ActiveRisk_Click" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{md:PackIcon Kind=Check}" Visibility="{Binding Enabled, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" 
+                                    Command="{Binding ActivateRiskCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                    CommandParameter="{Binding {x:Static data:DT_Risk_Damages.ID_RISK}, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                    Click="ActiveRisk_Click" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=Close}" Visibility="{Binding Enabled, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn x:Name="CrossRiskName" MinWidth="100" MaxWidth="300" Header="Risk" >
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBox VerticalAlignment="Center" Style="{StaticResource TextRiskNameStyle}" Text="{Binding {x:Static data:DT_Risk_Damages.RISK_NAMESHORT}}" 
+                                                                 IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditName}}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding RiskNameTextLostFocusCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBox>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTextColumn x:Name="RiskFather" Header="Father" Binding="{Binding {x:Static data:DT_Risk_Damages.FATHER}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+            <DataGridTextColumn x:Name="RiskWBSName" Header="WBS Name" Binding="{Binding {x:Static data:DT_Risk_Damages.WBS_NAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+            <DataGridTextColumn x:Name="RiskuserName" Header="User" Binding="{Binding {x:Static data:DT_Risk_Damages.USERNAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+            <DataGridTemplateColumn x:Name="CrossRiskProbability" MinWidth="100" MaxWidth="300" Header="Probability (%)" >
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBox VerticalAlignment="Center" LostFocus="ProbabilityCrossRisk_LostFocus" IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditProbability}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
+                            <!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding RiskProbabilityLostFocusCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>-->
+                            <TextBox.Text>
+                                <Binding Path="{x:Static data:DT_Risk_Damages.PROBABILITY}" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}" 
+                                                                         ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" 
+                                                                         ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
+                                    <Binding.ValidationRules>
+                                        <local:NegativePlusValidation ValidationStep="UpdatedValue" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
+    <md:DialogHost DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Grid.RowSpan="3" x:Name="DialogCrossRisk" IsOpen="{Binding IsCalculatingRisk,UpdateSourceTrigger=PropertyChanged}">
+        <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculatingRisk, Converter={StaticResource BoolToVisConverter} }">
+            <Grid>
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" x:Name="progressCrossRisk" IsIndeterminate="True" Value="45" Visibility="{Binding Path = IsCalculatingRisk, Converter={StaticResource BoolToVisConverter} }"/>
+            </Grid>
+        </md:Card>
+    </md:DialogHost>
+</Grid>

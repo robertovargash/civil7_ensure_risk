@@ -139,7 +139,11 @@
                                             <md:PackIcon Kind="Close" Opacity=".56" />
                                         </Button>
                                     </Grid>
-                                    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" ItemsSource="{Binding DvCBWBS}" DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" SelectedValue="{Binding Path=IdWBSFilter, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed"  VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" ItemsSource="{Binding DvCBWBS, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+              DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedIndex="0" 
+              SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" 
+              SelectedValue="{Binding Path=IdWBSFilterSelected, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}" 
+              Style="{StaticResource MaterialDesignFloatingHintComboBox}" VerticalAlignment="Top" HorizontalAlignment="Left">
                                         <md:HintAssist.Hint>
                                             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
                                                 <md:PackIcon Kind="FileTree" />
@@ -178,7 +182,7 @@
                                                     <DataTemplate>
                                                         <TextBox VerticalAlignment="Center" LostFocus="ProbabilityCrossRisk_LostFocus" IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditProbability}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
                                                             <TextBox.Text>
-                                                                <Binding Path="{x:Static data:DT_Risk_Damages.PROBABILITY}" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}" 
+                                                                <Binding Path="probability" UpdateSourceTrigger="PropertyChanged" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}" 
                                                                          ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" 
                                                                          ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                                                     <Binding.ValidationRules>
@@ -222,7 +226,11 @@
                                             <md:PackIcon Kind="Close" Opacity=".56"  />
                                         </Button>
                                     </Grid>
-                                    <ComboBox DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" x:Name="CbFilterWBSCM" Margin="5" ItemsSource="{Binding DvCBWBS}" DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" SelectedValue="{Binding Path=IdWBSFilter, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" DropDownClosed="CbFilterWBSRisk_DropDownClosed" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <ComboBox x:Name="CbFilterWBSCM" Margin="5" ItemsSource="{Binding DvCBWBS, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+              DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedIndex="0" 
+              SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" 
+              SelectedValue="{Binding Path=IdWBSFilterSelected, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}" 
+              Style="{StaticResource MaterialDesignFloatingHintComboBox}" VerticalAlignment="Top" HorizontalAlignment="Left">
                                         <md:HintAssist.Hint>
                                             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
                                                 <md:PackIcon Kind="FileTree" />

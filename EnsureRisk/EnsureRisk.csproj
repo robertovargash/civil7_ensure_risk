@@ -161,6 +161,10 @@
     <Compile Include="MainWindowElements\GridDiagramList.xaml.cs">
       <DependentUpon>GridDiagramList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindowElements\GridRiskCrossList.xaml.cs">
+      <DependentUpon>GridRiskCrossList.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MainWindowElements\GridWBS.xaml.cs">
       <DependentUpon>GridWBS.xaml</DependentUpon>
     </Compile>
@@ -425,6 +429,10 @@
     <Page Include="MainWindowElements\GridDiagramList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindowElements\GridRiskCrossList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="MainWindowElements\GridWBS.xaml">
       <SubType>Designer</SubType>

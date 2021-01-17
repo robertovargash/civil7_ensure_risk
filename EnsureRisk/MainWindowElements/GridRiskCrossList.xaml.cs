@@ -1,5 +1,4 @@
-﻿using EnsureBusinesss.Business;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,11 +16,11 @@ using System.Windows.Shapes;
 namespace EnsureRisk
 {
     /// <summary>
-    /// Interaction logic for MyTreeGroupItem.xaml
+    /// Interaction logic for GridRiskCrossList.xaml
     /// </summary>
-    public partial class MyTreeGroupItem : MyTreeItemGroup
+    public partial class GridRiskCrossList : Grid
     {
-        public MyTreeGroupItem():base()
+        public GridRiskCrossList()
         {
             InitializeComponent();
         }

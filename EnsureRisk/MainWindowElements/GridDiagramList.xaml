@@ -30,11 +30,11 @@
                                                 Style="{DynamicResource MaterialDesignToolForegroundButton}" Command="{Binding RefreshButtonCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
 
         </Button>
-        <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Project Name" x:Name="cbProjects"  ItemsSource="{Binding DvCBProjects, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
-                                                  
-                                                  DisplayMemberPath="{x:Static data:DT_Project.PROJECT_NAME}" SelectedValuePath="{x:Static data:DT_Project.ID_PROJECT}" 
-                                                  SelectedIndex="0" SelectedValue="{Binding IdProject, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"
-                                                   VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2"/>
+        <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Project Name" x:Name="cbProjects"  
+                  ItemsSource="{Binding DvCBProjects, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                  DisplayMemberPath="{x:Static data:DT_Project.PROJECT_NAME}" SelectedValuePath="{x:Static data:DT_Project.ID_PROJECT}" 
+                  SelectedIndex="0" SelectedValue="{Binding IdProject, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"
+                  VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2"/>
     </Grid>
     <Grid Grid.Row="1">
         <DataGrid x:Name="dgTreeDiagrams" ItemsSource="{Binding DVRisk_Tree, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Margin="55,0,0,0" AutoGenerateColumns="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False" IsReadOnly="True" Grid.ColumnSpan="2" 

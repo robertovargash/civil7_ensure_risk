@@ -5626,7 +5626,7 @@ namespace EnsureRisk.Classess
                         {
                             item.ExitWorking();
                         } 
-                        ((MainWindow)MyWindow).IdWBSFilter = -1;
+                        ((MainWindow)MyWindow).IdWBSFilterSelected = -1;
                         ((MainWindow)MyWindow).ShowRiskData = false;
                         UpdateDataGridRiskAndGridCM();
                         this.EnterWorking();                       
