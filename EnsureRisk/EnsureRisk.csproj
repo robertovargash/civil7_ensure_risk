@@ -158,12 +158,14 @@
     <Compile Include="DialogContent\YesNoDialogContent.xaml.cs">
       <DependentUpon>YesNoDialogContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindowElements\GridCMCrossList.xaml.cs">
+      <DependentUpon>GridCMCrossList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindowElements\GridDiagramList.xaml.cs">
       <DependentUpon>GridDiagramList.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindowElements\GridRiskCrossList.xaml.cs">
       <DependentUpon>GridRiskCrossList.xaml</DependentUpon>
-      <SubType>Code</SubType>
     </Compile>
     <Compile Include="MainWindowElements\GridWBS.xaml.cs">
       <DependentUpon>GridWBS.xaml</DependentUpon>
@@ -426,13 +428,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MainWindowElements\GridCMCrossList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindowElements\GridDiagramList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindowElements\GridRiskCrossList.xaml">
+      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="MainWindowElements\GridWBS.xaml">
       <SubType>Designer</SubType>

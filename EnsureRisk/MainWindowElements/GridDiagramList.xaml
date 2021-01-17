@@ -27,7 +27,8 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Button x:Name="RefreshButton" ToolTip="Refresh Data!" Grid.Column="0" Content="{md:PackIcon Kind=Restart}" 
-                                                Style="{DynamicResource MaterialDesignToolForegroundButton}" Command="{Binding RefreshButtonCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                                Style="{DynamicResource MaterialDesignToolForegroundButton}" 
+                Command="{Binding RefreshButtonCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
 
         </Button>
         <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" md:HintAssist.Hint="Project Name" x:Name="cbProjects"  

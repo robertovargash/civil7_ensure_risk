@@ -5229,8 +5229,8 @@ namespace EnsureRisk.Classess
 
         public void ClearFilters()
         {
-            ((MainWindow)MyWindow).txtFilterCM.Clear();
-            ((MainWindow)MyWindow).txtFilterRisk.Clear();
+            ((MainWindow)MyWindow).TextFilterCM = string.Empty;
+            ((MainWindow)MyWindow).TextFilterRisk = string.Empty;
         }
 
         private bool? CanUseProposedPolyLineName(string proposedPolyLineName)

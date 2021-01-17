@@ -34,13 +34,7 @@ namespace EnsureRisk
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-
-        private ObservableCollection<WBSNodes> mRootNodes;
-
-        public ObservableCollection<WBSNodes> WBSNodeList { get { return mRootNodes; } set { mRootNodes = value; OnPropertyChanged("WBSNodeList"); } }
-
         #region BindingStuff
-        decimal idwbsfilter = -1;
         private string line_Selected = "None";
         private string textFilterRisk = "";
         private string textFilterCM = "";
@@ -116,6 +110,8 @@ namespace EnsureRisk
         #endregion
 
         #region Lists       
+        private ObservableCollection<WBSNodes> mRootNodes;
+        public ObservableCollection<WBSNodes> WBSNodeList { get { return mRootNodes; } set { mRootNodes = value; OnPropertyChanged("WBSNodeList"); } }
         public List<decimal> AccessList { get; set; }
         public List<Node> Nodos = new List<Node>();
         public List<RiskPolyLine> GlobalListCopy { get; set; }
@@ -157,13 +153,8 @@ namespace EnsureRisk
        
         public decimal IdProject { get { return idProject; } set { idProject = value; OnID_ProjectChanged("IdProject"); } }
         public decimal IdWBSFilterSelected { get { return idWBSFilterSelected; } set { idWBSFilterSelected = value; OnIdWBSFilterSelectedChanged("IdWBSFilterSelected"); } }
-        public string TextFilterRisk { get { return textFilterRisk; } set { textFilterRisk = value; OnIdWBSFilterSelectedChanged("TextFilterRisk"); } }
-
-        public string TextFilterCM { get { return textFilterCM; } set { textFilterCM = value; OnIdWBSFilterSelectedChanged("TextFilterCM"); } }
-
-
-        //public int DgDiagramIndex { get { return dgDiagramIndex; } set { dgDiagramIndex = value; OnPropertyChanged("DgDiagramIndex"); } }
-
+        public string TextFilterRisk { get { return textFilterRisk; } set { textFilterRisk = value; OnPropertyChanged("TextFilterRisk"); } }
+        public string TextFilterCM { get { return textFilterCM; } set { textFilterCM = value; OnPropertyChanged("TextFilterCM"); } }
         private void OnID_ProjectChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
@@ -242,38 +233,45 @@ namespace EnsureRisk
                 AddWBSCommand = new RelayyCommand(
                 parametro =>
                 {
-                    if (parametro is bool epa)
+                    try
                     {
-                        if (epa)
+                        if (parametro is bool epa)
                         {
-                            WindowWBS wbs = new WindowWBS
+                            if (epa)
                             {
-                                DrWBS = DsWBS.Tables[DT_WBS.TABLE_NAME].NewRow(),
-                                IdProject = IdProject,
-                                //WBS_Structure = DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Copy(),
-                                WBS_Encoder = DsWBS.Tables[DT_WBS.TABLE_NAME].Copy(),
-                                Operation = General.INSERT,
-                                Icon = Icon
-                            };
-                            if (wbs.ShowDialog() == true)
-                            {
-                                DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Add(wbs.DrWBS);
-                                //DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Merge(wbs.WBS_Structure);
-                                DsWBS.Tables[DT_WBS.TABLE_NAME].Merge(wbs.WBS_Encoder);
-                                if (DsWBS.HasChanges())
+                                WindowWBS wbs = new WindowWBS
                                 {
-                                    using (ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS())
+                                    DrWBS = DsWBS.Tables[DT_WBS.TABLE_NAME].NewRow(),
+                                    IdProject = IdProject,
+                                    //WBS_Structure = DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Copy(),
+                                    WBS_Encoder = DsWBS.Tables[DT_WBS.TABLE_NAME].Copy(),
+                                    Operation = General.INSERT,
+                                    Icon = Icon
+                                };
+                                if (wbs.ShowDialog() == true)
+                                {
+                                    DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Add(wbs.DrWBS);
+                                    //DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Merge(wbs.WBS_Structure);
+                                    DsWBS.Tables[DT_WBS.TABLE_NAME].Merge(wbs.WBS_Encoder);
+                                    if (DsWBS.HasChanges())
                                     {
-                                        DataSet temp = DsWBS.GetChanges();
-                                        temp = ws.SaveWBS(temp);
-                                        DsWBS.Merge(temp);
-                                        DsWBS.AcceptChanges();
-                                        RefreshWBS();
+                                        using (ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS())
+                                        {
+                                            DataSet temp = DsWBS.GetChanges();
+                                            temp = ws.SaveWBS(temp);
+                                            DsWBS.Merge(temp);
+                                            DsWBS.AcceptChanges();
+                                            RefreshWBS();
+                                        }
                                     }
                                 }
-                            }
 
+                            }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
                     }
                 });
             }
@@ -291,9 +289,16 @@ namespace EnsureRisk
                 CollapseWBSCommand = new RelayyCommand(
                    _ =>
                    {
-                       foreach (var wbsNode in WBSNodeList)
+                       try
                        {
-                           wbsNode.IsExpanded = false;
+                           foreach (var wbsNode in WBSNodeList)
+                           {
+                               wbsNode.IsExpanded = false;
+                           }
+                       }
+                       catch (Exception ex)
+                       {
+                           MostrarErrorDialog(ex.Message);
                        }
                    });
             }
@@ -311,16 +316,23 @@ namespace EnsureRisk
                 UnSelectWBSCommand = new RelayyCommand(
               _ =>
               {
-                  IsWBSEyedOff = false;
-
-                  if (TheCurrentLayout != null)
+                  try
                   {
-                      //dgWBS.SelectedIndex = -1;
-                      TheCurrentLayout.DropLines();
-                      TheCurrentLayout.LoadLines();
-                      TheCurrentLayout.LoadRectangles();
-                      TheCurrentLayout.DrawNumbers();
-                      TheCurrentLayout.SetLinesThickness();
+                      IsWBSEyedOff = false;
+
+                      if (TheCurrentLayout != null)
+                      {
+                          //dgWBS.SelectedIndex = -1;
+                          TheCurrentLayout.DropLines();
+                          TheCurrentLayout.LoadLines();
+                          TheCurrentLayout.LoadRectangles();
+                          TheCurrentLayout.DrawNumbers();
+                          TheCurrentLayout.SetLinesThickness();
+                      }
+                  }
+                  catch (Exception ex)
+                  {
+                      MostrarErrorDialog(ex.Message);
                   }
               });                
             }
@@ -338,39 +350,46 @@ namespace EnsureRisk
                 EyeWBSCommand = new RelayyCommand(
               parameter =>
               {
-                  if (parameter is decimal idBWS)
+                  try
                   {
-                      IsWBSEyedOff = true;
-                      if (TheCurrentLayout != null)
+                      if (parameter is decimal idBWS)
                       {
-                          Color drawingCColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
-
-                          foreach (var line in TheCurrentLayout.LinesList)
+                          IsWBSEyedOff = true;
+                          if (TheCurrentLayout != null)
                           {
-                              if (!(TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + line.ID + " and " + DT_RISK_WBS.ID_WBS + " = " + idBWS).Any()))
+                              Color drawingCColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
+
+                              foreach (var line in TheCurrentLayout.LinesList)
                               {
-                                  if (line.IsCM)
+                                  if (!(TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + line.ID + " and " + DT_RISK_WBS.ID_WBS + " = " + idBWS).Any()))
                                   {
-                                      line.SetColor(new SolidColorBrush(Color.FromArgb(50, Colors.Black.R, Colors.Black.G, Colors.Black.B)));
+                                      if (line.IsCM)
+                                      {
+                                          line.SetColor(new SolidColorBrush(Color.FromArgb(50, Colors.Black.R, Colors.Black.G, Colors.Black.B)));
+                                      }
+                                      else
+                                      {
+                                          line.SetColor(new SolidColorBrush(Color.FromArgb(50, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
+                                      }
                                   }
                                   else
                                   {
-                                      line.SetColor(new SolidColorBrush(Color.FromArgb(50, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
-                                  }
-                              }
-                              else
-                              {
-                                  if (line.IsCM)
-                                  {
-                                      line.SetColor(new SolidColorBrush(Colors.Black));
-                                  }
-                                  else
-                                  {
-                                      line.SetColor(new SolidColorBrush(Color.FromArgb(drawingCColor.A, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
+                                      if (line.IsCM)
+                                      {
+                                          line.SetColor(new SolidColorBrush(Colors.Black));
+                                      }
+                                      else
+                                      {
+                                          line.SetColor(new SolidColorBrush(Color.FromArgb(drawingCColor.A, drawingCColor.R, drawingCColor.G, drawingCColor.B)));
+                                      }
                                   }
                               }
                           }
                       }
+                  }
+                  catch (Exception ex)
+                  {
+                      MostrarErrorDialog(ex.Message);
                   }
               });
             }
@@ -388,35 +407,42 @@ namespace EnsureRisk
                 EditTreeWBSCommand = new RelayyCommand(
               parameter =>
               {
-                  if (parameter is decimal idBWS)
+                  try
                   {
-                      DataRow dr = DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idBWS);
-                      WindowWBS wbs = new WindowWBS
+                      if (parameter is decimal idBWS)
                       {
-                          DrWBS = dr,
-                          IdProject = IdProject,
-                          //WBS_Structure = DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Copy(),
-                          WBS_Encoder = DsWBS.Tables[DT_WBS.TABLE_NAME].Copy(),
-                          Operation = General.UPDATE,
-                          Icon = Icon
-                      };
-                      if (wbs.ShowDialog() == true)
-                      {
-                          DsWBS.Tables[DT_WBS.TABLE_NAME].Merge(wbs.WBS_Encoder);
-                          //DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Merge(wbs.WBS_Structure);
-                          if (DsWBS.HasChanges())
+                          DataRow dr = DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idBWS);
+                          WindowWBS wbs = new WindowWBS
                           {
-                              //DataSet temp = new DataSet();
-                              using (ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS())
+                              DrWBS = dr,
+                              IdProject = IdProject,
+                              //WBS_Structure = DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Copy(),
+                              WBS_Encoder = DsWBS.Tables[DT_WBS.TABLE_NAME].Copy(),
+                              Operation = General.UPDATE,
+                              Icon = Icon
+                          };
+                          if (wbs.ShowDialog() == true)
+                          {
+                              DsWBS.Tables[DT_WBS.TABLE_NAME].Merge(wbs.WBS_Encoder);
+                              //DsWBS.Tables[DT_WBS_STRUCTURE.TABLE_NAME].Merge(wbs.WBS_Structure);
+                              if (DsWBS.HasChanges())
                               {
-                                  DataSet temp = DsWBS.GetChanges();
-                                  temp = ws.SaveWBS(temp);
-                                  DsWBS.Merge(temp);
-                                  DsWBS.AcceptChanges();
-                                  RefreshWBS();
+                                  //DataSet temp = new DataSet();
+                                  using (ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS())
+                                  {
+                                      DataSet temp = DsWBS.GetChanges();
+                                      temp = ws.SaveWBS(temp);
+                                      DsWBS.Merge(temp);
+                                      DsWBS.AcceptChanges();
+                                      RefreshWBS();
+                                  }
                               }
                           }
                       }
+                  }
+                  catch (Exception ex)
+                  {
+                      MostrarErrorDialog(ex.Message);
                   }
               });
             }
@@ -434,11 +460,18 @@ namespace EnsureRisk
                 DeleteTreeWBSCommand = new RelayyCommand(
               parameter =>
               {
-                  if (parameter is decimal idBWS)
+                  try
                   {
-                      DrWBStoDelete = DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idBWS);
-                      IS_DELETING_WBS = true;
-                      MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + DrWBStoDelete[DT_WBS.WBS_NAME] + "]?");
+                      if (parameter is decimal idBWS)
+                      {
+                          DrWBStoDelete = DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idBWS);
+                          IS_DELETING_WBS = true;
+                          MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + DrWBStoDelete[DT_WBS.WBS_NAME] + "]?");
+                      }
+                  }
+                  catch (Exception ex)
+                  {
+                      MostrarErrorDialog(ex.Message);
                   }
               });
             }
@@ -1118,17 +1151,24 @@ namespace EnsureRisk
                 AddRiskToGroupCommand = new RelayyCommand(
                     parametro =>
                     {
-                       if (parametro is decimal idGroup)
-                       {
-                            TheCurrentLayout.SelectingToGroup = true;
-                            TheCurrentLayout.GroupSelected = new LineGroup()
+                        try
+                        {
+                            if (parametro is decimal idGroup)
                             {
-                                IdGroup = idGroup,
-                                GroupName = TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(idGroup)[DT_Groupe.GROUPE_NAME].ToString()
-                            };
+                                TheCurrentLayout.SelectingToGroup = true;
+                                TheCurrentLayout.GroupSelected = new LineGroup()
+                                {
+                                    IdGroup = idGroup,
+                                    GroupName = TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(idGroup)[DT_Groupe.GROUPE_NAME].ToString()
+                                };
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MostrarErrorDialog(ex.Message);
                         }
                     }
-                    );
+                );
             }
             catch (Exception ex)
             {
@@ -1144,14 +1184,21 @@ namespace EnsureRisk
                 RemoveGroupCommand = new RelayyCommand(
                     parametro =>
                     {
-                        if (parametro is decimal idGroup)
+                        try
                         {
-                            ID_Groupe = idGroup;
-                            IS_CLEANING_GROUP = true;
-                            MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " this Group?");
+                            if (parametro is decimal idGroup)
+                            {
+                                ID_Groupe = idGroup;
+                                IS_CLEANING_GROUP = true;
+                                MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " this Group?");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MostrarErrorDialog(ex.Message);
                         }
                     }
-                    );
+                );
             }
             catch (Exception ex)
             {
@@ -1170,14 +1217,21 @@ namespace EnsureRisk
                 RemoveFilterGroupCommand = new RelayyCommand(
                     parametro =>
                     {
-                        if (parametro is decimal idGroup)
+                        try
                         {
-                            ID_Groupe = idGroup;
-                            IS_REMOVING_GROUP_FROM_DATABASE = true;
-                            MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " this Group?");
+                            if (parametro is decimal idGroup)
+                            {
+                                ID_Groupe = idGroup;
+                                IS_REMOVING_GROUP_FROM_DATABASE = true;
+                                MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " this Group?");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MostrarErrorDialog(ex.Message);
                         }
                     }
-                    );
+                );
             }
             catch (Exception ex)
             {
@@ -1193,24 +1247,31 @@ namespace EnsureRisk
                 RenameGroupCommand = new RelayyCommand(
                     parametro =>
                     {
-                        if (parametro is decimal idGroup)
+                        try
                         {
-                            WindowRenameGroup wgrp = new WindowRenameGroup()
+                            if (parametro is decimal idGroup)
                             {
-                                DrGroup = TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(idGroup)
-                            };
-                            if (wgrp.ShowDialog() == true)
-                            {
-                                TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(idGroup)[DT_Groupe.GROUPE_NAME] = wgrp.DrGroup[DT_Groupe.GROUPE_NAME];
-                                foreach (var line in TheCurrentLayout.LinesList)
+                                WindowRenameGroup wgrp = new WindowRenameGroup()
                                 {
-                                    if (line.Group.IdGroup == idGroup)
+                                    DrGroup = TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(idGroup)
+                                };
+                                if (wgrp.ShowDialog() == true)
+                                {
+                                    TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(idGroup)[DT_Groupe.GROUPE_NAME] = wgrp.DrGroup[DT_Groupe.GROUPE_NAME];
+                                    foreach (var line in TheCurrentLayout.LinesList)
                                     {
-                                        line.Group.GroupName = wgrp.DrGroup[DT_Groupe.GROUPE_NAME].ToString();
+                                        if (line.Group.IdGroup == idGroup)
+                                        {
+                                            line.Group.GroupName = wgrp.DrGroup[DT_Groupe.GROUPE_NAME].ToString();
+                                        }
                                     }
+                                    UpdateGroupTab(TheCurrentLayout.Ds);
                                 }
-                                UpdateGroupTab(TheCurrentLayout.Ds);
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            MostrarErrorDialog(ex.Message);
                         }
                     }
                     );
@@ -1229,55 +1290,63 @@ namespace EnsureRisk
                 EnableDisableGroupCommand = new RelayyCommand(
                     _ =>
                     {
-                        bool estadoActual = false;
-                        var query = from item in TheCurrentLayout.RiskGroupSelected
-                                    where (bool)item.IsActivated == true
-                                    select item;
-                        List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
+                        try
+                        {
+                            bool estadoActual = false;
+                            var query = from item in TheCurrentLayout.RiskGroupSelected
+                                        where (bool)item.IsActivated == true
+                                        select item;
+                            List<RiskPolyLine> result = query.ToList<RiskPolyLine>();
 
-                        var queryCM = from item in TheCurrentLayout.CMGroupSelected
-                                      where (bool)item.IsActivated == true
-                                      select item;
-                        List<RiskPolyLine> resultCM = queryCM.ToList<RiskPolyLine>();
+                            var queryCM = from item in TheCurrentLayout.CMGroupSelected
+                                          where (bool)item.IsActivated == true
+                                          select item;
+                            List<RiskPolyLine> resultCM = queryCM.ToList<RiskPolyLine>();
 
-                        if (result.Count > 0 || resultCM.Count > 0)
-                        {
-                            // si hay al menos una "Enabled" envio true, para desactivarlas todas
-                            estadoActual = true;
-                        }
-                        else
-                        {
-                            estadoActual = false;
-                        }
+                            if (result.Count > 0 || resultCM.Count > 0)
+                            {
+                                // si hay al menos una "Enabled" envio true, para desactivarlas todas
+                                estadoActual = true;
+                            }
+                            else
+                            {
+                                estadoActual = false;
+                            }
 
-                        foreach (RiskPolyLine rpl in TheCurrentLayout.RiskGroupSelected)
-                        {
-                            TheCurrentLayout.EnableRisk(rpl, true, estadoActual);
-                            //rpl.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
-                            rpl.SetColor(new SolidColorBrush(System.Windows.Media.Colors.LightSkyBlue));
-                        }
-                        foreach (var cmline in TheCurrentLayout.CMGroupSelected)
-                        {
-                            TheCurrentLayout.DisableCounterMeasure(cmline, true, estadoActual);
-                            //cmline.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
-                            cmline.SetColor(new SolidColorBrush(System.Windows.Media.Colors.LightSkyBlue));
-                        }
+                            foreach (RiskPolyLine rpl in TheCurrentLayout.RiskGroupSelected)
+                            {
+                                TheCurrentLayout.EnableRisk(rpl, true, estadoActual);
+                                //rpl.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
+                                rpl.SetColor(new SolidColorBrush(System.Windows.Media.Colors.LightSkyBlue));
+                            }
+                            foreach (var cmline in TheCurrentLayout.CMGroupSelected)
+                            {
+                                TheCurrentLayout.DisableCounterMeasure(cmline, true, estadoActual);
+                                //cmline.Stroke = new SolidColorBrush(Colors.LightSkyBlue);
+                                cmline.SetColor(new SolidColorBrush(System.Windows.Media.Colors.LightSkyBlue));
+                            }
 
-                        if (!estadoActual)
-                        {
-                            GhostWindow win = new GhostWindow("Enabled");
-                            win.ShowDialog();
-                        }
-                        else
-                        {
-                            GhostWindow win = new GhostWindow("Disabled");
-                            win.ShowDialog();
-                        }
+                            if (!estadoActual)
+                            {
+                                GhostWindow win = new GhostWindow("Enabled");
+                                win.ShowDialog();
+                            }
+                            else
+                            {
+                                GhostWindow win = new GhostWindow("Disabled");
+                                win.ShowDialog();
+                            }
 
-                        OnProjectChange();
-                        UpdateGroupTab(TheCurrentLayout.Ds);
+                            OnProjectChange();
+                            UpdateGroupTab(TheCurrentLayout.Ds);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            MostrarErrorDialog(ex.Message);
+                        }
                     }
-                    );
+                 );
             }
             catch (Exception ex)
             {
@@ -1367,11 +1436,18 @@ namespace EnsureRisk
                 DeleteRiskFromGroupCommand = new RelayyCommand(
                     parametro =>
                     {
-                        if (parametro is decimal idRisk)
+                        try
                         {
-                            IdRiskToDeleteFromGroup = idRisk;
-                            IS_DELETING_RISK_FROM_GROUP_TAB = true;
-                            MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " this value?");
+                            if (parametro is decimal idRisk)
+                            {
+                                IdRiskToDeleteFromGroup = idRisk;
+                                IS_DELETING_RISK_FROM_GROUP_TAB = true;
+                                MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " this value?");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MostrarErrorDialog(ex.Message);
                         }
                     }
                 );
@@ -1381,7 +1457,6 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
-
 
         #endregion
 
@@ -1395,16 +1470,22 @@ namespace EnsureRisk
                 RefreshButtonCommand = new RelayyCommand(
                 _ =>
                 {
-                    DsMain = new UserDataSet();
-                    using (ServiceRiskController.WebServiceRisk risk = new ServiceRiskController.WebServiceRisk())
+                    try
                     {
-                        DsMain.Merge(risk.GetRiskTreeString(new object[] { "%", IdProject }));
+                        DsMain = new UserDataSet();
+                        using (ServiceRiskController.WebServiceRisk risk = new ServiceRiskController.WebServiceRisk())
+                        {
+                            DsMain.Merge(risk.GetRiskTreeString(new object[] { "%", IdProject }));
+                        }
+
+                        DVRisk_Tree = DsMain.Tables[DT_Diagram.TABLE_NAME].DefaultView;
+                        //gridDiagramList.dgTreeDiagrams.SelectedIndex = 0;
+                        gridDiagramList.dgTreeDiagrams.SelectedIndex = 0;
                     }
-
-                    DVRisk_Tree = DsMain.Tables[DT_Diagram.TABLE_NAME].DefaultView;
-                    //gridDiagramList.dgTreeDiagrams.SelectedIndex = 0;
-                    gridDiagramList.dgTreeDiagrams.SelectedIndex = 0;
-
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
                 });
             }
             catch (Exception ex)
@@ -1422,76 +1503,82 @@ namespace EnsureRisk
                 AddDiagramCommand = new RelayyCommand(
                 _ =>
                 {
-                    MyLayoutDocumentt myly = new MyLayoutDocumentt
+                    try
                     {
-                        SaveAsClosing = true,
-                        MenuRisk = MenuRisk,
-                        MenuMainRisk = MenuMainRisk,
-                        //MenuRiskLimited = MenuRisk,
-                        Ds = DsMain.Copy(),
-                        MenuCM = MenuCM,
-                        LoginUser = LoginUser,
-                        MyWindow = this,
-                        MenuGroupCM = MenuGroupCM,
-                        MenuGroupRisk = MenuGroupRisk,
-                        MenuGroupMixed = MenuGroupMixed,
-                        IsPanEnable = isPanEnabled,
-                        IdWBSFilter = IdWBSFilterSelected
-                    };
-                    WindowTreeRisk riskTree = new WindowTreeRisk
-                    {
-                        Operation = General.INSERT,
-                        TopRiskTable = myly.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Copy(),
-                        DRow = myly.Ds.Tables[DT_Diagram.TABLE_NAME].NewRow(),
-                        Icon = Icon,
-                        IDProject = IdProject
-                    };
-                    if (riskTree.ShowDialog() == true)
-                    {
-                        myly.DrDiagram = riskTree.DRow;
-                        myly.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Add(myly.DrDiagram);
-                        myly.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Merge(riskTree.TopRiskTable);
-
-                        DataRow drRisk = myly.Ds.Tables[DT_Risk.TABLE_NAME].NewRow();
-
-                        drRisk[DT_Risk.NAMESHORT] = "Main Risk";
-                        drRisk[DT_Risk.COMMENTS] = "Main Risk " + riskTree.DRow[DT_Diagram.DIAGRAM_NAME];
-                        drRisk[DT_Risk.IS_ROOT] = true;
-                        drRisk[DT_Risk.IS_CM] = false;
-                        drRisk[DT_Risk.ISCOLLAPSED] = false;
-                        drRisk[DT_Risk.IS_ACTIVE] = true;
-                        drRisk[DT_Risk.PROBABILITY] = 100;
-                        drRisk[DT_Risk.ID_DIAGRAM] = riskTree.DRow[DT_Diagram.ID_DIAGRAM];
-                        myly.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
-
-                        DataRow newRow = myly.Ds.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
-                        newRow[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
-                        newRow[DT_Role_Risk.Role] = myly.Ds.Tables[DT_Role.ROLE_TABLE].Select(DT_Role.ROLE_COLUM + " = 'Administrator'").First()[DT_Role.ROLE_COLUM];
-                        newRow[DT_Role_Risk.IDROL_COLUMN] = myly.Ds.Tables[DT_Role.ROLE_TABLE].Select(DT_Role.ROLE_COLUM + " = 'Administrator'").First()[DT_Role.IDROL_COLUMN];
-                        myly.Ds.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(newRow);
-                        System.Windows.Media.Color color = ((SolidColorBrush)new BrushConverter().ConvertFrom(myly.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + riskTree.DRow[DT_Diagram.ID_DIAGRAM]).First()[DT_Diagram_Damages.COLOR].ToString())).Color;
-                        myly.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
-                        if (LayoutDocPaneGroup.Children.Count > 0)
+                        MyLayoutDocumentt myly = new MyLayoutDocumentt
                         {
-                            ((LayoutDocumentPane)LayoutDocPaneGroup.Children[0]).Children.Add(myly);
-                        }
-                        OpenedDocuments.Add(myly);
-                        TheCurrentLayout = myly;
-                        TheCurrentLayout.MoviendoRisk = false;
-                        TheCurrentLayout.ID_Diagram = (decimal)riskTree.DRow[DT_Diagram.ID_DIAGRAM];
-                        TheCurrentLayout.AddMainLine(drRisk, color);
-                        TheCurrentLayout.LoadComboDamage();
-                        TheCurrentLayout.LoadRectangles();
-                        TheCurrentLayout.DrawNumbers();
-                        TheCurrentLayout.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
-                        TheCurrentLayout.FixDrawPanel();
-                        foreach (var item in OpenedDocuments)
+                            SaveAsClosing = true,
+                            MenuRisk = MenuRisk,
+                            MenuMainRisk = MenuMainRisk,
+                            //MenuRiskLimited = MenuRisk,
+                            Ds = DsMain.Copy(),
+                            MenuCM = MenuCM,
+                            LoginUser = LoginUser,
+                            MyWindow = this,
+                            MenuGroupCM = MenuGroupCM,
+                            MenuGroupRisk = MenuGroupRisk,
+                            MenuGroupMixed = MenuGroupMixed,
+                            IsPanEnable = isPanEnabled,
+                            IdWBSFilter = IdWBSFilterSelected
+                        };
+                        WindowTreeRisk riskTree = new WindowTreeRisk
                         {
-                            item.ExitWorking();
+                            Operation = General.INSERT,
+                            TopRiskTable = myly.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Copy(),
+                            DRow = myly.Ds.Tables[DT_Diagram.TABLE_NAME].NewRow(),
+                            Icon = Icon,
+                            IDProject = IdProject
+                        };
+                        if (riskTree.ShowDialog() == true)
+                        {
+                            myly.DrDiagram = riskTree.DRow;
+                            myly.Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Add(myly.DrDiagram);
+                            myly.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Merge(riskTree.TopRiskTable);
+
+                            DataRow drRisk = myly.Ds.Tables[DT_Risk.TABLE_NAME].NewRow();
+
+                            drRisk[DT_Risk.NAMESHORT] = "Main Risk";
+                            drRisk[DT_Risk.COMMENTS] = "Main Risk " + riskTree.DRow[DT_Diagram.DIAGRAM_NAME];
+                            drRisk[DT_Risk.IS_ROOT] = true;
+                            drRisk[DT_Risk.IS_CM] = false;
+                            drRisk[DT_Risk.ISCOLLAPSED] = false;
+                            drRisk[DT_Risk.IS_ACTIVE] = true;
+                            drRisk[DT_Risk.PROBABILITY] = 100;
+                            drRisk[DT_Risk.ID_DIAGRAM] = riskTree.DRow[DT_Diagram.ID_DIAGRAM];
+                            myly.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRisk);
+
+                            DataRow newRow = myly.Ds.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
+                            newRow[DT_Role_Risk.ID_RISK] = drRisk[DT_Risk.ID];
+                            newRow[DT_Role_Risk.Role] = myly.Ds.Tables[DT_Role.ROLE_TABLE].Select(DT_Role.ROLE_COLUM + " = 'Administrator'").First()[DT_Role.ROLE_COLUM];
+                            newRow[DT_Role_Risk.IDROL_COLUMN] = myly.Ds.Tables[DT_Role.ROLE_TABLE].Select(DT_Role.ROLE_COLUM + " = 'Administrator'").First()[DT_Role.IDROL_COLUMN];
+                            myly.Ds.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(newRow);
+                            System.Windows.Media.Color color = ((SolidColorBrush)new BrushConverter().ConvertFrom(myly.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + riskTree.DRow[DT_Diagram.ID_DIAGRAM]).First()[DT_Diagram_Damages.COLOR].ToString())).Color;
+                            myly.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
+                            if (LayoutDocPaneGroup.Children.Count > 0)
+                            {
+                                ((LayoutDocumentPane)LayoutDocPaneGroup.Children[0]).Children.Add(myly);
+                            }
+                            OpenedDocuments.Add(myly);
+                            TheCurrentLayout = myly;
+                            TheCurrentLayout.MoviendoRisk = false;
+                            TheCurrentLayout.ID_Diagram = (decimal)riskTree.DRow[DT_Diagram.ID_DIAGRAM];
+                            TheCurrentLayout.AddMainLine(drRisk, color);
+                            TheCurrentLayout.LoadComboDamage();
+                            TheCurrentLayout.LoadRectangles();
+                            TheCurrentLayout.DrawNumbers();
+                            TheCurrentLayout.Title = riskTree.DRow[DT_Diagram.DIAGRAM_NAME].ToString();
+                            TheCurrentLayout.FixDrawPanel();
+                            foreach (var item in OpenedDocuments)
+                            {
+                                item.ExitWorking();
+                            }
+                            TheCurrentLayout.EnterWorking();
                         }
-                        TheCurrentLayout.EnterWorking();
                     }
-
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
                 });
             }
             catch (Exception ex)
@@ -1509,12 +1596,22 @@ namespace EnsureRisk
                 DiagramListDoubleClickCommand = new RelayyCommand(
                 parametro =>
                 {
-                    if (ExistRole(4))
+                    try
                     {
-                        if (gridDiagramList.dgTreeDiagrams.SelectedIndex >= 0)
+                        if (ExistRole(4))
                         {
-                            OpenDiagramFromDiagramList((decimal)DVRisk_Tree[gridDiagramList.dgTreeDiagrams.SelectedIndex].Row[DT_Diagram.ID_DIAGRAM]);
+                            if (gridDiagramList.dgTreeDiagrams.SelectedIndex >= 0)
+                            {
+                                OpenDiagramFromDiagramList((decimal)DVRisk_Tree[gridDiagramList.dgTreeDiagrams.SelectedIndex].Row[DT_Diagram.ID_DIAGRAM]);
+                            }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        IsImporting = false;
+                        TheProgress.Visibility = Visibility.Hidden;
+                        HabilitarBotones(true);
+                        MostrarErrorDialog(ex.Message);
                     }
                 });
             }
@@ -1536,10 +1633,17 @@ namespace EnsureRisk
                 DeleteDiagramCommand = new RelayyCommand(
                 _ =>
                 {
-                    if (gridDiagramList.dgTreeDiagrams.SelectedIndex >= 0)
+                    try
                     {
-                        MostrarDialogYesNo($"{StringResources.DELETE_MESSAGE} the diagram [{ DVRisk_Tree[gridDiagramList.dgTreeDiagrams.SelectedIndex].Row[DT_Diagram.DIAGRAM_NAME] }]?");
-                        IS_DELETING_DIAGRAM = true;
+                        if (gridDiagramList.dgTreeDiagrams.SelectedIndex >= 0)
+                        {
+                            MostrarDialogYesNo($"{StringResources.DELETE_MESSAGE} the diagram [{ DVRisk_Tree[gridDiagramList.dgTreeDiagrams.SelectedIndex].Row[DT_Diagram.DIAGRAM_NAME] }]?");
+                            IS_DELETING_DIAGRAM = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
                     }
                 });
             }
@@ -1558,12 +1662,22 @@ namespace EnsureRisk
                 ImportFromExcelDiagramCommand = new RelayyCommand(
                 _ =>
                 {
-                    using (System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
+                    try
                     {
-                        if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        using (System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
                         {
-                            ImportFromExcel(DsMain, ofd.FileName);
+                            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            {
+                                ImportFromExcel(DsMain, ofd.FileName);
+                            }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        IsImporting = false;
+                        MostrarErrorDialog(ex.Message);
+                        TheProgress.Visibility = Visibility.Hidden;
+                        HabilitarBotones(true);
                     }
                 });
             }
@@ -1644,82 +1758,88 @@ namespace EnsureRisk
         public RelayyCommand FilterRiskCommand { get { return _FilterRiskCommand; } set { _FilterRiskCommand = value; OnPropertyChanged("FilterRiskCommand"); } }
         private void ImplementFilterRiskCommand()
         {
-            try
-            {
-                FilterRiskCommand = new RelayyCommand(
+            FilterRiskCommand = new RelayyCommand(
                 _ =>
                 {
-                    DV_CrossRisk.RowFilter = DT_Risk_Damages.RISK_NAMESHORT + " like '%" + TextFilterRisk + "%'";
+                    try
+                    {
+                        DV_CrossRisk.RowFilter = DT_Risk_Damages.RISK_NAMESHORT + " like '%" + TextFilterRisk + "%'";
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
                 });
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
         }
 
         private RelayyCommand _ClearFilterRiskCommand;
         public RelayyCommand ClearFilterRiskCommand { get { return _ClearFilterRiskCommand; } set { _ClearFilterRiskCommand = value; OnPropertyChanged("ClearFilterRiskCommand"); } }
         private void ImplementClearFilterRiskCommand()
         {
-            try
-            {
-                ClearFilterRiskCommand = new RelayyCommand(
-                _ =>
-                {
-                    TextFilterRisk = string.Empty;
-                });
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
+            ClearFilterRiskCommand = new RelayyCommand(
+               _ =>
+               {
+                   try
+                   {
+                       TextFilterRisk = string.Empty;
+                   }
+                   catch (Exception ex)
+                   {
+                       MostrarErrorDialog(ex.Message);
+                   }
+               });
         }
 
         private RelayyCommand _DgRiskMouseLeaveCommand;
         public RelayyCommand DgRiskMouseLeaveCommand { get { return _DgRiskMouseLeaveCommand; } set { _DgRiskMouseLeaveCommand = value; OnPropertyChanged("DgRiskMouseLeaveCommand"); } }
         private void ImplementDgRiskMouseLeaveCommand()
         {
-            try
-            {
-                DgRiskMouseLeaveCommand = new RelayyCommand(
-                _ =>
-                {
-                    if (TheCurrentLayout != null)
-                    {
-                        TheCurrentLayout.LineLeave(TheCurrentLayout.Line_Selected);
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
+            DgRiskMouseLeaveCommand = new RelayyCommand(
+                 _ =>
+                 {
+                     try
+                     {
+                         if (TheCurrentLayout != null)
+                         {
+                             TheCurrentLayout.LineLeave(TheCurrentLayout.Line_Selected);
+                         }
+                     }
+                     catch (Exception ex)
+                     {
+                         MostrarErrorDialog(ex.Message);
+                     }
+                 });
         }
 
         private RelayyCommand _DgRiskSelectionChangedCommand;
         public RelayyCommand DgRiskSelectionChangedCommand { get { return _DgRiskSelectionChangedCommand; } set { _DgRiskSelectionChangedCommand = value; OnPropertyChanged("DgRiskSelectionChangedCommand"); } }
         private void ImplementDgRiskSelectionChangedCommand()
         {
-            try
-            {
-                DgRiskSelectionChangedCommand = new RelayyCommand(
+            DgRiskSelectionChangedCommand = new RelayyCommand(
                 parametro =>
                 {
-                    if (parametro is decimal rowRiskID)
+                    try
                     {
-                        TheCurrentLayout.Line_Selected = TheCurrentLayout.LinesList.Find(item => (item.ID == rowRiskID && !item.IsCM));
-                        TheCurrentLayout.LineLeave(TheCurrentLayout.Line_Selected);
-                        TheCurrentLayout.BrigIntoViewSelectedRiskPolyline(TheCurrentLayout.Line_Selected);
-                        TheCurrentLayout.RiskEnter(TheCurrentLayout.Line_Selected, TheCurrentLayout.Line_Selected.Points[TheCurrentLayout.Line_Selected.Points.Count - 1], false);
-                        TheCurrentLayout.UpdateSelectedPolyLineVisualInfo();
+                        if (parametro is DataGrid riskDataGrid && riskDataGrid.SelectedItem != null)
+                        {
+                            if (riskDataGrid.SelectedItem is DataRowView thedataRowView)
+                            {
+                                if (thedataRowView.Row[DT_Risk.ID] is decimal rowRiskID)
+                                {
+                                    TheCurrentLayout.Line_Selected = TheCurrentLayout.LinesList.Find(item => (item.ID == rowRiskID && !item.IsCM));
+                                    TheCurrentLayout.LineLeave(TheCurrentLayout.Line_Selected);
+                                    TheCurrentLayout.BrigIntoViewSelectedRiskPolyline(TheCurrentLayout.Line_Selected);
+                                    TheCurrentLayout.RiskEnter(TheCurrentLayout.Line_Selected, TheCurrentLayout.Line_Selected.Points[TheCurrentLayout.Line_Selected.Points.Count - 1], false);
+                                    TheCurrentLayout.UpdateSelectedPolyLineVisualInfo();
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
                     }
                 });
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
         }
 
         private RelayyCommand _ActivateRiskCommand;
@@ -1731,11 +1851,18 @@ namespace EnsureRisk
                 ActivateRiskCommand = new RelayyCommand(
                 parametro =>
                 {
-                    if (parametro is decimal rowRiskID)
+                    try
                     {
-                        bool result = TheCurrentLayout.EnableRisk(TheCurrentLayout.LinesList.Find(x => x.ID == rowRiskID), false, false);
-                        OnProjectChange();
+                        if (parametro is decimal rowRiskID)
+                        {
+                            bool result = TheCurrentLayout.EnableRisk(TheCurrentLayout.LinesList.Find(x => x.ID == rowRiskID), false, false);
+                            OnProjectChange();
+                        }
                     }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }                    
                 });
             }
             catch (Exception ex)
@@ -1748,89 +1875,165 @@ namespace EnsureRisk
         public RelayyCommand RiskNameTextLostFocusCommand { get { return _RiskNameTextLostFocusCommand; } set { _RiskNameTextLostFocusCommand = value; OnPropertyChanged("RiskNameTextLostFocusCommand"); } }
         private void ImplementRiskNameTextLostFocusCommand()
         {
-            try
-            {
-                RiskNameTextLostFocusCommand = new RelayyCommand(
-                parametro =>
-                {
-                    if (parametro is decimal idRisk)
-                    {
-                        string nuevoNombre = "";
-                        if (DV_CrossRisk.Table.Select(DT_Risk_Damages.ID_RISK + " = " + idRisk).Any())
-                        {
-                            nuevoNombre = DV_CrossRisk.Table.Select(DT_Risk_Damages.ID_RISK + " = " + idRisk).First()[DT_Risk_Damages.RISK_NAMESHORT].ToString();
-                            bool? canUsePolyLineName = CanUseProposedPolyLineName(nuevoNombre.TrimStart());
-                            if (canUsePolyLineName.HasValue)
-                            {
-                                if (canUsePolyLineName.HasValue && !canUsePolyLineName.Value)
-                                {
-                                    nuevoNombre = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRisk)[DT_Risk.NAMESHORT].ToString();
-                                }
-                                else
-                                {
-                                    ChangeRiskNameInCrossTable(nuevoNombre, idRisk);
-                                }
-                            }
-                            else
-                            {
-                                ChangeRiskNameInCrossTable(nuevoNombre, idRisk);
-                            }
-                        }
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
+            RiskNameTextLostFocusCommand = new RelayyCommand(
+               parametro =>
+               {
+                   try
+                   {
+                       if (parametro is TextBox theTextBox)
+                       {
+                           if (!string.IsNullOrWhiteSpace(theTextBox.Text))
+                           {
+                               if (theTextBox.DataContext != null && theTextBox.DataContext is DataRowView theDataView)
+                               {
+                                   bool? canUsePolyLineName = CanUseProposedPolyLineName(theTextBox.Text.TrimStart());
+                                   decimal idRisk = (decimal)theDataView.Row[DT_Risk_Damages.ID_RISK];
+                                   if (canUsePolyLineName.HasValue)
+                                   {
+                                       if (canUsePolyLineName.HasValue && !canUsePolyLineName.Value)
+                                       {
+                                           theTextBox.Text = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRisk)[DT_Risk.NAMESHORT].ToString();
+                                       }
+                                       else
+                                       {
+                                           ChangeRiskNameInCrossTable(theTextBox, idRisk);
+                                       }
+                                   }
+                                   else
+                                   {
+                                       ChangeRiskNameInCrossTable(theTextBox, idRisk);
+                                   }
+                               }
+                           }
+                           else
+                           {
+                               CrossRiskRightTab(TheCurrentLayout.Ds);
+                               CrossCMRightTab(TheCurrentLayout.Ds);
+                               MostrarErrorDialog("Risk Name Value can´t be empty or white space. No changes apply");
+                           }
+                       }
+                   }
+                   catch (Exception ex)
+                   {
+                       MostrarErrorDialog(ex.Message);
+                   }
+               });
         }
 
         private RelayyCommand _RiskProbabilityLostFocusCommand;
         public RelayyCommand RiskProbabilityLostFocusCommand { get { return _RiskProbabilityLostFocusCommand; } set { _RiskProbabilityLostFocusCommand = value; OnPropertyChanged("RiskProbabilityLostFocusCommand"); } }
         private void ImplementRiskProbabilityLostFocusCommand()
         {
-            try
-            {
-                RiskProbabilityLostFocusCommand = new RelayyCommand(
+            RiskProbabilityLostFocusCommand = new RelayyCommand(
                 parametro =>
                 {
-                    if (parametro is decimal idRisk)
+                    try
                     {
-                        string nuevaProb = "";
-                        //if (DV_CrossRisk.Table.Select(DT_Risk_Damages.ID_RISK + " = " + idRisk).Any())
-                        //{
-                        //    nuevaProb = DV_CrossRisk.Table.Select(DT_Risk_Damages.ID_RISK + " = " + idRisk).First()[DT_Risk_Damages.PROBABILITY].ToString();
-                        //    if (!string.IsNullOrWhiteSpace(theTextBox.Text))
-                        //    {
-                        //        if (theTextBox.DataContext != null && theTextBox.DataContext is DataRowView theDataView)
-                        //        {
-                        //            bool? canUsePolyLineName = CanUseProposedPolyLineName(theTextBox.Text.TrimStart());
-                        //            decimal idRisk = (decimal)theDataView.Row[DT_Risk_Damages.ID_RISK];
-                        //            if (canUsePolyLineName.HasValue)
-                        //            {
-                        //                if (canUsePolyLineName.HasValue && !canUsePolyLineName.Value)
-                        //                {
-                        //                    theTextBox.Text = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRisk)[DT_Risk.NAMESHORT].ToString();
-                        //                }
-                        //                else
-                        //                {
-                        //                    ChangeRiskNameInCrossTable(theTextBox, idRisk);
-                        //                }
-                        //            }
-                        //            else
-                        //            {
-                        //                ChangeRiskNameInCrossTable(theTextBox, idRisk);
-                        //            }
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        CrossRiskRightTab(TheCurrentLayout.Ds);
-                        //        CrossCMRightTab(TheCurrentLayout.Ds);
-                        //        MostrarErrorDialog("Risk Name Value can´t be empty or white space. No changes apply");
-                        //    }
+                        if (parametro is decimal idRisk)
+                        {
+                            string newProbability;
+                            if (DV_CrossRisk.Table.Select(DT_Risk_Damages.ID_RISK + " = " + idRisk).Any())
+                            {
+                                DataRow drRiskDamageSelected = DV_CrossRisk.Table.Select(DT_Risk_Damages.ID_RISK + " = " + idRisk).First();
+                                newProbability = DV_CrossRisk.Table.Select(DT_Risk_Damages.ID_RISK + " = " + idRisk).First()[DT_Risk_Damages.PROBABILITY].ToString();
+                                if (string.IsNullOrWhiteSpace(newProbability) || !General.IsNumeric(newProbability))
+                                {
+                                    probability = 0;
+                                }
+                                else
+                                {
+                                    probability = Convert.ToDecimal(newProbability);
+                                }
+                                if (TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains(idRisk))
+                                {
+                                    if (IdWBSFilterSelected != -1)
+                                    {
+                                        if (TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { idRisk, IdWBSFilterSelected }))
+                                        {
+                                            TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows
+                                                .Find(new object[] { idRisk, IdWBSFilterSelected })[DT_RISK_WBS.PROBABILITY] = probability;
+                                        }
+                                        CalculateProbability(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRisk));
+                                        TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRisk));
+                                        TheCurrentLayout.ClearFilters();
 
-                        //}
+                                        TheCurrentLayout.DrawNumbers();
+                                        TheCurrentLayout.UpdateLinesValues();
+                                        TheCurrentLayout.SetLinesThickness();
+
+                                        CrossRiskRightTab(TheCurrentLayout.Ds);
+                                        CrossCMRightTab(TheCurrentLayout.Ds);
+                                        TheCurrentLayout.UpdateSelectedPolyLineVisualInfo();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+        #endregion
+
+        #region Cross_CM_List
+        private RelayyCommand _FilterCMCommand;
+        public RelayyCommand FilterCMCommand { get { return _FilterCMCommand; } set { _FilterCMCommand = value; OnPropertyChanged("FilterCMCommand"); } }
+        private void ImplementFilterCMCommand()
+        {
+            FilterCMCommand = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        DV_Cross_CM.RowFilter = DT_Risk_Damages.RISK_NAMESHORT + " like '%" + TextFilterCM + "%'";
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _ClearFilterCMCommand;
+        public RelayyCommand ClearFilterCMCommand { get { return _ClearFilterCMCommand; } set { _ClearFilterCMCommand = value; OnPropertyChanged("ClearFilterCMCommand"); } }
+        private void ImplementClearFilterCMCommand()
+        {
+            ClearFilterCMCommand = new RelayyCommand(
+               _ =>
+               {
+                   try
+                   {
+                       TextFilterCM = string.Empty;
+                   }
+                   catch (Exception ex)
+                   {
+                       MostrarErrorDialog(ex.Message);
+                   }
+               });
+        }
+
+        private RelayyCommand _ActivateCMCommand;
+        public RelayyCommand ActivateCMCommand { get { return _ActivateCMCommand; } set { _ActivateCMCommand = value; OnPropertyChanged("ActivateCMCommand"); } }
+        private void ImplementActivateCMCommand()
+        {
+            try
+            {
+                ActivateCMCommand = new RelayyCommand(
+                parametro =>
+                {
+                    try
+                    {
+                        if (parametro is decimal rowRiskID)
+                        {
+                            bool result = TheCurrentLayout.DisableCounterMeasure(TheCurrentLayout.LinesList.Find(x => x.ID == rowRiskID));
+                            OnProjectChange();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
                     }
                 });
             }
@@ -1839,6 +2042,38 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
+
+        private RelayyCommand _DgCMSelectionChangedCommand;
+        public RelayyCommand DgCMSelectionChangedCommand { get { return _DgCMSelectionChangedCommand; } set { _DgCMSelectionChangedCommand = value; OnPropertyChanged("DgCMSelectionChangedCommand"); } }
+        private void ImplementDgCMSelectionChangedCommand()
+        {
+            DgCMSelectionChangedCommand = new RelayyCommand(
+                parametro =>
+                {
+                    try
+                    {
+                        if (parametro is DataGrid riskDataGrid && riskDataGrid.SelectedItem != null)
+                        {
+                            if (riskDataGrid.SelectedItem is DataRowView thedataRowView)
+                            {
+                                if (thedataRowView.Row[DT_Risk_Damages.ID_RISK] is decimal rowRiskID)
+                                {
+                                    TheCurrentLayout.Line_Selected = TheCurrentLayout.LinesList.Find(item => (item.ID == rowRiskID && item.IsCM));
+                                    TheCurrentLayout.LineLeave(TheCurrentLayout.Line_Selected);
+                                    TheCurrentLayout.BrigIntoViewSelectedRiskPolyline(TheCurrentLayout.Line_Selected);
+                                    TheCurrentLayout.CMEnter(TheCurrentLayout.Line_Selected, TheCurrentLayout.Line_Selected.Points[TheCurrentLayout.Line_Selected.Points.Count - 1], false);
+                                    TheCurrentLayout.UpdateSelectedPolyLineVisualInfo();
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
         #endregion
 
         #endregion
@@ -1880,6 +2115,7 @@ namespace EnsureRisk
                 wrapRisk.headerProb.DataContext = this;
                 wrapRisk.BtnAddWBSRisk.DataContext = this;
                 wrapRisk.BtnAddRiskRole.DataContext = this;
+                //GridRisksCross.DataContext = this;
                 IsImporting = false;
                 IsCalculatingRisk = false;
                 IsCalculatingCM = false;
@@ -1958,49 +2194,34 @@ namespace EnsureRisk
                 ChangeLanguage();
                 //CbProjects_DropDownClosed(sender, e);
                 //TAB WBS
-                ImplementAddWBSCommand();
-                ImplementCollapseWBSCommand();
-                ImplementUnSelectCommand();
-                ImplementEyeCommand();
-                ImplementEditTreeWBSCommand();
-                ImplementDeleteTreeWBSCommand();
+                ImplementAddWBSCommand(); ImplementCollapseWBSCommand(); ImplementUnSelectCommand();
+                ImplementEyeCommand(); ImplementEditTreeWBSCommand(); ImplementDeleteTreeWBSCommand();
                 //Group Tab
-                AddRiskToGroupCommandFunction();
-                RemoveGroupCommandFunction();
-                RemoveFilterGroupCommandFunction();
-                RenameGroupCommandFunction();
-                EnableDisableGroupCommanddFunction();
-                ImplementTreviewItemGotFocusCommand();
+                AddRiskToGroupCommandFunction(); RemoveGroupCommandFunction(); RemoveFilterGroupCommandFunction();
+                RenameGroupCommandFunction(); EnableDisableGroupCommanddFunction(); ImplementTreviewItemGotFocusCommand();
                 DeleteRiskFromGroupCommandFunction();
                 //properties tab
-                ImplementRiskName_KeyUpCommand();
-                ImplementTextRisk_LostFocusCommand();
-                ImplementRiskName_TextChangedCommand();
-                ImplementTextRiskDetail_LostFocusCommand();
-                ImplementDamageValueLostFocusCommand();
-                ImplementChangePrimaryWBSRiskCommand();
-                ImplementAddWBSRiskCommand();
-                ImplementDeleteWBSRiskCommand();
-                ImplementProbabilityLostFocusCommand();
-                ImplementAddTabRiskRoleCommand();
-                ImplementDeleteTabRoleRiskCommand();
+                ImplementRiskName_KeyUpCommand(); ImplementTextRisk_LostFocusCommand(); ImplementRiskName_TextChangedCommand();
+                ImplementTextRiskDetail_LostFocusCommand(); ImplementDamageValueLostFocusCommand(); ImplementChangePrimaryWBSRiskCommand();
+                ImplementAddWBSRiskCommand(); ImplementDeleteWBSRiskCommand(); ImplementProbabilityLostFocusCommand();
+                ImplementAddTabRiskRoleCommand(); ImplementDeleteTabRoleRiskCommand();
 
                 //Diagram List Tab
-                ImplementRefreshButtonCommand();
-                ImplementAddDiagramCommand();
-                ImplementDiagramListDoubleClickCommand();
-                ImplementDeleteDiagramCommand();
-                ImplementImportFromExcelDiagramCommand();
+                ImplementRefreshButtonCommand(); ImplementAddDiagramCommand(); ImplementDiagramListDoubleClickCommand();
+                ImplementDeleteDiagramCommand(); ImplementImportFromExcelDiagramCommand();
 
                 //Cross Risk List
-                ImplementFilterRiskCommand();ImplementClearFilterRiskCommand();ImplementDgRiskMouseLeaveCommand();ImplementDgRiskSelectionChangedCommand();
+                ImplementFilterRiskCommand();ImplementClearFilterRiskCommand();ImplementDgRiskMouseLeaveCommand();ImplementDgRiskSelectionChangedCommand(); ImplementActivateRiskCommand();
+                ImplementRiskNameTextLostFocusCommand(); ImplementRiskProbabilityLostFocusCommand();
+
+                //Cross CM List
+                ImplementFilterCMCommand(); ImplementClearFilterCMCommand(); ImplementActivateCMCommand(); ImplementDgCMSelectionChangedCommand();
             }
             catch (Exception ex)
             {
                 MostrarErrorDialog(ex.Message);
             }
         }
-
 
         public void MostrarErrorDialog(string text)
         {
@@ -2114,10 +2335,6 @@ namespace EnsureRisk
                 {
                     DvCBProjects = new DataView(webService.GetAllProjects().Tables[DT_Project.TABLE_NAME]);
                 }
-                //cbProjects.SelectedValuePath = DT_Project.ID_PROJECT;
-                //cbProjects.DisplayMemberPath = DT_Project.PROJECT_NAME;
-                //cbProjects.SelectedIndex = 0;
-                //IdProject = (decimal)cbProjects.SelectedValue;
             }
         }
 
@@ -2574,11 +2791,9 @@ namespace EnsureRisk
                 {
                     myly.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Merge(riskTree.TopRiskTable);
                     SetNewDamageToEntireTree(myly.ID_Diagram, myly.Ds);
-                    //TextDiagram.Text = riskTree.TextName.Text;
                     TheProgress.Visibility = Visibility.Visible;
                     HabilitarBotones(false);
                     myly.Title = riskTree.TextName.Text;
-                    //LayoutDocumentPanel.Children.Add(myly);
                     if (LayoutDocPaneGroup.Children.Count > 0)
                     {
                         ((LayoutDocumentPane)LayoutDocPaneGroup.Children[0]).Children.Add(myly);
@@ -3180,8 +3395,8 @@ namespace EnsureRisk
                         }
                     }
                     Dt_Cross_Risk.AcceptChanges();
-                    CrossTabController.CleanDynamicRiskColumns(dgRisksCross);
-                    dgRisksCross.AutoGenerateColumns = false;
+                    CrossTabController.CleanDynamicRiskColumns(GridRisksCross.dgRisksCross);
+                    GridRisksCross.dgRisksCross.AutoGenerateColumns = false;
                     AddDynamicRiskColumns(Dt_Cross_Risk);
                     TreeOperation.OrderTableHierarquical(Dt_Cross_Risk, TheCurrentLayout.LinesList, DT_Risk_Damages.ID_RISK);
                     DV_CrossRisk = new DataView(Dt_Cross_Risk);
@@ -3275,31 +3490,12 @@ namespace EnsureRisk
                         //column.Binding = columnBinding;
                         tmp.MinWidth = 100;
                         tmp.MaxWidth = 300;
-                        dgRisksCross.Columns.Add(tmp);
+                        GridRisksCross.dgRisksCross.Columns.Add(tmp);
                         break;
                 }
             }
         }
 
-        private void ActiveRisk_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (e.Source != null && e.Source is Button theButton)
-                {
-                    if (theButton.DataContext != null && theButton.DataContext is DataRowView theDataRowView)
-                    {
-                        decimal riskID = (decimal)theDataRowView.Row[DT_Risk_Damages.ID_RISK];
-                        bool result = TheCurrentLayout.EnableRisk(TheCurrentLayout.LinesList.Find(x => x.ID == riskID), false, false);
-                        OnProjectChange();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
         #endregion
 
         #region CMCrossTab        
@@ -3396,8 +3592,8 @@ namespace EnsureRisk
                         }
                     }
                     Dt_Cross_CM.AcceptChanges();
-                    CrossTabController.CleanDynamicCMColumns(dgCrossCM);
-                    dgCrossCM.AutoGenerateColumns = false;
+                    CrossTabController.CleanDynamicCMColumns(GridCrossCM.dgCrossCM);
+                    GridCrossCM.dgCrossCM.AutoGenerateColumns = false;
                     AddDynamicCMColumns(Dt_Cross_CM);
                     TreeOperation.OrderTableHierarquical(Dt_Cross_CM, TheCurrentLayout.LinesList, DT_Risk_Damages.ID_RISK);
                     DV_Cross_CM = new DataView(Dt_Cross_CM);
@@ -3494,26 +3690,13 @@ namespace EnsureRisk
                         //column.Binding = columnBinding;
                         tmp.MinWidth = 100;
                         tmp.MaxWidth = 300;
-                        dgCrossCM.Columns.Add(tmp);
+                        GridCrossCM.dgCrossCM.Columns.Add(tmp);
                         break;
                 }
             }
 
         }
 
-        private void ActiveCM_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                decimal cmID = (decimal)((DataRowView)((Button)e.Source).DataContext).Row[DT_Risk.ID];
-                bool result = TheCurrentLayout.DisableCounterMeasure(TheCurrentLayout.LinesList.Find(x => x.ID == cmID));
-                OnProjectChange();
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
         #endregion
 
         #endregion
@@ -3572,8 +3755,7 @@ namespace EnsureRisk
                             MyExpanderGroupItemm exgroup = new MyExpanderGroupItemm()
                             {
                                 GroupName = lineGroup.GroupName,
-                                IdGroup = lineGroup.IdGroup,
-                                DataContext = this
+                                IdGroup = lineGroup.IdGroup
                             };
                             exgroup.MyDV = new DataView(dt);
                             groupPanel.Children.Add(exgroup);
@@ -4202,109 +4384,6 @@ namespace EnsureRisk
         }
 
         /// <summary>
-        /// Update the Probability Values when user changes it in the right panel
-        /// </summary>
-        private void ProbabilityCrossRisk_LostFocus(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                //UpdateDSetValuesFromRiskCrossTable(((DataView)dgRisksCross.ItemsSource).Table);
-                if (e.Source != null && e.Source is TextBox theTextBox)
-                {
-                    decimal probability = 0;
-                    if (string.IsNullOrWhiteSpace(theTextBox.Text) || !General.IsNumeric(theTextBox.Text))
-                    {
-                        probability = 0;
-                    }
-                    else
-                    {
-                        probability = Convert.ToDecimal(theTextBox.Text);
-                    }
-                    if (theTextBox.DataContext != null && theTextBox.DataContext is DataRowView theDataView)
-                    {
-                        DataRow drRiskDamageSelected = theDataView.Row;
-
-                        decimal idRisk = (decimal)drRiskDamageSelected[DT_Risk_Damages.ID_RISK];
-
-                        if (TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains(idRisk))
-                        {
-                            decimal tempProbability = (decimal)TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRisk)[DT_Risk.PROBABILITY];
-                            if (IdWBSFilterSelected != -1)
-                            {
-                                if (TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { idRisk, IdWBSFilterSelected }))
-                                {
-                                    TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows
-                                        .Find(new object[] { idRisk, IdWBSFilterSelected })[DT_RISK_WBS.PROBABILITY] = probability;
-                                }
-                                if (TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Contains(new object[] { drRiskDamageSelected[DT_Risk_Damages.ID_RISK], drRiskDamageSelected[DT_Risk_Damages.ID_DAMAGE] }))
-                                {
-                                    DataRow theRow = TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Rows.Find(new object[] { drRiskDamageSelected[DT_Risk_Damages.ID_RISK], drRiskDamageSelected[DT_Risk_Damages.ID_DAMAGE] });
-                                    CrossTabController.AjustarProbabilidadRisk(theRow, TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME], IdWBSFilterSelected);
-                                    TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRisk)[DT_Risk.PROBABILITY] = theRow[DT_Risk_Damages.PROBABILITY];
-                                }
-                                TheCurrentLayout.ClearFilters();
-
-                                TheCurrentLayout.DrawNumbers();
-                                TheCurrentLayout.UpdateLinesValues();
-                                TheCurrentLayout.SetLinesThickness();
-
-                                CrossRiskRightTab(TheCurrentLayout.Ds);
-                                CrossCMRightTab(TheCurrentLayout.Ds);
-                                TheCurrentLayout.UpdateSelectedPolyLineVisualInfo();
-
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Update the name of the Line when user changes it in the right panel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void RiskNameCrossRisk_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (e.Source != null && e.Source is TextBox theTextBox)
-            {
-                if (!string.IsNullOrWhiteSpace(theTextBox.Text))
-                {
-                    if (theTextBox.DataContext != null && theTextBox.DataContext is DataRowView theDataView)
-                    {
-                        bool? canUsePolyLineName = CanUseProposedPolyLineName(theTextBox.Text.TrimStart());
-                        decimal idRisk = (decimal)theDataView.Row[DT_Risk_Damages.ID_RISK];
-                        if (canUsePolyLineName.HasValue)
-                        {
-                            if (canUsePolyLineName.HasValue && !canUsePolyLineName.Value)
-                            {
-                                theTextBox.Text = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRisk)[DT_Risk.NAMESHORT].ToString();
-                            }
-                            else
-                            {
-                                ChangeRiskNameInCrossTable(theTextBox, idRisk);
-                            }
-                        }
-                        else
-                        {
-                            ChangeRiskNameInCrossTable(theTextBox, idRisk);
-                        }
-                    }
-                }
-                else
-                {
-                    CrossRiskRightTab(TheCurrentLayout.Ds);
-                    CrossCMRightTab(TheCurrentLayout.Ds);
-                    MostrarErrorDialog("Risk Name Value can´t be empty or white space. No changes apply");
-                }
-            }
-        }
-
-        /// <summary>
         /// Update the Line name in the Table Risk, Risk_Damage and Risk_WBS
         /// </summary>
         /// <param name="theTextBox"></param>
@@ -4329,34 +4408,8 @@ namespace EnsureRisk
             }
             TheCurrentLayout.LinesList.Find(line => line.ID == idRisk).ShortName = theTextBox.Text.TrimStart();
 
-            TheCurrentLayout.ClearFilters();
-
-            CrossRiskRightTab(TheCurrentLayout.Ds);
-            CrossCMRightTab(TheCurrentLayout.Ds);
-            TheCurrentLayout.UpdateSelectedPolyLineVisualInfo();
-        }
-
-        private void ChangeRiskNameInCrossTable(string theTextBox, decimal idRisk)
-        {
-            if (TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains(idRisk))
-            {
-                TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRisk)[DT_Risk.NAMESHORT] = theTextBox.TrimStart();
-            }
-            foreach (var damageRow in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + idRisk))
-            {
-                damageRow[DT_Risk_Damages.RISK_NAMESHORT] = theTextBox.TrimStart();
-            }
-            foreach (var wbsRow in TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + idRisk))
-            {
-                wbsRow[DT_RISK_WBS.RISK] = theTextBox.TrimStart();
-            }
-            foreach (var wbsRow in TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + idRisk))
-            {
-                wbsRow[DT_Risk.FATHER] = theTextBox.TrimStart();
-            }
-            TheCurrentLayout.LinesList.Find(line => line.ID == idRisk).ShortName = theTextBox.TrimStart();
-
-            TheCurrentLayout.ClearFilters();
+            TextFilterCM = string.Empty;
+            TextFilterRisk = string.Empty;
 
             CrossRiskRightTab(TheCurrentLayout.Ds);
             CrossCMRightTab(TheCurrentLayout.Ds);
@@ -4386,142 +4439,12 @@ namespace EnsureRisk
             return result;
         }
 
-        private void DgRisksCross_MouseLeave(object sender, MouseEventArgs e)
-        {
-            try
-            {
-                if (TheCurrentLayout != null)
-                {
-                    TheCurrentLayout.LineLeave(TheCurrentLayout.Line_Selected);
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        private void DgCrossCM_MouseLeave(object sender, MouseEventArgs e)
-        {
-            try
-            {
-                if (TheCurrentLayout != null)
-                {
-                    TheCurrentLayout.LineLeave(TheCurrentLayout.Line_Selected);
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
         /// <summary>
         /// Validate IF the Loggued User use some WBS in the risk
         /// </summary>
         private bool UsuarioUsaWBSRisk(decimal idRisk)
         {
             return TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.USERNAME + " = '" + LoginUser + "'" + " and " + DT_RISK_WBS.ID_WBS + " = " + IdWBSFilterSelected + " and " + DT_RISK_WBS.ID_RISK + " = " + idRisk).Any();
-        }
-
-        /// <summary>
-        /// Update the Line Selected in the Layout, bring it to the visual area and Update the data in the Properties Panel
-        /// </summary>
-        private void DgRisksCross_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                if (sender is DataGrid riskDataGrid && riskDataGrid.SelectedItem != null)
-                {
-                    if (riskDataGrid.SelectedItem is DataRowView)
-                    {
-                        if (((DataRowView)riskDataGrid.SelectedItem).Row[DT_Risk.ID] is decimal rowRiskID)
-                        {
-                            TheCurrentLayout.Line_Selected = TheCurrentLayout.LinesList.Find(item => (item.ID == rowRiskID && !item.IsCM));
-                            TheCurrentLayout.LineLeave(TheCurrentLayout.Line_Selected);
-                            TheCurrentLayout.BrigIntoViewSelectedRiskPolyline(TheCurrentLayout.Line_Selected);
-                            TheCurrentLayout.RiskEnter(TheCurrentLayout.Line_Selected, TheCurrentLayout.Line_Selected.Points[TheCurrentLayout.Line_Selected.Points.Count - 1], false);
-                            TheCurrentLayout.UpdateSelectedPolyLineVisualInfo();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Update the Line Selected in the Layout, bring it to the visual area and Update the data in the Properties Panel
-        /// </summary>
-        private void DgCrossCM_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                if (sender is DataGrid cmDataGrid && cmDataGrid.SelectedItem != null)
-                {
-                    if (cmDataGrid.SelectedItem is DataRowView)
-                    {
-                        if (((DataRowView)cmDataGrid.SelectedItem).Row[DT_Risk.ID] is decimal rowCMID)
-                        {
-                            TheCurrentLayout.Line_Selected = TheCurrentLayout.LinesList.Find(item => (item.ID == rowCMID && item.IsCM));
-                            TheCurrentLayout.LineLeave(TheCurrentLayout.Line_Selected);
-                            TheCurrentLayout.BrigIntoViewSelectedRiskPolyline(TheCurrentLayout.Line_Selected);
-                            TheCurrentLayout.CMEnter(TheCurrentLayout.Line_Selected, TheCurrentLayout.Line_Selected.Points[TheCurrentLayout.Line_Selected.Points.Count - 1], false);
-                            TheCurrentLayout.UpdateSelectedPolyLineVisualInfo();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        private void BtnFilterRisk_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                DV_CrossRisk.RowFilter = DT_Risk_Damages.RISK_NAMESHORT + " like '%" + txtFilterRisk.Text + "%'";
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        private void BtnFilterCM_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                DV_Cross_CM.RowFilter = DT_Risk_Damages.RISK_NAMESHORT + " like '%" + txtFilterCM.Text + "%'";
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        private void TxtFilterRisk_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            BtnFilterRisk_Click(sender, e);
-        }
-
-        private void TxtFilterCM_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            BtnFilterCM_Click(sender, e);
-        }
-
-        private void BtnClearFilter_Click(object sender, RoutedEventArgs e)
-        {
-            txtFilterRisk.Clear();
-        }
-
-        private void BtnCloseFilterCM_Click(object sender, RoutedEventArgs e)
-        {
-            txtFilterCM.Clear();
         }
 
         #endregion
@@ -4570,14 +4493,6 @@ namespace EnsureRisk
                     }
                     DvCBWBS = WBSHijos.DefaultView;
                     IdWBSFilterSelected = -1;
-                    //if (CbFilterWBSRisk != null)
-                    //{
-                    //    CbFilterWBSRisk.SelectedIndex = 0;
-                    //}
-                    //if (CbFilterWBSCM != null)
-                    //{
-                    //    CbFilterWBSCM.SelectedIndex = 0;
-                    //}
                 }
             }
             catch (Exception ex)
@@ -4652,47 +4567,6 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
-
-        private void UpdateCbFilterWBSRisk(object sender)
-        {
-            if (sender is ComboBox cbsender)
-            {
-                if (cbsender.SelectedValue != null)
-                {
-                    if (TheCurrentLayout != null)
-                    {
-                        TheCurrentLayout.IdWBSFilter = IdWBSFilterSelected;
-                        CrossRiskRightTab(TheCurrentLayout.Ds);
-                        CrossCMRightTab(TheCurrentLayout.Ds);
-                    }
-                }
-            }
-        }
-
-        private void CbFilterWBSRisk_DropDownClosed(object sender, EventArgs e)
-        {
-            try
-            {
-                UpdateCbFilterWBSRisk(sender);
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        private void CbFilterWBSRisk_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                UpdateCbFilterWBSRisk(sender);
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
 
         #endregion
 
@@ -4842,16 +4716,6 @@ namespace EnsureRisk
             {
                 MostrarErrorDialog(ex.Message);
             }
-        }
-
-        private void TextPasword_GotFocus(object sender, RoutedEventArgs e)
-        {
-            loginContent.TextPasword.SelectAll();
-        }
-
-        private void TextUser_GotFocus(object sender, RoutedEventArgs e)
-        {
-            loginContent.TextUser.SelectAll();
         }
 
         private void LoginDialog_DialogOpened(object sender, MaterialDesignThemes.Wpf.DialogOpenedEventArgs eventArgs)

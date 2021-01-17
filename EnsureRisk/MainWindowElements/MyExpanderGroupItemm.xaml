@@ -34,15 +34,15 @@
     <business:MyExpanderGroup.Content>
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal" Margin="10 0 0 10" Name="stackButtons">
-                <Button Command="{Binding AddRiskToGroupCommand}" Width="25" Height="25"
+                <Button Command="{Binding AddRiskToGroupCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Width="25" Height="25"
                                                     CommandParameter="{Binding Path=IdGroup, RelativeSource={RelativeSource AncestorType={x:Type business:MyExpanderGroup}}}" Margin="0 0 10 0" Content="{md:PackIcon Kind=Plus}" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Add More"/>
-                <Button Command="{Binding RenameGroupCommand}" Width="25" Height="25"
+                <Button Command="{Binding RenameGroupCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Width="25" Height="25"
                                                     CommandParameter="{Binding Path=IdGroup, RelativeSource={RelativeSource AncestorType={x:Type business:MyExpanderGroup}}}"  Margin="0 0 10 0" Content="{md:PackIcon Kind=Pencil}" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Rename Group"/>
-                <Button Command="{Binding RemoveGroupCommand}" Width="25" Height="25"
+                <Button Command="{Binding RemoveGroupCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Width="25" Height="25"
                                                     CommandParameter="{Binding Path=IdGroup, RelativeSource={RelativeSource AncestorType={x:Type business:MyExpanderGroup}}}"  Margin="0 0 10 0" Content="{md:PackIcon Kind=DeleteForeverOutline}" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Remove the filter"/>
-                <Button Command="{Binding RemoveFilterGroupCommand}" Width="25" Height="25"
+                <Button Command="{Binding RemoveFilterGroupCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Width="25" Height="25"
                                                     CommandParameter="{Binding Path=IdGroup, RelativeSource={RelativeSource AncestorType={x:Type business:MyExpanderGroup}}}"  Margin="0 0 10 0" Content="{md:PackIcon Kind=DeleteForever}" Style="{DynamicResource MaterialDesignFloatingActionMiniAccentButton}" ToolTip="Remove the group (delete from database)"/>
-                <Button Command="{Binding EnableDisableGroupCommand}" Width="25" Height="25" Content="{md:PackIcon Kind=ToggleSwitch}" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Enable/Disable"/>
+                <Button Command="{Binding EnableDisableGroupCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Width="25" Height="25" Content="{md:PackIcon Kind=ToggleSwitch}" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Enable/Disable"/>
             </StackPanel>
             <DataGrid x:Name="MyDataGrid" ColumnHeaderStyle="{StaticResource CustomColumnHeader}" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 0 0 0" AutoGenerateColumns="False" ItemsSource="{Binding Path=MyDV, RelativeSource={RelativeSource AncestorType={x:Type business:MyExpanderGroup}}}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False">
                 <DataGrid.Columns>
@@ -64,7 +64,7 @@
     </business:MyExpanderGroup.Content>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="GotFocus">
-            <i:InvokeCommandAction Command="{Binding TreviewItemGotFocusCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type business:MyExpanderGroup}}}"/>
+            <i:InvokeCommandAction Command="{Binding TreviewItemGotFocusCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type business:MyExpanderGroup}}}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
 </business:MyExpanderGroup>

@@ -1,5 +1,5 @@
-﻿<Grid x:Class="EnsureRisk.GridRiskCrossList"
-              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"        
+﻿<Grid x:Class="EnsureRisk.GridCMCrossList"
+           xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"        
             xmlns:decimalconv="clr-namespace:EnsureRisk.DataBinding"
             xmlns:data="clr-namespace:DataMapping.Data;assembly=DataMapping"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -35,13 +35,15 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Button Style="{DynamicResource MaterialDesignToolButton}" x:Name="btnFilterRisk" 
-                Command="{Binding FilterRiskCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+        <Button Style="{DynamicResource MaterialDesignToolButton}" Name="btnFilterCM" 
+                Command="{Binding FilterCMCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
             <md:PackIcon Kind="Magnify" Opacity=".56" />
         </Button>
-        <TextBox Text="{Binding TextFilterRisk, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}" 
-                 x:Name="txtFilterRisk" Grid.Column="1" Margin="8 0 0 0" md:HintAssist.Hint="Filter Risk" 
-                 md:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0" MinWidth="200" VerticalAlignment="Center" >
+        <TextBox Text="{Binding TextFilterCM, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}" 
+                 x:Name="txtFilterCM" Grid.Column="1" Margin="8 0 0 0" 
+                 md:HintAssist.Hint="Filter CM" 
+                 md:TextFieldAssist.DecorationVisibility="Hidden" 
+                 BorderThickness="0" MinWidth="200" VerticalAlignment="Center">
             <!--<i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
                     <i:InvokeCommandAction Command="{Binding ElementName=btnFilterRisk, Path=Command, Mode=TwoWay}"/>
@@ -49,12 +51,12 @@
             </i:Interaction.Triggers>-->
         </TextBox>
         <Button Style="{DynamicResource MaterialDesignToolButton}" 
-                Command="{Binding ClearFilterRiskCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
-                x:Name="btnClearFilter" Grid.Column="2">
-            <md:PackIcon Kind="Close" Opacity=".56" />
+                Command="{Binding ClearFilterCMCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                x:Name="btnCloseFilterCM" Grid.Column="2">
+            <md:PackIcon Kind="Close" Opacity=".56"  />
         </Button>
     </Grid>
-    <ComboBox x:Name="CbFilterWBSRisk" Margin="5" 
+    <ComboBox x:Name="CbFilterWBSCM" Margin="5" 
               ItemsSource="{Binding DvCBWBS, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
               DisplayMemberPath="{x:Static data:DT_WBS.USER_WBS}" SelectedIndex="0" 
               SelectedValuePath="{x:Static data:DT_WBS.ID_WBS}" Grid.Row="1" md:ComboBoxAssist.ClassicMode="True" 
@@ -67,56 +69,57 @@
             </StackPanel>
         </md:HintAssist.Hint>
     </ComboBox>
-    <DataGrid ColumnHeaderStyle="{StaticResource CustomColumnHeader}" Grid.Row="2" x:Name="dgRisksCross" HorizontalAlignment="Stretch"  VerticalGridLinesBrush="#FFDEDEDE" 
-              GridLinesVisibility="All" VerticalAlignment="Stretch" 
-                                              AutoGenerateColumns="False" CanUserSortColumns="True" CanUserReorderColumns="true"  IsReadOnly="False" Grid.ColumnSpan="2" 
-                                              CanUserDeleteRows="False" 
-                                              IsTextSearchEnabled="True" CanUserAddRows="False" ItemsSource="{Binding DV_CrossRisk, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" VerticalContentAlignment="Center">
+    <DataGrid ColumnHeaderStyle="{StaticResource CustomColumnHeader}" Grid.Row="2" x:Name="dgCrossCM" HorizontalAlignment="Stretch" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All"
+                                              VerticalAlignment="Stretch" AutoGenerateColumns="False" 
+                                              CanUserSortColumns="True" CanUserReorderColumns="True"  IsReadOnly="False"  Grid.ColumnSpan="2"
+                                              CanUserDeleteRows="False" CanUserAddRows="False" ItemsSource="{Binding DV_Cross_CM, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="MouseLeave">
                 <i:InvokeCommandAction Command="{Binding DgRiskMouseLeaveCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
             </i:EventTrigger>
             <i:EventTrigger EventName="SelectionChanged">
-                <i:InvokeCommandAction Command="{Binding DgRiskSelectionChangedCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
-                                       CommandParameter="{Binding ElementName=dgRisksCross}"/>
+                <i:InvokeCommandAction Command="{Binding DgCMSelectionChangedCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                                       CommandParameter="{Binding ElementName=dgCrossCM}"/>
             </i:EventTrigger>
         </i:Interaction.Triggers>
         <DataGrid.Columns>
-            <DataGridTemplateColumn x:Name="RiskEnabled" Header="Active?">
+            <DataGridTemplateColumn x:Name="CMEnabled" Header="Active?">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Vertical">
-                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20"
-                                    Command="{Binding ActivateRiskCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                    CommandParameter="{Binding idRisk}"
-                                    Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{md:PackIcon Kind=Check}" Visibility="{Binding Enabled, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
                             <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" 
-                                    Command="{Binding ActivateRiskCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                    Command="{Binding ActivateCMCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                    CommandParameter="{Binding idRisk}"                                    Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{md:PackIcon Kind=Check}" Visibility="{Binding Enabled, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button IsEnabled="{Binding Path=HasAccess}" Width="20" Height="20" 
+                                    Command="{Binding ActivateCMCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                     CommandParameter="{Binding idRisk}"
                                     Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=Close}" Visibility="{Binding Enabled, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTemplateColumn x:Name="CrossRiskName" MinWidth="100" MaxWidth="300" Header="Risk" >
+            <DataGridTemplateColumn x:Name="CrossCMName" MinWidth="100" MaxWidth="300" Header="Counter M." >
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
-                        <TextBox VerticalAlignment="Center" x:Name="textRiskName" Style="{StaticResource TextRiskNameStyle}" Text="{Binding {x:Static data:DT_Risk_Damages.RISK_NAMESHORT}}" 
-                                                                 IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditName}}">
+                        <TextBox VerticalAlignment="Center" x:Name="textCMName"
+                                 Style="{StaticResource TextRiskNameStyle}" 
+                                 Text="{Binding {x:Static data:DT_Risk_Damages.RISK_NAMESHORT}}" 
+                                 IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditName}}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="LostFocus">
                                     <i:InvokeCommandAction Command="{Binding RiskNameTextLostFocusCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                           CommandParameter="{Binding ElementName=textRiskName}"/>
+                                                           CommandParameter="{Binding ElementName=textCMName}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </TextBox>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTextColumn x:Name="RiskFather" Header="Father" Binding="{Binding {x:Static data:DT_Risk_Damages.FATHER}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
-            <DataGridTextColumn x:Name="RiskWBSName" Header="WBS Name" Binding="{Binding {x:Static data:DT_Risk_Damages.WBS_NAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
-            <DataGridTextColumn x:Name="RiskuserName" Header="User" Binding="{Binding {x:Static data:DT_Risk_Damages.USERNAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
-            <DataGridTemplateColumn x:Name="CrossRiskProbability" MinWidth="100" MaxWidth="300" Header="Probability (%)" >
+
+            <DataGridTextColumn x:Name="CMFather" Header="Risk" Binding="{Binding {x:Static data:DT_Risk_Damages.FATHER}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+            <DataGridTextColumn x:Name="CMWBSName" Header="WBS Name" Binding="{Binding {x:Static data:DT_Risk_Damages.WBS_NAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+            <DataGridTextColumn x:Name="CMuserName" Header="User" Binding="{Binding {x:Static data:DT_Risk_Damages.USERNAME}}" ElementStyle="{StaticResource TextStyle}" MinWidth="100" MaxWidth="300" IsReadOnly="True"/>
+            <DataGridTemplateColumn x:Name="CMRiskRed" MinWidth="100" MaxWidth="300" Header="R. Reduct. (%)" >
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <TextBox VerticalAlignment="Center" IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditProbability}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
@@ -139,14 +142,16 @@
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
+
         </DataGrid.Columns>
     </DataGrid>
-    <md:DialogHost Grid.RowSpan="3" x:Name="DialogCrossRisk" IsOpen="{Binding IsCalculatingRisk, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
-        <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculatingRisk, RelativeSource={RelativeSource AncestorType={x:Type Window}}, Converter={StaticResource BoolToVisConverter} }">
+    <md:DialogHost Grid.RowSpan="3" x:Name="DialogCrossCM" IsOpen="{Binding IsCalculatingCM,UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+        <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsCalculatingCM, RelativeSource={RelativeSource AncestorType={x:Type Window}}, Converter={StaticResource BoolToVisConverter}}">
             <Grid>
-                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" x:Name="progressCrossRisk" IsIndeterminate="True" Value="45" 
-                             Visibility="{Binding Path = IsCalculatingRisk, Converter={StaticResource BoolToVisConverter}}"/>
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" x:Name="progressCrossCM" IsIndeterminate="True" Value="45" 
+                             Visibility="{Binding Path = IsCalculatingCM, Converter={StaticResource BoolToVisConverter} }"/>
             </Grid>
         </md:Card>
     </md:DialogHost>
+
 </Grid>
