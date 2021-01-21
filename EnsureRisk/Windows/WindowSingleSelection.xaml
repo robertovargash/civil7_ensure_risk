@@ -37,15 +37,15 @@
             </Button>
         </Grid>
         <Grid Grid.Row="1">
-            <DataGrid Name="dgSelection" Margin="12,10,4,67" IsReadOnly="True" AutoGenerateColumns="False" MouseDoubleClick="dgSelection_MouseDoubleClick" ColumnWidth="*">
+            <DataGrid Name="dgSelection" Margin="12,10,4,67" IsReadOnly="True" AutoGenerateColumns="False" SelectionChanged="dgSelection_SelectionChanged" MouseDoubleClick="dgSelection_MouseDoubleClick" ColumnWidth="*">
                 <DataGrid.Columns>
                     <!--<DataGridCheckBoxColumn Binding="{Binding Is_Selected}" Width="60"/>-->
                     <DataGridTemplateColumn Width="80" x:Name="Selectbtn" >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical">
-                                    <Button Width="20" Height="20" Click="Button_UnSelect" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{md:PackIcon Kind=Check}" Visibility="{Binding Is_Selected, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
-                                    <Button Width="20" Height="20" Click="Button_Select" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=Close}" Visibility="{Binding Is_Selected, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                    <Button Width="25" Height="25" Click="Button_UnSelect" Style="{StaticResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=CheckCircleOutline}" Visibility="{Binding Is_Selected, Converter={StaticResource BoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                    <Button Width="25" Height="25" Click="Button_Select" Style="{StaticResource MaterialDesignToolForegroundButton}" Content="{md:PackIcon Kind=CheckboxBlankCircleOutline}" Visibility="{Binding Is_Selected, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>                                
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

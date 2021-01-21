@@ -44,11 +44,6 @@
                  md:HintAssist.Hint="Filter CM" 
                  md:TextFieldAssist.DecorationVisibility="Hidden" 
                  BorderThickness="0" MinWidth="200" VerticalAlignment="Center">
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="TextChanged">
-                    <i:InvokeCommandAction Command="{Binding ElementName=btnFilterRisk, Path=Command, Mode=TwoWay}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
         </TextBox>
         <Button Style="{DynamicResource MaterialDesignToolButton}" 
                 Command="{Binding ClearFilterCMCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
@@ -122,7 +117,7 @@
             <DataGridTemplateColumn x:Name="CMRiskRed" MinWidth="100" MaxWidth="300" Header="R. Reduct. (%)" >
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
-                        <TextBox VerticalAlignment="Center" IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditProbability}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
+                        <TextBox VerticalAlignment="Center" x:Name="crossCMTextProbability" IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditProbability}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="LostFocus">
                                     <i:InvokeCommandAction Command="{Binding RiskProbabilityLostFocusCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
@@ -134,11 +129,37 @@
                                                                          ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" 
                                                                          ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                     <Binding.ValidationRules>
-                                        <local:NegativePlusValidation ValidationStep="UpdatedValue" />
+                                        <local:ProbabilityValidation ValidationStep="UpdatedValue" />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
+                        <DataTemplate.Triggers>
+                            <!--Set the TextBox.Text Binding but this time leave the StringFormat off-->
+                            <DataTrigger Binding="{Binding Path=IsKeyboardFocusWithin, ElementName=crossCMTextProbability}" Value="True">
+                                <Setter TargetName="crossCMTextProbability" Property="Text">
+                                    <Setter.Value>
+                                        <Binding Path="probability" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <local:ProbabilityValidation ValidationStep="UpdatedValue"/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsFocused, ElementName=TheTextBox}" Value="True">
+                                <Setter TargetName="crossCMTextProbability" Property="Text" >
+                                    <Setter.Value>
+                                        <Binding Path="probability" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <local:ProbabilityValidation ValidationStep="UpdatedValue"/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>

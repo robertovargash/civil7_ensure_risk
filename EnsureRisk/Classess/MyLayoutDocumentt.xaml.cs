@@ -2324,6 +2324,7 @@ namespace EnsureRisk.Classess
         {
             TheMainGrid.Margin = new Thickness(3);
         }
+
         public void ExitWorking()
         {
             TheMainGrid.Margin = new Thickness(0);
@@ -2717,6 +2718,14 @@ namespace EnsureRisk.Classess
                     {
                         LineInMoving.IsDiagonal = false;
                         LineInMoving.NewDrawAtPoint(LineInMoving.StartDrawPoint);
+                    }
+                }
+                if (Creando)
+                {
+                    if (Line_Created != null)
+                    {
+                        Line_Created.IsDiagonal = false;
+                        Line_Created.NewDrawAtPoint(Line_Created.StartDrawPoint);
                     }
                 }
                 SetLinesThickness();
@@ -5368,6 +5377,17 @@ namespace EnsureRisk.Classess
 
         private void PositioningLineInGrid(MouseEventArgs e)
         {
+            if (Creando)
+            {
+                if (Line_Created != null)
+                {
+                    Line_Created.NewDrawAtPoint(e.GetPosition(GridPaintLines));
+                    TreeOperation.MoveLines(new List<RiskPolyLine>() { Line_Created }, e.GetPosition(GridPaintLines).X - Line_Created.Points[1].X - 25, e.GetPosition(GridPaintLines).Y - Line_Created.Points[1].Y);
+                    X = e.GetPosition(GridPaintLines).X;
+                    Y = e.GetPosition(GridPaintLines).Y;
+                    Main_Y = MainLine.Points[0].Y;
+                }
+            }
             if (LineInMoving != null)
             {
                 LineInMoving.NewDrawAtPoint(e.GetPosition(GridPaintLines));

@@ -5,6 +5,8 @@ using System.Windows.Data;
 using System;
 using System.Windows;
 using System.Windows.Input;
+using EnsureBusinesss;
+using System.Text.RegularExpressions;
 
 namespace EnsureRisk
 {
@@ -32,7 +34,7 @@ namespace EnsureRisk
         }
     }
 
-    public class NegativeValidation : ValidationRule
+    public class DamageValueValidation : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
@@ -54,7 +56,7 @@ namespace EnsureRisk
         }
     }
 
-    public class NegativePlusValidation : ValidationRule
+    public class ProbabilityValidation : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {

@@ -198,5 +198,23 @@ namespace EnsureRisk.Windows
                 MostrarErrorDialog(ex.Message);
             }
         }
+
+        private void dgSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                foreach (var item in dgSelection.SelectedItems)
+                {
+                    if (item is DataRowView thedataRowView)
+                    {
+                        thedataRowView.Row["Is_Selected"] = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
     }
 }

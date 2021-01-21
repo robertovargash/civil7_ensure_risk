@@ -18,6 +18,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Printing;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -722,6 +723,41 @@ namespace EnsureRisk
         #endregion
 
         #region RISK_DAMAGE_COMMANDS
+        private RelayyCommand _DamageValueGotFocusCommand;
+        public RelayyCommand DamageValueGotFocusCommand { get { return _DamageValueGotFocusCommand; } set { _DamageValueGotFocusCommand = value; OnPropertyChanged("DamageValueGotFocusCommand"); } }
+        private void ImplementDamageValueGotFocusCommand()
+        {
+            try
+            {
+                DamageValueGotFocusCommand = new RelayyCommand(
+                parametro =>
+                {
+                    try
+                    {
+                        if (parametro is TextBox theText)
+                        {
+                            theText.SelectAll();
+                            //string texto = theText.Text;
+                            //Binding columnBinding = new Binding(texto);
+                            //columnBinding.Converter = new DecimalUIConverterV2();
+                            //columnBinding.ConverterCulture = CultureInfo.CurrentUICulture;
+                            //columnBinding.ConverterParameter = decimalConfig;
+                            //theText.SetBinding(TextBox.TextProperty, columnBinding);
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
         private RelayyCommand _DamageValueLostFocusCommand;
         public RelayyCommand DamageValueLostFocusCommand { get { return _DamageValueLostFocusCommand; } set { _DamageValueLostFocusCommand = value; OnPropertyChanged("DamageValueLostFocusCommand"); } }
         private void ImplementDamageValueLostFocusCommand()
@@ -2202,7 +2238,7 @@ namespace EnsureRisk
                 DeleteRiskFromGroupCommandFunction();
                 //properties tab
                 ImplementRiskName_KeyUpCommand(); ImplementTextRisk_LostFocusCommand(); ImplementRiskName_TextChangedCommand();
-                ImplementTextRiskDetail_LostFocusCommand(); ImplementDamageValueLostFocusCommand(); ImplementChangePrimaryWBSRiskCommand();
+                ImplementTextRiskDetail_LostFocusCommand(); ImplementDamageValueGotFocusCommand(); ImplementDamageValueLostFocusCommand(); ImplementChangePrimaryWBSRiskCommand();
                 ImplementAddWBSRiskCommand(); ImplementDeleteWBSRiskCommand(); ImplementProbabilityLostFocusCommand();
                 ImplementAddTabRiskRoleCommand(); ImplementDeleteTabRoleRiskCommand();
 
@@ -3008,7 +3044,7 @@ namespace EnsureRisk
                 {
                     TheCurrentLayout.GridPaintLines.Children.Remove(TheCurrentLayout.Line_Created);
                     //System.Drawing.Color lnColor = System.Drawing.Color.FromArgb(int.Parse(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
-                    System.Windows.Media.Color lnColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
+                    Color lnColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
 
                     //HACER: comando add risk              
                     TheCurrentLayout.Line_Created = new RiskPolyLine(TheCurrentLayout.GridPaintLines, MenuRisk, false)
@@ -3473,7 +3509,7 @@ namespace EnsureRisk
 
                         Style style = new Style(typeof(TextBox), ((TextBox)FindResource("damageTextBox")).Style);
 
-                        var textCell = new FrameworkElementFactory(typeof(DamageText));
+                        var textCell = new FrameworkElementFactory(typeof(DamageText)) { Name = "DamageIn" + Dt_Cross_Risk.Columns[i].ToString() };
                         textCell.SetValue(StyleProperty, style);
                         textCell.SetBinding(DamageText.TextProperty, columnBinding);
                         textCell.SetBinding(DamageText.IsEnabledProperty, enableBinding);
@@ -3485,13 +3521,25 @@ namespace EnsureRisk
                             Header = Dt_Cross_Risk.Columns[i].ToString()
                         };
 
+                        DataTrigger dtIsKeyBoarFocus = new DataTrigger() { Value = true };
+                        Binding triggerIsKeyBoarFocusBinding = new Binding(TextBox.IsKeyboardFocusWithinProperty.Name) { ElementName = textCell.Name };                      
+                        dtIsKeyBoarFocus.Setters.Add(new Setter(TextBox.TextProperty, new Binding(Dt_Cross_Risk.Columns[i].ToString()) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }, textCell.Name));
+                        dtIsKeyBoarFocus.Binding = triggerIsKeyBoarFocusBinding;
+
+                        DataTrigger dtIsFocused = new DataTrigger() { Value = true };
+                        Binding triggerIsFocusedBinding = new Binding(IsFocusedProperty.Name) { ElementName = textCell.Name };
+                        dtIsFocused.Setters.Add(new Setter(TextBox.TextProperty, new Binding(Dt_Cross_Risk.Columns[i].ToString()) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }, textCell.Name));
+                        dtIsFocused.Binding = triggerIsFocusedBinding;
+
                         DataTemplate template = new DataTemplate() { VisualTree = textCell };
+                        template.Triggers.Add(dtIsKeyBoarFocus);
+                        template.Triggers.Add(dtIsFocused);
+
                         tmp.CellTemplate = template;
-                        //column.Binding = columnBinding;
                         tmp.MinWidth = 100;
                         tmp.MaxWidth = 300;
                         GridRisksCross.dgRisksCross.Columns.Add(tmp);
-                        break;
+                        break;                        
                 }
             }
         }
@@ -3672,7 +3720,7 @@ namespace EnsureRisk
 
                         Style style = new Style(typeof(TextBox), ((TextBox)FindResource("damageTextBox")).Style);
 
-                        var textCell = new FrameworkElementFactory(typeof(DamageText));
+                        var textCell = new FrameworkElementFactory(typeof(DamageText)) { Name = "DamageIn" + Dt_Cross_CM.Columns[i].ToString() };
                         textCell.SetValue(StyleProperty, style);
                         textCell.SetValue(DamageText.DamageColumnProperty, Dt_Cross_CM.Columns[i].ToString());
                         textCell.SetBinding(TextBox.TextProperty, columnBinding);
@@ -3685,7 +3733,20 @@ namespace EnsureRisk
                             Header = Dt_Cross_CM.Columns[i].ToString()
                         };
 
+                        DataTrigger dtIsKeyBoarFocus = new DataTrigger() { Value = true };
+                        Binding triggerIsKeyBoarFocusBinding = new Binding(TextBox.IsKeyboardFocusWithinProperty.Name) { ElementName = textCell.Name };
+                        dtIsKeyBoarFocus.Setters.Add(new Setter(TextBox.TextProperty, new Binding(Dt_Cross_CM.Columns[i].ToString()) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }, textCell.Name));
+                        dtIsKeyBoarFocus.Binding = triggerIsKeyBoarFocusBinding;
+
+                        DataTrigger dtIsFocused = new DataTrigger() { Value = true };
+                        Binding triggerIsFocusedBinding = new Binding(IsFocusedProperty.Name) { ElementName = textCell.Name };
+                        dtIsFocused.Setters.Add(new Setter(TextBox.TextProperty, new Binding(Dt_Cross_CM.Columns[i].ToString()) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }, textCell.Name));
+                        dtIsFocused.Binding = triggerIsFocusedBinding;
+
                         DataTemplate template = new DataTemplate() { VisualTree = textCell };
+                        template.Triggers.Add(dtIsKeyBoarFocus);
+                        template.Triggers.Add(dtIsFocused);
+
                         tmp.CellTemplate = template;
                         //column.Binding = columnBinding;
                         tmp.MinWidth = 100;
@@ -5002,4 +5063,15 @@ namespace EnsureRisk
     {
 
     }
+
+    class ReactiveObject {
+
+        //private Dictionary<string, object> bag = new Dictionary<string, object>();
+
+        //protected T Get<T>([CallerMemberName] string name = "") {
+        //    return bag.TryGetValue(name, out T value) ? value : default;
+        //}
+    }
+
+
 }

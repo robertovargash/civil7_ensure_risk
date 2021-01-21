@@ -116,7 +116,7 @@
                                             <TextBox.Text>
                                                 <Binding Path="probability" UpdateSourceTrigger="LostFocus" Converter="{x:Static decimalconv:DecimalUIConverter.Instance}" ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                                     <Binding.ValidationRules>
-                                                        <local:NegativePlusValidation ValidationStep="UpdatedValue" />
+                                                        <local:ProbabilityValidation ValidationStep="UpdatedValue" />
                                                     </Binding.ValidationRules>
                                                 </Binding>
                                             </TextBox.Text>

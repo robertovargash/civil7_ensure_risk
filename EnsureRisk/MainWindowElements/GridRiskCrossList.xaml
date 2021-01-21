@@ -119,7 +119,7 @@
             <DataGridTemplateColumn x:Name="CrossRiskProbability" MinWidth="100" MaxWidth="300" Header="Probability (%)" >
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
-                        <TextBox VerticalAlignment="Center" IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditProbability}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
+                        <TextBox VerticalAlignment="Center" x:Name="crossTextProbability" IsEnabled="{Binding {x:Static data:DT_Risk_Damages.CanEditProbability}, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource errorStyle}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="LostFocus">
                                     <i:InvokeCommandAction Command="{Binding RiskProbabilityLostFocusCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
@@ -131,11 +131,36 @@
                                                                          ConverterParameter="{x:Static decimalconv:DecimalUIConverter.ConverterParams}" 
                                                                          ConverterCulture="{x:Static decimalconv:DecimalUIConverter.CultureInfo}">
                                     <Binding.ValidationRules>
-                                        <local:NegativePlusValidation ValidationStep="UpdatedValue" />
+                                        <local:ProbabilityValidation ValidationStep="UpdatedValue" />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
+                        <DataTemplate.Triggers>
+                            <!--Set the TextBox.Text Binding but this time leave the StringFormat off-->
+                            <DataTrigger Binding="{Binding Path=IsKeyboardFocusWithin, ElementName=crossTextProbability}" Value="True">
+                                <Setter TargetName="crossTextProbability" Property="Text">
+                                    <Setter.Value>
+                                        <Binding Path="probability" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <local:ProbabilityValidation ValidationStep="UpdatedValue"/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsFocused, ElementName=TheTextBox}" Value="True">
+                                <Setter TargetName="crossTextProbability" Property="Text" >
+                                    <Setter.Value>
+                                        <Binding Path="probability" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <local:ProbabilityValidation ValidationStep="UpdatedValue"/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
