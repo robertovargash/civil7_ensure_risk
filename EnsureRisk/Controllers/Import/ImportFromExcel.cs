@@ -38,7 +38,7 @@ namespace EnsureRisk.Controllers.Import
 
         #endregion
 
-        private DataSet dsImporting, DsWBS;
+        private DataSet dsImporting, DsWBS, MainDS;
         private DataRow drDiagram;
         private decimal IdProject;
         private bool isMarkedAll, IsCustom;
@@ -47,9 +47,10 @@ namespace EnsureRisk.Controllers.Import
         private List<HeaderExcelContent> MyList;
 
 
-        public ImportFromExcel(DataSet dsImporting, decimal IdProject, DataRow drDiagram, DataSet DsWBS, 
+        public ImportFromExcel(DataSet dsImporting, DataSet MainDS, decimal IdProject, DataRow drDiagram, DataSet DsWBS, 
             bool isMarkedAll, bool IsCustom, string keyPhrase, DataTable dtExcel, List<HeaderExcelContent> MyList)
         {
+            this.MainDS = MainDS;
             this.dsImporting = dsImporting;
             this.IdProject = IdProject;
             this.drDiagram = drDiagram;
@@ -93,15 +94,10 @@ namespace EnsureRisk.Controllers.Import
                 FillCM_Data(dsImporting, keyPhrase, dtExcel, MyList, countDamages, theDiagram, xIdRisk, DsWBS, isMarkedAll);
                 WBSOperations.AddWBSTopToDiagram(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM], DsWBS);
                 TreeOperation.SetDiagramImportedPositions(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM]);
-                if (dsImporting.HasChanges())
+                using (ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk())
                 {
-                    using (ServiceRiskController.WebServiceRisk ws = new ServiceRiskController.WebServiceRisk())
-                    {
-                        DataSet temp = dsImporting.GetChanges();
-                        temp = ws.SaveRisk(temp);
-                        dsImporting.Merge(temp);
-                        dsImporting.AcceptChanges();
-                    }
+                    MainDS.Merge(ws.SaveRisk(dsImporting), true, MissingSchemaAction.Ignore);
+                    MainDS.AcceptChanges();
                 }
             }
             else
@@ -420,6 +416,7 @@ namespace EnsureRisk.Controllers.Import
                     if (dsImporting.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + idHijo).Any())
                     {
                         dsImporting.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + idHijo).First()[DT_RiskStructure.IDRISK_FATHER] = idPadre;
+                        dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Find(idHijo)[DT_Risk.IDRISK_FATHER] = idPadre;
                     }
                 }
             }

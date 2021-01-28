@@ -17,7 +17,7 @@
     </xs:element>
   </xs:schema>
   <ConnectionServer>
-    <Server>localhost</Server>
+    <Server>localhost:82</Server>
     <Date>2019-02-15T12:45:23.724551-05:00</Date>
   </ConnectionServer>
 </NewDataSet>

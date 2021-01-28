@@ -28,7 +28,7 @@
                                     Path=IsExpanded, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                 </Expander.Header>
                 <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                    <TextBox x:Name="TextMessage" MaxWidth="500" MaxHeight="500" Opacity=".68" SpellCheck.IsEnabled="True" VerticalScrollBarVisibility="Auto" TextAlignment="Justify" Text="" VerticalAlignment="Stretch" TextWrapping="Wrap" />
+                    <TextBox x:Name="TextMessage" MaxWidth="500" MaxHeight="500" IsReadOnly="True" SpellCheck.IsEnabled="True" VerticalScrollBarVisibility="Auto" TextAlignment="Justify" Text="" VerticalAlignment="Stretch" TextWrapping="Wrap" />
                 </StackPanel>
             </Expander>
         </StackPanel>

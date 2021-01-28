@@ -49,6 +49,10 @@ namespace EnsureRisk
         private bool isPanEnabled = false;
         public bool IsPanEnabled { get { return isPanEnabled; } set { isPanEnabled = value; OnPropertyChanged("IsPanEnabled"); } }
         private bool isImporting = false;
+        private bool canEditDiagram = false;
+        private bool canDeleteDiagram = false;
+        private List<string> _RiskAutocompleteRisk;
+        public List<string> RiskAutocompleteRisk { get { return _RiskAutocompleteRisk; } set { _RiskAutocompleteRisk = value; OnPropertyChanged("RiskAutocompleteRisk"); } }
         private DataView dvCBWBS;
         private DataView dvCBProjects;
         private DataView dv_CrossRisk;
@@ -57,6 +61,8 @@ namespace EnsureRisk
         private readonly BackgroundWorker importToExcelWorker = new BackgroundWorker();
         public bool IsCalculatingRisk { get { return isCalculatingRisk; } set { isCalculatingRisk = value; OnPropertyChanged("IsCalculatingRisk"); } }
         public bool IsCalculatingCM { get { return isCalculatingCM; } set { isCalculatingCM = value; OnPropertyChanged("IsCalculatingCM"); } }
+        public bool CanEditDiagram { get { return canEditDiagram; } set { canEditDiagram = value; OnPropertyChanged("CanEditDiagram"); } }
+        public bool CanDeleteDiagram { get { return canDeleteDiagram; } set { canDeleteDiagram = value; OnPropertyChanged("CanDeleteDiagram"); } }
 
         private bool isWBSEyed = false;
 
@@ -1704,7 +1710,7 @@ namespace EnsureRisk
                         {
                             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
-                                ImportFromExcel(DsMain, ofd.FileName);
+                                ImportFromExcel(ofd.FileName);
                             }
                         }
                     }
@@ -1761,12 +1767,13 @@ namespace EnsureRisk
             }
         }
 
-        private void ImportFromExcel(DataSet dsImporting, string filename)
+        private void ImportFromExcel(string filename)
         {
             WindowText wt = new WindowText();
             wt.txtKeyword.Focus();
             if (wt.ShowDialog() == true)
             {
+                UserDataSet dsImporting = new UserDataSet();
                 DataRow drDiagram = dsImporting.Tables[DT_Diagram.TABLE_NAME].NewRow();
                 using (DataTable dtExcel = ExcelController.ExcelToDataTable(filename))
                 {
@@ -1778,7 +1785,7 @@ namespace EnsureRisk
                         Cursor = Cursors.No;
                         HabilitarBotones(false);
                         IsImporting = true;
-                        using (ImportFromExcel import = new ImportFromExcel(dsImporting, IdProject, drDiagram, DsWBS, isMarkedAll, whc.IsCustom, wt.KeyWord, dtExcel, whc.MyList))
+                        using (ImportFromExcel import = new ImportFromExcel(dsImporting, DsMain, IdProject, drDiagram, DsWBS, isMarkedAll, whc.IsCustom, wt.KeyWord, dtExcel, whc.MyList))
                         {
                             importToExcelWorker.RunWorkerAsync(import);
                         }
@@ -2704,6 +2711,10 @@ namespace EnsureRisk
                             OpenDiagramFromDiagramList((decimal)drDiagram[DT_Diagram.ID_DIAGRAM]);
                         });
                     }
+                    else
+                    {
+                        HabilitarBotones(true);
+                    }
                     tempDS.Dispose();
                 }
             }
@@ -3077,6 +3088,7 @@ namespace EnsureRisk
                     
                     DvRiskWBS = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].DefaultView;
                     DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
+                    DvRiskWBS.Sort = DT_RISK_WBS.NIVEL;
 
                     DvRoleRisk = TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLE_NAME].DefaultView;
                     DvRoleRisk.RowFilter = DT_Role_Risk.ID_RISK + " = " + RiskRow[DT_Risk.ID];
@@ -3104,6 +3116,11 @@ namespace EnsureRisk
                         }
                         filter += ")";
                         DvRiskDamages.RowFilter += filter;
+                        //RiskAutocompleteRisk = new List<string>();
+                        //foreach (DataRow obj in TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IS_CM + " = " + RiskRow[DT_Risk.IS_CM]))
+                        //{
+                        //    RiskAutocompleteRisk.Add(obj[DT_Risk.NAMESHORT].ToString());
+                        //}
                     }
                     //DgRiskDamages.ItemsSource = DvRiskDamages;
                     CalculateProbability(RiskRow);
@@ -4134,8 +4151,10 @@ namespace EnsureRisk
                 MenuItemRoleList.IsEnabled = ExistRole(2);//
                 gridDiagramList.AddTree.IsEnabled = ExistRole(3);
                 gridDiagramList.ImportExcel.IsEnabled = ExistRole(3);
-                gridDiagramList.EditTree.IsEnabled = ExistRole(4);
-                gridDiagramList.RemoveTree.IsEnabled = ExistRole(5);
+                CanEditDiagram = ExistRole(4);
+                CanDeleteDiagram = ExistRole(5);
+                //gridDiagramList.EditTree.IsEnabled = ExistRole(4);
+                //gridDiagramList.RemoveTree.IsEnabled = ExistRole(5);
                 MenuItemNewProject.IsEnabled = ExistRole(7);
                 MenuItemDefaultRisk.IsEnabled = ExistRole(8);
                 MenuItemTopRisk.IsEnabled = ExistRole(10);

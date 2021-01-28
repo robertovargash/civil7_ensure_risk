@@ -19,7 +19,7 @@
         <ItemsControl.ItemTemplate>
             <HierarchicalDataTemplate DataType="{x:Type local:WBSNodes}" ItemsSource="{Binding Children}">
                 <StackPanel VerticalAlignment="Center" Margin="5" Orientation="Horizontal">
-                    <TextBlock Margin="10 0 0 0" x:Name="TextWBS" Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                    <TextBlock Margin="10 0 0 0" x:Name="TextWBS" Text="{Binding Path=Name}" Foreground="{DynamicResource MaterialDesignBody}" VerticalAlignment="Center"/>
                     <Button x:Name="BtnEye" Visibility="{Binding IsWBSEyedOff, RelativeSource={RelativeSource AncestorType={x:Type Window}}, Converter={StaticResource OpositeBoolToVisConverter}, UpdateSourceTrigger=PropertyChanged}" 
                                                             Command="{Binding EyeWBSCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
                                                              Content="{md:PackIcon Kind=Eye}" Width="25" Height="25" Margin="10 0 0 0" Style="{DynamicResource MaterialDesignFloatingActionMiniButton}">

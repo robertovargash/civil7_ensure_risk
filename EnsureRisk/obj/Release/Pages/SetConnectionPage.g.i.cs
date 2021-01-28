@@ -9,12 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using DataMapping.Data;
+using EnsureBusinesss.Business;
 using EnsureRisk;
-using EnsureRisk.Classess;
-using EnsureRisk.DataBinding;
 using EnsureRisk.Pages;
-using EnsureRisk.Resources;
 using MaterialDesignThemes.Wpf;
 using MaterialDesignThemes.Wpf.Converters;
 using MaterialDesignThemes.Wpf.Transitions;
@@ -28,6 +25,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Ink;
 using System.Windows.Input;
+using System.Windows.Interactivity;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;

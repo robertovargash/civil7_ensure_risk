@@ -14,6 +14,9 @@
             mc:Ignorable="d" >
     <Grid.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
         </ResourceDictionary>
     </Grid.Resources>
@@ -38,38 +41,52 @@
                   VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2"/>
     </Grid>
     <Grid Grid.Row="1">
-        <DataGrid x:Name="dgTreeDiagrams" ItemsSource="{Binding DVRisk_Tree, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Margin="55,0,0,0" AutoGenerateColumns="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False" IsReadOnly="True" Grid.ColumnSpan="2" 
+        <DataGrid x:Name="dgTreeDiagrams" ItemsSource="{Binding DVRisk_Tree, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Margin="0,0,0,0" AutoGenerateColumns="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False" IsReadOnly="True" Grid.ColumnSpan="2" 
                                                   HeadersVisibility="Column">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <i:InvokeCommandAction Command="{Binding DiagramListDoubleClickCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            <DataGrid.Columns>
+            <DataGrid.Columns>                
+                <DataGridTemplateColumn x:Name="diagramDelete">
+                    <DataGridTemplateColumn.Header>
+                        <md:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionDarkPopupBox}" PlacementMode="BottomAndAlignCentres" HorizontalAlignment="Right" 
+                                     VerticalAlignment="Bottom" UnfurlOrientation="Horizontal" PopupMode="Click">
+                            <StackPanel Orientation="Vertical">
+                                <Button x:Name="AddTree" ToolTip="Add New Diagram" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" 
+                                        DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                        Command="{Binding AddDiagramCommand}" 
+                                        md:ShadowAssist.ShadowDepth="Depth5">
+                                    <md:PackIcon Kind="Plus"/>
+                                </Button>
+                                <Button x:Name="ImportExcel" ToolTip="Load from Excel" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                                        Command="{Binding ImportFromExcelDiagramCommand}" 
+                                        DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                        md:ShadowAssist.ShadowDepth="Depth5">
+                                    <md:PackIcon Kind="FileExcel"/>
+                                </Button>
+                            </StackPanel>
+                        </md:PopupBox>                        
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="EditTree" Margin="0 0 10 0" IsEnabled="{Binding CanEditDiagram, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" ToolTip="Load and Edit Diagram" Command="{Binding DiagramListDoubleClickCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"  Width="25" Height="25" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Content="{md:PackIcon Kind=Pencil}"/>
+                                <Button x:Name="RemoveTree" Margin="0 0 10 0" IsEnabled="{Binding CanDeleteDiagram, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" ToolTip="Remove Diagram" Command="{Binding DeleteDiagramCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Width="20" Height="20" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{md:PackIcon Kind=Trash}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn x:Name="RiskTree" Header="Diagrams" Binding="{Binding {x:Static data:DT_Diagram.DIAGRAM_NAME}}" />
             </DataGrid.Columns>
         </DataGrid>
-        <StackPanel HorizontalAlignment="Left"  Margin="1,0,0,0" VerticalAlignment="Top" Width="50">
-            <Button x:Name="AddTree" ToolTip="Add New Diagram" Command="{Binding AddDiagramCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HorizontalAlignment="Left" Margin="0,20,0,0" md:ShadowAssist.ShadowDepth="Depth5">
-                <md:PackIcon Kind="Plus"/>
-            </Button>
-            <Button x:Name="EditTree" ToolTip="Load and Edit Diagram" Command="{Binding DiagramListDoubleClickCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HorizontalAlignment="Left" Margin="0,20,0,0" md:ShadowAssist.ShadowDepth="Depth5">
-                <md:PackIcon Kind="Pencil"/>
-            </Button>
-            <Button x:Name="RemoveTree" ToolTip="Remove Diagram" Command="{Binding DeleteDiagramCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HorizontalAlignment="Left" Margin="0,20,0 0" md:ShadowAssist.ShadowDepth="Depth5">
-                <md:PackIcon Kind="Delete"/>
-            </Button>
-            <Button x:Name="ImportExcel" ToolTip="Load from Excel" Command="{Binding ImportFromExcelDiagramCommand, RelativeSource ={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HorizontalAlignment="Left" Margin="0,20,0 0" md:ShadowAssist.ShadowDepth="Depth5">
-                <md:PackIcon Kind="FileExcel"/>
-            </Button>
-        </StackPanel>
     </Grid>
     <md:DialogHost Grid.RowSpan="2" x:Name="DialogDIagram" IsOpen="{Binding IsImporting,UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
         <md:Card UniformCornerRadius="10" Padding="10" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter}, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
             <Grid>
-                <ProgressBar x:Name="pp" Width="50" Height="50" Style="{StaticResource MaterialDesignCircularProgressBar}" Value="50" IsIndeterminate="True" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter} , RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                <ProgressBar x:Name="pp" Width="30" Height="30" Style="{StaticResource MaterialDesignCircularProgressBar}" Value="50" IsIndeterminate="True" Visibility="{Binding Path = IsImporting, Converter={StaticResource BoolToVisConverter} , RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
             </Grid>
         </md:Card>
     </md:DialogHost>
-
 </Grid>

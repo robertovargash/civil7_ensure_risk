@@ -19,7 +19,7 @@
   </xs:schema>
   <Settings>
     <Color>DeepPurple</Color>
-    <Theme>Light</Theme>
+    <Theme>Dark</Theme>
     <StartLogo>true</StartLogo>
   </Settings>
 </NewDataSet>

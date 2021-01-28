@@ -32,10 +32,36 @@
         </ResourceDictionary>
     </ScrollViewer.Resources>
     <StackPanel Orientation="Vertical" x:Name="WrapRisk" DataContext="{Binding ElementName=thisComponent, Path=DataContext}" Visibility="{Binding Path = ShowRiskData, Converter={StaticResource BoolToVisConverter} }">
-        <StackPanel Orientation="Vertical" >
-            <Button x:Name="Testbutton" Visibility="Collapsed" 
-                                                        Command="{Binding AddWBSRiskCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
-            <TextBox TabIndex="1" x:Name="TextRisk" DataContext="{Binding ElementName=thisComponent, Path=DataContext}" IsEnabled="{Binding Path = HasAccess}"
+        <StackPanel Orientation="Vertical" >           
+            <!--<ComboBox IsDropDownOpen="True" x:Name="TextRisk" IsEnabled="{Binding Path = HasAccess}" MinWidth="150" Margin="10" VerticalAlignment="Bottom" IsEditable="{Binding Path = HasAccess}" 
+                      DataContext="{Binding ElementName=thisComponent, Path=DataContext}" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                      ItemsSource="{Binding RiskAutocompleteRisk}" HorizontalAlignment="Stretch"
+                                                     md:HintAssist.Hint="Line Name" md:HintAssist.IsFloating="True" TextOptions.TextFormattingMode="Ideal" TextOptions.TextHintingMode="Animated">
+                <i:Interaction.Triggers>
+                    --><!--<i:EventTrigger EventName="KeyUp">
+                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=TextRisk, Path=Text}" Command="{Binding RiskName_KeyUpCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                    </i:EventTrigger>--><!--
+                    <i:EventTrigger EventName="LostFocus">
+                        <i:InvokeCommandAction Command="{Binding TextRisk_LostFocusCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                    </i:EventTrigger>
+                    --><!--<i:EventTrigger EventName="TextChanged">
+                        <i:InvokeCommandAction Command="{Binding RiskName_TextChangedCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                    </i:EventTrigger>--><!--
+                </i:Interaction.Triggers>
+                <ComboBox.Text>                    
+                    <Binding Path="RiskLineName" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <local:NotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </ComboBox.Text>
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+            </ComboBox>-->
+            <TextBox TabIndex="1" AutoWordSelection="True" x:Name="TextRisk" DataContext="{Binding ElementName=thisComponent, Path=DataContext}" IsEnabled="{Binding Path = HasAccess}"
                                                      Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" 
                                                      HorizontalAlignment="Stretch" MinWidth="150" TextAlignment="Justify" VerticalScrollBarVisibility="Auto"
                                                      md:HintAssist.Hint="Line Name" md:HintAssist.IsFloating="True" MaxLength="250"  TextWrapping="Wrap" TextOptions.TextHintingMode="Animated">
@@ -53,7 +79,7 @@
                 <TextBox.Text>
                     <Binding Path="RiskLineName" UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
-                            <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk"/>
+                            <local:NotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>
@@ -136,20 +162,15 @@
                 <Expander HorizontalAlignment="Stretch" Header="WBS-Probability" IsExpanded="True">
                     <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
                         <Grid Background="#FFE5E5E5">
-                            <DataGrid x:Name="DgRiskWBS" ItemsSource="{Binding DvRiskWBS}" Margin="1,1,0,0" 
+                            <DataGrid x:Name="DgRiskWBS" ItemsSource="{Binding DvRiskWBS}" Margin="1,1,0,0"
                                                                       ColumnHeaderStyle="{StaticResource CustomColumnHeader}" 
                                                                       AutoGenerateColumns="False" CanUserAddRows="False" 
                                                                       CanUserDeleteRows="False" VerticalGridLinesBrush="#FFDEDEDE" GridLinesVisibility="All">
                                 <DataGrid.Columns>
                                     <DataGridTemplateColumn x:Name="wbsBtn">
                                         <DataGridTemplateColumn.Header>
-                                            <Button x:Name="BtnAddWBSRisk" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Width="40" Height="40" ToolTip="Add WBS" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" IsEnabled="{Binding Path = HasAccess}" VerticalAlignment="Top" 
+                                            <Button Command="{Binding AddWBSRiskCommand}" x:Name="BtnAddWBSRisk" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Width="40" Height="40" ToolTip="Add WBS" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" IsEnabled="{Binding Path = HasAccess}" VerticalAlignment="Top" 
                                                      md:ShadowAssist.ShadowDepth="Depth5">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="Click">
-                                                        <i:InvokeCommandAction Command="{Binding AddWBSRiskCommand}"/>
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
                                                 <md:PackIcon Kind="Plus"/>
                                             </Button>
                                         </DataGridTemplateColumn.Header>

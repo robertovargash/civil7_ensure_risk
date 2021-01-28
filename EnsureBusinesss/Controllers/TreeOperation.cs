@@ -1136,19 +1136,20 @@ namespace EnsureBusinesss
 
         public static void SetPositionRiskChildren(DataRow drRiskFather, DataSet ds, int positionOfCM)
         {
-            for (int i = 0; i < ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID]).Count(); i++)
+            int riskPosition = positionOfCM;
+            foreach (var rowRisk in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID] + " and " + DT_Risk.IS_CM + " = 0"))
             {
-                decimal idRIsk = (decimal)ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID])[i][DT_RiskStructure.IDRISK];
-                ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRIsk)[DT_Risk.POSITION] = i + positionOfCM;
+                rowRisk[DT_Risk.POSITION] = riskPosition;
+                riskPosition++;
             }
         }
 
         public static int SetPositionCMChildren(DataRow drRiskFather, DataSet ds)
         {
             int cmposition = 0;
-            while (cmposition < ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID] + " and " + DT_Risk.IS_CM + " = 1").Count())
+            foreach (var rowCM in ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID] + " and " + DT_Risk.IS_CM + " = 1"))
             {
-                ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IDRISK_FATHER + " = " + drRiskFather[DT_Risk.ID])[cmposition][DT_Risk.POSITION] = 0;
+                rowCM[DT_Risk.POSITION] = cmposition;
                 cmposition++;
             }
             return cmposition;
@@ -1161,6 +1162,7 @@ namespace EnsureBusinesss
         {
             var lastPolyLine = polyLines.Where(polyLine => polyLine.IsCM).OrderBy(polyLine => polyLine.Position).LastOrDefault();
             return (lastPolyLine == null) ? -1 : lastPolyLine.Position;
+            //return polyLines.Where(polyLine => polyLine.IsCM).Count() - 1;
         }
     }
 }

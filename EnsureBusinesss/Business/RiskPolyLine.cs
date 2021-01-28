@@ -417,6 +417,7 @@ namespace EnsureBusinesss.Business
                 }
                 if (IsActivated)
                 {
+                    //MyName.Text = ShortName + " " + Position;
                     MyName.Text = ShortName;
                 }
                 else
