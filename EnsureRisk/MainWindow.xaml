@@ -42,46 +42,26 @@
             <md:PackIcon Kind="Fish" x:Key="Fish"/>
         </ResourceDictionary>
     </Window.Resources>
-    <Window.CommandBindings>        
-        <CommandBinding Command="{StaticResource Commands.Login}" Executed="LoginCommandBinding_Executed" CanExecute="Login_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.Project}" Executed="ProjectCommandBinding_Executed" CanExecute="Project_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.User}" Executed="UserCommandBinding_Executed" CanExecute="User_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.Role}" Executed="RoleCommandBinding_Executed" CanExecute="Role_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.Damage}" Executed="DamageCommandBinding_Executed" CanExecute="Damage_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.Default}" Executed="DefaultCommandBinding_Executed" CanExecute="Default_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.Settings}" Executed="OptionCommandBinding_Executed" CanExecute="Settings_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.Logs}" Executed="OptionMiniMap_Executed" CanExecute="Logs_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.Risk}" Executed="RiskCommandBinding_Executed" CanExecute="Risk_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.CounterMeasure}" Executed="CounterMeasureCommandBinding_Executed" CanExecute="CounterM_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.WBS}" Executed="WBS_CommandBinding_Executed" CanExecute="WBS_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.Properties}" Executed="Properties_CommandBinding_Executed" CanExecute="Properties_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.Export}" Executed="ExportCommandBinding_Executed" CanExecute="Export_CanExecute" />
-        <CommandBinding Command="{StaticResource Commands.PanDragDiagram}" Executed="PanDragDiagramCommandBinding_Executed" CanExecute="PanDragDiagram_CanExecute" />
+    <Window.CommandBindings>
         <CommandBinding Command="{StaticResource Commands.ReloadApplication}" Executed="ReloadApplicationCommandBinding_Executed"/>
-        <CommandBinding Command="{StaticResource Commands.ExportToExcel}" Executed="ExportToExcelCommandBinding_Executed" CanExecute="ExportToExcel_CanExecute"/>
-        <CommandBinding Command="{StaticResource Commands.PP}" Executed="PPCommandBinding_Executed" />
-
-        <CommandBinding Command="SaveAs" Executed="SaveAsCommandBinding_Executed" CanExecute="SaveAs_CanExecute"/>
-        <CommandBinding Command="Save" Executed="SaveCommandBinding_Executed" CanExecute="Save_CanExecute"/>
-        <CommandBinding Command="Print" Executed="PrintCommandBinding_Executed" CanExecute="Print_CanExecute"/>
     </Window.CommandBindings>
     <Window.InputBindings>
-        <KeyBinding Key="L" Modifiers="Control" Command="{StaticResource Commands.Login}"/>
-        <KeyBinding Key="W" Modifiers="Control" Command="{StaticResource Commands.WBS}"/>
-        <KeyBinding Key="J" Modifiers="Control" Command="{StaticResource Commands.Project}"/>
-        <KeyBinding Key="U" Modifiers="Control" Command="{StaticResource Commands.User}"/>
-        <KeyBinding Key="R" Modifiers="Control+Shift" Command="{StaticResource Commands.Role}"/>
-        <KeyBinding Key="D" Modifiers="Control" Command="{StaticResource Commands.Damage}"/>
-        <KeyBinding Key="T" Modifiers="Control" Command="{StaticResource Commands.Default}"/>
-        <KeyBinding Key="O" Modifiers="Control" Command="{StaticResource Commands.Settings}"/>
-        <KeyBinding Key="R" Modifiers="Control" Command="{StaticResource Commands.Risk}"/>
-        <KeyBinding Key="M" Modifiers="Control" Command="{StaticResource Commands.CounterMeasure}"/>
-        <KeyBinding Key="L" Modifiers="Control+Shift" Command="{StaticResource Commands.Logs}"/>
-        <KeyBinding Key="P" Modifiers="Control+Shift" Command="{StaticResource Commands.Properties}"/>
-        <KeyBinding Key="E" Modifiers="Control" Command="{StaticResource Commands.Export}"/>
-        <KeyBinding Key="S" Modifiers="Control+Shift" Command="SaveAs"/>
-        <KeyBinding Key="S" Modifiers="Control" Command="Save"/>
-        <KeyBinding Key="P" Modifiers="Control" Command="Print"/>
+        <KeyBinding Key="L" Modifiers="Control" Command="{Binding Login_Command, ElementName=thisWindow}"/>
+        <KeyBinding Key="W" Modifiers="Control" Command="{Binding ShowWBSPannelCommand, ElementName=thisWindow}"/>
+        <KeyBinding Key="J" Modifiers="Control" Command="{Binding Project_Command, ElementName=thisWindow}"/>
+        <KeyBinding Key="U" Modifiers="Control" Command="{Binding User_Command, ElementName=thisWindow}"/>
+        <KeyBinding Key="R" Modifiers="Control+Shift" Command="{Binding Role_Command, ElementName=thisWindow}"/>
+        <KeyBinding Key="D" Modifiers="Control" Command="{Binding DamageList_Command, ElementName=thisWindow}"/>
+        <KeyBinding Key="T" Modifiers="Control" Command="{Binding DefaultRiskList_Command, ElementName=thisWindow}"/>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding SettingsCommand, ElementName=thisWindow}"/>
+        <KeyBinding Key="R" Modifiers="Control" Command="{Binding RiskCommand, ElementName=thisWindow}"/>
+        <KeyBinding Key="M" Modifiers="Control" Command="{Binding CMCommand, ElementName=thisWindow}"/>
+        <KeyBinding Key="L" Modifiers="Control+Shift" Command="{Binding LogsListCommand, ElementName=thisWindow}"/>
+        <KeyBinding Key="P" Modifiers="Control+Shift" Command="{Binding ShowPropertiesPannelCommand, ElementName=thisWindow}"/>
+        <KeyBinding Key="E" Modifiers="Control" Command="{Binding ExporToImageCommand, ElementName=thisWindow}"/>
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAs_Command, ElementName=thisWindow}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveDiagram_Command, ElementName=thisWindow}"/>
+        <KeyBinding Key="P" Modifiers="Control" Command="{Binding PrintDiagramCommand, ElementName=thisWindow}"/>
     </Window.InputBindings>
     <Grid x:Name="Supergrid" Background="{DynamicResource MaterialDesignPaper}">        
         <Grid.RowDefinitions>
@@ -151,42 +131,42 @@
                         <ToolBar.Resources>
                             <local:BoolToIconConverter x:Key="IconConverter" />
                         </ToolBar.Resources>
-                        <Button DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" x:Name="ButtonHand" Command="{StaticResource Commands.PanDragDiagram}" Content="{Binding IsPanEnabled, Converter={StaticResource IconConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" x:Name="ButtonHand" Command="{Binding PanDragCommand, ElementName=thisWindow}" Content="{Binding IsPanEnabled, Converter={StaticResource IconConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                         <Separator/>
-                        <Button x:Name="MenuItemOptionNewRisk" ToolTip="New Risk (Ctrl + R)" Command="{StaticResource Commands.Risk}" Content="{md:PackIcon Kind=ArrowBottomRight}" />
-                        <Button x:Name="MenuItemOptionNewCM" ToolTip="New CM (Ctrl + M)" Command="{StaticResource Commands.CounterMeasure}" Content="{md:PackIcon Kind=BlurOff}" />
+                        <Button x:Name="MenuItemOptionNewRisk" ToolTip="New Risk (Ctrl + R)" Command="{Binding RiskCommand, ElementName=thisWindow}" Content="{md:PackIcon Kind=ArrowBottomRight}" />
+                        <Button x:Name="MenuItemOptionNewCM" ToolTip="New CM (Ctrl + M)" Command="{Binding CMCommand, ElementName=thisWindow}" Content="{md:PackIcon Kind=BlurOff}" />
                         <Separator />
-                        <Button x:Name="MenuItemSave" ToolTip="Save (Ctrl + S)" Command="Save" Content="{md:PackIcon Kind=ContentSave}"/>
-                        <Button x:Name="MenuItemSaveAs" ToolTip="Save As (Ctrl + Shift + S)" Command="SaveAs" Content="{md:PackIcon Kind=ContentSaveAll}"/>
-                        <Button x:Name="ExportToExcel" ToolTip="Save to Excel" HorizontalAlignment="Left" Command="{StaticResource Commands.ExportToExcel}" Content="{md:PackIcon Kind=FileExport}"/>
+                        <Button x:Name="MenuItemSave" ToolTip="Save (Ctrl + S)" Command="{Binding SaveDiagram_Command, ElementName=thisWindow}" Content="{md:PackIcon Kind=ContentSave}"/>
+                        <Button x:Name="MenuItemSaveAs" ToolTip="Save As (Ctrl + Shift + S)" Command="{Binding SaveAs_Command, ElementName=thisWindow}" Content="{md:PackIcon Kind=ContentSaveAll}"/>
+                        <Button x:Name="ExportToExcel" ToolTip="Save to Excel" HorizontalAlignment="Left" Command="{Binding ExporToExcelCommand, ElementName=thisWindow}" Content="{md:PackIcon Kind=FileExport}"/>
                         <Separator/>
                         <Button x:Name="MenuItemReload" ToolTip="Restart" Command="{StaticResource Commands.ReloadApplication}" Content="{md:PackIcon Kind=Restart}" />
                         <Button x:Name="MenuItemFish_Tree" ToolTip="View current diagram as Tree" IsEnabled="True" Click="MenuItemFish_Tree_Click" Content="{md:PackIcon Kind=Lan}" Visibility="Collapsed"/>
-                        <Button x:Name="MenuItemExport" ToolTip="Export to Image" Command="{StaticResource Commands.Export}" Content="{md:PackIcon Kind=Image}" />
-                        <Button x:Name="MenuItemPrint" ToolTip="Print diagram" Command="Print" Content="{md:PackIcon Kind=Printer}" />
+                        <Button x:Name="MenuItemExport" ToolTip="Export to Image" Command="{Binding ExporToImageCommand, ElementName=thisWindow}" Content="{md:PackIcon Kind=Image}" />
+                        <Button x:Name="MenuItemPrint" ToolTip="Print diagram" Command="{Binding PrintDiagramCommand, ElementName=thisWindow}" Content="{md:PackIcon Kind=Printer}" />
                         <Separator />
                     </ToolBar>
                 </ToolBarTray>
                 <Menu>
                     <MenuItem ToolTip="Start" x:Name="StartMenu" Icon="{md:PackIcon Kind=DotsVertical}">
                         <!--<MenuItem x:Name="LoginMenuItem" Header="{x:Static rec:Recursos.LoginMenu}" Command="local:CustomCommands.Login" Icon="{md:PackIcon Kind=Lock}" InputGestureText="Ctrl+L"/>-->
-                        <MenuItem x:Name="LoginMenuItem" Header="Login" Command="{StaticResource Commands.Login}" Icon="{md:PackIcon Kind=Lock}" InputGestureText="Ctrl+L"/>
-                        <MenuItem x:Name="MenuItemNewProject" Header="Project List" Command="{StaticResource Commands.Project}" Icon="{md:PackIcon Kind=FileMultiple}" InputGestureText="Ctrl+J"/>
-                        <MenuItem x:Name="MenuItemUserList" Header="User List" Command="{StaticResource Commands.User}" Icon="{md:PackIcon Kind=Users}" InputGestureText="Ctrl+U"/>
-                        <MenuItem x:Name="MenuItemRoleList" Header="Role List" Command="{StaticResource Commands.Role}" Icon="{md:PackIcon Kind=AccountKey}" InputGestureText="Ctrl+Shift+R"/>
-                        <MenuItem x:Name="MenuItemTopRisk" Header="Damage List" Command="{StaticResource Commands.Damage}" Icon="{md:PackIcon Kind=AlertOutline}" InputGestureText="Ctrl+D"/>
-                        <MenuItem x:Name="MenuItemDefaultRisk" Header="Default Risk List" Command="{StaticResource Commands.Default}" Icon="{md:PackIcon Kind=AlertCircleOutline}" InputGestureText="Ctrl+T"/>
-                        <MenuItem x:Name="MenuItemWBS" Header="Work Breakdown Structure" Command="{StaticResource Commands.WBS}" Icon="{md:PackIcon Kind=FileTree}" InputGestureText="Ctrl+W"/>
+                        <MenuItem x:Name="LoginMenuItem" Header="Login" Command="{Binding Login_Command, ElementName=thisWindow}" Icon="{md:PackIcon Kind=Lock}" InputGestureText="Ctrl+L"/>
+                        <MenuItem x:Name="MenuItemNewProject" Header="Project List" Command="{Binding Project_Command, ElementName=thisWindow}" Icon="{md:PackIcon Kind=FileMultiple}" InputGestureText="Ctrl+J"/>
+                        <MenuItem x:Name="MenuItemUserList" Header="User List" Command="{Binding User_Command, ElementName=thisWindow}" Icon="{md:PackIcon Kind=Users}" InputGestureText="Ctrl+U"/>
+                        <MenuItem x:Name="MenuItemRoleList" Header="Role List" Command="{Binding Role_Command, ElementName=thisWindow}" Icon="{md:PackIcon Kind=AccountKey}" InputGestureText="Ctrl+Shift+R"/>
+                        <MenuItem x:Name="MenuItemTopRisk" Header="Damage List" Command="{Binding DamageList_Command, ElementName=thisWindow}" Icon="{md:PackIcon Kind=AlertOutline}" InputGestureText="Ctrl+D"/>
+                        <MenuItem x:Name="MenuItemDefaultRisk" Header="Default Risk List" Command="{Binding DefaultRiskList_Command, ElementName=thisWindow}" Icon="{md:PackIcon Kind=AlertCircleOutline}" InputGestureText="Ctrl+T"/>
+                        <MenuItem x:Name="MenuItemWBS" Header="Work Breakdown Structure" Command="{Binding ShowWBSPannelCommand, ElementName=thisWindow}" Icon="{md:PackIcon Kind=FileTree}" InputGestureText="Ctrl+W"/>
                         <MenuItem Header="View" Icon="{md:PackIcon Kind=Eye}">
                             <MenuItem Header="View Diagram List" Icon="{md:PackIcon Kind=ArrowTopRight}" Click="MenuItem_Click"/>
                             <MenuItem Header="View Risk List" Icon="{md:PackIcon Kind=WarningOutline}" Click="MenuItem_Click_1"/>
                             <MenuItem Header="View Counter M. List" Icon="{md:PackIcon Kind=ViewDashboard}" Click="MenuItem_Click_2"/>
                             <MenuItem Header="View Group List" Icon="{md:PackIcon Kind=Group}" Click="MenuItem_Click_3"/>
-                            <MenuItem Header="View WBS" Icon="{md:PackIcon Kind=FileTree}" Command="{StaticResource Commands.WBS}" InputGestureText="Ctrl+W"/>
-                            <MenuItem Header="View Properties" Icon="{md:PackIcon Kind=FileTree}" Command="{StaticResource Commands.Properties}" InputGestureText="Ctrl+Shift+P"/>
-                            <MenuItem Header="View Logs" Icon="{md:PackIcon Kind=Message}" Command="{StaticResource Commands.Logs}" InputGestureText="Ctrl+Shift+L"/>
+                            <MenuItem Header="View WBS" Icon="{md:PackIcon Kind=FileTree}" Command="{Binding ShowWBSPannelCommand, ElementName=thisWindow}" InputGestureText="Ctrl+W"/>
+                            <MenuItem Header="View Properties" Icon="{md:PackIcon Kind=FileTree}" Command="{Binding ShowPropertiesPannelCommand, ElementName=thisWindow}" InputGestureText="Ctrl+Shift+P"/>
+                            <MenuItem Header="View Logs" Icon="{md:PackIcon Kind=Message}" Command="{Binding LogsListCommand, ElementName=thisWindow}" InputGestureText="Ctrl+Shift+L"/>
                         </MenuItem>
-                        <MenuItem x:Name="MenuItemOption" Header="Settings" Command="{StaticResource Commands.Settings}" Icon="{md:PackIcon Kind=Settings}" InputGestureText="Ctrl+O"/>
+                        <MenuItem x:Name="MenuItemOption" Header="Settings" Command="{Binding SettingsCommand, ElementName=thisWindow}" Icon="{md:PackIcon Kind=Settings}" InputGestureText="Ctrl+O"/>
                         <MenuItem x:Name="MenuItemExit" Header="Exit" Click="MenuItemExit_Click" Icon="{md:PackIcon Kind=Close}" InputGestureText="Alt+F4"/>
                     </MenuItem>
                 </Menu>

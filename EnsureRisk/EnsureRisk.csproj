@@ -118,6 +118,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AllValidations.cs" />
+    <Compile Include="Classess\AutoCompleteTextBox.cs" />
     <Compile Include="Classess\ButtonWBS.cs" />
     <Compile Include="Classess\DamageText.cs" />
     <Compile Include="Classess\HeaderExcelContent.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="DialogContent\YesNoDialogContent.xaml.cs">
       <DependentUpon>YesNoDialogContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EnumOperations.cs" />
     <Compile Include="MainWindowElements\GridCMCrossList.xaml.cs">
       <DependentUpon>GridCMCrossList.xaml</DependentUpon>
     </Compile>
@@ -413,6 +415,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DialogContent\YesNoDialogContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dictionaries\AutoCompleteTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

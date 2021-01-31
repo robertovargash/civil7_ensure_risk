@@ -20,6 +20,7 @@ using EnsureRisk.Resources;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Windows.Controls.Primitives;
+using EnsureRisk.Classess;
 
 namespace EnsureRisk.Windows
 {
@@ -32,7 +33,8 @@ namespace EnsureRisk.Windows
         private decimal probability;
         private string _shortName, probabilityHint;
         private bool isCM;
-
+        private IEnumerable<string> _RiskNameList;
+        public IEnumerable<string> RiskNameList { get { return _RiskNameList; } set { _RiskNameList = value; OnPropertyChanged("RiskNameList"); } }
         public string ShortName { get { return _shortName; } set { _shortName = value; OnPropertyChanged("ShortName"); } }
 
         public string ProbabilityHint { get { return probabilityHint; } set { probabilityHint = value; OnPropertyChanged("ProbabilityHint"); } }
@@ -74,6 +76,37 @@ namespace EnsureRisk.Windows
         public int Posicion { get; set; }
         private DataSet dsWBS;
 
+        private RelayyCommand _RiskName_KeyUpCommand;
+        public RelayyCommand RiskName_KeyUpCommand { get { return _RiskName_KeyUpCommand; } set { _RiskName_KeyUpCommand = value; OnPropertyChanged("RiskName_KeyUpCommand"); } }
+        private void ImplementRiskName_KeyUpCommand()
+        {
+            try
+            {
+                RiskName_KeyUpCommand = new RelayyCommand(
+                parametro =>
+                {
+                    try
+                    {
+                        if (parametro is string textico)
+                        {
+                            Editando = true;
+
+                            RiskNameList = Ds.Tables[DT_Risk.TABLE_NAME].AsEnumerable()
+                                            .Where(r => r.Field<string>(DT_Risk.NAMESHORT).ToLower().Contains(textico.ToLower()))
+                                            .Select(r => r.Field<string>(DT_Risk.NAMESHORT)).Distinct();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
 
         private bool Editando;
         private bool Seleccionando;
@@ -83,7 +116,6 @@ namespace EnsureRisk.Windows
             InitializeComponent();
             ChangeLanguage();
             RiskName.DataContext = this;
-            resultStack.DataContext = this;
             TextDetail.DataContext = this;
             TextProbability.DataContext = this;
             gridTabRoles.DataContext = this;
@@ -143,7 +175,8 @@ namespace EnsureRisk.Windows
                         WBS_NAME = RiskRow[DT_Risk.WBS_NAME].ToString();
                     }
                     Enabled = (bool)RiskRow[DT_Risk.IS_ACTIVE];
-                    RiskName.Text = RiskRow[DT_Risk.NAMESHORT].ToString();
+                    //ShortName = RiskRow[DT_Risk.NAMESHORT].ToString();
+                    RiskName.InputText = RiskRow[DT_Risk.NAMESHORT].ToString();
                     TextDetail.Text = RiskRow[DT_Risk.COMMENTS].ToString();
                     Probability = (decimal)RiskRow[DT_Risk.PROBABILITY];
                     if (RiskRow[DT_Risk.ID_WBS] != DBNull.Value)
@@ -154,7 +187,7 @@ namespace EnsureRisk.Windows
                     SetTableRisk_Damages(true, Enabled);
                     TextFather.Text = RowFather[DT_Risk.NAMESHORT].ToString();
                 }
-                RiskName.Focus();
+                TextFather.Focus();
                 DvRoleRisk = Ds.Tables[DT_Role_Risk.TABLE_NAME].DefaultView;
                 //DvRoleRisk = Ds.Tables[DT_Role_Risk.TABLENAME].DefaultView;
 
@@ -194,6 +227,7 @@ namespace EnsureRisk.Windows
                     DvTopRisk.RowFilter += filter;
                 }
                 CalculateProbability();
+                ImplementRiskName_KeyUpCommand();
             }
             catch (Exception ex)
             {
@@ -429,7 +463,7 @@ namespace EnsureRisk.Windows
                     {
                         DataRow drRole = Ds.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                         drRole[DT_Role_Risk.ID_RISK] = RiskRow[DT_Risk.ID];
-                        drRole[DT_Role_Risk.NAME_SHORT] = RiskName.Text;
+                        drRole[DT_Role_Risk.NAME_SHORT] = RiskName.InputText;
                         drRole[DT_Role_Risk.Role] = itemRole[DT_Role.ROLE_COLUM];
                         drRole[DT_Role_Risk.IDROL_COLUMN] = itemRole[DT_Role.IDROL_COLUMN];
                         Ds.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(drRole);
@@ -541,7 +575,7 @@ namespace EnsureRisk.Windows
                     {
                         DataRow drRiskWBS = Ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
                         drRiskWBS[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
-                        drRiskWBS[DT_RISK_WBS.RISK] = RiskName.Text;
+                        drRiskWBS[DT_RISK_WBS.RISK] = RiskName.InputText;
                         drRiskWBS[DT_RISK_WBS.WBS] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart();
                         drRiskWBS[DT_RISK_WBS.WBS_USER] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart() + "[" + itemWBS[DT_WBS.USERNAME] + "]";
                         drRiskWBS[DT_RISK_WBS.ID_WBS] = itemWBS[DT_WBS.ID_WBS];
@@ -556,7 +590,7 @@ namespace EnsureRisk.Windows
                             {
                                 DataRow drRiskWBSi = Ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
                                 drRiskWBSi[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
-                                drRiskWBSi[DT_RISK_WBS.RISK] = RiskName.Text;
+                                drRiskWBSi[DT_RISK_WBS.RISK] = RiskName.InputText;
                                 drRiskWBSi[DT_RISK_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
                                 drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
                                 drRiskWBSi[DT_RISK_WBS.NIVEL] = itemAncestors[DT_WBS.NIVEL].ToString().TrimStart();
@@ -739,13 +773,13 @@ namespace EnsureRisk.Windows
         {
             try
             {
-                if (RiskName.Text != "")
+                if (RiskName.InputText != "")
                 {
-                    if (MyRisks.Select(DT_Risk.ID_DIAGRAM + " = " + RiskTreeID + " and " + DT_Risk.NAMESHORT + " = '" + RiskName.Text + "' and " 
-                        + DT_Risk.ID + " <> " + RiskRow[DT_Risk.ID]).Any() && RiskRow[DT_Risk.NAMESHORT].ToString() != RiskName.Text)
+                    if (MyRisks.Select(DT_Risk.ID_DIAGRAM + " = " + RiskTreeID + " and " + DT_Risk.NAMESHORT + " = '" + RiskName.InputText + "' and " 
+                        + DT_Risk.ID + " <> " + RiskRow[DT_Risk.ID]).Any() && RiskRow[DT_Risk.NAMESHORT].ToString() != RiskName.InputText)
                     {
                         IS_USING_NAME = true;
-                        MostrarDialogYesNo("The name [" + RiskName.Text + "] Already exists in this diagram. Do you want to use it again?");
+                        MostrarDialogYesNo("The name [" + RiskName.InputText + "] Already exists in this diagram. Do you want to use it again?");
                     }
                     else
                     {
@@ -796,7 +830,7 @@ namespace EnsureRisk.Windows
 
         private void AceptRisk()
         {
-            RiskRow[DT_Risk.NAMESHORT] = RiskName.Text;
+            RiskRow[DT_Risk.NAMESHORT] = RiskName.InputText;
             RiskRow[DT_Risk.ISCOLLAPSED] = false;
             RiskRow[DT_Risk.IS_ACTIVE] = Enabled;
             RiskRow[DT_Risk.COMMENTS] = TextDetail.Text;
@@ -851,82 +885,10 @@ namespace EnsureRisk.Windows
             Regex regex = new Regex("[^0-9.,]");
             e.Handled = regex.IsMatch(e.Text);
         }
-
-        private void RiskName_KeyUp(object sender, KeyEventArgs e)
-        {
-            Editando = true;
-            pp.Visibility = Visibility.Visible;
-            bool found = false;
-            var border = (resultStack.Parent as ScrollViewer).Parent as Border;
-
-            string query = (sender as TextBox).Text;
-
-            if (query.Length == 0)
-            {
-                // Clear   
-                resultStack.Children.Clear();
-                border.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                border.Visibility = Visibility.Visible;
-            }
-
-            // Clear the list   
-            resultStack.Children.Clear();
-
-            // Add the result   
-            foreach (DataRow obj in Ds.Tables[DT_DefaulRisk.TABLE_NAME].Rows)
-            {
-                if (obj[DT_DefaulRisk.RISK_NAME_COLUMNA].ToString().ToLower().StartsWith(query.ToLower()))
-                {
-                    // The word starts with this... Autocomplete must work   
-                    AddItem(obj[DT_DefaulRisk.RISK_NAME_COLUMNA].ToString());
-                    found = true;
-                }
-            }
-
-            if (!found)
-            {
-                resultStack.Children.Add(new TextBlock() { Text = "No results found." });
-            }
-        }
-
-        private void AddItem(string text)
-        {
-            TextBlock block = new TextBlock
-            {
-                Text = text,
-                Margin = new Thickness(2, 3, 2, 3),
-                Cursor = Cursors.Hand
-            };
-
-            block.MouseLeftButtonUp += (sender, e) =>
-            {
-                RiskName.Text = (sender as TextBlock).Text;
-                pp.Visibility = Visibility.Collapsed;
-            };
-
-            block.MouseEnter += (sender, e) =>
-            {
-                TextBlock b = sender as TextBlock;
-                b.Background = Brushes.PeachPuff;
-                Seleccionando = true;
-            };
-
-            block.MouseLeave += (sender, e) =>
-            {
-                TextBlock b = sender as TextBlock;
-                b.Background = Brushes.Transparent;
-                Seleccionando = false;
-            };
-
-            resultStack.Children.Add(block);
-        }
-
+               
         private void RiskName_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (RiskName.Text == "")
+            if (RiskName.InputText == "")
             {
                 RiskName.ToolTip = "Empty";
             }
@@ -934,7 +896,6 @@ namespace EnsureRisk.Windows
             {
                 if (!Seleccionando)
                 {
-                    pp.Visibility = Visibility.Collapsed;
                     Editando = false;
                 }
             }
@@ -983,10 +944,6 @@ namespace EnsureRisk.Windows
             }
         }
 
-        private void RiskName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ShortName = RiskName.Text;
-        }
 
         private void KeyToggleButtonChecked(object sender, RoutedEventArgs e)
         {

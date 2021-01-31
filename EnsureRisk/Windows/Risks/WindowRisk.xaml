@@ -15,13 +15,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EnsureRisk"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
-        mc:Ignorable="d"
-        Title="Line" Height="561" Width="677" MinWidth="677" MinHeight="561" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" Closing="Window_Closing" WindowStartupLocation="CenterScreen" >
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    mc:Ignorable="d"
+        Title="Line" Height="561" Width="548.2" MinWidth="677" MinHeight="561" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" Closing="Window_Closing" WindowStartupLocation="CenterScreen" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!--<ResourceDictionary Source="/EnsureRisk;component/Menus/MenuDictionary.xaml"/>-->
                 <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/Styless.xaml"/>
+                <ResourceDictionary Source="/EnsureRisk;component/Dictionaries/AutoCompleteTextBox.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
             <classess:OpositeBoolToVisibilityConverter x:Key="NonToVisConverter" />
@@ -42,26 +44,43 @@
         <Button Name="BtnOK" Content="OK" Height="25" Margin="0,0,143,19" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
         <Button Name="BtnCancel" Content="CLOSE" Height="25" Margin="0,0,39,19" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
         <StackPanel Orientation="Vertical" Margin="34,7,347,0">
-            <TextBox TabIndex="1" md:ShadowAssist.ShadowDepth="Depth5" IsEnabled="{Binding Path = HasAccess}" KeyUp="RiskName_KeyUp" md:HintAssist.Hint="Short Name" 
+            <classess:AutoCompleteTextBox TabIndex="1" md:ShadowAssist.ShadowDepth="Depth5" Focusable="True" IsEnabled="{Binding Path = HasAccess}"
+                                          md:HintAssist.IsFloating="True" x:Name="RiskName" VerticalAlignment="Top" TextOptions.TextHintingMode="Animated" 
+                                          LostFocus="RiskName_LostFocus" AutoCompletePlacement="Bottom"
+                                         AutoCompleteItemSource="{Binding RiskNameList, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+                <i:Interaction.Triggers>                   
+                    <i:EventTrigger EventName="OnTextChange">
+                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=RiskName, Path=InputText}" Command="{Binding RiskName_KeyUpCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <classess:AutoCompleteTextBox.InputText>
+                    <Binding Path="ShortName" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <local:NotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </classess:AutoCompleteTextBox.InputText>
+            </classess:AutoCompleteTextBox>
+            <!--<TextBox TabIndex="1" md:ShadowAssist.ShadowDepth="Depth5" IsEnabled="{Binding Path = HasAccess}" KeyUp="RiskName_KeyUp" md:HintAssist.Hint="Short Name" 
                      md:HintAssist.IsFloating="True" x:Name="RiskName" 
                      MaxLength="250" TextWrapping="Wrap" VerticalAlignment="Top"  MaxLines="1" TextOptions.TextHintingMode="Animated" 
-                     TextChanged="RiskName_TextChanged" LostFocus="RiskName_LostFocus">
-                <TextBox.Text>
+                     TextChanged="RiskName_TextChanged" LostFocus="RiskName_LostFocus">-->
+                <!--<TextBox.Text>
                     <Binding Path="ShortName" UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
                             <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
                         </Binding.ValidationRules>
                     </Binding>
-                </TextBox.Text>
-            </TextBox>
-            <Border Height="60" BorderBrush="Black" BorderThickness="0" Margin="5">
+                </TextBox.Text>-->
+            <!--</TextBox>-->
+            <!--<Border Height="60" BorderBrush="Black" BorderThickness="0" Margin="5">
                 <ScrollViewer x:Name="pp" Visibility="Collapsed" VerticalScrollBarVisibility="Visible">
                     <StackPanel Name="resultStack" ></StackPanel>
                 </ScrollViewer>
-            </Border>
+            </Border>-->
         </StackPanel>
 
-        <TextBox md:HintAssist.Hint="Father" md:HintAssist.IsFloating="True" x:Name="TextFather" Margin="0,7,15,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="38" IsReadOnly="True" IsEnabled="False" HorizontalAlignment="Right" Width="246"/>
+        <TextBox md:HintAssist.Hint="Father" md:HintAssist.IsFloating="True" x:Name="TextFather" Margin="0,7,15,0" TextWrapping="Wrap"  VerticalAlignment="Top" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" IsReadOnly="True" HorizontalAlignment="Right" Width="246"/>
         <TextBox Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" TabIndex="2" 
                  IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" Name="TextDetail" Height="71" Margin="34,119,13,0" 
                  TextWrapping="Wrap"  VerticalAlignment="Top" TextAlignment="Justify" MaxLength="250" VerticalScrollBarVisibility="Auto"/>

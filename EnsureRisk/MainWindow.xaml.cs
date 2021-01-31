@@ -50,9 +50,7 @@ namespace EnsureRisk
         public bool IsPanEnabled { get { return isPanEnabled; } set { isPanEnabled = value; OnPropertyChanged("IsPanEnabled"); } }
         private bool isImporting = false;
         private bool canEditDiagram = false;
-        private bool canDeleteDiagram = false;
-        private List<string> _RiskAutocompleteRisk;
-        public List<string> RiskAutocompleteRisk { get { return _RiskAutocompleteRisk; } set { _RiskAutocompleteRisk = value; OnPropertyChanged("RiskAutocompleteRisk"); } }
+        private bool canDeleteDiagram = false;        
         private DataView dvCBWBS;
         private DataView dvCBProjects;
         private DataView dv_CrossRisk;
@@ -492,6 +490,10 @@ namespace EnsureRisk
 
         #region PROPERTIES_TAB_COMMANDS
         #region RISK_GENERAL_VALUES
+
+        private IEnumerable<string> _RiskNameList;
+        public IEnumerable<string> RiskNameList { get { return _RiskNameList; } set { _RiskNameList = value; OnPropertyChanged("RiskNameList"); } }
+
         private RelayyCommand _RiskName_KeyUpCommand;
         public RelayyCommand RiskName_KeyUpCommand { get { return _RiskName_KeyUpCommand; } set { _RiskName_KeyUpCommand = value; OnPropertyChanged("RiskName_KeyUpCommand"); } }
         private void ImplementRiskName_KeyUpCommand()
@@ -506,41 +508,10 @@ namespace EnsureRisk
                         if (parametro is string textico)
                         {
                             EditandoRisk = true;
-                            wrapRisk.scrollRiskAutocomplete.Visibility = Visibility.Visible;
-                            bool found = false;
-                            var border = (wrapRisk.RiskresultStack.Parent as ScrollViewer).Parent as System.Windows.Controls.Border;
-
-                            string query = textico;
-
-                            if (query.Length == 0)
-                            {
-                                // Clear   
-                                wrapRisk.RiskresultStack.Children.Clear();
-                                border.Visibility = Visibility.Collapsed;
-                            }
-                            else
-                            {
-                                border.Visibility = Visibility.Visible;
-                            }
-
-                            // Clear the list   
-                            wrapRisk.RiskresultStack.Children.Clear();
-
-                            // Add the result   
-                            foreach (DataRow obj in TheCurrentLayout.Ds.Tables[DT_DefaulRisk.TABLE_NAME].Rows)
-                            {
-                                if (obj[DT_DefaulRisk.RISK_NAME_COLUMNA].ToString().ToLower().StartsWith(query.ToLower()))
-                                {
-                                    // The word starts with this... Autocomplete must work   
-                                    AddRiskItem(obj[DT_DefaulRisk.RISK_NAME_COLUMNA].ToString());
-                                    found = true;
-                                }
-                            }
-
-                            if (!found)
-                            {
-                                wrapRisk.RiskresultStack.Children.Add(new TextBlock() { Text = "No results found." });
-                            }
+                            
+                            RiskNameList = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].AsEnumerable()
+                                            .Where(r => r.Field<string>(DT_Risk.NAMESHORT).ToLower().Contains(textico.ToLower()))
+                                            .Select(r=>r.Field<string>(DT_Risk.NAMESHORT)).Distinct();
                         }
                     }
                     catch (Exception ex)
@@ -555,38 +526,38 @@ namespace EnsureRisk
             }
         }
 
-        private void AddRiskItem(string text)
-        {
-            TextBlock block = new TextBlock
-            {
-                Text = text,
-                Margin = new Thickness(2, 3, 2, 3),
-                Cursor = Cursors.Hand
-            };
+        //private void AddRiskItem(string text)
+        //{
+        //    TextBlock block = new TextBlock
+        //    {
+        //        Text = text,
+        //        Margin = new Thickness(2, 3, 2, 3),
+        //        Cursor = Cursors.Hand
+        //    };
 
-            block.MouseLeftButtonUp += (sender, e) =>
-            {
-                wrapRisk.TextRisk.Text = (sender as TextBlock).Text;
-                wrapRisk.scrollRiskAutocomplete.Visibility = Visibility.Collapsed;
-                wrapRisk.TextRisk.Focus();
-            };
+        //    block.MouseLeftButtonUp += (sender, e) =>
+        //    {
+        //        wrapRisk.TextRisk.InputText = (sender as TextBlock).Text;
+        //        wrapRisk.scrollRiskAutocomplete.Visibility = Visibility.Collapsed;
+        //        wrapRisk.TextRisk.Focus();
+        //    };
 
-            block.MouseEnter += (sender, e) =>
-            {
-                TextBlock b = sender as TextBlock;
-                b.Background = Brushes.PeachPuff;
-                SeleccionandoRisk = true;
-            };
+        //    block.MouseEnter += (sender, e) =>
+        //    {
+        //        TextBlock b = sender as TextBlock;
+        //        b.Background = Brushes.PeachPuff;
+        //        SeleccionandoRisk = true;
+        //    };
 
-            block.MouseLeave += (sender, e) =>
-            {
-                TextBlock b = sender as TextBlock;
-                b.Background = Brushes.Transparent;
-                SeleccionandoRisk = false;
-            };
+        //    block.MouseLeave += (sender, e) =>
+        //    {
+        //        TextBlock b = sender as TextBlock;
+        //        b.Background = Brushes.Transparent;
+        //        SeleccionandoRisk = false;
+        //    };
 
-            wrapRisk.RiskresultStack.Children.Add(block);
-        }
+        //    wrapRisk.RiskresultStack.Children.Add(block);
+        //}
 
 
         private RelayyCommand _TextRisk_LostFocusCommand;
@@ -606,22 +577,22 @@ namespace EnsureRisk
                             {
                                 if (!SeleccionandoRisk)
                                 {
-                                    wrapRisk.scrollRiskAutocomplete.Visibility = Visibility.Collapsed;
+                                    //wrapRisk.scrollRiskAutocomplete.Visibility = Visibility.Collapsed;
                                     EditandoRisk = false;
                                 }
                             }
-                            if (wrapRisk.TextRisk.Text != string.Empty)
+                            if (wrapRisk.TextRisk.InputText != string.Empty)
                             {
-                                if (TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + DiagramID + " and " + DT_Risk.NAMESHORT + " = '" + wrapRisk.TextRisk.Text + "' and " + DT_Risk.ID + " <> " + TheCurrentLayout.Line_Selected.ID).Any())
+                                if (TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + DiagramID + " and " + DT_Risk.NAMESHORT + " = '" + wrapRisk.TextRisk.InputText + "' and " + DT_Risk.ID + " <> " + TheCurrentLayout.Line_Selected.ID).Any())
                                 {
-                                    if (new WindowMessageYesNo("The name [" + wrapRisk.TextRisk.Text + "] Already exists in this diagram. Do you want to use it again?").ShowDialog() == true)
+                                    if (new WindowMessageYesNo("The name [" + wrapRisk.TextRisk.InputText + "] Already exists in this diagram. Do you want to use it again?").ShowDialog() == true)
                                     {
-                                        TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.NAMESHORT] = wrapRisk.TextRisk.Text;
+                                        TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.NAMESHORT] = wrapRisk.TextRisk.InputText;
                                         foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID))
                                         {
-                                            item[DT_Risk_Damages.RISK_NAMESHORT] = wrapRisk.TextRisk.Text;
+                                            item[DT_Risk_Damages.RISK_NAMESHORT] = wrapRisk.TextRisk.InputText;
                                         }
-                                        TheCurrentLayout.Line_Selected.ShortName = wrapRisk.TextRisk.Text;
+                                        TheCurrentLayout.Line_Selected.ShortName = wrapRisk.TextRisk.InputText;
 
                                         TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
                                         TheCurrentLayout.DrawNumbers();
@@ -631,17 +602,17 @@ namespace EnsureRisk
                                     }
                                     else
                                     {
-                                        wrapRisk.TextRisk.Text = TheCurrentLayout.Line_Selected.ShortName;
+                                        wrapRisk.TextRisk.InputText = TheCurrentLayout.Line_Selected.ShortName;
                                     }
                                 }
                                 else
                                 {
-                                    TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.NAMESHORT] = wrapRisk.TextRisk.Text;
+                                    TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.NAMESHORT] = wrapRisk.TextRisk.InputText;
                                     foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID))
                                     {
-                                        item[DT_Risk_Damages.RISK_NAMESHORT] = wrapRisk.TextRisk.Text;
+                                        item[DT_Risk_Damages.RISK_NAMESHORT] = wrapRisk.TextRisk.InputText;
                                     }
-                                    TheCurrentLayout.Line_Selected.ShortName = wrapRisk.TextRisk.Text;
+                                    TheCurrentLayout.Line_Selected.ShortName = wrapRisk.TextRisk.InputText;
                                     TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
                                     TheCurrentLayout.DrawNumbers();
                                     TheCurrentLayout.UpdateLinesValues();
@@ -681,7 +652,7 @@ namespace EnsureRisk
                 {
                     try
                     {
-                        RiskLineName = wrapRisk.TextRisk.Text;
+                        RiskLineName = wrapRisk.TextRisk.InputText;
                     }
                     catch (Exception ex)
                     {
@@ -887,7 +858,7 @@ namespace EnsureRisk
                                     {
                                         DataRow drRiskWBS = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
                                         drRiskWBS[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
-                                        drRiskWBS[DT_RISK_WBS.RISK] = wrapRisk.TextRisk.Text;
+                                        drRiskWBS[DT_RISK_WBS.RISK] = wrapRisk.TextRisk.InputText;
                                         drRiskWBS[DT_RISK_WBS.WBS] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart();
                                         drRiskWBS[DT_RISK_WBS.ID_WBS] = itemWBS[DT_WBS.ID_WBS];
                                         drRiskWBS[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
@@ -902,7 +873,7 @@ namespace EnsureRisk
                                             {
                                                 DataRow drRiskWBSi = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
                                                 drRiskWBSi[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
-                                                drRiskWBSi[DT_RISK_WBS.RISK] = wrapRisk.TextRisk.Text;
+                                                drRiskWBSi[DT_RISK_WBS.RISK] = wrapRisk.TextRisk.InputText;
                                                 drRiskWBSi[DT_RISK_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
                                                 drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
                                                 drRiskWBSi[DT_RISK_WBS.NIVEL] = itemAncestors[DT_WBS.NIVEL].ToString().TrimStart();
@@ -1108,7 +1079,7 @@ namespace EnsureRisk
                                     {
                                         DataRow drRole = TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                                         drRole[DT_Role_Risk.ID_RISK] = RiskRow[DT_Risk.ID];
-                                        drRole[DT_Role_Risk.NAME_SHORT] = wrapRisk.TextRisk.Text;
+                                        drRole[DT_Role_Risk.NAME_SHORT] = wrapRisk.TextRisk.InputText;
                                         drRole[DT_Role_Risk.Role] = itemRole[DT_Role.ROLE_COLUM];
                                         drRole[DT_Role_Risk.IDROL_COLUMN] = itemRole[DT_Role.IDROL_COLUMN];
                                         TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(drRole);
@@ -2259,6 +2230,12 @@ namespace EnsureRisk
 
                 //Cross CM List
                 ImplementFilterCMCommand(); ImplementClearFilterCMCommand(); ImplementActivateCMCommand(); ImplementDgCMSelectionChangedCommand();
+
+                //menu commands
+                ImplementLogin_Command(); ImplementProject_Command(); ImplementUser_Command(); ImplementRole_Command(); ImplementDamageList_Command();
+                ImplementDefaultRiskList_Command(); ImplementSaveDiagram_Command(); ImplementSaveAs_Command(); ImplementRiskCommand(); ImplementCMCommand();
+                ImplementSettingsCommand(); ImplementLogsListCommand(); ImplementExporToImageCommand(); ImplementExporToExcelCommand();
+                ImplementPanDragCommand(); ImplementShowWBSPannelCommand(); ImplementShowPropertiesPannelCommand(); ImplementPrintDiagramCommand();
             }
             catch (Exception ex)
             {
@@ -2324,168 +2301,7 @@ namespace EnsureRisk
         {
             AnchorGroupRisk.IsVisible = true;
         }
-
-        private void Properties_CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            LayoutProperties.IsVisible = true;
-            LayoutProperties.IsSelected = true;
-        }
-
-        private void WBS_CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            AnchorWBSList.IsVisible = true;
-            AnchorWBSList.IsSelected = true;
-            //if (true)//If has access to Damage List
-            //{
-            //    WindowWBSList wbs = new WindowWBSList
-            //    {
-            //        Icon = Icon
-            //    };
-            //    wbs.ShowDialog();
-            //}            
-        }
-
-        private void OptionMiniMap_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            WindowLogs wl = new WindowLogs();
-            wl.Show();
-        }
-
-        private void LoginCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            try
-            {
-                IS_LOGIN = true;
-                CloseOpenedDiagrams();
-                LoginDialog.IsOpen = true;
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        private void ProjectCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (ExistRole(7))//If has access to Project List
-            {
-                WindowProjectList list = new WindowProjectList
-                {
-                    Icon = Icon
-                };
-                list.ShowDialog();
-                using (ServiceProject.WebServiceProject webService = new ServiceProject.WebServiceProject())
-                {
-                    DvCBProjects = new DataView(webService.GetAllProjects().Tables[DT_Project.TABLE_NAME]);
-                }
-            }
-        }
-
-        private void UserCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (ExistRole(1))//If has access to User List
-            {
-                WindowUserList list = new WindowUserList
-                {
-                    Icon = Icon
-                };
-                list.ShowDialog();
-            }
-        }
-
-        private void RoleCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (ExistRole(2))//If has access to Role List
-            {
-                WindowRoleList wr = new WindowRoleList
-                {
-                    Icon = Icon
-                };
-                wr.ShowDialog();
-            }
-        }
-
-        private void OptionCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            WindowOption option = new WindowOption() { Icon = Icon };
-            option.ShowDialog();
-        }
-
-        private void DamageCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (ExistRole(10))//If has access to Damage List
-            {
-                WindowTopRiskList windowTop = new WindowTopRiskList
-                {
-                    Icon = Icon
-                };
-                windowTop.ShowDialog();
-            }
-        }
-
-        private void DefaultCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (ExistRole(8))//If Has access to Default list
-            {
-                WindowDefaultRiskList windowDefault = new WindowDefaultRiskList
-                {
-                    Icon = Icon
-                };
-                windowDefault.ShowDialog();
-            }
-        }
-
-        private void ExportCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (TheCurrentLayout != null)
-            {
-                if (TheCurrentLayout.LinesList.Count > 0)
-                {
-                    ExportToImage();
-                    MostrarInfoDialog("Diagram exported successfully!");
-                }
-            }
-        }
-
-        private void PrintCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            try
-            {
-                if (TheCurrentLayout != null)
-                {
-                    PrintDialog pd = new PrintDialog();
-                    if (pd.ShowDialog() == true)
-                    {
-                        Rect printableArea = GetPrintableArea(pd);
-                        Grid prueba = new Grid();
-                        UIElement[] array = new UIElement[TheCurrentLayout.GridPaintLines.Children.Count];
-                        TheCurrentLayout.GridPaintLines.Children.CopyTo(array, 0);
-                        TheCurrentLayout.GridPaintLines.Children.Clear();
-                        foreach (UIElement item in array)
-                        {
-                            prueba.Children.Add(item);
-                        }
-                        // I'm using here a viewbox for easily adjust the canvas_Letter to the desired size
-                        Viewbox viewBox = new Viewbox { Child = prueba };
-                        viewBox.Measure(printableArea.Size);
-                        viewBox.Arrange(printableArea);
-                        pd.PrintVisual(viewBox, StringResources.DiagramNameLabel);
-                        prueba.Visibility = Visibility.Collapsed;
-                        prueba.Children.Clear();
-                        foreach (UIElement item in array)
-                        {
-                            TheCurrentLayout.GridPaintLines.Children.Add(item);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-
-        }
-
+        
         private void MenuItemExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
@@ -2581,26 +2397,6 @@ namespace EnsureRisk
             //}
         }
 
-        private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            try
-            {
-                if (TheCurrentLayout != null && TheCurrentLayout.Ds.HasChanges())
-                {
-                    //TheProgress.Visibility = Visibility.Visible;
-                    HabilitarBotones(false);
-                    Salvando();
-                }
-            }
-            catch (Exception ex)
-            {
-                IS_SAVING_DATA = false;
-                TheProgress.Visibility = Visibility.Hidden;
-                HabilitarBotones(true);
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
         private void Salvando()
         {
             try
@@ -2649,11 +2445,6 @@ namespace EnsureRisk
         }
 
         #region SavingAs
-        private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            SaveAsAsyncFunction();
-        }
-
         /// <summary>
         /// Open and Save an opened diagram as new diagram. Not save the source value.
         /// </summary>
@@ -3116,11 +2907,6 @@ namespace EnsureRisk
                         }
                         filter += ")";
                         DvRiskDamages.RowFilter += filter;
-                        //RiskAutocompleteRisk = new List<string>();
-                        //foreach (DataRow obj in TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.IS_CM + " = " + RiskRow[DT_Risk.IS_CM]))
-                        //{
-                        //    RiskAutocompleteRisk.Add(obj[DT_Risk.NAMESHORT].ToString());
-                        //}
                     }
                     //DgRiskDamages.ItemsSource = DvRiskDamages;
                     CalculateProbability(RiskRow);
@@ -4152,9 +3938,7 @@ namespace EnsureRisk
                 gridDiagramList.AddTree.IsEnabled = ExistRole(3);
                 gridDiagramList.ImportExcel.IsEnabled = ExistRole(3);
                 CanEditDiagram = ExistRole(4);
-                CanDeleteDiagram = ExistRole(5);
-                //gridDiagramList.EditTree.IsEnabled = ExistRole(4);
-                //gridDiagramList.RemoveTree.IsEnabled = ExistRole(5);
+                CanDeleteDiagram = ExistRole(5);                
                 MenuItemNewProject.IsEnabled = ExistRole(7);
                 MenuItemDefaultRisk.IsEnabled = ExistRole(8);
                 MenuItemTopRisk.IsEnabled = ExistRole(10);
@@ -4917,122 +4701,467 @@ namespace EnsureRisk
         #endregion
 
         #region MENU_COMMANDS
-        private void Login_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private RelayyCommand _Login_Command;
+        public RelayyCommand Login_Command { get { return _Login_Command; } set { _Login_Command = value; OnPropertyChanged("Login_Command"); } }
+        private void ImplementLogin_Command()
         {
-            e.CanExecute = true;
-        }
-
-        private void Project_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void User_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void Role_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void Damage_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void Default_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void Settings_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void Logs_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void Risk_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = TheCurrentLayout != null;
-        }
-
-        private void WBS_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void Properties_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void Export_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = TheCurrentLayout != null;
-        }
-
-        private void SaveAs_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = TheCurrentLayout != null;
-        }
-
-        private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = TheCurrentLayout != null;
-        }
-
-        private void Print_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = TheCurrentLayout != null;
-        }
-
-        private void CounterM_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = TheCurrentLayout != null;
-        }
-
-        private void PPCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            try
-            {
-                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+            Login_Command = new RelayyCommand(
+                _ =>
                 {
-                    CalculateProbability(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
-                    TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
-                    TheCurrentLayout.DrawNumbers();
-                    TheCurrentLayout.UpdateLinesValues();
-                    TheCurrentLayout.SetLinesThickness();
-                    CrossRiskRightTab(TheCurrentLayout.Ds);
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
+                    try
+                    {
+                        IS_LOGIN = true;
+                        CloseOpenedDiagrams();
+                        LoginDialog.IsOpen = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
         }
 
-        private void PanDragDiagramCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        private RelayyCommand _Project_Command;
+        public RelayyCommand Project_Command { get { return _Project_Command; } set { _Project_Command = value; OnPropertyChanged("Project_Command"); } }
+        private void ImplementProject_Command()
         {
-            if (TheCurrentLayout != null)
-            {
-                IsPanEnabled = !IsPanEnabled;
-                TheCurrentLayout.IsPanEnable = IsPanEnabled;
-                foreach (var diagram in OpenedDocuments)
+            Project_Command = new RelayyCommand(
+                _ =>
                 {
-                    diagram.IsPanEnable = IsPanEnabled;
-                }
-            }
+                    try
+                    {
+                        if (ExistRole(7))//If has access to Project List
+                        {
+                            WindowProjectList list = new WindowProjectList
+                            {
+                                Icon = Icon
+                            };
+                            list.ShowDialog();
+                            using (ServiceProject.WebServiceProject webService = new ServiceProject.WebServiceProject())
+                            {
+                                DvCBProjects = new DataView(webService.GetAllProjects().Tables[DT_Project.TABLE_NAME]);
+                            }
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
         }
 
-        private void PanDragDiagram_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private RelayyCommand _User_Command;
+        public RelayyCommand User_Command { get { return _User_Command; } set { _User_Command = value; OnPropertyChanged("User_Command"); } }
+        private void ImplementUser_Command()
         {
-            e.CanExecute = TheCurrentLayout != null;
+            User_Command = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        if (ExistRole(1))//If has access to User List
+                        {
+                            WindowUserList list = new WindowUserList
+                            {
+                                Icon = Icon
+                            };
+                            list.ShowDialog();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _Role_Command;
+        public RelayyCommand Role_Command { get { return _Role_Command; } set { _Role_Command = value; OnPropertyChanged("Role_Command"); } }
+        private void ImplementRole_Command()
+        {
+            Role_Command = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        if (ExistRole(2))//If has access to Role List
+                        {
+                            WindowRoleList wr = new WindowRoleList
+                            {
+                                Icon = Icon
+                            };
+                            wr.ShowDialog();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _Damage_Command;
+        public RelayyCommand DamageList_Command { get { return _Damage_Command; } set { _Damage_Command = value; OnPropertyChanged("DamageList_Command"); } }
+        private void ImplementDamageList_Command()
+        {
+            DamageList_Command = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        if (ExistRole(10))//If has access to Damage List
+                        {
+                            WindowTopRiskList windowTop = new WindowTopRiskList
+                            {
+                                Icon = Icon
+                            };
+                            windowTop.ShowDialog();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _DefaultRisk_Command;
+        public RelayyCommand DefaultRiskList_Command { get { return _DefaultRisk_Command; } set { _DefaultRisk_Command = value; OnPropertyChanged("DefaultRiskList_Command"); } }
+        private void ImplementDefaultRiskList_Command()
+        {
+            DefaultRiskList_Command = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        if (ExistRole(8))//If Has access to Default list
+                        {
+                            WindowDefaultRiskList windowDefault = new WindowDefaultRiskList
+                            {
+                                Icon = Icon
+                            };
+                            windowDefault.ShowDialog();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _Save_Command;
+        public RelayyCommand SaveDiagram_Command { get { return _Save_Command; } set { _Save_Command = value; OnPropertyChanged("SaveDiagram_Command"); } }
+        private void ImplementSaveDiagram_Command()
+        {
+            SaveDiagram_Command = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        if (TheCurrentLayout != null && TheCurrentLayout.Ds.HasChanges())
+                        {
+                            //TheProgress.Visibility = Visibility.Visible;
+                            HabilitarBotones(false);
+                            Salvando();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _SaveAs_Command;
+        public RelayyCommand SaveAs_Command { get { return _SaveAs_Command; } set { _SaveAs_Command = value; OnPropertyChanged("SaveAs_Command"); } }
+        private void ImplementSaveAs_Command()
+        {
+            SaveAs_Command = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        SaveAsAsyncFunction();
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _RiskCommand;
+        public RelayyCommand RiskCommand { get { return _RiskCommand; } set { _RiskCommand = value; OnPropertyChanged("RiskCommand"); } }
+        private void ImplementRiskCommand()
+        {
+            RiskCommand = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        if (TheCurrentLayout != null)
+                        {
+                            TheCurrentLayout.GridPaintLines.Children.Remove(TheCurrentLayout.Line_Created);
+                            //System.Drawing.Color lnColor = System.Drawing.Color.FromArgb(int.Parse(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLENAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString()));
+                            Color lnColor = ((SolidColorBrush)new BrushConverter().ConvertFrom(TheCurrentLayout.Ds.Tables[DT_Diagram_Damages.TABLE_NAME].Select(DT_Diagram_Damages.ID_RISKTREE + " = " + TheCurrentLayout.ID_Diagram)[TheCurrentLayout.CbFilterTopR.SelectedIndex][DT_Diagram_Damages.COLOR].ToString())).Color;
+
+                            //HACER: comando add risk              
+                            TheCurrentLayout.Line_Created = new RiskPolyLine(TheCurrentLayout.GridPaintLines, MenuRisk, false)
+                            {
+                                Stroke = new SolidColorBrush(lnColor),
+                                StrokeThickness = 3
+                            };
+                            TheCurrentLayout.Line_Created.NewDrawAtPoint(new Point(TheCurrentLayout.X, TheCurrentLayout.Y), "");
+                            TheCurrentLayout.Creando = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _CMCommand;
+        public RelayyCommand CMCommand { get { return _CMCommand; } set { _CMCommand = value; OnPropertyChanged("CMCommand"); } }
+        private void ImplementCMCommand()
+        {
+            CMCommand = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        if (TheCurrentLayout != null)
+                        {
+                            if (TheCurrentLayout.ID_Diagram != 0)
+                            {
+                                TheCurrentLayout.GridPaintLines.Children.Remove(TheCurrentLayout.Line_Created);
+                                //HACER: comando add cm              
+                                TheCurrentLayout.Line_Created = new RiskPolyLine(TheCurrentLayout.GridPaintLines, MenuRisk, true)
+                                {
+                                    Stroke = new SolidColorBrush(System.Windows.Media.Colors.Black),
+
+                                    StrokeThickness = 3
+                                };
+                                TheCurrentLayout.Line_Created.NewDrawAtPoint(new Point(TheCurrentLayout.X, TheCurrentLayout.Y), "");
+                                TheCurrentLayout.Creando = true;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _SettingsCommand;
+        public RelayyCommand SettingsCommand { get { return _SettingsCommand; } set { _SettingsCommand = value; OnPropertyChanged("SettingsCommand"); } }
+        private void ImplementSettingsCommand()
+        {
+            SettingsCommand = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        WindowOption option = new WindowOption() { Icon = Icon };
+                        option.ShowDialog();
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _LogsListCommand;
+        public RelayyCommand LogsListCommand { get { return _LogsListCommand; } set { _LogsListCommand = value; OnPropertyChanged("LogsListCommand"); } }
+        private void ImplementLogsListCommand()
+        {
+            LogsListCommand = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        WindowLogs wl = new WindowLogs();
+                        wl.Show();
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _ExporToImageCommand;
+        public RelayyCommand ExporToImageCommand { get { return _ExporToImageCommand; } set { _ExporToImageCommand = value; OnPropertyChanged("ExporToImageCommand"); } }
+        private void ImplementExporToImageCommand()
+        {
+            ExporToImageCommand = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        if (TheCurrentLayout != null)
+                        {
+                            if (TheCurrentLayout.LinesList.Count > 0)
+                            {
+                                ExportToImage();
+                                MostrarInfoDialog("Diagram exported successfully!");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _ExporToExcelCommand;
+        public RelayyCommand ExporToExcelCommand { get { return _ExporToExcelCommand; } set { _ExporToExcelCommand = value; OnPropertyChanged("ExporToExcelCommand"); } }
+        private void ImplementExporToExcelCommand()
+        {
+            ExporToExcelCommand = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        if (OpenedDocuments.Count != 0 && TheCurrentLayout != null && TheCurrentLayout.ID_Diagram >= 0 && !TheCurrentLayout.IsExportingToExcel)
+                        {
+                            using (System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
+                            {
+                                saveFileDialog.OverwritePrompt = false;
+                                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                                {
+                                    string fileName = saveFileDialog.FileName;
+                                    if (File.Exists(fileName))
+                                    {
+                                        string targetFileName = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
+
+                                        File.Copy(fileName, targetFileName + ".bak", true);
+                                        File.Delete(fileName);
+                                    }
+                                    TheCurrentLayout.ExportToExcel(fileName);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _PanDragCommand;
+        public RelayyCommand PanDragCommand { get { return _PanDragCommand; } set { _PanDragCommand = value; OnPropertyChanged("PanDragCommand"); } }
+        private void ImplementPanDragCommand()
+        {
+            PanDragCommand = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        if (TheCurrentLayout != null)
+                        {
+                            IsPanEnabled = !IsPanEnabled;
+                            TheCurrentLayout.IsPanEnable = IsPanEnabled;
+                            foreach (var diagram in OpenedDocuments)
+                            {
+                                diagram.IsPanEnable = IsPanEnabled;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _ShowWBSPannelCommand;
+        public RelayyCommand ShowWBSPannelCommand { get { return _ShowWBSPannelCommand; } set { _ShowWBSPannelCommand = value; OnPropertyChanged("ShowWBSPannelCommand"); } }
+        private void ImplementShowWBSPannelCommand()
+        {
+            ShowWBSPannelCommand = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        AnchorWBSList.IsVisible = true;
+                        AnchorWBSList.IsSelected = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _ShowPropertiesPannelCommand;
+        public RelayyCommand ShowPropertiesPannelCommand { get { return _ShowPropertiesPannelCommand; } set { _ShowPropertiesPannelCommand = value; OnPropertyChanged("ShowPropertiesPannelCommand"); } }
+        private void ImplementShowPropertiesPannelCommand()
+        {
+            ShowPropertiesPannelCommand = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        LayoutProperties.IsVisible = true;
+                        LayoutProperties.IsSelected = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
+        }
+
+        private RelayyCommand _PrintDiagramCommand;
+        public RelayyCommand PrintDiagramCommand { get { return _PrintDiagramCommand; } set { _PrintDiagramCommand = value; OnPropertyChanged("PrintDiagramCommand"); } }
+        private void ImplementPrintDiagramCommand()
+        {
+            PrintDiagramCommand = new RelayyCommand(
+                _ =>
+                {
+                    try
+                    {
+                        if (TheCurrentLayout != null)
+                        {
+                            PrintDialog pd = new PrintDialog();
+                            if (pd.ShowDialog() == true)
+                            {
+                                Rect printableArea = GetPrintableArea(pd);
+                                Grid prueba = new Grid();
+                                UIElement[] array = new UIElement[TheCurrentLayout.GridPaintLines.Children.Count];
+                                TheCurrentLayout.GridPaintLines.Children.CopyTo(array, 0);
+                                TheCurrentLayout.GridPaintLines.Children.Clear();
+                                foreach (UIElement item in array)
+                                {
+                                    prueba.Children.Add(item);
+                                }
+                                // I'm using here a viewbox for easily adjust the canvas_Letter to the desired size
+                                Viewbox viewBox = new Viewbox { Child = prueba };
+                                viewBox.Measure(printableArea.Size);
+                                viewBox.Arrange(printableArea);
+                                pd.PrintVisual(viewBox, StringResources.DiagramNameLabel);
+                                prueba.Visibility = Visibility.Collapsed;
+                                prueba.Children.Clear();
+                                foreach (UIElement item in array)
+                                {
+                                    TheCurrentLayout.GridPaintLines.Children.Add(item);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MostrarErrorDialog(ex.Message);
+                    }
+                });
         }
 
         private void ReloadApplicationCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -5041,41 +5170,6 @@ namespace EnsureRisk
             Application.Current.Shutdown();
         }
 
-        private void ExportToExcelCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            try
-            {
-                if (OpenedDocuments.Count != 0 && TheCurrentLayout != null && TheCurrentLayout.ID_Diagram >= 0 && !TheCurrentLayout.IsExportingToExcel)
-                {
-                    using (System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog() { Filter = "Excel WorkBook|*.xlsx|Excel WorkBook 97-2003|*.xls", ValidateNames = true })
-                    {
-                        saveFileDialog.OverwritePrompt = false;
-                        if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                        {
-                            string fileName = saveFileDialog.FileName;
-                            if (File.Exists(fileName))
-                            {
-                                string targetFileName = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
-
-                                File.Copy(fileName, targetFileName + ".bak", true);
-                                File.Delete(fileName);
-                            }
-                            TheCurrentLayout.ExportToExcel(fileName);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-
-        }
-
-        private void ExportToExcel_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = TheCurrentLayout != null;
-        }
         #endregion
     }
     class Lang : DependencyObject
