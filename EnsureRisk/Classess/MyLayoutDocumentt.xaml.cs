@@ -61,7 +61,8 @@ namespace EnsureRisk.Classess
         public bool Creando { get; set; }
         public bool Copiando { get { return MyWindow.COPIANDO; } }
         public bool IsExportingToExcel { get; set; }
-        public bool IsUniformThickness { get; set; }
+        private bool _IsUniformThickness;
+        public bool IsUniformThickness { get { return _IsUniformThickness; } set { _IsUniformThickness = value; RaisePropertyChanged("IsUniformThickness"); } }
         public LineGroup GroupSelected { get; set; }
         public decimal ID_Diagram { get; set; }
         //public Popin Popin { get; set; }
@@ -2439,7 +2440,7 @@ namespace EnsureRisk.Classess
 
                 double puntoinicialY = MyMainLine.Points[1].Y - 45;
                 puntoinicialY -= thisTopRisk.Length * 30;
-                double puntoinicialX = MyMainLine.Points[1].X - 5 + General.MaxThickness;
+                double puntoinicialX = MyMainLine.Points[1].X - 5 + Convert.ToDouble(General.MaxThickness);
                 puntoinicialX += thisTopRisk.Length * 15;
 
                 //foreach (DataRow item in thisTopRisk)
@@ -2482,7 +2483,7 @@ namespace EnsureRisk.Classess
 
                 double puntoinicialY = MyMainLine.Points[1].Y - 45;
                 puntoinicialY -= MyRectangles.Length * 30;
-                double puntoinicialX = MyMainLine.Points[1].X - 5 + General.MaxThickness;
+                double puntoinicialX = MyMainLine.Points[1].X - 5 + Convert.ToDouble(General.MaxThickness);
                 puntoinicialX += MyRectangles.Length * 15;
 
                 //for (int i = MyRectangles.Length - 1; i >= 0; i--)
@@ -2634,20 +2635,27 @@ namespace EnsureRisk.Classess
         {
             try
             {
-                if (!(CbFilterTopR.SelectedValue is null))
+                if (IsUniformThickness)
                 {
-                    //IdDamageSelected = IdDamageSelected;
-                    if (IdDamageSelected != 0 && IsUniformThickness)
+                    if (!(CbFilterTopR.SelectedValue is null))
                     {
-                        General.UpdateLinesThickness(LinesList);
-                        foreach (RiskPolyLine polyLine in LinesList)
+                        //IdDamageSelected = IdDamageSelected;
+                        if (IdDamageSelected != 0 && IsUniformThickness)
                         {
-                            if (!polyLine.IsCM)
+                            General.UpdateLinesThickness(LinesList);
+                            foreach (RiskPolyLine polyLine in LinesList)
                             {
-                                polyLine.OnThicknessChange();
+                                if (!polyLine.IsCM)
+                                {
+                                    polyLine.OnThicknessChange();
+                                }
                             }
                         }
                     }
+                }
+                else
+                {
+                    SetCustomLinesThickness();
                 }
             }
             catch (Exception ex)
@@ -2672,7 +2680,7 @@ namespace EnsureRisk.Classess
                     IsRoot = true,
                     IsCM = false,
                     FromTop = false,
-                    StrokeThickness = General.MaxThickness,
+                    StrokeThickness = Convert.ToDouble(General.MaxThickness),
                     ID = (decimal)dr[DT_Risk.ID],
                     Probability = (decimal)dr[DT_Risk.PROBABILITY] / 100,
                     ShortName = "Main Risk",
@@ -2729,35 +2737,35 @@ namespace EnsureRisk.Classess
                     }
                 }
                 SetLinesThickness();
-                if (!IsUniformThickness)
-                {
-                    RiskPolyLine polyLine = null;
+                //if (!IsUniformThickness)
+                //{
+                //    RiskPolyLine polyLine = null;
 
-                    if (sender is RiskPolyLine)
-                    {
-                        polyLine = ((RiskPolyLine)sender);
-                    }
-                    if (sender is SegmentPolyLine)
-                    {
-                        polyLine = ((SegmentPolyLine)sender).Father;
-                    }
-                    if (sender is LabelPolyLine)
-                    {
-                        polyLine = ((LabelPolyLine)sender).Line;
-                    }
+                //    if (sender is RiskPolyLine)
+                //    {
+                //        polyLine = ((RiskPolyLine)sender);
+                //    }
+                //    if (sender is SegmentPolyLine)
+                //    {
+                //        polyLine = ((SegmentPolyLine)sender).Father;
+                //    }
+                //    if (sender is LabelPolyLine)
+                //    {
+                //        polyLine = ((LabelPolyLine)sender).Line;
+                //    }
 
-                    if (polyLine != null)
-                    {
-                        polyLine.StrokeThickness = 2;
-                        if (polyLine.Segments.Any())
-                        {
-                            foreach (SegmentPolyLine segment in polyLine.Segments)
-                            {
-                                segment.StrokeThickness = 2;
-                            }
-                        }
-                    }
-                }
+                //    if (polyLine != null)
+                //    {
+                //        polyLine.StrokeThickness = 2;
+                //        if (polyLine.Segments.Any())
+                //        {
+                //            foreach (SegmentPolyLine segment in polyLine.Segments)
+                //            {
+                //                segment.StrokeThickness = 2;
+                //            }
+                //        }
+                //    }
+                //}
             }
             catch (Exception ex)
             {
@@ -4398,11 +4406,11 @@ namespace EnsureRisk.Classess
         {
             if (TheLine != null)
             {
-                TheLine.StrokeThickness = General.MaxThickness;
+                TheLine.StrokeThickness = Convert.ToDouble(General.MaxThickness);
                 // se recorre la lista de todos los hermanos, incluyendose el que se genero el evento.
                 foreach (SegmentPolyLine segmentLine in TheLine.Segments)
                 {
-                    segmentLine.StrokeThickness = General.MaxThickness;
+                    segmentLine.StrokeThickness = Convert.ToDouble(General.MaxThickness);
                 }
             }
         }
@@ -5779,26 +5787,9 @@ namespace EnsureRisk.Classess
             }
         }
 
-        public void LineasIn()
+        private bool IsUserVisible(RiskPolyLine line, FrameworkElement container)
         {
-            int cont = 0;
-            string message = "";
-            foreach (RiskPolyLine linea in LinesList)
-            {
-                if (linea != null)
-                {
-                    if (IsUserVisible(linea, this.ScrollGridPaint))
-                    {
-                        cont++;
-                        message = message + " " + linea.ShortName;
-                    }
-                }
-            }
-            MessageBox.Show(cont + " lineas son: " + message);
-        }
-        private bool IsUserVisible(RiskPolyLine element, FrameworkElement container)
-        {
-            if (!element.IsVisible)
+            if (!line.IsVisible)
             {
                 return false;
             }
@@ -5813,40 +5804,50 @@ namespace EnsureRisk.Classess
             double ancho; double alto;
             Rect bounds;
             Point elPuntoMasArriba;
-            if (element.IsDiagonal)
+            if (line.IsDiagonal)
             {
-                if (element.FromTop)
+                if (line.FromTop)
                 {
                     //TIENES QUE AJUSTAR ANCHO Y ALTO SEGUN LOS SEGMENTOS, Y TAMBIEN SI ES CONTRAMEDIDA
-                    ancho = element.Points[1].X - element.Points[0].X;
-                    alto = element.Points[1].Y - element.Points[0].Y;
+                    ancho = line.Points[1].X - line.Points[0].X;
+                    alto = line.Points[1].Y - line.Points[0].Y;
+                    
+                    elPuntoMasArriba = new Point(line.Points[0].X, line.Points[0].Y);
+                    if (line.Segments.Count > 0)
+                    {
+                        elPuntoMasArriba = new Point(line.Segments[line.Segments.Count - 1].Points[0].X, line.Segments[line.Segments.Count - 1].Points[0].Y);
+                        ancho = line.Points[1].X - line.Segments[line.Segments.Count - 1].Points[0].X;
+                        alto = line.Points[1].Y - line.Segments[line.Segments.Count - 1].Points[0].Y;
+                    }
 
-                    elPuntoMasArriba = new Point(element.Points[0].X, element.Points[0].Y);
-
-                    bounds = element.TransformToAncestor(container).TransformBounds(new Rect(elPuntoMasArriba.X, elPuntoMasArriba.Y, ancho, alto));
+                    bounds = line.TransformToAncestor(container).TransformBounds(new Rect(elPuntoMasArriba.X, elPuntoMasArriba.Y, ancho, alto));
                 }
                 else
                 {
                     //TIENES QUE AJUSTAR ANCHO Y ALTO SEGUN LOS SEGMENTOS, Y TAMBIEN SI ES CONTRAMEDIDA
-                    ancho = element.Points[1].X - element.Points[0].X;
-                    alto = element.Points[0].Y - element.Points[1].Y;
+                    ancho = line.Points[1].X - line.Points[0].X;
+                    alto = line.Points[0].Y - line.Points[1].Y;
 
-                    elPuntoMasArriba = new Point(element.Points[1].X, element.Points[1].Y);
+                    elPuntoMasArriba = new Point(line.Points[1].X, line.Points[1].Y);
+                    if (line.Segments.Count > 0)
+                    {
+                        ancho = line.Points[1].X - line.Segments[line.Segments.Count - 1].Points[0].X;
+                        alto = line.Segments[line.Segments.Count - 1].Points[0].Y - line.Points[1].Y;
+                    }
 
-                    bounds = element.TransformToAncestor(container).TransformBounds(new Rect(elPuntoMasArriba.X, elPuntoMasArriba.Y, ancho, alto));
+                    bounds = line.TransformToAncestor(container).TransformBounds(new Rect(elPuntoMasArriba.X, elPuntoMasArriba.Y, ancho, alto));
                 }
             }
             else
             {
                 //TIENES QUE AJUSTAR ANCHO SEGUN LOS SEGMENTOS, Y TAMBIEN SI ES CONTRAMEDIDA
-
-                ancho = element.Points[1].X - element.Points[0].X;
+                ancho = line.Points[1].X - line.Points[0].X;
                 //AQUI DEJA ESE ALTO, PARA LAS CM DEBE SER 3 O 5 PUES SIEMPRE TIENEN EL MISMO ANCHO (3)
                 alto = 20;
                 //AQUI NO IMPORTA QUE TAN ARRIBA, SINO EL MAS A LA IZQUIERDA 
-                elPuntoMasArriba = new Point(element.Points[0].X, element.Points[0].Y);
+                elPuntoMasArriba = new Point(line.Points[0].X, line.Points[0].Y);
 
-                bounds = element.TransformToAncestor(container).TransformBounds(new Rect(elPuntoMasArriba.X, elPuntoMasArriba.Y, ancho, alto));
+                bounds = line.TransformToAncestor(container).TransformBounds(new Rect(elPuntoMasArriba.X, elPuntoMasArriba.Y, ancho, alto));
             }
             //return rect.Contains(bounds.TopLeft) || rect.Contains(bounds.BottomRight);
             return bounds.IntersectsWith(rect);
@@ -6023,144 +6024,6 @@ namespace EnsureRisk.Classess
             }
         }
 
-        private void IsUserVisible_Click(object sender, RoutedEventArgs e)
-        {
-            if (LinesList != null)
-            {
-                //Console.WriteLine("== Visibles PolyLines are: ==");
-                //foreach (RiskPolyLine polyLine in LinesList)
-                //{
-                //    //bool isPartiallyClickable = false;
-                //    //bool isClickable = IsElementClickable<RiskPolyLine>(polyLine.MyContainer as UIElement, polyLine as UIElement, out isPartiallyClickable);
-                //    bool isClickable = IsËlementUserVisible(polyLine);
-                //    if (isClickable)
-                //    {
-                //        Console.WriteLine(polyLine.ShortName);
-                //    }
-                //}
-                DrawRentangles();
-            }
-        }
-
-        private void DrawRentangles()
-        {
-            if (LinesList != null)
-            {
-                RectangleGeometry myRectangleGeometry, viewPortRectangleGeometry;
-                Path myPath;
-
-                viewPortRectangleGeometry = new RectangleGeometry
-                {
-                    Rect = new Rect(0.0, 0.0, ScrollGridPaint.ViewportWidth - 3, ScrollGridPaint.ViewportHeight - 3)
-                };
-
-                Console.WriteLine("====En el ViewPort estan====");
-
-                List<RiskPolyLine> polyLinesInViewPort = new List<RiskPolyLine>();
-
-                foreach (RiskPolyLine polyLine in LinesList)
-                {
-                    myRectangleGeometry = new RectangleGeometry
-                    {
-                        Rect = polyLine.Bounds(ScrollGridPaint)
-                    };
-
-                    myPath = new Path
-                    {
-                        Fill = System.Windows.Media.Brushes.Transparent,
-                        Stroke = System.Windows.Media.Brushes.Blue,
-                        StrokeThickness = 1,
-                        Data = myRectangleGeometry
-                    };
-                    polyLine.MyContainer.Children.Add(myPath);
-
-                    if (viewPortRectangleGeometry.Rect.IntersectsWith(myRectangleGeometry.Rect))
-                    {
-                        Console.WriteLine(polyLine.ShortName);
-                        polyLinesInViewPort.Add(polyLine);
-                    }
-                }
-
-                myPath = new Path
-                {
-                    Fill = System.Windows.Media.Brushes.Transparent,
-                    Stroke = System.Windows.Media.Brushes.Green,
-                    StrokeThickness = 1,
-
-                    Data = viewPortRectangleGeometry
-                };
-
-                LinesList[0].MyContainer.Children.Add(myPath);
-
-                List<RiskPolyLine> polyLinesBaseOwner = new List<RiskPolyLine>();
-
-                foreach (RiskPolyLine polyLineInViewPort in polyLinesInViewPort)
-                {
-                    if (polyLineInViewPort.BaseFather != null && !polyLinesBaseOwner.Contains(polyLineInViewPort.BaseFather))
-                    {
-                        polyLinesBaseOwner.Add(polyLineInViewPort.BaseFather);
-                    }
-                }
-
-                List<RiskPolyLine> polyLinesToUpdateThickness = new List<RiskPolyLine>
-                {
-                    MainLine
-                };
-                foreach (RiskPolyLine polyLine in polyLinesBaseOwner)
-                {
-                    polyLinesToUpdateThickness.AddRange(polyLine.GetChilds());
-                }
-
-                UpdateLinesThickness(polyLinesToUpdateThickness);
-
-                decimal min = 1;
-                decimal max = 1;
-                if (polyLinesToUpdateThickness.Where(p => !p.IsRoot).Any())
-                {
-                    //min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage);
-                    //max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage);
-
-                    min = polyLinesToUpdateThickness.Where(p => !p.IsRoot).Min(l => l.AcDamage2);
-                    max = polyLinesToUpdateThickness.Where(p => !p.IsRoot).Max(l => l.AcDamage2);
-                }
-                General.UpdateLinesThickness(polyLinesToUpdateThickness, min, max);
-            }
-        }
-
-        public void UpdateLinesThickness(List<RiskPolyLine> linesList)
-        {
-            decimal min = 0;
-            decimal max = 0;
-            if (linesList.Where(p => !p.IsRoot).Any())
-            {
-                //min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage);
-                //max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage);
-
-                min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage2);
-                max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage2);
-            }
-
-            foreach (var item in linesList)
-            {
-                if (!(item.IsCM))
-                {
-                    if (item.IsLeaf())
-                    {
-                        item.SetThickness(item.AcDamage, min, max);
-                    }
-                    else
-                    {
-                        item.SetThickness(item.Children.First().AcDamage2, min, max);
-                    }
-                }
-            }
-            RiskPolyLine rootPolyLine = linesList.Find(r => r.IsRoot);
-            rootPolyLine.StrokeThickness = General.MaxThickness;
-
-            //UpdateSegmentsStrokeThickness(rootPolyLine);
-            UpdateSegmentsStrokeThickness(rootPolyLine, min, max);
-        }
-
         private void UpdateSegmentsStrokeThickness(RiskPolyLine riskPolyLine, decimal min, decimal max)
         {
             if (riskPolyLine.Children.Any())
@@ -6179,6 +6042,7 @@ namespace EnsureRisk.Classess
         private void EnableThickness_Checked(object sender, RoutedEventArgs e)
         {
             IsUniformThickness = true;
+            //lo que habia antes
             SetLinesThickness();
         }
 
@@ -6192,7 +6056,14 @@ namespace EnsureRisk.Classess
         {
             foreach (RiskPolyLine polyLine in LinesList)
             {
-                polyLine.StrokeThickness = 2;
+                if (polyLine.IsCM)
+                {
+                    polyLine.StrokeThickness = 3;
+                }
+                else
+                {
+                    polyLine.StrokeThickness = 2;
+                }
                 if (polyLine.Segments.Any())
                 {
                     foreach (SegmentPolyLine segment in polyLine.Segments)
@@ -6201,7 +6072,6 @@ namespace EnsureRisk.Classess
                     }
                 }
             }
-            //DrawRentangles();
             UpdateViewPortLinesThickness();
         }
 
@@ -6209,135 +6079,76 @@ namespace EnsureRisk.Classess
         {
             if (LinesList != null)
             {
-                //RectangleGeometry myRectangleGeometry, viewPortRectangle;
-                //Path myPath;
-
-                //viewPortRectangle = new RectangleGeometry();
-
-                //viewPortRectangle.Rect = new Rect(0.0, 0.0, ScrollGridPaint.ViewportWidth - 3, ScrollGridPaint.ViewportHeight - 3);
-
-                Rect viewPortRectangle = new Rect(0.0, 0.0, ScrollGridPaint.ViewportWidth - 3, ScrollGridPaint.ViewportHeight - 3);
-
-                Console.WriteLine("====En el ViewPort estan====");
-
                 List<RiskPolyLine> polyLinesInViewPort = new List<RiskPolyLine>();
-
+                
                 foreach (RiskPolyLine polyLine in LinesList)
                 {
-                    //myRectangleGeometry = new RectangleGeometry();
-
-                    Rect bounds = polyLine.Bounds(ScrollGridPaint);
-
-                    //myPath = new Path();
-                    //myPath.Fill = System.Windows.Media.Brushes.Transparent;
-                    //myPath.Stroke = System.Windows.Media.Brushes.Blue;
-                    //myPath.StrokeThickness = 1;
-                    //myPath.Data = myRectangleGeometry;
-                    //polyLine.MyContainer.Children.Add(myPath);
-
-                    //if (viewPortRectangle.Rect.IntersectsWith(bounds))
-                    if (viewPortRectangle.IntersectsWith(bounds))
+                    if (IsUserVisible(polyLine, this.ScrollGridPaint))
                     {
-                        Console.WriteLine(polyLine.ShortName);
                         polyLinesInViewPort.Add(polyLine);
                     }
                 }
 
-                //myPath = new Path();
-                //myPath.Fill = System.Windows.Media.Brushes.Transparent;
-                //myPath.Stroke = System.Windows.Media.Brushes.Green;
-                //myPath.StrokeThickness = 1;
-
-                //myPath.Data = viewPortRectangle;
-
-                //LinesList[0].MyContainer.Children.Add(myPath);
-
-                List<RiskPolyLine> polyLinesBaseOwner = new List<RiskPolyLine>();
-
-                foreach (RiskPolyLine polyLineInViewPort in polyLinesInViewPort)
+                //decimal minACn = 0;
+                //decimal maxACn = 1;
+                decimal minAC2 = 0;
+                decimal maxAC2 = 1;
+                if (polyLinesInViewPort.Where(p => !p.IsRoot).Any())
                 {
-                    if (polyLineInViewPort.BaseFather != null && !polyLinesBaseOwner.Contains(polyLineInViewPort.BaseFather))
+                    //minACn = polyLinesInViewPort.Where(p => !p.IsRoot).Min(l => l.AcDamage);
+                    //maxACn = polyLinesInViewPort.Where(p => !p.IsRoot).Max(l => l.AcDamage);
+                    minAC2 = polyLinesInViewPort.Where(p => !p.IsRoot).Min(l => l.AcDamage2);
+                    maxAC2 = polyLinesInViewPort.Where(p => !p.IsRoot).Max(l => l.AcDamage2);
+                }
+                //if (minACn < minAC2)
+                //{
+                //    minAC2 = minACn;
+                //}
+                //if (maxACn < maxAC2)
+                //{
+                //    maxAC2 = maxACn;
+                //}
+                UpdateLinesThickness(polyLinesInViewPort, minAC2, maxAC2);
+                foreach (RiskPolyLine polyLine in polyLinesInViewPort)
+                {
+                    if (!polyLine.IsCM)
                     {
-                        polyLinesBaseOwner.Add(polyLineInViewPort.BaseFather);
+                        polyLine.OnThicknessChange();
                     }
                 }
-
-                List<RiskPolyLine> polyLinesToUpdateThickness = new List<RiskPolyLine>
-                {
-                    MainLine
-                };
-                foreach (RiskPolyLine polyLine in polyLinesBaseOwner)
-                {
-                    polyLinesToUpdateThickness.AddRange(polyLine.GetChilds());
-                }
-
-                Console.WriteLine("====Lineas a actualizar el THICKNESS====");
-                if (polyLinesToUpdateThickness.Any())
-                {
-                    foreach (RiskPolyLine polyLine in polyLinesToUpdateThickness)
-                    {
-                        Console.WriteLine(polyLine.ShortName);
-                    }
-                }
-
-                //UpdateLinesThickness(polyLinesToUpdateThickness);
-
-                decimal min = 1;
-                decimal max = 1;
-                if (polyLinesToUpdateThickness.Where(p => !p.IsRoot).Any())
-                {
-                    //min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage);
-                    //max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage);
-
-                    min = polyLinesToUpdateThickness.Where(p => !p.IsRoot).Min(l => l.AcDamage2);
-                    max = polyLinesToUpdateThickness.Where(p => !p.IsRoot).Max(l => l.AcDamage2);
-                }
-                UpdateLinesThickness(polyLinesToUpdateThickness, min, max);
             }
         }
 
         public void UpdateLinesThickness(List<RiskPolyLine> polyLinesToUpdateThickness, decimal minAcDamage2, decimal maxAcDamage2)
         {
-            //decimal min = 0;
-            //decimal max = 0;
-            //if (linesList.Where(p => !p.IsRoot).Any())
-            //{
-            //    //min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage);
-            //    //max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage);
-
-            //    min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage2);
-            //    max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage2);
-            //}
-
-            foreach (var item in polyLinesToUpdateThickness)
+            foreach (var line in polyLinesToUpdateThickness)
             {
-                if (!(item.IsCM))
+                if (!(line.IsCM))
                 {
-                    if (item.IsLeaf())
+                    if (line.IsLeaf())
                     {
-                        item.SetThickness(item.AcDamage, minAcDamage2, maxAcDamage2);
+                        line.SetThickness(line.AcDamage, minAcDamage2, maxAcDamage2);
                     }
                     else
                     {
-                        item.SetThickness(item.Children.First().AcDamage2, minAcDamage2, maxAcDamage2);
+                        line.SetThickness(line.Children.First().AcDamage2, minAcDamage2, maxAcDamage2);
                     }
                 }
             }
-            RiskPolyLine rootPolyLine = polyLinesToUpdateThickness.Find(r => r.IsRoot);
-            rootPolyLine.StrokeThickness = General.MaxThickness;
-            //UpdateSegmentsStrokeThickness(rootPolyLine);
-            //UpdateSegmentsStrokeThickness(rootPolyLine, minAcDamage2, maxAcDamage2);
+
+            RiskPolyLine rootPolyLine = LinesList.Find(r => r.IsRoot);
+            rootPolyLine.StrokeThickness = Convert.ToDouble(General.MaxThickness);
             UpdateRootSegmentsStrokeThickness(rootPolyLine, polyLinesToUpdateThickness, minAcDamage2, maxAcDamage2);
         }
 
-        private void UpdateRootSegmentsStrokeThickness(RiskPolyLine riskPolyLine, List<RiskPolyLine> polyLinesToUpdateThickness, decimal min, decimal max)
+        private void UpdateRootSegmentsStrokeThickness(RiskPolyLine riskPolyLine, List<RiskPolyLine> linesInViewPort, decimal min, decimal max)
         {
             if (riskPolyLine.Children.Any())
             {
                 IEnumerable<RiskPolyLine> orderedChild = riskPolyLine.Children.OrderBy(pl => pl.Points[1].X);
                 foreach (RiskPolyLine polyLine in orderedChild)
                 {
-                    if (polyLinesToUpdateThickness.Contains(polyLine))
+                    if (linesInViewPort.Contains(polyLine))
                     {
                         //UpdateSegmentsStrokeThickness(polyLine);
                         UpdateSegmentsStrokeThickness(polyLine, min, max);

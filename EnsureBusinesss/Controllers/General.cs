@@ -26,7 +26,7 @@ namespace EnsureBusinesss
         public const double basicY = 7;
         public const int NumberOfClasses = 20;
 
-        public const double MaxThickness = 20;
+        public const decimal MaxThickness = 20;
 
         public const string EXPANDIDO = "pack://application:,,,/Images/Expandido.png";
         public const string CONTRAIDO = "pack://application:,,,/Images/Contraido.png";
@@ -195,7 +195,7 @@ namespace EnsureBusinesss
 
         #endregion
         
-        public static decimal ConvertToDec(string word)
+        public static decimal ConvertStringID_inDecimal(string word)
         {
             string valuestr = "";
             foreach (var item in word)
@@ -241,42 +241,9 @@ namespace EnsureBusinesss
                 }
             }
             RiskPolyLine rootPolyLine = linesList.Find(r => r.IsRoot);
-            rootPolyLine.StrokeThickness = MaxThickness;
+            rootPolyLine.StrokeThickness = Convert.ToDouble(MaxThickness);
             //UpdateSegmentsStrokeThickness(rootPolyLine);
             UpdateSegmentsStrokeThickness(rootPolyLine, min, max);
-        }
-
-        public static void UpdateLinesThickness(List<RiskPolyLine> linesList, decimal minAcDamage2, decimal maxAcDamage2)
-        {
-            //decimal min = 0;
-            //decimal max = 0;
-            //if (linesList.Where(p => !p.IsRoot).Any())
-            //{
-            //    //min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage);
-            //    //max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage);
-
-            //    min = linesList.Where(p => !p.IsRoot).Min(l => l.AcDamage2);
-            //    max = linesList.Where(p => !p.IsRoot).Max(l => l.AcDamage2);
-            //}
-
-            foreach (var item in linesList)
-            {
-                if (!(item.IsCM))
-                {
-                    if (item.IsLeaf())
-                    {
-                        item.SetThickness(item.AcDamage, minAcDamage2, maxAcDamage2);
-                    }
-                    else
-                    {
-                        item.SetThickness(item.Children.First().AcDamage2, minAcDamage2, maxAcDamage2);
-                    }
-                }
-            }
-            RiskPolyLine rootPolyLine = linesList.Find(r => r.IsRoot);
-            rootPolyLine.StrokeThickness = MaxThickness;
-            //UpdateSegmentsStrokeThickness(rootPolyLine);
-            UpdateSegmentsStrokeThickness(rootPolyLine, minAcDamage2, maxAcDamage2);
         }
 
         private static void UpdateSegmentsStrokeThickness(RiskPolyLine riskPolyLine, decimal min, decimal max)

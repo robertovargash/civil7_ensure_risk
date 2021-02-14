@@ -293,7 +293,7 @@ namespace EnsureRisk.Controllers.Import
 
                 if (xIdRisk != null && dtExcel.Rows[rowPosition][xIdRisk.MyContent].ToString() != "")
                 {
-                    drRiskN[DT_Risk.ID] = General.ConvertToDec(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
+                    drRiskN[DT_Risk.ID] = General.ConvertStringID_inDecimal(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
                     drRiskN[DT_Risk.IS_CM] = false;
                     if (isCustom)
                     {
@@ -405,13 +405,13 @@ namespace EnsureRisk.Controllers.Import
                     decimal idPadre;
                     if (isCustom)
                     {
-                        idHijo = General.ConvertToDec(dtExcel.Rows[rowposition][xIdRisk.MyContent.ToString()].ToString());
-                        idPadre = General.ConvertToDec(dtExcel.Rows[rowposition][xRiskFather.MyContent.ToString()].ToString());
+                        idHijo = General.ConvertStringID_inDecimal(dtExcel.Rows[rowposition][xIdRisk.MyContent.ToString()].ToString());
+                        idPadre = General.ConvertStringID_inDecimal(dtExcel.Rows[rowposition][xRiskFather.MyContent.ToString()].ToString());
                     }
                     else
                     {
-                        idPadre = General.ConvertToDec(dtExcel.Rows[rowposition][xIdRisk.MyContent.ToString()].ToString());
-                        idHijo = General.ConvertToDec(dtExcel.Rows[rowposition][xRiskFather.MyContent.ToString()].ToString());
+                        idPadre = General.ConvertStringID_inDecimal(dtExcel.Rows[rowposition][xIdRisk.MyContent.ToString()].ToString());
+                        idHijo = General.ConvertStringID_inDecimal(dtExcel.Rows[rowposition][xRiskFather.MyContent.ToString()].ToString());
                     }
                     if (dsImporting.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + idHijo).Any())
                     {
@@ -466,7 +466,7 @@ namespace EnsureRisk.Controllers.Import
                     }
                     if (xIdRisk != null && !string.IsNullOrWhiteSpace(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString()))
                     {
-                        drCM[DT_Risk.IDRISK_FATHER] = General.ConvertToDec(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
+                        drCM[DT_Risk.IDRISK_FATHER] = General.ConvertStringID_inDecimal(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
                     }
                     else
                     {

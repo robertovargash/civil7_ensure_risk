@@ -508,10 +508,10 @@ namespace EnsureRisk
                         if (parametro is string textico)
                         {
                             EditandoRisk = true;
-                            
+
                             RiskNameList = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].AsEnumerable()
                                             .Where(r => r.Field<string>(DT_Risk.NAMESHORT).ToLower().Contains(textico.ToLower()))
-                                            .Select(r=>r.Field<string>(DT_Risk.NAMESHORT)).Distinct();
+                                            .Select(r => r.Field<string>(DT_Risk.NAMESHORT)).Distinct();
                         }
                     }
                     catch (Exception ex)
@@ -525,40 +525,6 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
-
-        //private void AddRiskItem(string text)
-        //{
-        //    TextBlock block = new TextBlock
-        //    {
-        //        Text = text,
-        //        Margin = new Thickness(2, 3, 2, 3),
-        //        Cursor = Cursors.Hand
-        //    };
-
-        //    block.MouseLeftButtonUp += (sender, e) =>
-        //    {
-        //        wrapRisk.TextRisk.InputText = (sender as TextBlock).Text;
-        //        wrapRisk.scrollRiskAutocomplete.Visibility = Visibility.Collapsed;
-        //        wrapRisk.TextRisk.Focus();
-        //    };
-
-        //    block.MouseEnter += (sender, e) =>
-        //    {
-        //        TextBlock b = sender as TextBlock;
-        //        b.Background = Brushes.PeachPuff;
-        //        SeleccionandoRisk = true;
-        //    };
-
-        //    block.MouseLeave += (sender, e) =>
-        //    {
-        //        TextBlock b = sender as TextBlock;
-        //        b.Background = Brushes.Transparent;
-        //        SeleccionandoRisk = false;
-        //    };
-
-        //    wrapRisk.RiskresultStack.Children.Add(block);
-        //}
-
 
         private RelayyCommand _TextRisk_LostFocusCommand;
         public RelayyCommand TextRisk_LostFocusCommand { get { return _TextRisk_LostFocusCommand; } set { _TextRisk_LostFocusCommand = value; OnPropertyChanged("TextRisk_LostFocusCommand"); } }
@@ -581,18 +547,18 @@ namespace EnsureRisk
                                     EditandoRisk = false;
                                 }
                             }
-                            if (wrapRisk.TextRisk.InputText != string.Empty)
+                            if (wrapRisk.TextRisk.Text != string.Empty)
                             {
-                                if (TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + DiagramID + " and " + DT_Risk.NAMESHORT + " = '" + wrapRisk.TextRisk.InputText + "' and " + DT_Risk.ID + " <> " + TheCurrentLayout.Line_Selected.ID).Any())
+                                if (TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_DIAGRAM + " = " + DiagramID + " and " + DT_Risk.NAMESHORT + " = '" + wrapRisk.TextRisk.Text + "' and " + DT_Risk.ID + " <> " + TheCurrentLayout.Line_Selected.ID).Any())
                                 {
-                                    if (new WindowMessageYesNo("The name [" + wrapRisk.TextRisk.InputText + "] Already exists in this diagram. Do you want to use it again?").ShowDialog() == true)
+                                    if (new WindowMessageYesNo("The name [" + wrapRisk.TextRisk.Text + "] Already exists in this diagram. Do you want to use it again?").ShowDialog() == true)
                                     {
-                                        TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.NAMESHORT] = wrapRisk.TextRisk.InputText;
+                                        TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.NAMESHORT] = wrapRisk.TextRisk.Text;
                                         foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID))
                                         {
-                                            item[DT_Risk_Damages.RISK_NAMESHORT] = wrapRisk.TextRisk.InputText;
+                                            item[DT_Risk_Damages.RISK_NAMESHORT] = wrapRisk.TextRisk.Text;
                                         }
-                                        TheCurrentLayout.Line_Selected.ShortName = wrapRisk.TextRisk.InputText;
+                                        TheCurrentLayout.Line_Selected.ShortName = wrapRisk.TextRisk.Text;
 
                                         TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
                                         TheCurrentLayout.DrawNumbers();
@@ -602,17 +568,17 @@ namespace EnsureRisk
                                     }
                                     else
                                     {
-                                        wrapRisk.TextRisk.InputText = TheCurrentLayout.Line_Selected.ShortName;
+                                        wrapRisk.TextRisk.Text = TheCurrentLayout.Line_Selected.ShortName;
                                     }
                                 }
                                 else
                                 {
-                                    TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.NAMESHORT] = wrapRisk.TextRisk.InputText;
+                                    TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID)[DT_Risk.NAMESHORT] = wrapRisk.TextRisk.Text;
                                     foreach (DataRow item in TheCurrentLayout.Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID))
                                     {
-                                        item[DT_Risk_Damages.RISK_NAMESHORT] = wrapRisk.TextRisk.InputText;
+                                        item[DT_Risk_Damages.RISK_NAMESHORT] = wrapRisk.TextRisk.Text;
                                     }
-                                    TheCurrentLayout.Line_Selected.ShortName = wrapRisk.TextRisk.InputText;
+                                    TheCurrentLayout.Line_Selected.ShortName = wrapRisk.TextRisk.Text;
                                     TreeOperation.SetRiskLineValues(TheCurrentLayout.Line_Selected, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
                                     TheCurrentLayout.DrawNumbers();
                                     TheCurrentLayout.UpdateLinesValues();
@@ -652,7 +618,7 @@ namespace EnsureRisk
                 {
                     try
                     {
-                        RiskLineName = wrapRisk.TextRisk.InputText;
+                        RiskLineName = wrapRisk.TextRisk.Text;
                     }
                     catch (Exception ex)
                     {
@@ -858,7 +824,7 @@ namespace EnsureRisk
                                     {
                                         DataRow drRiskWBS = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
                                         drRiskWBS[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
-                                        drRiskWBS[DT_RISK_WBS.RISK] = wrapRisk.TextRisk.InputText;
+                                        drRiskWBS[DT_RISK_WBS.RISK] = wrapRisk.TextRisk.Text;
                                         drRiskWBS[DT_RISK_WBS.WBS] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart();
                                         drRiskWBS[DT_RISK_WBS.ID_WBS] = itemWBS[DT_WBS.ID_WBS];
                                         drRiskWBS[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
@@ -873,7 +839,7 @@ namespace EnsureRisk
                                             {
                                                 DataRow drRiskWBSi = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
                                                 drRiskWBSi[DT_RISK_WBS.ID_RISK] = RiskRow[DT_Risk.ID];
-                                                drRiskWBSi[DT_RISK_WBS.RISK] = wrapRisk.TextRisk.InputText;
+                                                drRiskWBSi[DT_RISK_WBS.RISK] = wrapRisk.TextRisk.Text;
                                                 drRiskWBSi[DT_RISK_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
                                                 drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
                                                 drRiskWBSi[DT_RISK_WBS.NIVEL] = itemAncestors[DT_WBS.NIVEL].ToString().TrimStart();
@@ -1079,7 +1045,7 @@ namespace EnsureRisk
                                     {
                                         DataRow drRole = TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLE_NAME].NewRow();
                                         drRole[DT_Role_Risk.ID_RISK] = RiskRow[DT_Risk.ID];
-                                        drRole[DT_Role_Risk.NAME_SHORT] = wrapRisk.TextRisk.InputText;
+                                        drRole[DT_Role_Risk.NAME_SHORT] = wrapRisk.TextRisk.Text;
                                         drRole[DT_Role_Risk.Role] = itemRole[DT_Role.ROLE_COLUM];
                                         drRole[DT_Role_Risk.IDROL_COLUMN] = itemRole[DT_Role.IDROL_COLUMN];
                                         TheCurrentLayout.Ds.Tables[DT_Role_Risk.TABLE_NAME].Rows.Add(drRole);
@@ -2910,6 +2876,18 @@ namespace EnsureRisk
                     }
                     //DgRiskDamages.ItemsSource = DvRiskDamages;
                     CalculateProbability(RiskRow);
+                    if (TheCurrentLayout.Line_Selected.IsCM)
+                    {
+                        RiskNameList = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].AsEnumerable()
+                                            .Where(r => r.Field<bool>(DT_Risk.IS_CM) == true)
+                                            .Select(r => r.Field<string>(DT_Risk.NAMESHORT)).Distinct();
+                    }
+                    else
+                    {
+                        RiskNameList = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].AsEnumerable()
+                                            .Where(r => r.Field<bool>(DT_Risk.IS_CM) == false)
+                                            .Select(r => r.Field<string>(DT_Risk.NAMESHORT)).Distinct();
+                    }                    
                 }
             }
         }
@@ -3058,34 +3036,6 @@ namespace EnsureRisk
             CrossCMRightTab(TheCurrentLayout.Ds);
             IS_DELETING_RISK = false;
         }
-
-        private void CounterMeasureCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            try
-            {
-                if (TheCurrentLayout != null)
-                {
-                    if (TheCurrentLayout.ID_Diagram != 0)
-                    {
-                        TheCurrentLayout.GridPaintLines.Children.Remove(TheCurrentLayout.Line_Created);
-                        //HACER: comando add cm              
-                        TheCurrentLayout.Line_Created = new RiskPolyLine(TheCurrentLayout.GridPaintLines, MenuRisk, true)
-                        {
-                            Stroke = new SolidColorBrush(System.Windows.Media.Colors.Black),
-
-                            StrokeThickness = 3
-                        };
-                        TheCurrentLayout.Line_Created.NewDrawAtPoint(new Point(TheCurrentLayout.X, TheCurrentLayout.Y), "");
-                        TheCurrentLayout.Creando = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-
-        }       
 
         /// <summary>
         /// Code executed after Enable/Disable risk

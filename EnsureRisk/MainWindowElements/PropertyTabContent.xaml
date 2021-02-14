@@ -17,7 +17,8 @@
              xmlns:decimalconv="clr-namespace:EnsureRisk.DataBinding"
              xmlns:classes="clr-namespace:EnsureRisk.Classess"
               xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
-             mc:Ignorable="d" VerticalScrollBarVisibility="Auto" x:Name="thisComponent">
+             mc:Ignorable="d" VerticalScrollBarVisibility="Auto" x:Name="thisComponent"
+              xmlns:behaviors="clr-namespace:WPFTextBoxAutoComplete;assembly=WPFTextBoxAutoComplete">
     <ScrollViewer.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -35,56 +36,28 @@
     </ScrollViewer.Resources>
     <StackPanel Orientation="Vertical" x:Name="WrapRisk" DataContext="{Binding ElementName=thisComponent, Path=DataContext}" 
                 Visibility="{Binding Path = ShowRiskData, Converter={StaticResource BoolToVisConverter} }">
-        <classes:AutoCompleteTextBox x:Name="TextRisk" Margin="10" IsEnabled="{Binding Path = HasAccess}"
-                                         md:HintAssist.Hint="Line name" md:HintAssist.IsFloating="True" MinWidth="150"  
-                                         TextOptions.TextHintingMode="Animated" AutoCompletePlacement="Bottom"
-                                     AutoCompleteItemSource="{Binding RiskNameList, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+        <ComboBox x:Name="TextRisk" Margin="10" IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Line name" md:HintAssist.IsFloating="True" MinWidth="150" TextOptions.TextHintingMode="Animated" VerticalAlignment="Bottom" IsEditable="True" ItemsSource="{Binding RiskNameList, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="LostFocus">
                     <i:InvokeCommandAction Command="{Binding TextRisk_LostFocusCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
                 </i:EventTrigger>
-                <i:EventTrigger EventName="OnTextChange">
-                    <i:InvokeCommandAction CommandParameter="{Binding ElementName=TextRisk, Path=InputText}" Command="{Binding RiskName_KeyUpCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                <i:EventTrigger EventName="TextChanged">
+                    <i:InvokeCommandAction Command="{Binding RiskName_TextChangedCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            <classes:AutoCompleteTextBox.InputText>
+            <ComboBox.Text>
                 <Binding Path="RiskLineName" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
                         <local:NotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
                     </Binding.ValidationRules>
                 </Binding>
-            </classes:AutoCompleteTextBox.InputText>
-        </classes:AutoCompleteTextBox>
-        <StackPanel Orientation="Vertical">
-            <!--<TextBox TabIndex="1" x:Name="TextRisk" DataContext="{Binding ElementName=thisComponent, Path=DataContext}" IsEnabled="{Binding Path = HasAccess}"
-                                                     Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" 
-                                                     HorizontalAlignment="Stretch" MinWidth="150" TextAlignment="Justify" VerticalScrollBarVisibility="Auto"
-                                                     md:HintAssist.Hint="Line Name" md:HintAssist.IsFloating="True" MaxLength="250"  TextWrapping="Wrap" TextOptions.TextHintingMode="Animated">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="KeyUp">
-                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=TextRisk, Path=Text}" Command="{Binding RiskName_KeyUpCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="LostFocus">
-                        <i:InvokeCommandAction Command="{Binding TextRisk_LostFocusCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="TextChanged">
-                        <i:InvokeCommandAction Command="{Binding RiskName_TextChangedCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <TextBox.Text>
-                    <Binding Path="RiskLineName" UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <local:NotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>-->
-            <!--<Border Width="{Binding ElementName=TextRisk, Path=Width}" MaxHeight="160" HorizontalAlignment="Stretch" BorderBrush="Black" BorderThickness="0" Margin="10,0,10,10">
-                <ScrollViewer x:Name="scrollRiskAutocomplete" Visibility="Collapsed" VerticalScrollBarVisibility="Visible">
-                    <StackPanel x:Name="RiskresultStack"></StackPanel>
-                </ScrollViewer>
-            </Border>-->
-        </StackPanel>
+            </ComboBox.Text>
+            <ComboBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+            </ComboBox.ItemsPanel>
+        </ComboBox>
         <TextBox Margin="10" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" HorizontalAlignment="Stretch" MinWidth="150" 
                                                  IsEnabled="{Binding Path = HasAccess}" 
                                                  md:HintAssist.Hint="Comments" md:HintAssist.IsFloating="True" DataContext="{Binding ElementName=thisComponent, Path=DataContext}" x:Name="TextRiskDetail" TextWrapping="Wrap" 

@@ -44,40 +44,22 @@
         <Button Name="BtnOK" Content="OK" Height="25" Margin="0,0,143,19" Click="BtnOK_Click" IsDefault="True" md:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
         <Button Name="BtnCancel" Content="CLOSE" Height="25" Margin="0,0,39,19" Click="BtnCancel_Click" IsCancel="True" md:ShadowAssist.ShadowDepth="Depth5" HorizontalAlignment="Right" Width="90" VerticalAlignment="Bottom"/>
         <StackPanel Orientation="Vertical" Margin="34,7,347,0">
-            <classess:AutoCompleteTextBox TabIndex="1" md:ShadowAssist.ShadowDepth="Depth5" Focusable="True" IsEnabled="{Binding Path = HasAccess}"
-                                          md:HintAssist.IsFloating="True" x:Name="RiskName" VerticalAlignment="Top" TextOptions.TextHintingMode="Animated" 
-                                          LostFocus="RiskName_LostFocus" AutoCompletePlacement="Bottom"
-                                         AutoCompleteItemSource="{Binding RiskNameList, RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
-                <i:Interaction.Triggers>                   
-                    <i:EventTrigger EventName="OnTextChange">
-                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=RiskName, Path=InputText}" Command="{Binding RiskName_KeyUpCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <classess:AutoCompleteTextBox.InputText>
+            <ComboBox x:Name="RiskName" Margin="10" LostFocus="RiskName_LostFocus" IsEnabled="{Binding Path = HasAccess}" md:HintAssist.Hint="Line name" 
+                      md:HintAssist.IsFloating="True" MinWidth="150" TextOptions.TextHintingMode="Animated" VerticalAlignment="Bottom" IsEditable="True" 
+                      ItemsSource="{Binding RiskNameList, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" IsDropDownOpen="True">
+                <ComboBox.Text>
                     <Binding Path="ShortName" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
                             <local:NotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
                         </Binding.ValidationRules>
                     </Binding>
-                </classess:AutoCompleteTextBox.InputText>
-            </classess:AutoCompleteTextBox>
-            <!--<TextBox TabIndex="1" md:ShadowAssist.ShadowDepth="Depth5" IsEnabled="{Binding Path = HasAccess}" KeyUp="RiskName_KeyUp" md:HintAssist.Hint="Short Name" 
-                     md:HintAssist.IsFloating="True" x:Name="RiskName" 
-                     MaxLength="250" TextWrapping="Wrap" VerticalAlignment="Top"  MaxLines="1" TextOptions.TextHintingMode="Animated" 
-                     TextChanged="RiskName_TextChanged" LostFocus="RiskName_LostFocus">-->
-                <!--<TextBox.Text>
-                    <Binding Path="ShortName" UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <classes:NotEmptyValidationRule ValidatesOnTargetUpdated="True" xmlns:classes="clr-namespace:EnsureRisk.Classess"/>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>-->
-            <!--</TextBox>-->
-            <!--<Border Height="60" BorderBrush="Black" BorderThickness="0" Margin="5">
-                <ScrollViewer x:Name="pp" Visibility="Collapsed" VerticalScrollBarVisibility="Visible">
-                    <StackPanel Name="resultStack" ></StackPanel>
-                </ScrollViewer>
-            </Border>-->
+                </ComboBox.Text>
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+            </ComboBox>
         </StackPanel>
 
         <TextBox md:HintAssist.Hint="Father" md:HintAssist.IsFloating="True" x:Name="TextFather" Margin="0,7,15,0" TextWrapping="Wrap"  VerticalAlignment="Top" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" IsReadOnly="True" HorizontalAlignment="Right" Width="246"/>

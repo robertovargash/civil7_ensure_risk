@@ -418,7 +418,7 @@ namespace EnsureBusinesss.Business
                 if (IsActivated)
                 {
                     //MyName.Text = ShortName + " " + Position;
-                    MyName.Text = ShortName;
+                    MyName.Text = ShortName + " " + StrokeThickness;
                 }
                 else
                 {
@@ -488,82 +488,20 @@ namespace EnsureBusinesss.Business
         /// <param name="max"></param>
         public void SetThickness(decimal cost, decimal min, decimal max)
         {
-
-            decimal value = max - min;
-
-            decimal skoda = value / 10;
-
-            if (cost <= skoda)
+            decimal scale = (max - min) / General.MaxThickness;
+          
+            int scalaVariable = 0;
+            while (cost >= (scale * scalaVariable) + min && scalaVariable <= General.MaxThickness)
             {
-                this.StrokeThickness = 2;
-            }
-            else
-            {
-                if (cost > skoda && cost <= 4 * skoda)
+                if (scalaVariable < 2)
                 {
-                    //this.StrokeThickness = 2;
-                    this.StrokeThickness = 4;
+                    this.StrokeThickness = 2;
                 }
                 else
                 {
-                    if (cost > 4 * skoda && cost <= 6 * skoda)
-                    {
-                        this.StrokeThickness = 6;
-                    }
-                    else
-                    {
-                        if (cost > 6 * skoda && cost <= 8 * skoda)
-                        {
-                            this.StrokeThickness = 8;
-                            //this.StrokeThickness = 6;
-                        }
-                        else
-                        {
-                            if (cost > 8 * skoda && cost <= 10 * skoda)
-                            {
-                                this.StrokeThickness = 10;
-                                //this.StrokeThickness = 8;
-
-                            }
-                            else
-                            {
-                                if (cost > 10 * skoda && cost <= 12 * skoda)
-                                {
-                                    this.StrokeThickness = 12;
-                                    //this.StrokeThickness = 8;
-                                }
-                                else
-                                {
-                                    if (cost > 12 * skoda && cost <= 14 * skoda)
-                                    {
-                                        this.StrokeThickness = 14;
-                                        //this.StrokeThickness = 8;
-                                    }
-                                    else
-                                    {
-                                        if (cost > 14 * skoda && cost <= 16 * skoda)
-                                        {
-                                            this.StrokeThickness = 16;
-                                            //this.StrokeThickness = 8;
-                                        }
-                                        else
-                                        {
-                                            if (cost > 16 * skoda && cost <= 18 * skoda)
-                                            {
-                                                this.StrokeThickness = 18;
-                                                //this.StrokeThickness = 8;
-                                            }
-                                            else
-                                            {
-                                                this.StrokeThickness = General.MaxThickness;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    this.StrokeThickness = scalaVariable;
                 }
+                scalaVariable += 2;
             }
         }
         /// <summary>
@@ -770,6 +708,7 @@ namespace EnsureBusinesss.Business
             }
             return segmentsToReturn;
         }
+
         /// <summary>
         /// Get all descendant risk and counter mesure
         /// </summary>
@@ -785,6 +724,7 @@ namespace EnsureBusinesss.Business
             }
             return childList;
         }
+
         /// <summary>
         /// Point that contain minimun X 
         /// </summary>
@@ -800,6 +740,7 @@ namespace EnsureBusinesss.Business
                 return Points[0];
             }
         }
+
         /// <summary>
         /// Remove all segments. Include descendant segments.
         /// </summary>
@@ -814,6 +755,7 @@ namespace EnsureBusinesss.Business
                 }
             }
         }
+
         /// <summary>
         /// Remove all segments
         /// </summary>
@@ -859,48 +801,12 @@ namespace EnsureBusinesss.Business
                 AddChildrenTail();
             }
         }
+
         private void AddChildrenTail()
         {
             foreach (var item in Children)
             {
                 item.AddTail();
-            }
-        }
-        public void UpdateSegmentsStrokeThickness()
-        {
-            if (Segments.Any())
-            {
-                IEnumerable<RiskPolyLine> orderedChild = Children.OrderBy(pl => pl.Points[1].X);
-                int segmentIndex = Segments.Count - 1;
-                SegmentPolyLine segment;
-                SegmentPolyLine lastSegment = Segments[segmentIndex];
-                lastSegment.StrokeThickness = 1;
-
-                foreach (RiskPolyLine rpl in orderedChild)
-                {
-                    segmentIndex--;
-                    if (segmentIndex >= 0)
-                    {
-                        segment = Segments[segmentIndex];
-                        segment.StrokeThickness = 1;
-                        if (!rpl.IsCM)
-                        {
-                            if (segment.StrokeThickness < rpl.StrokeThickness)
-                            {
-                                segment.StrokeThickness = rpl.StrokeThickness;
-                            }
-                            if (segment.StrokeThickness < lastSegment.StrokeThickness)
-                            {
-                                segment.StrokeThickness = lastSegment.StrokeThickness;
-                            }
-                        }
-                        else
-                        {
-                            segment.StrokeThickness = lastSegment.StrokeThickness;
-                        }
-                        lastSegment = segment;
-                    }
-                }
             }
         }
 
@@ -921,15 +827,6 @@ namespace EnsureBusinesss.Business
                     {
                         segment = Segments[segmentIndex];
                         segment.StrokeThickness = 1;
-                        //Aqui lo cambio pues ahora las cm inciden en el ancho del segment
-                        //if (!rpl.IsCM)
-                        //{
-                        //    segment.SetThickness(rpl.AcDamage2, min, max);
-                        //}
-                        //else
-                        //{
-                        //    segment.StrokeThickness = lastSegment.StrokeThickness;
-                        //}
                         segment.SetThickness(rpl.AcDamage2, min, max);
                         lastSegment = segment;
                     }
@@ -1006,47 +903,5 @@ namespace EnsureBusinesss.Business
             return visualParentStrokeThickness;
         }
 
-        public Rect Bounds(ScrollViewer scrollViewer)
-        {
-            Rect bounds = new Rect();
-
-            // La flecha comienza en la cola y termina en la flecha
-            Point beginAt, endAt;
-
-            if (Segments.Any())
-            {
-                beginAt = Segments.Last().Points[0];
-            }
-            else
-            {
-                beginAt = Points[0];
-            }
-
-            endAt = Points.Last();
-
-            double poliLineWidth = Math.Abs(endAt.X - beginAt.X) + StrokeThickness;
-
-            if (IsDiagonal)
-            {
-                double poliLineHeight = Math.Abs(endAt.Y - beginAt.Y) + StrokeThickness;
-
-                if (FromTop)
-                {
-                    bounds = TransformToAncestor(scrollViewer).TransformBounds(new Rect(beginAt.X, beginAt.Y, poliLineWidth, poliLineHeight));
-                }
-                else
-                {
-                    bounds = TransformToAncestor(scrollViewer).TransformBounds(new Rect(beginAt.X, beginAt.Y - poliLineHeight, poliLineWidth, poliLineHeight));
-                }
-            }
-            else
-            {
-                double poliLineHeight = Math.Abs(endAt.Y - beginAt.Y);
-
-                bounds = TransformToAncestor(scrollViewer).TransformBounds(new Rect(beginAt.X, beginAt.Y - StrokeThickness, poliLineWidth, poliLineHeight + StrokeThickness * 2));
-            }
-
-            return bounds;
-        }
     }
 }
