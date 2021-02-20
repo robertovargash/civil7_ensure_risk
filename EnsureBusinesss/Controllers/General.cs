@@ -232,7 +232,7 @@ namespace EnsureBusinesss
                 {
                     if (item.IsLeaf())
                     {
-                        item.SetThickness(item.AcDamage, min, max);
+                        item.SetThickness(item.AcDamage2, min, max);
                     }
                     else
                     {

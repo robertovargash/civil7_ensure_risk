@@ -572,6 +572,7 @@ namespace EnsureRisk.Classess
                         DataSet ImportDSs = Ds.Copy();
                         DataRow drNewRisk;
                         RiskPolyLine Line_Created;
+                        decimal idProject = (decimal)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT];
                         switch (wcpc.OptionSelected)
                         {
                             case 0:
@@ -581,7 +582,7 @@ namespace EnsureRisk.Classess
                                     CopyRisk.Position = Line_Selected.Children.Count - 1;
                                     drNewRisk = CopyPasteController.KeepAllData(CopyRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), true,
                                                                                                         ID_Diagram, MyWindow.DsWBS, LinesList);
-                                    //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), DsWBS, false);
+                                    CopyPasteController.SetValuesFromHijoAPadre(drNewRisk, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), ImportDSs, MyWindow.DsWBS, idProject);
 
                                 }
                                 else
@@ -596,7 +597,7 @@ namespace EnsureRisk.Classess
                                     CopyPasteController.AddImportedDamagesToAllRisk(ImportDSs, drImportados, ID_Diagram, MyWindow.DsWBS);
                                     drNewRisk = CopyPasteController.KeepAllData(MyWindow.GlobalCopyLine, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
                                                         true, ID_Diagram, MyWindow.DsWBS, LinesList);
-                                    //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), DsWBS, false);                                    
+                                    CopyPasteController.SetValuesFromHijoAPadre(drNewRisk, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), ImportDSs, MyWindow.DsWBS, idProject);
                                 }
                                 break;
                             case 1:
@@ -606,7 +607,7 @@ namespace EnsureRisk.Classess
                                     CopyRisk.Position = Line_Selected.Children.Count - 1;
                                     drNewRisk = CopyPasteController.KeepOnlyWBS(CopyRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), true,
                                                                                                         ID_Diagram, MyWindow.DsWBS, LinesList);
-                                    //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), DsWBS, false);
+                                    CopyPasteController.SetValuesFromHijoAPadre(drNewRisk, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), ImportDSs, MyWindow.DsWBS, idProject);
 
                                 }
                                 else
@@ -621,7 +622,7 @@ namespace EnsureRisk.Classess
                                     CopyPasteController.AddImportedDamagesToAllRisk(ImportDSs, drImportados, ID_Diagram, MyWindow.DsWBS);
                                     drNewRisk = CopyPasteController.KeepOnlyWBS(MyWindow.GlobalCopyLine, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID),
                                                         true, ID_Diagram, MyWindow.DsWBS, LinesList);
-                                    //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), DsWBS, false);
+                                    CopyPasteController.SetValuesFromHijoAPadre(drNewRisk, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), ImportDSs, MyWindow.DsWBS, idProject);
                                 }
                                 break;
                             default:
@@ -797,6 +798,7 @@ namespace EnsureRisk.Classess
             try
             {
                 decimal ID_DiagramImported = 0;
+                decimal idProject = (decimal)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT];
 
                 WindowSingleSelection frmSelection = new WindowSingleSelection
                 {
@@ -877,8 +879,7 @@ namespace EnsureRisk.Classess
                                 drNewRisk = CopyPasteController.KeepAllData(CopyRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), true,
                                                     ID_Diagram, MyWindow.DsWBS, LinesList);
                             }
-                            //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID), DsWBS, false);
-
+                            CopyPasteController.SetValuesFromHijoAPadre(drNewRisk, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), ImportDSs, MyWindow.DsWBS, idProject);
                             Ds = ImportDSs;
                             ImportDSs.Dispose();
                             Line_Created = new RiskPolyLine
@@ -4341,7 +4342,7 @@ namespace EnsureRisk.Classess
 
         public void LineLeave(RiskPolyLine CMLeave)
         {
-            SetLinesThickness();
+            //SetLinesThickness();
             if (CMLeave != null)
             {
                 if (CMLeave.IsCM)
@@ -4596,17 +4597,20 @@ namespace EnsureRisk.Classess
                     RiskPolyLine Line_Created;
                     RiskPolyLine linetoDel;
                     Line_Selected.Father = destinationPolyLine;
+                    decimal idProject = (decimal)Ds.Tables[DT_Diagram.TABLE_NAME].Rows.Find(ID_Diagram)[DT_Diagram.ID_PROJECT];
 
                     switch (wcpc.OptionSelected)
                     {
                         case 0:
                             drNewRisk = CopyPasteController.KeepAllData(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
                                                                                                 ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList);
+                            CopyPasteController.SetValuesFromHijoAPadre(drNewRisk, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), ImportDSs, MyWindow.DsWBS, idProject);
+
                             break;
                         case 1:
                             drNewRisk = CopyPasteController.KeepOnlyWBS(Line_Selected, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), true,
                                                                                                 ID_Diagram, ((MainWindow)MyWindow).DsWBS, LinesList);
-                            //CopyPasteController.SetValuesFromChildToAncestors(drNewRisk, ImportDSs, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(destinationPolyLine.ID), ((MainWindow)MyWindow).DsWBS, false);
+                            CopyPasteController.SetValuesFromHijoAPadre(drNewRisk, Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(Line_Selected.ID), ImportDSs, MyWindow.DsWBS, idProject);
 
                             break;
                         default:

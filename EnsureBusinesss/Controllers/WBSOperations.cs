@@ -9,6 +9,34 @@ namespace EnsureBusinesss
 {
     public class WBSOperations
     {
+        public static List<decimal> FillFamilies(DataTable dtRiskWBS, decimal idRisk, decimal idProject, DataSet DsWBS)
+        {
+            List<decimal> families = new List<decimal>();
+            foreach (DataRow rowRiskWbs in dtRiskWBS.Select(DT_RISK_WBS.ID_RISK + " = " + idRisk))
+            {
+                decimal iddrAncestor = GetMyIDAncestorInTop(idProject, DsWBS.Tables[DT_WBS.TABLE_NAME], (decimal)rowRiskWbs[DT_RISK_WBS.ID_WBS]);
+                if (iddrAncestor != 0 && !families.Contains(iddrAncestor))
+                {
+                    families.Add(iddrAncestor);
+                }
+            }
+            return families;
+        }
+
+        public static decimal GetMyIDAncestorInTop(decimal idProject, DataTable dtWBS, decimal idWBSToEvaluate)
+        {
+            DataRow drWBSRoot = dtWBS.Select(DT_WBS.ID_FATHER + " = 0 and " + DT_WBS.IDPROJECT + " = " + idProject).First();
+            foreach (DataRow drRootChild in MyWBSChildren(drWBSRoot, dtWBS))
+            {
+                if (MyWBSDescendants(drRootChild, dtWBS).Contains(dtWBS.Rows.Find(idWBSToEvaluate)) || (decimal)drRootChild[DT_WBS.ID_WBS] == idWBSToEvaluate)
+                {
+                    return (decimal)drRootChild[DT_WBS.ID_WBS];
+                }
+            }
+
+            return 0;
+        }
+
         /// <summary>
         /// Return the WBS children of the WBSFatherRow
         /// </summary>
@@ -282,10 +310,6 @@ namespace EnsureBusinesss
                 {
                     ListaRow.Add(item);
                 }
-                //if (ds.Tables[DT_WBS.TABLE_NAME].Select(DT_WBS.ID_WBS + " = 0").Any())
-                //{
-
-                //}
             }
             return ListaRow;
         }
@@ -334,7 +358,7 @@ namespace EnsureBusinesss
             if (dtRiskWBS.Select(DT_RISK_WBS.USERNAME + " = '" + LoginUser + "'").Any())
             {
                 decimal IDWBS = (decimal)dtRiskWBS.Select(DT_RISK_WBS.USERNAME + " = '" + LoginUser + "'").First()[DT_RISK_WBS.ID_WBS];
-                foreach (DataRow descendant in WBSOperations.MyWBSDescendants(dtWBS_Codif.Rows.Find(IDWBS), dtWBS_Codif))
+                foreach (DataRow descendant in MyWBSDescendants(dtWBS_Codif.Rows.Find(IDWBS), dtWBS_Codif))
                 {
                     if (dtWBSExistents.Select(DT_WBS.ID_WBS + " = " + descendant[DT_WBS.ID_WBS]).Any())
                     {

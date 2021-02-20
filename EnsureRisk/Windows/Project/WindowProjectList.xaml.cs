@@ -62,6 +62,7 @@ namespace EnsureRisk.Windows
                     drWBS[DT_WBS.NIVEL] = "1";
                     drWBS[DT_WBS.WBS_NAME] = adduser.DrProject[DT_Project.PROJECT_NAME];
                     drWBS[DT_WBS.USERNAME] = "admin";
+                    drWBS[DT_WBS.ID_FATHER] = 0;
                     Ds.Tables[DT_WBS.TABLE_NAME].Rows.Add(drWBS);
                     if (Ds.HasChanges())
                     {

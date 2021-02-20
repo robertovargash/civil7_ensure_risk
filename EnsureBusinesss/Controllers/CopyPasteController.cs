@@ -546,53 +546,70 @@ namespace EnsureBusinesss
 
         #endregion
 
-        /// <summary>
-        /// Copy the WBS, Role and WBS_Damage from the Child to the Father and the Ancestors
-        /// </summary>
-        /// <param name="drRiskCopied">The Risk copied</param>
-        /// <param name="targetDataset">The Dataset</param>
-        /// <param name="drTargetRisk">data of the Risk Father</param>
-        /// <param name="DsWBS">Dataset with the WBS</param>
-        public static void SetValuesFromChildToAncestors(DataRow drRiskCopied, DataSet targetDataset, DataRow drTargetRisk, DataSet DsWBS, bool isCM)
+        public static void SetValuesFromHijoAPadre(DataRow drRiskChild, DataRow drRiskFather, DataSet ds, DataSet dsWBS, decimal idProject)
         {
-            foreach (DataRow rowRiskWbs in targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drRiskCopied[DT_Risk.ID]))
+            List<decimal> families = WBSOperations.FillFamilies(ds.Tables[DT_RISK_WBS.TABLE_NAME], (decimal)drRiskChild[DT_Risk.ID], idProject, dsWBS);
+            foreach (decimal idFamily in families)//por cada familia que tiene el riesgo hijo
             {
-                if (!(targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drTargetRisk[DT_Risk.ID], rowRiskWbs[DT_RISK_WBS.ID_WBS] })))
+                if (!(ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drRiskFather[DT_Risk.ID], idFamily })))
                 {
-                    DataRow newRiskWBS = targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
-                    newRiskWBS[DT_RISK_WBS.ID_RISK] = drTargetRisk[DT_Risk.ID];
-                    newRiskWBS[DT_RISK_WBS.ID_WBS] = rowRiskWbs[DT_RISK_WBS.ID_WBS];
-                    newRiskWBS[DT_RISK_WBS.IS_PRIMARY] = false;
-                    newRiskWBS[DT_RISK_WBS.NIVEL] = rowRiskWbs[DT_RISK_WBS.NIVEL];
-                    newRiskWBS[DT_RISK_WBS.PROBABILITY] = drTargetRisk[DT_Risk.PROBABILITY];
-                    newRiskWBS[DT_RISK_WBS.RISK] = drTargetRisk[DT_Risk.NAMESHORT];
-                    newRiskWBS[DT_RISK_WBS.USERNAME] = rowRiskWbs[DT_RISK_WBS.USERNAME];
-                    newRiskWBS[DT_RISK_WBS.WBS] = rowRiskWbs[DT_RISK_WBS.WBS];
-                    newRiskWBS[DT_RISK_WBS.WBS_USER] = rowRiskWbs[DT_RISK_WBS.WBS] + "[" + rowRiskWbs[DT_RISK_WBS.USERNAME] + "]";
-                    targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
-                }
-            }
-            foreach (DataRow rowRiskWbs in targetDataset.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drTargetRisk[DT_Risk.ID]))
-            {
-                if (WBSOperations.IsRiskWBSLow(rowRiskWbs, DsWBS, targetDataset.Tables[DT_RISK_WBS.TABLE_NAME]))
-                {
-                    AddWBS_Risk_Damage(drTargetRisk, targetDataset, rowRiskWbs);
-                }
-                else
-                {
-                    DeleteWBS_Risk_Damage(targetDataset, drTargetRisk, rowRiskWbs);
-                }
-            }
-            if (!(bool)drTargetRisk[DT_Risk.IS_ROOT])
-            {
-                if (targetDataset.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + drTargetRisk[DT_Risk.ID]).Any())
-                {
-                    decimal idFather = (decimal)targetDataset.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + drTargetRisk[DT_Risk.ID]).First()[DT_RiskStructure.IDRISK_FATHER];
-                    if (targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Contains(idFather))
-                    {
-                        SetValuesFromChildToAncestors(drTargetRisk, targetDataset, targetDataset.Tables[DT_Risk.TABLE_NAME].Rows.Find(idFather), DsWBS, false);
+                    DataRow drWBS1 = dsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idFamily);
+                    DataRow newRisk1WBS = ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
+                    newRisk1WBS[DT_RISK_WBS.ID_RISK] = drRiskFather[DT_Risk.ID];
+                    newRisk1WBS[DT_RISK_WBS.ID_WBS] = drWBS1[DT_WBS.ID_WBS];
+                    newRisk1WBS[DT_RISK_WBS.IS_PRIMARY] = false;
+                    newRisk1WBS[DT_RISK_WBS.NIVEL] = drWBS1[DT_WBS.NIVEL];
+                    newRisk1WBS[DT_RISK_WBS.PROBABILITY] = drRiskFather[DT_Risk.PROBABILITY];
+                    newRisk1WBS[DT_RISK_WBS.RISK] = drRiskFather[DT_Risk.NAMESHORT];
+                    newRisk1WBS[DT_RISK_WBS.USERNAME] = drWBS1[DT_WBS.USERNAME];
+                    newRisk1WBS[DT_RISK_WBS.WBS] = drWBS1[DT_WBS.WBS_NAME];
+                    newRisk1WBS[DT_RISK_WBS.WBS_USER] = drWBS1[DT_WBS.WBS_NAME] + "[" + drWBS1[DT_WBS.USERNAME] + "]";
+                    ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRisk1WBS);
+
+                    foreach (DataRow drWBS in WBSOperations.MyWBSDescendants(dsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idFamily), dsWBS.Tables[DT_WBS.TABLE_NAME]))
+                    {//por cada wbs de esa familia y que este en el hijo
+                        if (ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drRiskChild[DT_Risk.ID], drWBS[DT_WBS.ID_WBS] }))
+                        {
+                            if (!(ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { drRiskFather[DT_Risk.ID], drWBS[DT_WBS.ID_WBS] })))
+                            {
+                                DataRow newRiskWBS = ds.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
+                                newRiskWBS[DT_RISK_WBS.ID_RISK] = drRiskFather[DT_Risk.ID];
+                                newRiskWBS[DT_RISK_WBS.ID_WBS] = drWBS[DT_WBS.ID_WBS];
+                                newRiskWBS[DT_RISK_WBS.IS_PRIMARY] = false;
+                                newRiskWBS[DT_RISK_WBS.NIVEL] = drWBS[DT_WBS.NIVEL];
+                                newRiskWBS[DT_RISK_WBS.PROBABILITY] = drRiskFather[DT_Risk.PROBABILITY];
+                                newRiskWBS[DT_RISK_WBS.RISK] = drRiskFather[DT_Risk.NAMESHORT];
+                                newRiskWBS[DT_RISK_WBS.USERNAME] = drWBS[DT_WBS.USERNAME];
+                                newRiskWBS[DT_RISK_WBS.WBS] = drWBS[DT_WBS.WBS_NAME];
+                                newRiskWBS[DT_RISK_WBS.WBS_USER] = drWBS[DT_WBS.WBS_NAME] + "[" + drWBS[DT_WBS.USERNAME] + "]";
+                                ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(newRiskWBS);
+                            }//LE PONGO al ancestro el wbs
+                        }
                     }
-                }
+                    if (!(bool)drRiskFather[DT_Risk.IS_ROOT])
+                    {
+                        if (ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + drRiskFather[DT_Risk.ID]).Any())
+                        {
+                            decimal idFather = (decimal)ds.Tables[DT_RiskStructure.TABLE_NAME].Select(DT_RiskStructure.IDRISK + " = " + drRiskFather[DT_Risk.ID]).First()[DT_RiskStructure.IDRISK_FATHER];
+                            if (ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains(idFather))
+                            {
+                                SetValuesFromHijoAPadre(drRiskFather, ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idFather), ds, dsWBS, idProject);
+                            }
+                        }
+                    }
+                    //Aqui ajusto los valores y todo eso que sabemos
+                    foreach (DataRow rowRiskWbs in ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + drRiskFather[DT_Risk.ID]))
+                    {
+                        if (WBSOperations.IsRiskWBSLow(rowRiskWbs, dsWBS, ds.Tables[DT_RISK_WBS.TABLE_NAME]))
+                        {
+                            AddWBS_Risk_Damage(drRiskFather, ds, rowRiskWbs);
+                        }
+                        else
+                        {
+                            DeleteWBS_Risk_Damage(ds, drRiskFather, rowRiskWbs);
+                        }
+                    }
+                }                          
             }
         }
 
