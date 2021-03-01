@@ -202,29 +202,13 @@ namespace EnsureRisk
 
         #region RegionOfDialogYesNO
         #region Booleans_Controls
-        public bool IS_REOPEN_DIAGRAM { get; private set; } = false;
-        public bool IS_OPEN_DIAGRAM { get; private set; } = false;
-        public bool IS_DELETING_DIAGRAM { get; set; } = false;
-        public bool IS_DELETING_RISK { get; set; } = false;
-        public bool IS_DELETING_GROUP_CM { get; set; } = false;
-        public bool IS_DELETING_RISK_FROM_GROUP_TAB { get; set; } = false;
-        public bool IS_REMOVING_GROUP_FROM_DATABASE { get; set; } = false;
-        public bool IS_CLEANING_GROUP { get; set; } = false;
-        public bool IS_SAVING_DATA { get; set; } = false;
-        public bool IS_REPEATING_NAME { get; set; } = false;
-        public bool IS_DELETING_WBS { get; private set; } = false;
         public bool IS_LOGIN { get; private set; } = false;
-        public bool IS_DELETING_RISK_ROLE_ROW { get; private set; } = false;
-        public bool IS_DELETING_Risk_WBS_ROW { get; private set; } = false;
         #endregion
-
+        public DialogContent.LoginDialogContent LoginContent { get; set; }
         public decimal DiagramID { get; private set; } = 0;
         public decimal ID_Groupe { get; private set; }
-        public DataRowView TheDataRowVieww { get; private set; }
         public decimal IdRiskToDeleteFromGroup { get; private set; }
-        public DataTable TheRemovingTable { get; private set; }
         public DataRow DrWBStoDelete { get; private set; }
-        public DataGrid Selected_DataGrid { get; private set; }
         #endregion
         #endregion
 
@@ -470,8 +454,15 @@ namespace EnsureRisk
                       if (parameter is decimal idBWS)
                       {
                           DrWBStoDelete = DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(idBWS);
-                          IS_DELETING_WBS = true;
-                          MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + DrWBStoDelete[DT_WBS.WBS_NAME] + "]?");
+
+                          MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost();
+                          DialogContent.YesNoDialogContent cont = new DialogContent.YesNoDialogContent();
+                          cont.TextYesNoMessage.Text = StringResources.DELETE_MESSAGE + " [" + DrWBStoDelete[DT_WBS.WBS_NAME] + "]?";
+                          dialog.DialogContent = cont;
+                          dialog.DialogClosing += DeleteWBSDialogClosing;
+                          Grid.SetRowSpan(dialog, 3);
+                          Supergrid.Children.Add(dialog);
+                          dialog.IsOpen = true;
                       }
                   }
                   catch (Exception ex)
@@ -486,6 +477,47 @@ namespace EnsureRisk
             }
         }
 
+        private void DeleteWBSDialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (Equals(eventArgs.Parameter, true))
+            {
+                DeleteWBS(DrWBStoDelete);
+            }
+            else
+            {
+
+            }
+        }
+
+        /// <summary>
+        /// Delete the selected WBS
+        /// </summary>
+        /// <param name="drWBS">The Selected Row of the WBS table to delete </param>
+        private void DeleteWBS(DataRow drWBS)
+        {
+            try
+            {
+                WBSOperations.DeleteMyWBSChildren(WBSOperations.MyWBSChildren(drWBS, DsWBS.Tables[DT_WBS.TABLE_NAME]), DsWBS.Tables[DT_WBS.TABLE_NAME]);
+                drWBS.Delete();
+                if (DsWBS.HasChanges())
+                {
+                    using (ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS())
+                    {
+                        DataSet temp = DsWBS.GetChanges();
+                        temp = ws.SaveWBS(temp);
+                        DsWBS.Merge(temp);
+                        DsWBS.AcceptChanges();
+                        RefreshWBS();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+
         #endregion
 
         #region PROPERTIES_TAB_COMMANDS
@@ -493,38 +525,6 @@ namespace EnsureRisk
 
         private IEnumerable<string> _RiskNameList;
         public IEnumerable<string> RiskNameList { get { return _RiskNameList; } set { _RiskNameList = value; OnPropertyChanged("RiskNameList"); } }
-
-        private RelayyCommand _RiskName_KeyUpCommand;
-        public RelayyCommand RiskName_KeyUpCommand { get { return _RiskName_KeyUpCommand; } set { _RiskName_KeyUpCommand = value; OnPropertyChanged("RiskName_KeyUpCommand"); } }
-        private void ImplementRiskName_KeyUpCommand()
-        {
-            try
-            {
-                RiskName_KeyUpCommand = new RelayyCommand(
-                parametro =>
-                {
-                    try
-                    {
-                        if (parametro is string textico)
-                        {
-                            EditandoRisk = true;
-
-                            RiskNameList = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].AsEnumerable()
-                                            .Where(r => r.Field<string>(DT_Risk.NAMESHORT).ToLower().Contains(textico.ToLower()))
-                                            .Select(r => r.Field<string>(DT_Risk.NAMESHORT)).Distinct();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MostrarErrorDialog(ex.Message);
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
 
         private RelayyCommand _TextRisk_LostFocusCommand;
         public RelayyCommand TextRisk_LostFocusCommand { get { return _TextRisk_LostFocusCommand; } set { _TextRisk_LostFocusCommand = value; OnPropertyChanged("TextRisk_LostFocusCommand"); } }
@@ -830,7 +830,7 @@ namespace EnsureRisk
                                         drRiskWBS[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
                                         drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = false;
                                         drRiskWBS[DT_RISK_WBS.USERNAME] = itemWBS[DT_WBS.USERNAME];
-                                        drRiskWBS[DT_RISK_WBS.WBS_USER] = itemWBS[DT_WBS.WBS_NAME] + "[" + itemWBS[DT_WBS.USERNAME] + "]";
+                                        drRiskWBS[DT_RISK_WBS.WBS_USER] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart() + "[" + itemWBS[DT_WBS.USERNAME] + "]";
                                         drRiskWBS[DT_RISK_WBS.PROBABILITY] = 100;
                                         TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(drRiskWBS);
                                         foreach (DataRow itemAncestors in WBSOperations.GetAncestors((decimal)itemWBS[DT_WBS.ID_WBS], DsWBS.Tables[DT_WBS.TABLE_NAME].Clone(), DsWBS).Rows)
@@ -844,7 +844,7 @@ namespace EnsureRisk
                                                 drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
                                                 drRiskWBSi[DT_RISK_WBS.NIVEL] = itemAncestors[DT_WBS.NIVEL].ToString().TrimStart();
                                                 drRiskWBSi[DT_RISK_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
-                                                drRiskWBSi[DT_RISK_WBS.WBS_USER] = itemAncestors[DT_WBS.WBS_NAME] + "[" + itemAncestors[DT_WBS.USERNAME] + "]";
+                                                drRiskWBSi[DT_RISK_WBS.WBS_USER] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart() + "[" + itemAncestors[DT_WBS.USERNAME] + "]";
                                                 drRiskWBSi[DT_RISK_WBS.IS_PRIMARY] = false;
                                                 drRiskWBSi[DT_RISK_WBS.PROBABILITY] = 100;
                                                 TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(drRiskWBSi);
@@ -861,7 +861,7 @@ namespace EnsureRisk
                                                 drRiskWBSS[DT_RISK_WBS.ID_WBS] = itemWBS[DT_WBS.ID_WBS];
                                                 drRiskWBSS[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
                                                 drRiskWBSS[DT_RISK_WBS.USERNAME] = itemWBS[DT_WBS.USERNAME];
-                                                drRiskWBSS[DT_RISK_WBS.WBS_USER] = itemWBS[DT_WBS.WBS_NAME] + "[" + itemWBS[DT_WBS.USERNAME] + "]";
+                                                drRiskWBSS[DT_RISK_WBS.WBS_USER] = itemWBS[DT_WBS.WBS_NAME].ToString().TrimStart() + "[" + itemWBS[DT_WBS.USERNAME] + "]";
                                                 drRiskWBSS[DT_RISK_WBS.IS_PRIMARY] = false;
                                                 drRiskWBSS[DT_RISK_WBS.PROBABILITY] = 100;
                                                 TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(drRiskWBSS);
@@ -888,9 +888,9 @@ namespace EnsureRisk
                                                         drRiskWBSi[DT_RISK_WBS.RISK] = itemLine.ShortName;
                                                         drRiskWBSi[DT_RISK_WBS.WBS] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart();
                                                         drRiskWBSi[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
-                                                        drRiskWBSi[DT_RISK_WBS.NIVEL] = itemWBS[DT_WBS.NIVEL].ToString().TrimStart();
+                                                        drRiskWBSi[DT_RISK_WBS.NIVEL] = itemAncestors[DT_WBS.NIVEL].ToString().TrimStart();
                                                         drRiskWBSi[DT_RISK_WBS.USERNAME] = itemAncestors[DT_WBS.USERNAME];
-                                                        drRiskWBSi[DT_RISK_WBS.WBS_USER] = itemAncestors[DT_WBS.WBS_NAME] + "[" + itemAncestors[DT_WBS.USERNAME] + "]";
+                                                        drRiskWBSi[DT_RISK_WBS.WBS_USER] = itemAncestors[DT_WBS.WBS_NAME].ToString().TrimStart() + "[" + itemAncestors[DT_WBS.USERNAME] + "]";
                                                         drRiskWBSi[DT_RISK_WBS.IS_PRIMARY] = false;
                                                         drRiskWBSi[DT_RISK_WBS.PROBABILITY] = 100;
                                                         TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(drRiskWBSi);
@@ -943,8 +943,14 @@ namespace EnsureRisk
                         if (parametro is int rowSelectedIndex)
                         {
                             Selected_Risk_WBS_Row = DvRiskWBS[rowSelectedIndex].Row;
-                            IS_DELETING_Risk_WBS_ROW = true;
-                            MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_Risk_WBS_Row[DT_RISK_WBS.WBS].ToString() + "]?");
+                            MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost
+                            {
+                                DialogContent = new DialogContent.DeleteWBSConfirm()
+                            };
+                            dialog.DialogClosing += DeleteForChildrenThisWBSConfirm;
+                            Grid.SetRowSpan(dialog, 3);
+                            Supergrid.Children.Add(dialog);
+                            dialog.IsOpen = true;
                         }
                     }
                     catch (Exception ex)
@@ -957,6 +963,73 @@ namespace EnsureRisk
             {
                 MostrarErrorDialog(ex.Message);
             }
+        }
+
+        private void DeleteForChildrenThisWBSConfirm(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            try
+            {
+                if (eventArgs.Parameter is int parametro)
+                {
+                    switch (parametro)
+                    {
+                        case 0:
+                            if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
+                            {
+                                decimal idWBStoDelete = (decimal)Selected_Risk_WBS_Row[DT_RISK_WBS.ID_WBS];
+                                DeleteOnlyRisk_WBS(Selected_Risk_WBS_Row, TheCurrentLayout.Line_Selected.ID);
+                                foreach (var line in TreeOperation.GetOnlyMyChildrenWithCM(TheCurrentLayout.Line_Selected))
+                                {
+                                    DataRow drWBSRiskCHild = TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { line.ID, idWBStoDelete });
+                                    DeleteOnlyRisk_WBS(drWBSRiskCHild, line.ID);
+                                }
+                            }
+                            break;
+                        case 1:
+                            DeleteOnlyRisk_WBS(Selected_Risk_WBS_Row, TheCurrentLayout.Line_Selected.ID);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+            //throw new NotImplementedException();
+        }
+
+        private void DeleteOnlyRisk_WBS(DataRow fila, decimal riskID)
+        {
+            foreach (DataRow itemC in TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + riskID + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
+            {
+                itemC.Delete();
+            }
+
+            //WBSOperations.SetDefaultWBSPrimary(fila, TheCurrentLayout.Ds, riskID);
+            WBSOperations.SetAsPrimaryWhoDelete(fila, TheCurrentLayout.Ds, LoginUser, riskID, DsWBS);
+            foreach (DataRow descendant in WBSOperations.MyWBSDescendants(DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(fila[DT_RISK_WBS.ID_WBS]), DsWBS.Tables[DT_WBS.TABLE_NAME]))
+            {
+                if (TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { riskID, descendant[DT_WBS.ID_WBS] }))
+                {
+                    TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { riskID, descendant[DT_WBS.ID_WBS] }).Delete();
+                }
+            }
+            fila.Delete();
+            foreach (DataRow itemWBS in TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + riskID))
+            {
+                if (WBSOperations.IsRiskWBSLow(itemWBS, DsWBS, TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
+                {
+                    WBSOperations.TabAddWBS_LINE_Damage(itemWBS, riskID, false, TheCurrentLayout.Ds);
+                }
+                else
+                {//TENGO QUE BORRAR EL DAMAGE_WBS_RISK, PUES YA NO ES LOWLEVEL
+                    WBSOperations.TabDeleteWBS_LINE_Damage(itemWBS, riskID, false, TheCurrentLayout.Ds);
+                }
+            }
+            CalculateProbability(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(riskID));
+            RefreshRiskDamageValues(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(riskID));
         }
 
         private RelayyCommand _ChangePrimaryWBSRiskCommand;
@@ -1096,8 +1169,14 @@ namespace EnsureRisk
                                 Selected_RiskRoleRow = DvRoleRisk[rowSelectedIndex].Row;
                                 if (Selected_RiskRoleRow[DT_Role_Risk.Role].ToString() != "Administrator")
                                 {
-                                    IS_DELETING_RISK_ROLE_ROW = true;
-                                    MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_RiskRoleRow[DT_Role_Risk.Role].ToString() + "]?");
+                                    MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost();
+                                    DialogContent.YesNoDialogContent cont = new DialogContent.YesNoDialogContent();
+                                    cont.TextYesNoMessage.Text = StringResources.DELETE_MESSAGE + " [" + Selected_RiskRoleRow[DT_Role_Risk.Role].ToString() + "]?";
+                                    dialog.DialogContent = cont;
+                                    dialog.DialogClosing += DeleteRiskRoleDialogClosing;
+                                    Grid.SetRowSpan(dialog, 3);
+                                    Supergrid.Children.Add(dialog);
+                                    dialog.IsOpen = true;
                                 }
                                 else
                                 {
@@ -1115,6 +1194,14 @@ namespace EnsureRisk
             catch (Exception ex)
             {
                 MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void DeleteRiskRoleDialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (Equals(eventArgs.Parameter, true))
+            {
+                Delete_Role(Selected_RiskRoleRow);
             }
         }
         #endregion
@@ -1168,8 +1255,15 @@ namespace EnsureRisk
                             if (parametro is decimal idGroup)
                             {
                                 ID_Groupe = idGroup;
-                                IS_CLEANING_GROUP = true;
-                                MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " this Group?");
+
+                                MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost();
+                                DialogContent.YesNoDialogContent cont = new DialogContent.YesNoDialogContent();
+                                cont.TextYesNoMessage.Text = StringResources.DELETE_MESSAGE + " this Group?";
+                                dialog.DialogContent = cont;
+                                dialog.DialogClosing += CleanGroupDialogClosing;
+                                Grid.SetRowSpan(dialog, 3);
+                                Supergrid.Children.Add(dialog);
+                                dialog.IsOpen = true;
                             }
                         }
                         catch (Exception ex)
@@ -1184,6 +1278,35 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
+
+        private void CleanGroupDialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (Equals(eventArgs.Parameter, true))
+            {
+                ClearGroup(ID_Groupe);
+            }
+        }
+
+        private void ClearGroup(decimal IdGroup)
+        {
+            try
+            {
+                foreach (DataRow line in TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_GROUPE + " = " + IdGroup + " and "
+                                                                               + DT_Risk.ID_DIAGRAM + " = " + TheCurrentLayout.ID_Diagram))
+                {
+                    line[DT_Risk.GROUPE_NAME] = "None";
+                    line[DT_Risk.ID_GROUPE] = DBNull.Value;
+                    TheCurrentLayout.LinesList.Find(x => x.ID == (decimal)line[DT_Risk.ID]).Group.IdGroup = 0;
+                    TheCurrentLayout.LinesList.Find(x => x.ID == (decimal)line[DT_Risk.ID]).Group.GroupName = "None";
+                }
+                UpdateGroupTab(TheCurrentLayout.Ds);
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
 
         /// <summary>
         /// Remove the group from Database, not just the filter
@@ -1201,8 +1324,15 @@ namespace EnsureRisk
                             if (parametro is decimal idGroup)
                             {
                                 ID_Groupe = idGroup;
-                                IS_REMOVING_GROUP_FROM_DATABASE = true;
-                                MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " this Group?");
+
+                                MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost();
+                                DialogContent.YesNoDialogContent cont = new DialogContent.YesNoDialogContent();
+                                cont.TextYesNoMessage.Text = StringResources.DELETE_MESSAGE + " this Group?";
+                                dialog.DialogContent = cont;
+                                dialog.DialogClosing += RemoveGroupFromDatabaseDialogCloseing;
+                                Grid.SetRowSpan(dialog, 3);
+                                Supergrid.Children.Add(dialog);
+                                dialog.IsOpen = true;
                             }
                         }
                         catch (Exception ex)
@@ -1217,6 +1347,44 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
+
+        private void RemoveGroupFromDatabaseDialogCloseing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (Equals(eventArgs.Parameter, true))
+            {
+                RemoveGroupFromDatabase(ID_Groupe);
+            }
+        }
+
+        private void RemoveGroupFromDatabase(decimal IDGroupe)
+        {
+            try
+            {
+                foreach (DataRow lineRow in TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_GROUPE + " = " + IDGroupe))
+                {
+                    if (lineRow.RowState != DataRowState.Deleted)
+                    {
+                        lineRow[DT_Risk.ID_GROUPE] = DBNull.Value;
+                        lineRow[DT_Risk.GROUPE_NAME] = "None";
+                    }
+                }
+                foreach (var line in TheCurrentLayout.LinesList.FindAll(x => x.Group.IdGroup == IDGroupe))
+                {
+                    line.Group.IdGroup = 0;
+                    line.Group.GroupName = "None";
+                }
+                if (TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Contains(IDGroupe))
+                {
+                    TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(IDGroupe).Delete();
+                }
+                UpdateGroupTab(TheCurrentLayout.Ds);
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
 
         public RelayyCommand RenameGroupCommand { get; set; }
         public virtual void RenameGroupCommandFunction()
@@ -1420,8 +1588,15 @@ namespace EnsureRisk
                             if (parametro is decimal idRisk)
                             {
                                 IdRiskToDeleteFromGroup = idRisk;
-                                IS_DELETING_RISK_FROM_GROUP_TAB = true;
-                                MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " this value?");
+
+                                MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost();
+                                DialogContent.YesNoDialogContent cont = new DialogContent.YesNoDialogContent();
+                                cont.TextYesNoMessage.Text = StringResources.DELETE_MESSAGE + " this value?";
+                                dialog.DialogContent = cont;
+                                dialog.DialogClosing += DeleteRiskFromGroupTabDialogClosing;
+                                Grid.SetRowSpan(dialog, 3);
+                                Supergrid.Children.Add(dialog);
+                                dialog.IsOpen = true;
                             }
                         }
                         catch (Exception ex)
@@ -1436,6 +1611,34 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
+
+        private void DeleteRiskFromGroupTabDialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (Equals(eventArgs.Parameter, true))
+            {
+                Delete_Risk_From_Group_Tab(IdRiskToDeleteFromGroup);
+            }
+        }
+
+        private void Delete_Risk_From_Group_Tab(decimal idRiskToDeleteFromGroup)
+        {
+            try
+            {
+                if (TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains(idRiskToDeleteFromGroup))
+                {
+                    DataRow riskRow = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRiskToDeleteFromGroup);
+                    riskRow[DT_Risk.GROUPE_NAME] = "None";
+                    riskRow[DT_Risk.ID_GROUPE] = DBNull.Value;
+                    TheCurrentLayout.LinesList.Find(x => x.ID == idRiskToDeleteFromGroup).Group = new LineGroup() { IdGroup = 0, GroupName = "None" };
+                }
+                UpdateGroupTab(TheCurrentLayout.Ds);
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
 
         #endregion
 
@@ -1616,8 +1819,14 @@ namespace EnsureRisk
                     {
                         if (gridDiagramList.dgTreeDiagrams.SelectedIndex >= 0)
                         {
-                            MostrarDialogYesNo($"{StringResources.DELETE_MESSAGE} the diagram [{ DVRisk_Tree[gridDiagramList.dgTreeDiagrams.SelectedIndex].Row[DT_Diagram.DIAGRAM_NAME] }]?");
-                            IS_DELETING_DIAGRAM = true;
+                            MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost();
+                            DialogContent.YesNoDialogContent cont = new DialogContent.YesNoDialogContent();
+                            cont.TextYesNoMessage.Text = $"{StringResources.DELETE_MESSAGE} the diagram [{ DVRisk_Tree[gridDiagramList.dgTreeDiagrams.SelectedIndex].Row[DT_Diagram.DIAGRAM_NAME] }]?";
+                            dialog.DialogContent = cont;
+                            dialog.DialogClosing += DialogDeleteDiagramClosing;
+                            Grid.SetRowSpan(dialog, 3);                           
+                            Supergrid.Children.Add(dialog);
+                            dialog.IsOpen = true;
                         }
                     }
                     catch (Exception ex)
@@ -1625,6 +1834,21 @@ namespace EnsureRisk
                         MostrarErrorDialog(ex.Message);
                     }
                 });
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void DialogDeleteDiagramClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            try
+            {
+                if (Equals(eventArgs.Parameter, true))
+                {
+                    DeleteDiagram();
+                }
             }
             catch (Exception ex)
             {
@@ -2181,7 +2405,7 @@ namespace EnsureRisk
                 RenameGroupCommandFunction(); EnableDisableGroupCommanddFunction(); ImplementTreviewItemGotFocusCommand();
                 DeleteRiskFromGroupCommandFunction();
                 //properties tab
-                ImplementRiskName_KeyUpCommand(); ImplementTextRisk_LostFocusCommand(); ImplementRiskName_TextChangedCommand();
+                ImplementTextRisk_LostFocusCommand(); ImplementRiskName_TextChangedCommand();
                 ImplementTextRiskDetail_LostFocusCommand(); ImplementDamageValueGotFocusCommand(); ImplementDamageValueLostFocusCommand(); ImplementChangePrimaryWBSRiskCommand();
                 ImplementAddWBSRiskCommand(); ImplementDeleteWBSRiskCommand(); ImplementProbabilityLostFocusCommand();
                 ImplementAddTabRiskRoleCommand(); ImplementDeleteTabRoleRiskCommand();
@@ -2215,8 +2439,14 @@ namespace EnsureRisk
             {
                 this.Dispatcher.Invoke(() =>
                 {
-                    ErrorDialogMessage.IsOpen = true;
-                    ErrorContent.TextMessage.Text = text;
+                    MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost();
+                    DialogContent.ErrorStackPanel cont = new DialogContent.ErrorStackPanel();
+                    cont.TextMessage.Text = text;
+                    dialog.DialogContent = cont;
+                    dialog.DialogClosing += ErrorDialogClosing;
+                    Grid.SetRowSpan(dialog, 3);
+                    Supergrid.Children.Add(dialog);
+                    dialog.IsOpen = true;
                 });
             }
             catch (Exception ex)
@@ -2225,13 +2455,41 @@ namespace EnsureRisk
             }
         }
 
-        public void MostrarInfoDialog(string text)
+        private void ErrorDialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
         {
-            InformationMessageDialog.IsOpen = true;
-            infoContent.TextInformationMessage.Text = text;
+            if (sender is MaterialDesignThemes.Wpf.DialogHost dialog)
+            {
+                if (Supergrid.Children.Contains(dialog))
+                {
+                    Supergrid.Children.Remove(dialog);
+                }
+            }            
         }
 
-        
+        public void MostrarInfoDialog(string text)
+        {
+            MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost();
+            DialogContent.InformationDialogContent cont = new DialogContent.InformationDialogContent();
+            cont.TextInformationMessage.Text = text;
+            dialog.DialogContent = cont;
+            dialog.DialogClosing += InfoDialogClosing;
+            Grid.SetRowSpan(dialog, 3);
+            Supergrid.Children.Add(dialog);
+            dialog.IsOpen = true;
+        }
+
+        private void InfoDialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (sender is MaterialDesignThemes.Wpf.DialogHost dialog)
+            {
+                if (Supergrid.Children.Contains(dialog))
+                {
+                    Supergrid.Children.Remove(dialog);
+                }
+            }
+        }
+
+
         /// <summary>
         /// AutoFix the Grid Area acording with the Tree Diagram sizes.
         /// </summary>
@@ -2397,7 +2655,6 @@ namespace EnsureRisk
                     CrossCMRightTab(TheCurrentLayout.Ds);
                     MostrarInfoDialog("Data saved successfully!!!");
                 }
-                IS_SAVING_DATA = false;
                 TheProgress.Visibility = Visibility.Hidden;
                 HabilitarBotones(true);
             }
@@ -2405,7 +2662,6 @@ namespace EnsureRisk
             {
                 TheProgress.Visibility = Visibility.Hidden;
                 HabilitarBotones(true);
-                IS_SAVING_DATA = false;
                 MostrarErrorDialog(ex.Message);
             }
         }
@@ -2490,13 +2746,7 @@ namespace EnsureRisk
         #endregion
 
         #region Add,Edit,Delete,ImportExcel Diagram
-
-        public void MostrarDialogYesNo(string textAlert)
-        {
-            YesNoDialog.IsOpen = true;
-            yesNoContent.TextYesNoMessage.Text = textAlert;
-        }
-
+        
         private void OpenDiagramFromDiagramList(decimal DIAGRAM_ID)
         {
             MyLayoutDocumentt openDoc = OpenedDocuments.FirstOrDefault(docu => docu.ID_Diagram == DIAGRAM_ID);
@@ -2504,8 +2754,14 @@ namespace EnsureRisk
 
             if (openDoc != null)
             {
-                MostrarDialogYesNo("This diagram is already opened. Do you want to open it as New Diagram?");
-                IS_REOPEN_DIAGRAM = true;
+                MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost();
+                DialogContent.YesNoDialogContent cont = new DialogContent.YesNoDialogContent();
+                cont.TextYesNoMessage.Text = "This diagram is already opened. Do you want to open it as New Diagram?";
+                dialog.DialogContent = cont;
+                dialog.DialogClosing += ReopenDiagramDialogClosing;
+                Grid.SetRowSpan(dialog, 3);
+                Supergrid.Children.Add(dialog);
+                dialog.IsOpen = true;
             }
             else
             {
@@ -2559,7 +2815,22 @@ namespace EnsureRisk
                 }
             }
         }
-        
+
+        private void ReopenDiagramDialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            try
+            {
+                if (Equals(eventArgs.Parameter, true))
+                {
+                    ReOpenDiagram(DiagramID);
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
         public void ReOpenDiagram(decimal DiagramID)
         {
             try
@@ -2612,11 +2883,9 @@ namespace EnsureRisk
                     }
                     TheCurrentLayout.EnterWorking();
                 }
-                IS_REOPEN_DIAGRAM = false;
             }
             catch (Exception ex)
             {
-                IS_REOPEN_DIAGRAM = false;
                 MostrarErrorDialog(ex.Message);
             }
         }
@@ -2751,8 +3020,6 @@ namespace EnsureRisk
                 TheCurrentLayout.ScrollGridPaint.ScrollToRightEnd();
                 TheCurrentLayout.ScrollGridPaint.ScrollToVerticalOffset(TheCurrentLayout.MainLine.Points[1].Y - 200);
 
-                //TheCurrentLayout.BtnUndoneScope.Visibility = Visibility.Collapsed;
-
                 CrossRiskRightTab(TheCurrentLayout.Ds);
                 CrossCMRightTab(TheCurrentLayout.Ds);
                 OnResponse();
@@ -2792,12 +3059,10 @@ namespace EnsureRisk
                     DVRisk_Tree[gridDiagramList.dgTreeDiagrams.SelectedIndex].Delete();
 
                     SaveData(DsMain, true);
-                    IS_DELETING_DIAGRAM = false;
                 }
             }
             catch (Exception ex)
             {
-                IS_DELETING_DIAGRAM = false;
                 MostrarErrorDialog(ex.Message);
             }
         }
@@ -2876,18 +3141,9 @@ namespace EnsureRisk
                     }
                     //DgRiskDamages.ItemsSource = DvRiskDamages;
                     CalculateProbability(RiskRow);
-                    if (TheCurrentLayout.Line_Selected.IsCM)
-                    {
-                        RiskNameList = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].AsEnumerable()
-                                            .Where(r => r.Field<bool>(DT_Risk.IS_CM) == true)
-                                            .Select(r => r.Field<string>(DT_Risk.NAMESHORT)).Distinct();
-                    }
-                    else
-                    {
-                        RiskNameList = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].AsEnumerable()
-                                            .Where(r => r.Field<bool>(DT_Risk.IS_CM) == false)
-                                            .Select(r => r.Field<string>(DT_Risk.NAMESHORT)).Distinct();
-                    }                    
+                    RiskNameList = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].AsEnumerable()
+                                        .Where(r => r.RowState != DataRowState.Deleted && r.Field<bool>(DT_Risk.IS_CM) == TheCurrentLayout.Line_Selected.IsCM)
+                                        .Select(r => r.Field<string>(DT_Risk.NAMESHORT)).Distinct();
                 }
             }
         }
@@ -2913,50 +3169,6 @@ namespace EnsureRisk
             }
             catch (Exception ex)
             {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-        
-        private void TabDelete_RISK_WBS_Row(DataRow fila)
-        {
-            try
-            {
-                if (TheCurrentLayout != null && TheCurrentLayout.Line_Selected != null)
-                {
-                    foreach (DataRow itemC in TheCurrentLayout.Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
-                    {
-                        itemC.Delete();
-                    }
-
-                    //WBSOperations.SetDefaultWBSPrimary(fila, TheCurrentLayout.Ds, TheCurrentLayout.Line_Selected.ID);
-                    WBSOperations.SetAsPrimaryWhoDelete(fila, TheCurrentLayout.Ds, LoginUser, TheCurrentLayout.Line_Selected.ID, DsWBS);
-                    foreach (DataRow descendant in WBSOperations.MyWBSDescendants(DsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(fila[DT_RISK_WBS.ID_WBS]), DsWBS.Tables[DT_WBS.TABLE_NAME]))
-                    {
-                        if (TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { TheCurrentLayout.Line_Selected.ID, descendant[DT_WBS.ID_WBS] }))
-                        {
-                            TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { TheCurrentLayout.Line_Selected.ID, descendant[DT_WBS.ID_WBS] }).Delete();
-                        }
-                    }
-                    fila.Delete();
-                    foreach (DataRow itemWBS in TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + TheCurrentLayout.Line_Selected.ID))
-                    {
-                        if (WBSOperations.IsRiskWBSLow(itemWBS, DsWBS, TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
-                        {
-                            WBSOperations.TabAddWBS_LINE_Damage(itemWBS, TheCurrentLayout.Line_Selected.ID, false, TheCurrentLayout.Ds);
-                        }
-                        else
-                        {//TENGO QUE BORRAR EL DAMAGE_WBS_RISK, PUES YA NO ES LOWLEVEL
-                            WBSOperations.TabDeleteWBS_LINE_Damage(itemWBS, TheCurrentLayout.Line_Selected.ID, false, TheCurrentLayout.Ds);
-                        }
-                    }
-                    CalculateProbability(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
-                    RefreshRiskDamageValues(TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(TheCurrentLayout.Line_Selected.ID));
-                    IS_DELETING_Risk_WBS_ROW = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                IS_DELETING_Risk_WBS_ROW = false;
                 MostrarErrorDialog(ex.Message);
             }
         }
@@ -2996,46 +3208,16 @@ namespace EnsureRisk
                         }
                     }
                     fila.Delete();
-                    IS_DELETING_RISK_ROLE_ROW = false;
                 }
             }
             catch (Exception ex)
             {
-                IS_DELETING_RISK_ROLE_ROW = false;
                 MostrarErrorDialog(ex.Message);
             }
         }
 
         #endregion
 
-        /// <summary>
-        /// Delete a line as Risk
-        /// </summary>
-        private void DeleteRisk(RiskPolyLine line)
-        {
-            try
-            {
-                TreeOperation.DeleteLine(line, TheCurrentLayout.Ds);
-            }
-            catch (Exception ex)
-            {
-                IS_DELETING_RISK = false;
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        private void LoadDataAfterDeleRisk()
-        {
-            TheCurrentLayout.DropLines();
-            TheCurrentLayout.DropRectangles();
-            TheCurrentLayout.LoadLines();
-            TheCurrentLayout.LoadRectangles();
-            TheCurrentLayout.DrawNumbers();
-            TheCurrentLayout.SetLinesThickness();
-            CrossRiskRightTab(TheCurrentLayout.Ds);
-            CrossCMRightTab(TheCurrentLayout.Ds);
-            IS_DELETING_RISK = false;
-        }
 
         /// <summary>
         /// Code executed after Enable/Disable risk
@@ -3051,38 +3233,7 @@ namespace EnsureRisk
         }
 
         #endregion
-
-        #region GroupCounterMeasure_Menu        
-
-        private void DeletingCM_Group()
-        {
-            try
-            {
-                foreach (RiskPolyLine cm in TheCurrentLayout.CMGroupSelected)
-                {
-                    if (TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains(cm.ID))
-                    {
-                        TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(cm.ID).Delete();
-                    }
-                }
-                TheCurrentLayout.ResetGroupCMSelection();
-                TheCurrentLayout.DropLines();
-                TheCurrentLayout.DropRectangles();
-                TheCurrentLayout.LoadLines();
-                TheCurrentLayout.LoadRectangles();
-                TheCurrentLayout.DrawNumbers();
-                //TextProbabilityChange(TheCurrentLayout.MainLine);
-                TheCurrentLayout.SetLinesThickness();
-                IS_DELETING_GROUP_CM = false;
-            }
-            catch (Exception ex)
-            {
-                IS_DELETING_GROUP_CM = false;
-                MostrarErrorDialog(ex.Message);
-            }
-        }       
-        #endregion
-
+        
         #region Functions
         #region CrossTab
 
@@ -3583,82 +3734,10 @@ namespace EnsureRisk
 
         #region GridGroupEvents
 
-        private void Delete_Risk_From_Group_Tab(decimal idRiskToDeleteFromGroup)
-        {        
-            try
-            {
-                if (TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains(idRiskToDeleteFromGroup))
-                {
-                    DataRow riskRow = TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRiskToDeleteFromGroup);
-                    riskRow[DT_Risk.GROUPE_NAME] = "None";
-                    riskRow[DT_Risk.ID_GROUPE] = DBNull.Value;
-                    TheCurrentLayout.LinesList.Find(x => x.ID == idRiskToDeleteFromGroup).Group = new LineGroup() { IdGroup = 0, GroupName = "None"};
-                }
-                UpdateGroupTab(TheCurrentLayout.Ds);
-                IS_DELETING_RISK_FROM_GROUP_TAB = false;
-            }
-            catch (Exception ex)
-            {
-                IS_DELETING_RISK_FROM_GROUP_TAB = false;
-                MostrarErrorDialog(ex.Message);
-            }
-        }
         
         #endregion
 
         #region TreeViewGroupEvents
-        private void RemoveGroupFromDatabase(decimal IDGroupe)
-        {
-            try
-            {
-                foreach (DataRow lineRow in TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_GROUPE + " = " + IDGroupe))
-                {
-                    if (lineRow.RowState != DataRowState.Deleted)
-                    {
-                        lineRow[DT_Risk.ID_GROUPE] = DBNull.Value;
-                        lineRow[DT_Risk.GROUPE_NAME] = "None";
-                    }
-                }
-                foreach (var line in TheCurrentLayout.LinesList.FindAll(x => x.Group.IdGroup == IDGroupe))
-                {
-                    line.Group.IdGroup = 0;
-                    line.Group.GroupName = "None";
-                }
-                if (TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Contains(IDGroupe))
-                {
-                    TheCurrentLayout.Ds.Tables[DT_Groupe.TABLE_NAME].Rows.Find(IDGroupe).Delete();
-                }
-                UpdateGroupTab(TheCurrentLayout.Ds);
-                IS_REMOVING_GROUP_FROM_DATABASE = false;
-            }
-            catch (Exception ex)
-            {
-                IS_REMOVING_GROUP_FROM_DATABASE = false;
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        private void ClearGroup(decimal IdGroup)
-        {
-            try
-            {
-                foreach (DataRow line in TheCurrentLayout.Ds.Tables[DT_Risk.TABLE_NAME].Select(DT_Risk.ID_GROUPE + " = " + IdGroup + " and "
-                                                                               + DT_Risk.ID_DIAGRAM + " = " + TheCurrentLayout.ID_Diagram))
-                {
-                    line[DT_Risk.GROUPE_NAME] = "None";
-                    line[DT_Risk.ID_GROUPE] = DBNull.Value;
-                    TheCurrentLayout.LinesList.Find(x => x.ID == (decimal)line[DT_Risk.ID]).Group.IdGroup = 0;
-                    TheCurrentLayout.LinesList.Find(x => x.ID == (decimal)line[DT_Risk.ID]).Group.GroupName = "None";
-                }
-                UpdateGroupTab(TheCurrentLayout.Ds);
-                IS_CLEANING_GROUP = false;
-            }
-            catch (Exception ex)
-            {
-                IS_CLEANING_GROUP = false;
-                MostrarErrorDialog(ex.Message);
-            }
-        }
         
         /// <summary>
         /// True if the user has permission on every risk else false
@@ -3871,6 +3950,10 @@ namespace EnsureRisk
 
         public bool ExistRole(decimal number)
         {
+            if (string.IsNullOrWhiteSpace(LoginUser))
+            {
+                return false;
+            }
             decimal num = 0;
             num = AccessList.Find(bk => bk == number);
             return num != 0;
@@ -3983,13 +4066,11 @@ namespace EnsureRisk
                         {
                             MostrarInfoDialog("Data saved successfully!!!");
                         }
-                        IS_SAVING_DATA = false;
                     }
                 }
             }
             catch (Exception ex)
             {
-                IS_SAVING_DATA = false;
                 MostrarErrorDialog(ex.Message);
             }
         }
@@ -4352,35 +4433,6 @@ namespace EnsureRisk
             }
         }
 
-        /// <summary>
-        /// Delete the selected WBS
-        /// </summary>
-        /// <param name="drWBS">The Selected Row of the WBS table to delete </param>
-        private void DeleteWBS(DataRow drWBS)
-        {
-            try
-            {
-                WBSOperations.DeleteMyWBSChildren(WBSOperations.MyWBSChildren(drWBS, DsWBS.Tables[DT_WBS.TABLE_NAME]), DsWBS.Tables[DT_WBS.TABLE_NAME]);
-                drWBS.Delete();
-                if (DsWBS.HasChanges())
-                {
-                    using (ServiceWBS.WebServiceWBS ws = new ServiceWBS.WebServiceWBS())
-                    {
-                        DataSet temp = DsWBS.GetChanges();
-                        temp = ws.SaveWBS(temp);
-                        DsWBS.Merge(temp);
-                        DsWBS.AcceptChanges();
-                        RefreshWBS();
-                    }
-                }
-                IS_DELETING_WBS = false;
-            }
-            catch (Exception ex)
-            {
-                IS_DELETING_WBS = false;
-                MostrarErrorDialog(ex.Message);
-            }
-        }
 
         #endregion
 
@@ -4403,140 +4455,7 @@ namespace EnsureRisk
                 MostrarErrorDialog(ex.Message);
             }
         }
-
-        private void YesNoDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
-        {
-            try
-            {
-                if (!Equals(eventArgs.Parameter, true))
-                {
-                    if (IS_SAVING_DATA)
-                    {
-                        if (TheCurrentLayout != null)
-                        {
-                            TheCurrentLayout.Ds.RejectChanges();
-                        }
-                    }
-                    if (IS_REPEATING_NAME)
-                    {
-                        IS_REPEATING_NAME = false;
-                        Selected_DataGrid.CancelEdit(DataGridEditingUnit.Cell);
-                    }
-                    if (IS_REOPEN_DIAGRAM)
-                    {
-                        IS_REOPEN_DIAGRAM = false;
-                    }
-                    if (IS_DELETING_DIAGRAM)
-                    {
-                        IS_DELETING_DIAGRAM = false;
-                    }
-                    if (IS_DELETING_RISK)
-                    {
-                        IS_DELETING_RISK = false;
-                    }
-                    if (IS_DELETING_GROUP_CM)
-                    {
-                        IS_DELETING_GROUP_CM = false;
-                    }
-                    if (IS_REMOVING_GROUP_FROM_DATABASE)
-                    {
-                        IS_REMOVING_GROUP_FROM_DATABASE = false;
-                    }
-                    if (IS_CLEANING_GROUP)
-                    {
-                        IS_CLEANING_GROUP = false;
-                    }
-                    if (IS_DELETING_RISK_FROM_GROUP_TAB)
-                    {
-                        IS_DELETING_RISK_FROM_GROUP_TAB = false;
-                    }
-                    if (IS_SAVING_DATA)
-                    {
-                        IS_SAVING_DATA = false;
-                    }
-                    if (IS_DELETING_WBS)
-                    {
-                        IS_DELETING_WBS = false;
-                    }
-                    if (IS_REPEATING_NAME)
-                    {
-                        IS_REPEATING_NAME = false;
-                    }
-                    if (IS_DELETING_RISK_ROLE_ROW)
-                    {
-                        IS_DELETING_RISK_ROLE_ROW = false;
-                    }
-                    if (IS_DELETING_Risk_WBS_ROW)
-                    {
-                        IS_DELETING_Risk_WBS_ROW = false;
-                    }
-
-                    return;
-                }
-                if (Equals(eventArgs.Parameter, true))
-                {
-                    if (IS_REOPEN_DIAGRAM)
-                    {
-                        ReOpenDiagram(DiagramID);
-                    }
-                    if (IS_DELETING_DIAGRAM)
-                    {
-                        DeleteDiagram();
-                    }
-                    if (IS_DELETING_RISK)
-                    {
-                        DeleteRisk(TheCurrentLayout.Line_Selected);
-                        LoadDataAfterDeleRisk();
-                    }
-                    if (IS_DELETING_GROUP_CM)
-                    {
-                        DeletingCM_Group();
-                    }
-                    if (IS_REMOVING_GROUP_FROM_DATABASE)
-                    {
-                        RemoveGroupFromDatabase(ID_Groupe);
-                    }
-                    if (IS_CLEANING_GROUP)
-                    {
-                        ClearGroup(ID_Groupe);
-                    }
-                    if (IS_DELETING_RISK_FROM_GROUP_TAB)
-                    {
-                        Delete_Risk_From_Group_Tab(IdRiskToDeleteFromGroup);
-                    }
-                    if (IS_SAVING_DATA)
-                    {
-                        SaveData(TheCurrentLayout.Ds, true);
-                    }
-                    if (IS_DELETING_WBS)
-                    {
-                        DeleteWBS(DrWBStoDelete);
-                    }
-                    if (IS_REPEATING_NAME)
-                    {
-                        IS_REPEATING_NAME = false;
-                    }
-                    if (IS_DELETING_RISK_ROLE_ROW)
-                    {
-                        Delete_Role(Selected_RiskRoleRow);
-                    }
-                    if (IS_DELETING_Risk_WBS_ROW)
-                    {
-                        TabDelete_RISK_WBS_Row(Selected_Risk_WBS_Row);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
-        private void LoginDialog_DialogOpened(object sender, MaterialDesignThemes.Wpf.DialogOpenedEventArgs eventArgs)
-        {
-            loginContent.TextUser.Focus();
-        }
-
+        
         private void LoginDialog_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
         {
             try
@@ -4555,10 +4474,9 @@ namespace EnsureRisk
                     if (IS_LOGIN)
                     {
 
-                        if (loginContent.TextUser.Text != "")
+                        if (LoginContent.TextUser.Text != "")
                         {
                             Autenticar();
-
                         }
                         else
                         {
@@ -4566,12 +4484,12 @@ namespace EnsureRisk
                             LoginMenuItem.Header = StringResources.LoginMenu;
                             Title = "Ensure Risk";
                             LoginUser = "";
-                            MostrarErrorDialog("Login can't be empty");
                             ValidateAccess();
+                            RefreshWBS();
+                            MostrarErrorDialog("Login can't be empty");
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -4588,7 +4506,7 @@ namespace EnsureRisk
                     {
                         string Mensaje = ".";
                         string Sesion = ".";
-                        tempObtenerAcceso.Merge(ws.AuthenticateUsers(loginContent.TextUser.Text, General.Encrypt(loginContent.TextPasword.Password), ref Mensaje, Environment.UserName,
+                        tempObtenerAcceso.Merge(ws.AuthenticateUsers(LoginContent.TextUser.Text, General.Encrypt(LoginContent.TextPasword.Password), ref Mensaje, Environment.UserName,
                             Environment.UserDomainName + "\\" + Environment.MachineName, ref Sesion));
                     }
                 }
@@ -4607,11 +4525,11 @@ namespace EnsureRisk
 
         private void Autenticar()
         {
-            if (loginContent.TextUser.Text != "")
+            if (LoginContent.TextUser.Text != "")
             {
                 General gen = new General();
                 AccessList = new List<decimal>();
-                gen.Usser = loginContent.TextUser.Text;
+                gen.Usser = LoginContent.TextUser.Text;
                 using (UserDataSet ds = new UserDataSet())
                 {
                     ds.Merge(GetAccess());
@@ -4622,10 +4540,10 @@ namespace EnsureRisk
                         {
                             AccessList.Add((decimal)item[DT_User_Operation.ID_OPERATION_COLUMN]);
                         }
-                        Title = "Ensure Risk | " + StringResources.CONNECTED_STRING + " " + loginContent.TextUser.Text;
+                        Title = "Ensure Risk | " + StringResources.CONNECTED_STRING + " " + LoginContent.TextUser.Text;
                         LoginMenuItem.Header = StringResources.LOGOFF;
                         Flag_login = true;
-                        loginContent.TextPasword.Clear();
+                        LoginContent.TextPasword.Clear();
                         ValidateAccess();
                         RefreshWBS();
                         foreach (var item in OpenedDocuments)
@@ -4640,9 +4558,10 @@ namespace EnsureRisk
                         LoginMenuItem.Header = StringResources.LoginMenu;
                         Title = "Ensure Risk";
                         LoginUser = "";
-                        loginContent.TextPasword.Clear();
-                        MostrarErrorDialog(StringResources.WRONG_PASSWORD);
+                        LoginContent.TextPasword.Clear();
                         ValidateAccess();
+                        MostrarErrorDialog(StringResources.WRONG_PASSWORD);
+
                     }
                 }
             }
@@ -4662,7 +4581,17 @@ namespace EnsureRisk
                     {
                         IS_LOGIN = true;
                         CloseOpenedDiagrams();
-                        LoginDialog.IsOpen = true;
+
+                        MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost();
+                        LoginContent = new DialogContent.LoginDialogContent();
+                        dialog.DialogContent = LoginContent;
+                        dialog.DialogClosing += LoginDialog_DialogClosing;
+                        Grid.SetRowSpan(dialog, 3);
+                        Supergrid.Children.Add(dialog);
+                        dialog.IsOpen = true;
+                        LoginContent.TextUser.Focus();
+
+                        //LoginDialog.IsOpen = true;
                     }
                     catch (Exception ex)
                     {

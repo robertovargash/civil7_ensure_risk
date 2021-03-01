@@ -168,8 +168,6 @@ namespace EnsureRisk.Windows
                 //DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
                 DvRiskWBS.RowFilter = DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID];
 
-
-
                 DvTopRisk = Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].DefaultView;
                 dgTopRisk.ItemsSource = DvTopRisk;
 
@@ -582,7 +580,7 @@ namespace EnsureRisk.Windows
                         }
                         if (Operation == General.UPDATE)
                         {
-                            foreach (var childLine in ChildrenLines)
+                            foreach (var childLine in TreeOperation.GetOnlyMyChildrenWithCM(RiskSelected))
                             {
                                 if (!(Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { childLine.ID, itemWBS[DT_WBS.ID_WBS] })))
                                 {

@@ -372,6 +372,36 @@ namespace EnsureBusinesss
         //TODO: 7-EXPLICAR AQUI COMO FUNCIONA EL AJUSTE DE PROBABILIDAD, PUES AQUI SE MEZCLAN PROBABILIDAD CON RISK REDUCTION DE LAS CM
         public static decimal RiskWBSValidations(DataRow RiskRow, DataSet Ds, string LoginUser, DataSet DsWBS, bool hasAccess, bool isCM)
         {
+            decimal probability = RiskRecalculateProbability(RiskRow, Ds, DsWBS, isCM);
+            foreach (DataRow riskWBS in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " and "
+                + DT_RISK_WBS.USERNAME + " = '" + LoginUser + "'"))
+            {
+                riskWBS[DT_RISK_WBS.CanEditPrimary] = hasAccess;
+                if (IsRiskWBSLow(riskWBS, DsWBS, Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
+                {
+                    //TODO: 10-EXPLICAR LA IMPORTANCIA DE LAS COLUMNAS TEMPORALES DE CONTROL BOOL PARA BINDING 
+                    //"IsProbabReadOnly", "CanDelete" Y "CanEditPrimary" DENTRO DE LA TABLA Risk_WBS
+                    riskWBS[DT_RISK_WBS.IsProbabReadOnly] = true;
+                }
+                foreach (DataRow descendant in MyWBSDescendants(riskWBS, DsWBS.Tables[DT_WBS.TABLE_NAME]))
+                {
+                    if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { RiskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] }))
+                    {
+                        DataRow drRiskWBStoSet = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { RiskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] });
+
+                        if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { RiskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] }))
+                        {
+                            drRiskWBStoSet[DT_RISK_WBS.CanDelete] = !Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { RiskRow[DT_Risk.IDRISK_FATHER], descendant[DT_WBS.ID_WBS] });
+                            drRiskWBStoSet[DT_RISK_WBS.CanEditPrimary] = hasAccess;
+                        }
+                    }
+                }
+            }
+            return probability;
+        }
+
+        public static decimal RiskRecalculateProbability(DataRow RiskRow, DataSet Ds, DataSet DsWBS, bool isCM)
+        {
             decimal probability = 0;
             List<decimal> Probabilities = new List<decimal>();
             foreach (DataRow rowRiskWbs in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
@@ -411,31 +441,6 @@ namespace EnsureBusinesss
             else
             {
                 probability = isCM ? 0 : 100;
-            }
-
-            foreach (DataRow riskWBS in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " and "
-                + DT_RISK_WBS.USERNAME + " = '" + LoginUser + "'"))
-            {
-                riskWBS[DT_RISK_WBS.CanEditPrimary] = hasAccess;
-                if (IsRiskWBSLow(riskWBS, DsWBS, Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
-                {
-                    //TODO: 10-EXPLICAR LA IMPORTANCIA DE LAS COLUMNAS TEMPORALES DE CONTROL BOOL PARA BINDING 
-                    //"IsProbabReadOnly", "CanDelete" Y "CanEditPrimary" DENTRO DE LA TABLA Risk_WBS
-                    riskWBS[DT_RISK_WBS.IsProbabReadOnly] = true;
-                }
-                foreach (DataRow descendant in MyWBSDescendants(riskWBS, DsWBS.Tables[DT_WBS.TABLE_NAME]))
-                {
-                    if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { RiskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] }))
-                    {
-                        DataRow drRiskWBStoSet = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { RiskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] });
-
-                        if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { RiskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] }))
-                        {
-                            drRiskWBStoSet[DT_RISK_WBS.CanDelete] = true;
-                            drRiskWBStoSet[DT_RISK_WBS.CanEditPrimary] = hasAccess;
-                        }
-                    }
-                }
             }
             return probability;
         }

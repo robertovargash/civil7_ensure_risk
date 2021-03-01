@@ -150,6 +150,9 @@
     <Compile Include="Controllers\Export\ExportRiskTree.cs" />
     <Compile Include="Controllers\Export\Trader\DataSetTrader.cs" />
     <Compile Include="Controllers\Export\Trader\RiskTreeDataSetTrader.cs" />
+    <Compile Include="DialogContent\DeleteWBSConfirm.xaml.cs">
+      <DependentUpon>DeleteWBSConfirm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DialogContent\ErrorStackPanel.xaml.cs">
       <DependentUpon>ErrorStackPanel.xaml</DependentUpon>
     </Compile>
@@ -402,6 +405,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Classess\PopWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DialogContent\DeleteWBSConfirm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -295,20 +295,43 @@ namespace EnsureRisk.Classess
         {
             try
             {
+                string message = "";
                 if (Line_Selected.Children.Count > 0)
                 {
-                    ((MainWindow)MyWindow).MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Line_Selected.ShortName + "] and all its children?");
-                    ((MainWindow)MyWindow).IS_DELETING_RISK = true;
+                    message = StringResources.DELETE_MESSAGE + " [" + Line_Selected.ShortName + "] and all its children?";
                 }
                 else
                 {
-                    ((MainWindow)MyWindow).MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Line_Selected.ShortName + "] ?");
-                    ((MainWindow)MyWindow).IS_DELETING_RISK = true;
+                    message = StringResources.DELETE_MESSAGE + " [" + Line_Selected.ShortName + "] ?";
                 }
+                MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost();
+                DialogContent.YesNoDialogContent cont = new DialogContent.YesNoDialogContent();
+                cont.TextYesNoMessage.Text = message;
+                dialog.DialogContent = cont;
+                dialog.DialogClosing += DeleteRiskDialogClosing;
+                Grid.SetRowSpan(dialog, 3);
+                MyWindow.Supergrid.Children.Add(dialog);
+                dialog.IsOpen = true;
             }
             catch (Exception ex)
             {
                 MostrarDialog(ex.Message);
+            }
+        }
+
+        private void DeleteRiskDialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            if (Equals(eventArgs.Parameter, true))
+            {
+                TreeOperation.DeleteLine(Line_Selected, Ds);
+                DropLines();
+                DropRectangles();
+                LoadLines();
+                LoadRectangles();
+                DrawNumbers();
+                SetLinesThickness();
+                MyWindow.CrossRiskRightTab(Ds);
+                MyWindow.CrossCMRightTab(Ds);
             }
         }
         #endregion
@@ -1750,8 +1773,43 @@ namespace EnsureRisk.Classess
             {
                 if (CMGroupSelected.Count > 0)
                 {
-                    MyWindow.MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " selected countermeasure?");
-                    MyWindow.IS_DELETING_GROUP_CM = true;
+                    
+                    MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost();
+                    DialogContent.YesNoDialogContent cont = new DialogContent.YesNoDialogContent();
+                    cont.TextYesNoMessage.Text = StringResources.DELETE_MESSAGE + " selected countermeasure?";
+                    dialog.DialogContent = cont;
+                    dialog.DialogClosing += DeleteGroupCMDialogClosing; ;
+                    Grid.SetRowSpan(dialog, 3);
+                    MyWindow.Supergrid.Children.Add(dialog);
+                    dialog.IsOpen = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarDialog(ex.Message);
+            }
+        }
+
+        private void DeleteGroupCMDialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            try
+            {
+                if (Equals(eventArgs.Parameter, true))
+                {
+                    foreach (RiskPolyLine cm in CMGroupSelected)
+                    {
+                        if (Ds.Tables[DT_Risk.TABLE_NAME].Rows.Contains(cm.ID))
+                        {
+                            Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(cm.ID).Delete();
+                        }
+                    }
+                    ResetGroupCMSelection();
+                    DropLines();
+                    DropRectangles();
+                    LoadLines();
+                    LoadRectangles();
+                    DrawNumbers();
+                    SetLinesThickness();
                 }
             }
             catch (Exception ex)
@@ -2235,12 +2293,7 @@ namespace EnsureRisk.Classess
             if (GroupingGroup_MixedCommand == _defaultGroupingGroup_MixedCommand)
                 BindingOperations.ClearBinding(this, GroupingGroup_MixedCommandProperty);
         }
-
-        public void MostrarYesNo(string text)
-        {
-            ((MainWindow)MyWindow).MostrarDialogYesNo(text);
-        }
-
+        
         public void MostrarPopWindow(Point pointToShow, string lineName, string probability, string value, string acumDamage, string acumValue, string EL, string totalAcumDamage)
         {
             MyPopWindow.Visibility = Visibility.Visible;

@@ -48,7 +48,7 @@
             </TextBox.Text>
         </TextBox>
         <CheckBox x:Name="chkIsManager" Content="Is Manager?" Visibility="Collapsed" Margin="480,69,26,281" IsChecked="True" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
-        <Grid Background="#FFE5E5E5" Height="202" Margin="11,156,0,0" VerticalAlignment="Top">
+        <Grid Height="202" Margin="11,156,0,0" VerticalAlignment="Top">
             <Button Name="BtnAdd"  HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="47" Click="BtnAdd_Click" md:ShadowAssist.ShadowDepth="Depth5">
                 <md:PackIcon Kind="Plus"/>
             </Button>

@@ -177,25 +177,10 @@
         <Grid Grid.Row="2">
             <ProgressBar DataContext="{Binding  RelativeSource={RelativeSource AncestorType={x:Type Window}}}" x:Name="TheProgress" IsIndeterminate="true" Visibility="{Binding IsImporting, Converter={StaticResource BoolToVisConverter},UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
-        <md:DialogHost IsOpen="False" x:Name="ErrorDialogMessage" Grid.RowSpan="3" >
-            <md:DialogHost.DialogContent >
-                <dialogs:ErrorStackPanel x:Name="ErrorContent"/>
-            </md:DialogHost.DialogContent>
-        </md:DialogHost>
-        <md:DialogHost IsOpen="False" x:Name="YesNoDialog" Grid.RowSpan="3" DialogClosing="YesNoDialog_DialogClosing">
-            <md:DialogHost.DialogContent>
-                <dialogs:YesNoDialogContent x:Name="yesNoContent"/>
-            </md:DialogHost.DialogContent>
-        </md:DialogHost>
-        <md:DialogHost IsOpen="False" x:Name="InformationMessageDialog" Grid.RowSpan="3">
-            <md:DialogHost.DialogContent>
-                <dialogs:InformationDialogContent x:Name="infoContent"/>
-            </md:DialogHost.DialogContent>
-        </md:DialogHost>
-        <md:DialogHost IsOpen="False" Grid.RowSpan="3" x:Name="LoginDialog" DialogOpened="LoginDialog_DialogOpened" DialogClosing="LoginDialog_DialogClosing">
+        <!--<md:DialogHost IsOpen="False" Grid.RowSpan="3" x:Name="LoginDialog" DialogOpened="LoginDialog_DialogOpened" DialogClosing="LoginDialog_DialogClosing">
             <md:DialogHost.DialogContent >
                 <dialogs:LoginDialogContent x:Name="loginContent"/>
             </md:DialogHost.DialogContent>
-        </md:DialogHost>
+        </md:DialogHost>-->
     </Grid>
 </Window>
