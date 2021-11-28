@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\Rob\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\
+C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRisk\obj\Debug\
 EnsureRisk
 none
 false
 DEBUG;TRACE
-C:\Users\Rob\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\App.xaml
+C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRisk\App.xaml
 60-653242062
 7-1996142630
-100-29096545
-37-626345208
+99-1876694825
+371745268915
 Classess\MiniMapControl.xaml;Classess\MyLayoutDocumentt.xaml;Classess\MyTreeViewItem.xaml;Classess\PopCMWindow.xaml;Classess\PopWindow.xaml;DialogContent\DeleteWBSConfirm.xaml;DialogContent\ErrorStackPanel.xaml;DialogContent\InformationDialogContent.xaml;DialogContent\LoginDialogContent.xaml;DialogContent\YesNoDialogContent.xaml;Dictionaries\AutoCompleteTextBox.xaml;Dictionaries\Commands.xaml;Dictionaries\Menus.xaml;Dictionaries\Styless.xaml;MainWindowElements\GridCMCrossList.xaml;MainWindowElements\GridDiagramList.xaml;MainWindowElements\GridRiskCrossList.xaml;MainWindowElements\GridWBS.xaml;MainWindow.xaml;Dictionaries\MenuDictionary.xaml;MainWindowElements\MyBorderGroup.xaml;MainWindowElements\MyExpanderGroupItemm.xaml;Pages\SetConnectionPage.xaml;Pages\ThemePage.xaml;MainWindowElements\PropertyTabContent.xaml;Themes\Generic.xaml;Windows\Damages\WindowSelectDamageDiagram.xaml;Windows\LoginWindow.xaml;Windows\Logs\WindowLogs.xaml;Windows\Settings\SetConnectionWindow.xaml;Windows\Settings\GhostWindow.xaml;Windows\Window1.xaml;Windows\CMs\WindowCMGroup.xaml;Windows\Risks\WindowDefaultRiskList.xaml;Windows\Group\WindowGroupe.xaml;Windows\Excel\WindowHeaderClasification.xaml;Windows\Messages\WindowMessageYesNo.xaml;Windows\Excel\WindowMultiRadio.xaml;Windows\Settings\WindowOpening.xaml;Windows\Settings\WindowOption.xaml;Windows\Project\WindowProject.xaml;Windows\Project\WindowProjectList.xaml;Windows\Group\WindowRenameGroup.xaml;Windows\Risks\WindowRisk.xaml;Windows\Roles\WindowRole.xaml;Windows\Roles\WindowRoleList.xaml;Windows\Window2.xaml;Windows\Messages\WindowCopyPasteMoveConfirm.xaml;Windows\WindowSaveAs.xaml;Windows\WindowSelection.xaml;Windows\WindowSingleSelection.xaml;Windows\WindowText.xaml;Windows\Damages\WindowTopRisk.xaml;Windows\Damages\WindowTopRiskList.xaml;Windows\WindowTreeRisk.xaml;Windows\User\WindowUser.xaml;Windows\User\WindowUserList.xaml;Windows\Wbs\WindowWBS.xaml;Windows\Wbs\WindowWBSChild.xaml;Windows\Wbs\WindowWBSList.xaml;
 
-True
+False
 
