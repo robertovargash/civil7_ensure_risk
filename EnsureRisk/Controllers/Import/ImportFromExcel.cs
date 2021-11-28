@@ -9,6 +9,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EnsureRisk;
 
 namespace EnsureRisk.Controllers.Import
 {
@@ -73,7 +74,7 @@ namespace EnsureRisk.Controllers.Import
                 drDiagram[DT_Diagram.ID_DIAGRAM] = 0000;
                 drDiagram[DT_Diagram.ID_PROJECT] = IdProject;
                 dsImporting.Tables[DT_Diagram.TABLE_NAME].Rows.Add(drDiagram);
-                IEnumerable<HeaderExcelContent> countDamages = MyList.Where(x => x.IdClasification == 10);//Damages has 10 as ID
+                IEnumerable<HeaderExcelContent> countDamages = MyList.Where(x => x.IdClasification == (int)EnumExcelValue.RiskDamage);//Damages has 10 as ID
                 ClasifyAndCreateDamages(dsImporting, drDiagram, countDamages);
                 //Busco el diagrama que acabo de insertar, para agregarle el riesgo padre, para agregarle los riesgos y sus dannos
                 DataRow theDiagram = dsImporting.Tables[DT_Diagram.TABLE_NAME].Rows.Find(0000);
@@ -90,7 +91,9 @@ namespace EnsureRisk.Controllers.Import
 
                 //Recorrer el Excel solo para llenar los riesgos
                 HeaderExcelContent xIdRisk = FillDataRisk(dsImporting, IsCustom, dtExcel, MyList, countDamages, theDiagram, drRisk, DsWBS);
+                FillWBSFromExcel(dsImporting, dtExcel, MyList, DsWBS);
                 SetRisk_RiskFatherRelation(dsImporting, IsCustom, dtExcel, MyList, xIdRisk);
+                SettingWBSInRisks(dsImporting, DsWBS);
                 FillCM_Data(dsImporting, keyPhrase, dtExcel, MyList, countDamages, theDiagram, xIdRisk, DsWBS, isMarkedAll);
                 WBSOperations.AddWBSTopToDiagram(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM], DsWBS);
                 TreeOperation.SetDiagramImportedPositions(dsImporting, (decimal)drDiagram[DT_Diagram.ID_DIAGRAM]);
@@ -109,6 +112,7 @@ namespace EnsureRisk.Controllers.Import
             }
         }
 
+      
         /// <summary>
         /// Classify  the Damages in the file, validating if the damage exist or not in the global list of Damages
         /// </summary>
@@ -265,15 +269,113 @@ namespace EnsureRisk.Controllers.Import
             }
         }
 
+        private decimal IDWBSByLevelAndName(DataSet DsWBS, string wbsToEvaluate)
+        {
+            decimal idToReturn = 0;
+            foreach (DataRow rowWBS in DsWBS.Tables[DT_WBS.TABLE_NAME].Rows)
+            {
+                if (wbsToEvaluate.Trim() == rowWBS[DT_WBS.NIVEL].ToString() + "" + rowWBS[DT_WBS.WBS_NAME].ToString())
+                {
+                    idToReturn = (decimal)rowWBS[DT_WBS.ID_WBS];
+                }
+            }
+            return idToReturn;
+        }
+
+        private void FillWBSFromExcel(DataSet dsImporting, DataTable dtExcel, List<HeaderExcelContent> MyList, DataSet DsWBS)
+        {
+            var xWBS = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.WBSColumn);
+            var xIdRisk = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.IdRisk);
+            for (int rowPosition = 0; rowPosition < dtExcel.Rows.Count; rowPosition++)
+            {
+                //Si la linea en la columna de WBS no esta vacia
+                if (xWBS != null && !string.IsNullOrWhiteSpace(dtExcel.Rows[rowPosition][xWBS.MyContent].ToString()))
+                {
+                    //Buscando WBS que coincida con nivel y nombre
+                    decimal idWBS = IDWBSByLevelAndName(DsWBS, dtExcel.Rows[rowPosition][xWBS.MyContent.ToString()].ToString());
+                    if (idWBS != 0)
+                    {
+                        decimal idRisk = 0;
+                        if (xIdRisk != null && !string.IsNullOrWhiteSpace(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString()))
+                        {
+                            idRisk = General.ConvertStringID_inDecimal(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
+                        }
+                        else
+                        {
+                            idRisk = (decimal)dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].Rows[dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Count - 1][DT_RISK_WBS.ID_RISK];
+                        }
+                        if (!(dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { idRisk, idWBS })))
+                        {
+                            DataRow drRiskWBS = dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
+                            drRiskWBS[DT_RISK_WBS.ID_RISK] = idRisk;
+                            drRiskWBS[DT_RISK_WBS.ID_WBS] = idWBS;
+                            drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = false;
+                            drRiskWBS[DT_RISK_WBS.PROBABILITY] = dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRisk)[DT_Risk.PROBABILITY];
+                            dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(drRiskWBS);
+                        }
+                        foreach (DataRow itemAncestors in WBSOperations.GetAncestors(idWBS, DsWBS.Tables[DT_WBS.TABLE_NAME].Clone(), DsWBS).Rows)
+                        {
+                            if (!(dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { idRisk, itemAncestors[DT_WBS.ID_WBS] })))
+                            {
+                                DataRow drRiskWBS = dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].NewRow();
+                                drRiskWBS[DT_RISK_WBS.ID_RISK] = idRisk;
+                                drRiskWBS[DT_RISK_WBS.ID_WBS] = itemAncestors[DT_WBS.ID_WBS];
+                                if (!(WBSOperations.HasParent((decimal)itemAncestors[DT_WBS.ID_WBS],DsWBS)))//pregunto si es el mas al tope y le doy la llave
+                                {
+                                    drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = true;
+                                }
+                                else
+                                {
+                                    drRiskWBS[DT_RISK_WBS.IS_PRIMARY] = false;
+                                }
+                                drRiskWBS[DT_RISK_WBS.PROBABILITY] = dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Find(idRisk)[DT_Risk.PROBABILITY];
+                                dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Add(drRiskWBS);
+                            }
+                        }
+                    }                   
+                }
+            }
+        }
+
+        private void SettingWBSInRisks(DataSet dsImporting, DataSet DsWBS)
+        {
+            foreach (DataRow riskRow in dsImporting.Tables[DT_Risk.TABLE_NAME].Rows)
+            {
+                DataRow[] riskWBSData = dsImporting.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + riskRow[DT_Risk.ID]);
+                if (!(riskWBSData.Any()))
+                {
+                    SetTopWBSToLine(riskRow, dsImporting, DsWBS);//Se añaden los TopWBS al riesgo mas el damage
+                }
+                else
+                {
+                    foreach (DataRow rowRiskWBS in riskWBSData)
+                    {
+                        if (WBSOperations.IsRiskWBSLow(rowRiskWBS,DsWBS,dsImporting.Tables[DT_RISK_WBS.TABLE_NAME]))
+                        {
+                            foreach (var drRiskDamage in dsImporting.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + riskRow[DT_Risk.ID]))
+                            {
+                                var drRiskWBSDamage = dsImporting.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].NewRow();
+                                drRiskWBSDamage[DT_WBS_RISK_DAMAGE.DAMAGE] = drRiskDamage[DT_Risk_Damages.DAMAGE];
+                                drRiskWBSDamage[DT_WBS_RISK_DAMAGE.ID_DAMAGE] = drRiskDamage[DT_Risk_Damages.ID_DAMAGE];
+                                drRiskWBSDamage[DT_WBS_RISK_DAMAGE.ID_RISK] = riskRow[DT_Risk.ID];
+                                drRiskWBSDamage[DT_WBS_RISK_DAMAGE.ID_WBS] = rowRiskWBS[DT_RISK_WBS.ID_WBS];
+                                drRiskWBSDamage[DT_WBS_RISK_DAMAGE.VALUE] = drRiskDamage[DT_Risk_Damages.VALUE];
+                                drRiskWBSDamage[DT_WBS_RISK_DAMAGE.WBS] = rowRiskWBS[DT_RISK_WBS.WBS];
+                                drRiskWBSDamage[DT_WBS_RISK_DAMAGE.WBS_USER] = rowRiskWBS[DT_RISK_WBS.WBS_USER];
+                                dsImporting.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Add(drRiskWBSDamage);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Load the data of the Datatable created from excel (dtExcel) and creates new risks with these data
         /// </summary>
         /// <param name="dsImporting">The Dataset with all Data</param>
         /// <param name="isCustom">A flag for custom excel file</param>
-        /// <param name="isActiveKeyword">The text inserted by user as No Active </param>
         /// <param name="dtExcel">The data loaded from excel as Datatable</param>
-        /// <param name="whc">The header parameters</param>
         /// <param name="countDamages">The list of Damages</param>
         /// <param name="theDiagram">The data of the diagram created</param>
         /// <param name="drRisk">The Main Risk Data</param>
@@ -282,11 +384,14 @@ namespace EnsureRisk.Controllers.Import
         public HeaderExcelContent FillDataRisk(DataSet dsImporting, bool isCustom, DataTable dtExcel, List<HeaderExcelContent> MyList,
             IEnumerable<HeaderExcelContent> countDamages, DataRow theDiagram, DataRow drRisk, DataSet DsWBS)
         {
-            var xIdRisk = MyList.FindLast(x => x.IdClasification == 1);
-            var xRiskShortName = MyList.FindLast(x => x.IdClasification == 2);
-            var xRiskDetail = MyList.FindLast(x => x.IdClasification == 3);
-            var xRiskEnabled = MyList.FindLast(x => x.IdClasification == 4);
-            var xRiskProb = MyList.FindLast(x => x.IdClasification == 11);
+            //TODO: Pon esa cosa horrorosa aqui o veras
+            var xIdRisk = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.IdRisk);
+            var xRiskShortName = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.RiskShortName);
+            var xRiskDetail = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.RiskComments);
+            var xRiskEnabled = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.RiskEnabled);
+            var xRiskProb = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.RiskProbability);
+            var xWBS = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.WBSColumn);
+
             for (int rowPosition = 0; rowPosition < dtExcel.Rows.Count; rowPosition++)
             {
                 DataRow drRiskN = dsImporting.Tables[DT_Risk.TABLE_NAME].NewRow();
@@ -296,8 +401,7 @@ namespace EnsureRisk.Controllers.Import
                     drRiskN[DT_Risk.ID] = General.ConvertStringID_inDecimal(dtExcel.Rows[rowPosition][xIdRisk.MyContent.ToString()].ToString());
                     drRiskN[DT_Risk.IS_CM] = false;
                     if (isCustom)
-                    {
-                        
+                    {                        
                         if (xRiskShortName != null && dtExcel.Rows[rowPosition][xRiskShortName.MyContent.ToString()].ToString() != "")
                         {
                             drRiskN[DT_Risk.NAMESHORT] = dtExcel.Rows[rowPosition][xRiskShortName.MyContent.ToString()].ToString();
@@ -360,7 +464,7 @@ namespace EnsureRisk.Controllers.Import
                     }
                     AsignRoleAdminToLine(dsImporting, drRiskN);
                     dsImporting.Tables[DT_Risk.TABLE_NAME].Rows.Add(drRiskN);
-                    SetTopWBSToLine(drRiskN, dsImporting, DsWBS);
+                    //SetTopWBSToLine(drRiskN, dsImporting, DsWBS);//esta linea la comento, pues luego se agregan los WBS en el Metodo FillWBSFromExcel
                 }
             }
             return xIdRisk;
@@ -395,7 +499,7 @@ namespace EnsureRisk.Controllers.Import
         public void SetRisk_RiskFatherRelation(DataSet dsImporting, bool isCustom, DataTable dtExcel, 
             List<HeaderExcelContent> MyList, HeaderExcelContent xIdRisk)
         {
-            var xRiskFather = MyList.FindLast(x => x.IdClasification == 5);
+            var xRiskFather = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.IdParentRisk);
             for (int rowposition = 0; rowposition < dtExcel.Rows.Count; rowposition++)
             {//ajustando estructura
                 if (xRiskFather != null && dtExcel.Rows[rowposition][xRiskFather.MyContent.ToString()].ToString() != "" &&
@@ -436,10 +540,10 @@ namespace EnsureRisk.Controllers.Import
             List<HeaderExcelContent> MyList, IEnumerable<HeaderExcelContent> countDamages, DataRow theDiagram, 
             HeaderExcelContent xIdRisk, DataSet DsWBS, bool isMarkedAllAsActive)
         {
-            HeaderExcelContent xCmShort = MyList.FindLast(x => x.IdClasification == 8);
-            var xCmDetail = MyList.FindLast(x => x.IdClasification == 9);
-            var xCmReduction = MyList.FindLast(x => x.IdClasification == 12);
-            var xCmActive = MyList.FindLast(x => x.IdClasification == 14);
+            HeaderExcelContent xCmShort = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.CMShortName);
+            var xCmDetail = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.CM_Comments);
+            var xCmReduction = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.CM_RiskReduction);
+            var xCmActive = MyList.FindLast(x => x.IdClasification == (int)EnumExcelValue.CM_Status);
             for (int rowPosition = 0; rowPosition < dtExcel.Rows.Count; rowPosition++)
             {
                 if (xCmShort != null && dtExcel.Rows[rowPosition][xCmShort.MyContent.ToString()].ToString() != "")

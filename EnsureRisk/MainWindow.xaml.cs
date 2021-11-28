@@ -70,7 +70,7 @@ namespace EnsureRisk
 
 
         private bool EditandoRisk;
-        private bool SeleccionandoRisk;
+        //private bool SeleccionandoRisk;
         private bool hasAccess;
         private bool copiando;
         private decimal probability;
@@ -541,11 +541,7 @@ namespace EnsureRisk
                         {
                             if (EditandoRisk)
                             {
-                                if (!SeleccionandoRisk)
-                                {
-                                    //wrapRisk.scrollRiskAutocomplete.Visibility = Visibility.Collapsed;
-                                    EditandoRisk = false;
-                                }
+                                EditandoRisk = false;
                             }
                             if (wrapRisk.TextRisk.Text != string.Empty)
                             {
@@ -943,14 +939,22 @@ namespace EnsureRisk
                         if (parametro is int rowSelectedIndex)
                         {
                             Selected_Risk_WBS_Row = DvRiskWBS[rowSelectedIndex].Row;
-                            MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost
+                            
+                            if (TheCurrentLayout.Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { TheCurrentLayout.Line_Selected.IdRiskFather, Selected_Risk_WBS_Row[DT_RISK_WBS.ID_WBS] }))
                             {
-                                DialogContent = new DialogContent.DeleteWBSConfirm()
-                            };
-                            dialog.DialogClosing += DeleteForChildrenThisWBSConfirm;
-                            Grid.SetRowSpan(dialog, 3);
-                            Supergrid.Children.Add(dialog);
-                            dialog.IsOpen = true;
+                                MostrarErrorDialog("You has to delete this WBS in the risk source first");
+                            }
+                            else
+                            {                                
+                                MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost
+                                {
+                                    DialogContent = new DialogContent.DeleteWBSConfirm()
+                                };
+                                dialog.DialogClosing += DeleteForChildrenThisWBSConfirm;
+                                Grid.SetRowSpan(dialog, 3);
+                                Supergrid.Children.Add(dialog);
+                                dialog.IsOpen = true;
+                            }
                         }
                     }
                     catch (Exception ex)

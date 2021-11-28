@@ -42,6 +42,6 @@
                 </ListViewItem>
             </ListView>
         </StackPanel>
-        <Frame Grid.Column="1" Name="FrameNavigation" NavigationUIVisibility="Hidden" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
+        <Frame Grid.Column="1" Name="FrameNavigation" NavigationUIVisibility="Automatic" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
     </Grid>
 </Window>

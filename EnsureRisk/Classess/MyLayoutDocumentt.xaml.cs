@@ -2688,7 +2688,7 @@ namespace EnsureRisk.Classess
         public void SetLinesThickness()
         {
             try
-            {
+            {                
                 if (IsUniformThickness)
                 {
                     if (!(CbFilterTopR.SelectedValue is null))
@@ -5041,8 +5041,8 @@ namespace EnsureRisk.Classess
                 MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 40 / 100;
                 MiniMapGHT.MapSource = new ScrollViewer();
                 MiniMapGHT.MapSource = this.ScrollGridPaint;
-
-                this.ScrollGridPaint.UpdateLayout();
+                ////Esto es lo que jode el scroll centrado
+                //this.ScrollGridPaint.UpdateLayout();
             }
             catch (Exception ex)
             {
@@ -5055,8 +5055,6 @@ namespace EnsureRisk.Classess
             if (SliderZoom.Value < 200)
             {
                 SliderZoom.Value += 10;
-                MiniMapGHT.Height = ScrollGridPaint.ViewportHeight * 30 / 100;
-                MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 30 / 100;
             }
         }
 
@@ -5065,8 +5063,6 @@ namespace EnsureRisk.Classess
             if (SliderZoom.Value > 10)
             {
                 SliderZoom.Value -= 10;
-                MiniMapGHT.Height = ScrollGridPaint.ViewportHeight * 30 / 100;
-                MiniMapGHT.Width = ScrollGridPaint.ViewportWidth * 30 / 100;
             }
         }
 

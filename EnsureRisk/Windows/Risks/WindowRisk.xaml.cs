@@ -53,7 +53,6 @@ namespace EnsureRisk.Windows
 
         public bool IS_USING_NAME { get; set; } = false;
         public bool IS_DELETING_ROW { get; set; } = false;
-        public bool IS_DELETING_WBS_ROW { get; set; } = false;
         public DataRow Selected_RoleRow { get; set; }
         public DataRow Selected_WBSRow { get; set; }
         public DataRow RiskRow { get; set; }
@@ -77,7 +76,6 @@ namespace EnsureRisk.Windows
         private DataSet dsWBS;
 
         private bool Editando;
-        private bool Seleccionando;
 
         public WindowRisk()
         {
@@ -388,11 +386,27 @@ namespace EnsureRisk.Windows
         /// </summary>
         private void CalculateProbability()
         {
-            //TODO: 6-AQUI Y EN LA VENTANA RISK ES DONDE SE VALIDA EL TEMA DE LA PROBABILIDAD
-            //PRIMERO VA A LA CLASE STATIC DE "WBSOperations" Y RESUELVE ESE PROBLEMA, LUEGO SE LO ASIGNA AL RIESGO PARA QUE SE ACTUALICE EL TEXTBOX DE LA PROBABILIDAD
             try
             {
                 Probability = WBSOperations.RiskWBSValidations(RiskRow, Ds, LOGIN_USER, dsWBS, hasAccess, IsCM);                
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void CalculateProbability(DataRow RiskRow)
+        {
+            try
+            {
+                Probability = WBSOperations.RiskWBSValidations(RiskRow, Ds, LOGIN_USER, dsWBS, hasAccess, (bool)RiskRow[DT_Risk.IS_CM]);
+
+                RiskRow[DT_Risk.PROBABILITY] = Probability;
+                foreach (DataRow item in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+                {
+                    item[DT_Risk_Damages.PROBABILITY] = RiskRow[DT_Risk.PROBABILITY];
+                }
             }
             catch (Exception ex)
             {
@@ -656,61 +670,114 @@ namespace EnsureRisk.Windows
             }
         }
 
-        private void Delete_WBS_Row(DataRow fila)
-        {
-            try
-            {
-                foreach (DataRow itemC in Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
-                {
-                    itemC.Delete();
-                }
-                //WBSOperations.SetDefaultWBSPrimary(fila, Ds, (decimal)RiskRow[DT_Risk.ID]);
-                WBSOperations.SetAsPrimaryWhoDelete(fila, Ds, LOGIN_USER, (decimal)RiskRow[DT_Risk.ID], dsWBS);
-                foreach (DataRow descendant in WBSOperations.MyWBSDescendants(dsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(fila[DT_RISK_WBS.ID_WBS]), dsWBS.Tables[DT_WBS.TABLE_NAME]))
-                {
-                    if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { (decimal)RiskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] }))
-                    {
-                        Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { (decimal)RiskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] }).Delete();
-                    }
-                }
-                fila.Delete();
-
-                foreach (DataRow itemWBS in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
-                {
-                    if (WBSOperations.IsRiskWBSLow(itemWBS, dsWBS, Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
-                    {
-                        WBSOperations.TabAddWBS_LINE_Damage(itemWBS, (decimal)RiskRow[DT_Risk.ID], false, Ds);
-                    }
-                    else
-                    {//TENGO QUE BORRAR EL DAMAGE_WBS_RISK, PUES YA NO ES LOWLEVEL
-                        WBSOperations.TabDeleteWBS_LINE_Damage(itemWBS, (decimal)RiskRow[DT_Risk.ID], false, Ds);
-                    }
-                }
-                CalculateProbability();
-                RefreshDamageValues((decimal)RiskRow[DT_Risk.ID], false);
-                IS_DELETING_WBS_ROW = false;
-            }
-            catch (Exception ex)
-            {
-                IS_DELETING_WBS_ROW = false;
-                MostrarErrorDialog(ex.Message);
-            }
-        }
-
         private void BtnDelWBS_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 Selected_WBSRow = DvRiskWBS[dgWBS.SelectedIndex].Row;
-                IS_DELETING_WBS_ROW = true;
-                MostrarDialogYesNo(StringResources.DELETE_MESSAGE + " [" + Selected_WBSRow[DT_RISK_WBS.WBS].ToString() + "]?");
+                MaterialDesignThemes.Wpf.DialogHost dialog = new MaterialDesignThemes.Wpf.DialogHost
+                {
+                    DialogContent = new DialogContent.DeleteWBSConfirm()
+                };
+                dialog.DialogClosing += DeleteForChildrenThisWBSConfirm; ;
+                Grid.SetRowSpan(dialog, 3);
+                supergrid.Children.Add(dialog);
+                dialog.IsOpen = true;
             }
             catch (Exception ex)
             {
-                IS_DELETING_WBS_ROW = false;
                 MostrarErrorDialog(ex.Message);
             }
         }
+
+        private void DeleteForChildrenThisWBSConfirm(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
+        {
+            try
+            {
+                if (eventArgs.Parameter is int parametro)
+                {
+                    switch (parametro)
+                    {
+                        case 0:
+                            decimal idWBStoDelete = (decimal)Selected_WBSRow[DT_RISK_WBS.ID_WBS];
+                            DeleteOnlyRisk_WBS(Selected_WBSRow, (decimal)RiskRow[DT_Risk.ID]);
+                            foreach (var linee in ChildrenLines)
+                            {
+                                foreach (var line in TreeOperation.GetMeAndMyChildrenWithCM(linee))
+                                {
+                                    DataRow drWBSRiskCHild = Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { line.ID, idWBStoDelete });
+                                    DeleteOnlyRisk_WBS(drWBSRiskCHild, line.ID);
+                                }
+                            }
+                            break;
+                        case 1:
+                            DeleteOnlyRisk_WBS(Selected_WBSRow, (decimal)RiskRow[DT_Risk.ID]);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarErrorDialog(ex.Message);
+            }
+        }
+
+        private void DeleteOnlyRisk_WBS(DataRow fila, decimal riskID)
+        {
+            foreach (DataRow itemC in Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + riskID + " AND " + DT_WBS_RISK_DAMAGE.ID_WBS + " = " + fila[DT_WBS.ID_WBS]))
+            {
+                itemC.Delete();
+            }
+
+            //WBSOperations.SetDefaultWBSPrimary(fila, TheCurrentLayout.Ds, riskID);
+            WBSOperations.SetAsPrimaryWhoDelete(fila, Ds, LOGIN_USER, riskID, dsWBS);
+            foreach (DataRow descendant in WBSOperations.MyWBSDescendants(dsWBS.Tables[DT_WBS.TABLE_NAME].Rows.Find(fila[DT_RISK_WBS.ID_WBS]), dsWBS.Tables[DT_WBS.TABLE_NAME]))
+            {
+                if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { riskID, descendant[DT_WBS.ID_WBS] }))
+                {
+                    Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Find(new object[] { riskID, descendant[DT_WBS.ID_WBS] }).Delete();
+                }
+            }
+            fila.Delete();
+            foreach (DataRow itemWBS in Ds.Tables[DT_RISK_WBS.TABLE_NAME].Select(DT_RISK_WBS.ID_RISK + " = " + riskID))
+            {
+                if (WBSOperations.IsRiskWBSLow(itemWBS, dsWBS, Ds.Tables[DT_RISK_WBS.TABLE_NAME]))
+                {
+                    WBSOperations.TabAddWBS_LINE_Damage(itemWBS, riskID, false, Ds);
+                }
+                else
+                {//TENGO QUE BORRAR EL DAMAGE_WBS_RISK, PUES YA NO ES LOWLEVEL
+                    WBSOperations.TabDeleteWBS_LINE_Damage(itemWBS, riskID, false, Ds);
+                }
+            }
+            CalculateProbability(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(riskID));
+            RefreshRiskDamageValues(Ds.Tables[DT_Risk.TABLE_NAME].Rows.Find(riskID));
+        }
+
+        private void RefreshRiskDamageValues(DataRow RiskRow)
+        {
+            foreach (DataRow itemDamage in Ds.Tables[DT_Risk_Damages.TABLE_NAME].Select(DT_Risk_Damages.ID_RISK + " = " + RiskRow[DT_Risk.ID]))
+            {//primero recorro los Daños de los riesgos
+                decimal valor = 0;
+                foreach (DataRow itemWBS in Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Select(DT_WBS_RISK_DAMAGE.ID_RISK + " = " + RiskRow[DT_Risk.ID] + " AND " + DT_WBS_RISK_DAMAGE.ID_DAMAGE + " = " + itemDamage[DT_Risk_Damages.ID_DAMAGE]))
+                {//y despues para  sumarlos todos en un mismo daño y encontrar el AD
+                    if ((decimal)itemWBS[DT_WBS_RISK_DAMAGE.VALUE] >= 0)
+                    {
+                        valor += (decimal)itemWBS[DT_WBS_RISK_DAMAGE.VALUE];
+                    }
+                    else
+                    {
+                        MostrarErrorDialog("Value can't be negative!!!");
+                        valor += (decimal)Ds.Tables[DT_WBS_RISK_DAMAGE.TABLE_NAME].Rows.Find(new object[] { itemWBS[DT_WBS_RISK_DAMAGE.ID_WBS], itemWBS[DT_WBS_RISK_DAMAGE.ID_DAMAGE], itemWBS[DT_WBS_RISK_DAMAGE.ID_RISK] })[DT_WBS_RISK_DAMAGE.VALUE];
+                    }
+                }
+                itemDamage[DT_Risk_Damages.VALUE] = valor;
+            }
+        }
+
+
 
         private void TextProbability_LostFocus(object sender, RoutedEventArgs e)
         {
@@ -871,10 +938,7 @@ namespace EnsureRisk.Windows
             }
             if (Editando)
             {
-                if (!Seleccionando)
-                {
-                    Editando = false;
-                }
+                Editando = false;
             }
         }
         
@@ -913,10 +977,6 @@ namespace EnsureRisk.Windows
                 if (IS_DELETING_ROW)
                 {
                     Delete_Role(Selected_RoleRow);
-                }
-                if (IS_DELETING_WBS_ROW)
-                {
-                    Delete_WBS_Row(Selected_WBSRow);
                 }
             }
         }

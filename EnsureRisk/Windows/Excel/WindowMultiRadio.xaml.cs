@@ -28,9 +28,9 @@ namespace EnsureRisk.Windows
 
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
-            ValueSelected = BuscarElementomarcado();
-            ContentSelected = BuscarStrElementomarcado();
-            DialogResult = true;
+            //ValueSelected = BuscarElementomarcado();
+            //ContentSelected = BuscarStrElementomarcado();
+            //DialogResult = true;
         }
 
         public int BuscarElementomarcado()
@@ -73,7 +73,14 @@ namespace EnsureRisk.Windows
 
         private void MyRadio_Checked(object sender, RoutedEventArgs e)
         {
-            BtnOK_Click(sender, e);
+            //BtnOK_Click(sender, e);
+            if (sender is MyRadio radio)
+            {
+                ValueSelected = radio.MyValue;
+                ContentSelected = radio.Content.ToString();
+                DialogResult = true;
+                this.Close();
+            }
         }
     }
 }

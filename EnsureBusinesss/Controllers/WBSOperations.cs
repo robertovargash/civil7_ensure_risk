@@ -391,7 +391,8 @@ namespace EnsureBusinesss
 
                         if (Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { RiskRow[DT_Risk.ID], descendant[DT_WBS.ID_WBS] }))
                         {
-                            drRiskWBStoSet[DT_RISK_WBS.CanDelete] = !Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { RiskRow[DT_Risk.IDRISK_FATHER], descendant[DT_WBS.ID_WBS] });
+                            //drRiskWBStoSet[DT_RISK_WBS.CanDelete] = !Ds.Tables[DT_RISK_WBS.TABLE_NAME].Rows.Contains(new object[] { RiskRow[DT_Risk.IDRISK_FATHER], descendant[DT_WBS.ID_WBS] });
+                            drRiskWBStoSet[DT_RISK_WBS.CanDelete] = true;
                             drRiskWBStoSet[DT_RISK_WBS.CanEditPrimary] = hasAccess;
                         }
                     }

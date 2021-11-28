@@ -66,6 +66,9 @@
     <Reference Include="DocumentFormat.OpenXml">
       <HintPath>Referencias\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
+    <Reference Include="FilteredComboBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\THEFilteredComboBox.1.0.0\lib\net35\FilteredComboBox.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialDesign, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Referencias\MaterialDesign.dll</HintPath>

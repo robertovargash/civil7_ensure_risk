@@ -20,7 +20,7 @@
                 <Button.CommandParameter>
                     <system:Int32>0</system:Int32>
                 </Button.CommandParameter>
-                Yes, for all my ancestors
+                Yes, for all my descendants
             </Button>
             <Button Style="{StaticResource MaterialDesignFlatButton}" Margin="0 8 8 0" Command="md:DialogHost.CloseDialogCommand">
                 <Button.CommandParameter>

@@ -11,24 +11,56 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EnsureRisk.Windows"
         mc:Ignorable="d"
-        Title="Select..." Height="302.387" Width="341.243" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" ResizeMode="NoResize">
+        Title="Select..." Height="343.988" Width="341.243" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" ResizeMode="NoResize">
     <Grid>
-        <Button x:Name="BtnOK" Content="OK" Margin="0,0,102,9.6" Click="BtnOK_Click" IsDefault="True" TabIndex="1" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom"/>
+        <Button x:Name="BtnOK" Content="OK" Margin="0,0,102,9.6" Click="BtnOK_Click" IsDefault="True" Visibility="Hidden" TabIndex="1" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom"/>
         <Button x:Name="BtnCancel" Content="Cancel" Margin="0,0,10,9.6" Click="BtnCancel_Click" IsCancel="True" TabIndex="2" Height="32" HorizontalAlignment="Right" Width="75" VerticalAlignment="Bottom"/>
         <Grid Name="gridRadioButton">
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Content="IDRisk" HorizontalAlignment="Left" Margin="24,21,0,0" VerticalAlignment="Top" MyValue="1" Checked="MyRadio_Checked"/>
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Content="Risk ShortName" HorizontalAlignment="Left" Margin="24,59,0,0" VerticalAlignment="Top" MyValue="2" Checked="MyRadio_Checked"/>
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Content="Risk Comments" HorizontalAlignment="Left" Margin="24,95,0,0" VerticalAlignment="Top" MyValue="3" Checked="MyRadio_Checked"/>
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Visibility="Collapsed" Content="Risk ENABLED" HorizontalAlignment="Left" Margin="24,130,0,0" VerticalAlignment="Top" MyValue="4" Checked="MyRadio_Checked"/>
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Content="Parent Risk ID" HorizontalAlignment="Left" Margin="24,196,0,0" VerticalAlignment="Top" MyValue="5" Checked="MyRadio_Checked"/>
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Content="Countermeasure ID" HorizontalAlignment="Left" Margin="172,21,0,0" VerticalAlignment="Top" MyValue="7" Checked="MyRadio_Checked"/>
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Content="CM Short Name" HorizontalAlignment="Left" Margin="172,59,0,0" VerticalAlignment="Top" MyValue="8" Checked="MyRadio_Checked"/>
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Content="CM Comments" HorizontalAlignment="Left" Margin="172,95,0,0" VerticalAlignment="Top" MyValue="9" Checked="MyRadio_Checked"/>
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Content="RISK Damage" HorizontalAlignment="Left" Margin="24,130,0,0" VerticalAlignment="Top" MyValue="10" Checked="MyRadio_Checked"/>
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Content="RISK Probability" HorizontalAlignment="Left" Margin="24,165,0,0" VerticalAlignment="Top" MyValue="11" Checked="MyRadio_Checked"/>
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Content="CM Risk Reduction" HorizontalAlignment="Left" Margin="172,165,0,0" VerticalAlignment="Top" MyValue="12" Checked="MyRadio_Checked"/>
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Content="CM Damage" HorizontalAlignment="Left" Margin="172,130,0,0" VerticalAlignment="Top" MyValue="13" Checked="MyRadio_Checked"/>
-            <local:MyRadio Foreground="{DynamicResource MaterialDesignBody}" Content="CM Status" HorizontalAlignment="Left" Margin="172,196,0,0" VerticalAlignment="Top" MyValue="14" Checked="MyRadio_Checked"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>                    
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <local:MyRadio Grid.Row="0" Foreground="{DynamicResource MaterialDesignBody}" Margin="10" Content="IDRisk" HorizontalAlignment="Left" VerticalAlignment="Top" MyValue="1" Checked="MyRadio_Checked"/>
+                    <local:MyRadio Grid.Row="1" Foreground="{DynamicResource MaterialDesignBody}" Margin="10" Content="Risk ShortName" HorizontalAlignment="Left" VerticalAlignment="Top" MyValue="2" Checked="MyRadio_Checked"/>
+                    <local:MyRadio Grid.Row="2" Foreground="{DynamicResource MaterialDesignBody}" Margin="10" Content="Risk Comments" HorizontalAlignment="Left" VerticalAlignment="Top" MyValue="3" Checked="MyRadio_Checked"/>
+                    <local:MyRadio Grid.Row="3" Foreground="{DynamicResource MaterialDesignBody}" Margin="10" Visibility="Collapsed" Content="Risk ENABLED" HorizontalAlignment="Left" VerticalAlignment="Top" MyValue="4" Checked="MyRadio_Checked"/>
+                    <local:MyRadio Grid.Row="4" Foreground="{DynamicResource MaterialDesignBody}" Margin="10" Content="Parent Risk ID" HorizontalAlignment="Left" VerticalAlignment="Top" MyValue="5" Checked="MyRadio_Checked"/>
+                    <local:MyRadio Grid.Row="5" Foreground="{DynamicResource MaterialDesignBody}" Content="RISK Probability" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" MyValue="11" Checked="MyRadio_Checked"/>
+                    <local:MyRadio Grid.Row="6" Foreground="{DynamicResource MaterialDesignBody}" Content="RISK Damage" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" MyValue="10" Checked="MyRadio_Checked"/>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <local:MyRadio Grid.Row="0" Foreground="{DynamicResource MaterialDesignBody}" Content="CM Short Name" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" MyValue="8" Checked="MyRadio_Checked"/>
+                    <local:MyRadio Grid.Row="1" Foreground="{DynamicResource MaterialDesignBody}" Content="CM Comments" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" MyValue="9" Checked="MyRadio_Checked"/>
+                    <local:MyRadio Grid.Row="3" Visibility="Collapsed" Foreground="{DynamicResource MaterialDesignBody}" Margin="10" Content="Countermeasure ID" HorizontalAlignment="Left" VerticalAlignment="Top" MyValue="7" Checked="MyRadio_Checked"/>
+                    <local:MyRadio Grid.Row="4" Foreground="{DynamicResource MaterialDesignBody}" Content="CM Risk Reduction" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" MyValue="12" Checked="MyRadio_Checked"/>
+                    <local:MyRadio Grid.Row="5" Foreground="{DynamicResource MaterialDesignBody}" Content="CM Damage" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" MyValue="13" Checked="MyRadio_Checked"/>
+                    <local:MyRadio Grid.Row="6" Foreground="{DynamicResource MaterialDesignBody}" Content="CM Status" HorizontalAlignment="Left" Margin="10" Visibility="Collapsed" VerticalAlignment="Top" MyValue="14" Checked="MyRadio_Checked"/>
+                    <local:MyRadio Grid.Row="7" Foreground="{DynamicResource MaterialDesignBody}" Margin="10" Content="WBS Column" HorizontalAlignment="Left" VerticalAlignment="Top" MyValue="15" Checked="MyRadio_Checked"/>
+
+                </Grid>
+            </Grid>
+            
         </Grid>
     </Grid>
 </Window>

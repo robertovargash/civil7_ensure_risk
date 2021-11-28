@@ -21,4 +21,22 @@ namespace EnsureRisk
         CanCreateWBS = 11,
         CanEditWBS = 12
     }
+
+    public enum EnumExcelValue
+    {
+        IdRisk = 1,
+        RiskShortName = 2,
+        RiskComments = 3,
+        RiskEnabled = 4,
+        IdParentRisk = 5,
+        Id_CM = 7,
+        CMShortName = 8,
+        CM_Comments = 9,
+        RiskDamage = 10,
+        RiskProbability = 11,
+        CM_RiskReduction = 12,
+        CM_Damage = 13,
+        CM_Status = 14,
+        WBSColumn = 15
+    }
 }
