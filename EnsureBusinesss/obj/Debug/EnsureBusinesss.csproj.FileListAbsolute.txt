@@ -182,7 +182,6 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureBusinesss\obj\Deb
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\Output\Debug\EnsureBusinesss.dll.config
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\Output\Debug\EnsureBusinesss.dll
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\Output\Debug\EnsureBusinesss.pdb
-C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureBusinesss\obj\Debug\EnsureBusinesss.csprojAssemblyReference.cache
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureBusinesss\obj\Debug\Business\MyDamage.g.cs
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.cache
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureBusinesss\obj\Debug\EnsureBusinesss_MarkupCompile.lref
@@ -193,3 +192,5 @@ C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureBusinesss\obj\
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CopyComplete
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureBusinesss\obj\Debug\EnsureBusinesss.dll
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureBusinesss\obj\Debug\EnsureBusinesss.pdb
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.AssemblyReference.cache
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\EnsureBusinesss\obj\Debug\EnsureBusinesss.csproj.CoreCompileInputs.cache

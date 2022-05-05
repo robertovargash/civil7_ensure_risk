@@ -72,6 +72,7 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\DataMapping\obj\Debug\D
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\DataMapping\obj\Debug\DataMapping.pdb
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\Output\Debug\DataMapping.dll
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\Output\Debug\DataMapping.pdb
-C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\DataMapping\obj\Debug\DataMapping.csprojAssemblyReference.cache
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\DataMapping\obj\Debug\DataMapping.dll
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\DataMapping\obj\Debug\DataMapping.pdb
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\DataMapping\obj\Debug\DataMapping.csproj.AssemblyReference.cache
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\DataMapping\obj\Debug\DataMapping.csproj.CoreCompileInputs.cache

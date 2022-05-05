@@ -368,7 +368,8 @@ C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRiskWS\bin\Mic
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRiskWS\bin\DataMapping.pdb
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRiskWS\bin\ERDA.pdb
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRiskWS\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRiskWS\obj\Debug\EnsureRiskWS.csprojAssemblyReference.cache
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRiskWS\obj\Debug\EnsureRiskWS.csproj.CopyComplete
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRiskWS\obj\Debug\EnsureRiskWS.dll
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRiskWS\obj\Debug\EnsureRiskWS.pdb
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\EnsureRiskWS\obj\Debug\EnsureRiskWS.csproj.AssemblyReference.cache
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\EnsureRiskWS\obj\Debug\EnsureRiskWS.csproj.CoreCompileInputs.cache

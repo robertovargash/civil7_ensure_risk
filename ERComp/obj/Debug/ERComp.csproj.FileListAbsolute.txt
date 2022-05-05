@@ -95,7 +95,6 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\ERComp\obj\Debug\ERComp.csprojAssemblyReference.cache
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\Output\Debug\ERComp.dll
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\Output\Debug\ERComp.pdb
-C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERComp\obj\Debug\ERComp.csprojAssemblyReference.cache
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERComp\obj\Debug\Themes\Aero2.NormalColor.baml
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERComp\obj\Debug\Themes\classic.baml
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERComp\obj\Debug\Themes\luna.homestead.baml
@@ -188,3 +187,5 @@ C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERComp\obj\Debug\ERC
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERComp\obj\Debug\ERComp.dll
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERComp\obj\Debug\ERComp.pdb
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERComp\obj\Debug\ERComp.csproj.CopyComplete
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\ERComp\obj\Debug\ERComp.csproj.AssemblyReference.cache
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\ERComp\obj\Debug\ERComp.csproj.CoreCompileInputs.cache

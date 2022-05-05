@@ -143,7 +143,6 @@ C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\NL
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\EnsureRisk.csproj.CopyComplete
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\EnsureRisk.exe
 C:\Users\ROB\Documents\Visual Studio 2019\visualdragdrop\EnsureRisk\obj\Debug\EnsureRisk.pdb
-C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRisk\obj\Debug\EnsureRisk.csprojAssemblyReference.cache
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRisk\obj\Debug\Classess\MiniMapControl.baml
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRisk\obj\Debug\Dictionaries\Commands.baml
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRisk\obj\Debug\Dictionaries\Menus.baml
@@ -288,3 +287,6 @@ C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRisk\obj\Debug
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRisk\obj\Debug\es-ES\EnsureRisk.resources.dll
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRisk\obj\Debug\NL-NL\EnsureRisk.resources.dll
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\EnsureRisk\obj\Debug\EnsureRisk.csproj.CopyComplete
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\EnsureRisk\obj\Debug\EnsureRisk.csproj.AssemblyReference.cache
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\EnsureRisk\obj\Debug\EnsureRisk.csproj.SuggestedBindingRedirects.cache
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\EnsureRisk\obj\Debug\EnsureRisk.csproj.CoreCompileInputs.cache

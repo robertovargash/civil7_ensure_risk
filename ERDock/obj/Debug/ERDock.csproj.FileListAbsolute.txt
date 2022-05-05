@@ -57,7 +57,6 @@ C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\Output\Debug\de\ERDo
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\Output\Debug\sv\ERDock.resources.dll
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\Output\Debug\zh-Hans\ERDock.resources.dll
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\Output\Debug\ro\ERDock.resources.dll
-C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERDock\obj\Debug\ERDock.csprojAssemblyReference.cache
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERDock\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERDock\obj\Debug\ERDock_MarkupCompile.cache
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERDock\obj\Debug\ERDock_MarkupCompile.lref
@@ -90,3 +89,5 @@ C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERDock\obj\Debug\ro\
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERDock\obj\Debug\ERDock.csproj.CopyComplete
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERDock\obj\Debug\ERDock.dll
 C:\Users\Rob\Source\Repos\robertovargash\civil7_ensure_risk\ERDock\obj\Debug\ERDock.pdb
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\ERDock\obj\Debug\ERDock.csproj.AssemblyReference.cache
+C:\Users\Rob\source\repos\robertovargash\civil7_ensure_risk\ERDock\obj\Debug\ERDock.csproj.CoreCompileInputs.cache
